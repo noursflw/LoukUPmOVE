@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="loukupm.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:loukupm"
+    xmlns:view="clr-namespace:loukupm.View"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarTitleColor="#EBD750"
+    Shell.TabBarUnselectedColor="Gray"
+    Shell.TabBarDisabledColor="DarkGray"
+    Shell.TabBarBackgroundColor="#202020"
+    Shell.TabBarForegroundColor="#EBD750"
+    Title="loukupm">
+
+    <!-- تسجيل Routes للصفحات خارج التاب -->
+    <ShellContent Route="OnboardingPage"
+                  ContentTemplate="{DataTemplate local:MainPage}"
+                  IsVisible="False" />
+    <ShellContent Route="LoginPage"
+                  ContentTemplate="{DataTemplate view:LoginPage}"
+                  IsVisible="False" />
+
+    <ShellContent Route="SinginPage"
+                  ContentTemplate="{DataTemplate view:SinginPage}"
+                  IsVisible="False" />
+
+    <!-- التاب بار الرئيسي -->
+    <TabBar>
+        <ShellContent
+            Icon="nhome.png"
+            Title="Home"
+            ContentTemplate="{DataTemplate view:HomePage}"
+            Route="HomePage" />
+
+      
+
+        <ShellContent
+            Icon="nbarber.png"
+            Title="Services"
+            ContentTemplate="{DataTemplate view:ServicesPage}"
+            Route="ServicesPage" />
+
+        <ShellContent
+            Icon="calendar.png"
+            Title="Booking"
+            ContentTemplate="{DataTemplate view:BookingPage}"
+            Route="BookingPage" />
+
+        <ShellContent
+            Icon="nprofil.png"
+            Title="Profile"
+            ContentTemplate="{DataTemplate view:ProfilePage}"
+            Route="ProfilePage" />
+    </TabBar>
+
+</Shell>

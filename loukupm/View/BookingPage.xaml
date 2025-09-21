@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.BookingPage"
+             Shell.NavBarIsVisible="False"
+             FlowDirection="LeftToRight"
+             BackgroundColor="#252525"
+             Title="BookingPage">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout>
+                <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+                    <!-- العنوان على اليسار -->
+                    <Label Text="Meine Termine"
+                           TextColor="White"
+                           Margin="24,0,0,0"
+                             FontSize="24"
+                             FontFamily="georgia-bold"
+                             VerticalOptions="Center" />
+
+                    <!-- الزر على اليمين -->
+                    <Button Grid.Column="1"
+        WidthRequest="40"
+        HeightRequest="40"
+        CornerRadius="12"
+        ImageSource="backbuttonpmg.png"
+        BackgroundColor="#202020"
+        BorderColor="#999999"
+        Margin="0,0,10,0"            
+        BorderWidth="1"
+        HorizontalOptions="End"
+        VerticalOptions="Center"
+        Clicked="Button_Clicked_1" />
+                </Grid>
+                   
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

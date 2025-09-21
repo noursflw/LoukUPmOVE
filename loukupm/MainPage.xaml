@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+               BackgroundImageSource="startpage.png"
+             x:Class="loukupm.MainPage">
+
+    <ScrollView>
+        <Grid>
+
+
+            <Image Margin="0,0,0,-262"   Source="start2.png"/>
+            <Label Text="Herzlich Willkommen bei " FontSize="24" Margin="40,440,0,0" TextColor="White"/>
+            <Label Text="LOOK UP Friseur " FontSize="24" Margin="40,470,0,0"  FontAttributes="Bold" TextColor="#EBD750"/>
+            <Label Text="Bei LOOK UP Friseur in Landshut bieten wir Ihnen einen exklusiven Haarschnitt- und Styling-Service, der genau auf Ihre individuellen Wünsche und Bedürfnisse abgestimmt ist. Unsere erfahrenen Friseure verwenden die neuesten Techniken und hochwertige Produkte, um sicherzustellen, dass Sie bei jedem Besuch das bestmögliche Ergebnis erzielen.. " FontSize="14" Margin="40,500,10,0" TextColor="White"/>
+            <HorizontalStackLayout Margin="160,620,0,0" Spacing="-3">
+
+                <HorizontalStackLayout>
+                    <Frame
+           Rotation="-45"
+           BackgroundColor="#EBD750"
+           HeightRequest="60"
+           WidthRequest="60"
+          HasShadow="False"
+            CornerRadius="10" >
+                        <Grid>
+                            <Image Rotation="43" FlowDirection="RightToLeft" Source="iconestartup.png"
+          WidthRequest="40"
+          HeightRequest="40"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </HorizontalStackLayout>
+
+
+
+                <Image Rotation="-1" Margin="0,0,0,0"  Source="imagebuttonstartup.png"/>
+
+            </HorizontalStackLayout>
+        </Grid>
+
+    </ScrollView>
+
+</ContentPage>
