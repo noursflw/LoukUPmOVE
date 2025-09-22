@@ -7,7 +7,7 @@
              BackgroundColor="#252525"
              Title="BookingPage">
     <Grid>
-        <ScrollView>
+        <ScrollView Margin="0,0,0,10">
             <VerticalStackLayout>
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                     <!-- العنوان على اليسار -->
@@ -35,5 +35,12 @@
                    
             </VerticalStackLayout>
         </ScrollView>
+        <Border Margin="0,0,0,0"
+      BackgroundColor="#444444"
+      HeightRequest="20"
+      VerticalOptions="End" 
+      HorizontalOptions="Fill" 
+      Stroke="#444444" 
+      StrokeShape="RoundRectangle 10,10,0,0" />
     </Grid>
 </ContentPage>

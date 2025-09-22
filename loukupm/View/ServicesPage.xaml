@@ -14,79 +14,88 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ScrollView>
-        <VerticalStackLayout>
-            <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
-                <!-- العنوان على اليسار -->
-                <Label Text="Alle Services"
-           TextColor="White"
-           Margin="24,0,0,0"
-           FontSize="24"
-           FontFamily="georgia-bold"
-           VerticalOptions="Center" />
+    <Grid>
+        <ScrollView  Margin="0,0,0,10" >
+            <VerticalStackLayout>
+                <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+                    <!-- العنوان على اليسار -->
+                    <Label Text="Alle Services"
+        TextColor="White"
+        Margin="24,0,0,0"
+        FontSize="24"
+        FontFamily="georgia-bold"
+        VerticalOptions="Center" />
 
-                <!-- الزر على اليمين -->
-                <Button Grid.Column="1"
-            WidthRequest="40"
-            HeightRequest="40"
-            CornerRadius="12"
-            ImageSource="backbuttonpmg.png"
-            BackgroundColor="#202020"
-            BorderColor="#999999"
-            Margin="0,0,10,0"            
-            BorderWidth="1"
-            HorizontalOptions="End"
-            VerticalOptions="Center"
-            Clicked="Button_Clicked" />
-            </Grid>
+                    <!-- الزر على اليمين -->
+                    <Button Grid.Column="1"
+         WidthRequest="40"
+         HeightRequest="40"
+         CornerRadius="12"
+         ImageSource="backbuttonpmg.png"
+         BackgroundColor="#202020"
+         BorderColor="#999999"
+         Margin="0,0,10,0"            
+         BorderWidth="1"
+         HorizontalOptions="End"
+         VerticalOptions="Center"
+         Clicked="Button_Clicked" />
+                </Grid>
 
 
-            <material:TextField  Margin="25,35,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="search.svg" Title="search"    HeightRequest="56"  />
-            <CollectionView ItemsSource="{Binding AllServices}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" Margin="17,0,0,0" >
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <HorizontalStackLayout   Spacing="10">
-                            <Frame CornerRadius="16"  HeightRequest="55" WidthRequest="120" BackgroundColor="#444444" Margin="14,0,0,0"  BorderColor="#444444" >
-                                <Label Text="{Binding Category}" FontFamily="Oswald" Margin="0,-6,8,0" FontSize="16" TextColor="#999999" />
-                            </Frame>
-                        </HorizontalStackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <material:TextField  Margin="25,35,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="search.svg" Title="search"    HeightRequest="56"  />
+                <CollectionView ItemsSource="{Binding AllServices}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" Margin="17,0,0,0" >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout   Spacing="10">
+                                <Frame CornerRadius="16"  HeightRequest="55" WidthRequest="120" BackgroundColor="#444444" Margin="14,0,0,0"  BorderColor="#444444" >
+                                    <Label Text="{Binding Category}" FontFamily="Oswald" Margin="0,-6,8,0" FontSize="16" TextColor="#999999" />
+                                </Frame>
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <HorizontalStackLayout Margin="0,10,10,10">
-                <Frame HeightRequest="55" BorderColor="#444444" WidthRequest="120" Margin="30,0,0,0" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsCatogory}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"  />
-                <Frame HeightRequest="55" BorderColor="#444444" WidthRequest="120" Margin="17,0,0,0" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsCatogory}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"  />
-            </HorizontalStackLayout>
-            <ScrollView>
-                <VerticalStackLayout>
-                    <CollectionView ItemsSource="{Binding AllServices}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout Margin="24,0,24,0">
-                                    <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" HeightRequest="122" >
-                                        <Grid ColumnDefinitions="50*,50*">
-                                            <Label  Grid.Column="0" Text="{Binding NameServies}" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="18"  />
-                                            <Label  Grid.Column="0" Text="{Binding PriceServies}" Margin="0,30,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
-                                            <Label  Grid.Column="0" Text="{Binding TimeServies}" Margin="0,55,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
-                                            <Button Grid.Column="1" Text="Auswählen" TextColor="White" BackgroundColor="Black" WidthRequest="132" FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" Margin="32,-30,0,0" />
-                                        </Grid>
-                                    </Frame>
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                    <Frame HeightRequest="122" Margin="20,10,20,0"
-             WidthRequest="350"
-            CornerRadius="16" 
-            BackgroundColor="#444444"
-            sk:Skeleton.IsBusy="{Binding IsServicesLoad}" 
-            sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-            BorderColor="#444444" />
-                </VerticalStackLayout>
-            </ScrollView>
-            <Button Text="Weiter" CornerRadius="16" FontSize="16" FontFamily="georgia-bold" TextColor="Black" Clicked="Button_Clicked_1"  Margin="25,35,25,0" />
-        </VerticalStackLayout>
-    </ScrollView>
+                <HorizontalStackLayout Margin="0,10,10,10">
+                    <Frame HeightRequest="55" BorderColor="#444444" WidthRequest="120" Margin="30,0,0,0" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsCatogory}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"  />
+                    <Frame HeightRequest="55" BorderColor="#444444" WidthRequest="120" Margin="17,0,0,0" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsCatogory}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"  />
+                </HorizontalStackLayout>
+                <ScrollView>
+                    <VerticalStackLayout>
+                        <CollectionView ItemsSource="{Binding AllServices}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <VerticalStackLayout Margin="24,0,24,0">
+                                        <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" HeightRequest="122" >
+                                            <Grid ColumnDefinitions="50*,50*">
+                                                <Label  Grid.Column="0" Text="{Binding NameServies}" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="18"  />
+                                                <Label  Grid.Column="0" Text="{Binding PriceServies}" Margin="0,30,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
+                                                <Label  Grid.Column="0" Text="{Binding TimeServies}" Margin="0,55,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
+                                                <Button Grid.Column="1" Text="Auswählen" TextColor="White" BackgroundColor="Black" WidthRequest="132" FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" Margin="32,-30,0,0" />
+                                            </Grid>
+                                        </Frame>
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        <Frame HeightRequest="122" Margin="20,10,20,0"
+          WidthRequest="350"
+         CornerRadius="16" 
+         BackgroundColor="#444444"
+         sk:Skeleton.IsBusy="{Binding IsServicesLoad}" 
+         sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+         BorderColor="#444444" />
+                    </VerticalStackLayout>
+                </ScrollView>
+                <Button Text="Weiter" CornerRadius="16" FontSize="16" FontFamily="georgia-bold" TextColor="Black" Clicked="Button_Clicked_1"  Margin="25,35,25,0" />
+            </VerticalStackLayout>
+        </ScrollView>
+        <Border Margin="0,0,0,0"
+             BackgroundColor="#444444"
+             HeightRequest="20"
+             VerticalOptions="End" 
+             HorizontalOptions="Fill" 
+             Stroke="#444444" 
+             StrokeShape="RoundRectangle 10,10,0,0" />
+    </Grid>
 
 </ContentPage>

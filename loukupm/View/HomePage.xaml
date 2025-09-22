@@ -43,8 +43,8 @@
                     <!-- الأزرار -->
                     <HorizontalStackLayout Margin="0,0,20,0" Grid.Column="2" Spacing="10">
                         <Button HeightRequest="40" BackgroundColor="#444444" WidthRequest="40" Padding="0" ImageSource="nv2.png"/>
-                        <Button HeightRequest="40" BackgroundColor="#444444" WidthRequest="40" Padding="0" ImageSource="nn1.png"/>
-                        <Button HeightRequest="40" BackgroundColor="#444444" WidthRequest="40" Padding="0" ImageSource="info.png"/>
+                        <Button HeightRequest="40" Clicked="Button_Clicked" BackgroundColor="#444444" WidthRequest="40" Padding="0" ImageSource="nn1.png"/>
+                        <Button HeightRequest="40" Clicked="Button_Clicked_1" BackgroundColor="#444444" WidthRequest="40" Padding="0" ImageSource="info.png"/>
                     </HorizontalStackLayout>
                 </Grid>
 
