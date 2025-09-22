@@ -2,11 +2,94 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.NotifictionPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+              xmlns:converters="clr-namespace:loukupm.Converter"
+             BackgroundColor="#252525"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             FlowDirection="LeftToRight"
              Title="NotifictionPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+  
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+                <!-- العنوان على اليسار -->
+                <Label Text="Benachrichtigungen"
+                     TextColor="White"
+                     Margin="24,0,0,0"
+                     FontSize="24"
+                     FontFamily="georgia-bold"
+                     VerticalOptions="Center" />
+
+                <!-- الزر على اليمين -->
+                <Button Grid.Column="1"
+                     WidthRequest="40"
+                     HeightRequest="40"
+                     CornerRadius="12"
+                     ImageSource="backbuttonpmg.png"
+                     BackgroundColor="#202020"
+                     BorderColor="#999999"
+                     Margin="0,0,10,0"            
+                     BorderWidth="1"
+                     HorizontalOptions="End"
+                     VerticalOptions="Center"
+                     Clicked="Button_Clicked" />
+              
+            </Grid>
+
+            <Frame HeightRequest="150" Margin="20,10,20,0"
+                   WidthRequest="350"
+                   CornerRadius="16" 
+                   BackgroundColor="#444444"
+                   sk:Skeleton.IsBusy="{Binding    IsLoadNotifiction}" 
+                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                   BorderColor="#444444" />
+            <Frame HeightRequest="150" Margin="20,10,20,0"
+                  WidthRequest="350"
+                  CornerRadius="16" 
+                  BackgroundColor="#444444"
+                  sk:Skeleton.IsBusy="{Binding    IsLoadNotifiction}" 
+                  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                 BorderColor="#444444" />
+            <VerticalStackLayout>
+                <CollectionView ItemsSource="{Binding AllNotifiction }" IsVisible="{Binding IsLoadNotifiction, Converter={StaticResource InverseBoolConverter}}" >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#25252525" BorderColor="#D3D3D3" HasShadow="True" Margin="-10,-3,-10,0">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding TimeandMonth}" TextColor="#999999"/>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <!-- العمود الأول -->
+                                        <Label Text="{Binding TitleNotifiction}"
+                                            TextColor="#D3D3D3"
+                                             Margin="0,18,0,0"
+                                             FontSize="18"
+                                            Grid.Column="0"/>
+                                        <!-- العمود الثاني -->
+                                        <Label Text="{Binding Time}"
+                                                TextColor="#999999"
+                                                FontSize="14"
+                                                Margin="0,20,0,0"
+                                                Grid.Column="1"/>
+                                    </Grid>
+                                    <Label Text="{Binding TextNotifiction}"
+                                         TextColor="#999999"
+                                         Margin="0,18,0,0"
+                                         FontSize="14"
+                                         Grid.Column="0"/>
+                                </VerticalStackLayout>
+                            </Frame>
+
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

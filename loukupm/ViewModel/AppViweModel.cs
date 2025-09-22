@@ -22,6 +22,10 @@ namespace loukupm.ViewModel
         private bool isTimework;
         [ObservableProperty]
         private bool invoiceLoad;
+        [ObservableProperty]
+        private bool isloadBooking;
+        [ObservableProperty]
+        private bool isLoadNotifiction;
 
         public AppViewModel()
         {
@@ -37,7 +41,8 @@ namespace loukupm.ViewModel
             Isloadday = true;
             IsTimework= true;
             InvoiceLoad = true;
-
+            IsloadBooking = true;
+            IsLoadNotifiction = true;
             // محاكاة وقت تحميل البيانات
 
 

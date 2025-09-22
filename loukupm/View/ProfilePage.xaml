@@ -62,6 +62,7 @@
                              CornerRadius="20"
                              Margin="100,50,0,0"
                              HorizontalOptions="Start"
+                              Clicked="Button_Clicked_7"
                             VerticalOptions="Start"/>
                     </Grid>
 

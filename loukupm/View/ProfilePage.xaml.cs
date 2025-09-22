@@ -73,4 +73,9 @@ public partial class ProfilePage : ContentPage
     {
         await Navigation.PushAsync(new AboutUS());
     }
+
+    private async void Button_Clicked_7(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new EditeUserPage());
+    }
 }
