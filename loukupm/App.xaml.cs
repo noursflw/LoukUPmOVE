@@ -1,4 +1,5 @@
-﻿namespace loukupm
+﻿using loukupm.View;
+namespace loukupm
 {
     public partial class App : Application
     {
@@ -7,6 +8,13 @@
             InitializeComponent();
 
             MainPage = new AppShell();
+
+            MainPage.Dispatcher.Dispatch(async () =>
+            {
+                await Shell.Current.GoToAsync("MainPage");
+
+            });
+
         }
     }
 }

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="loukupm.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -13,14 +12,14 @@
     Shell.TabBarForegroundColor="#EBD750"
     Title="loukupm">
 
-    <!-- تسجيل Routes للصفحات خارج التاب -->
-    <ShellContent Route="OnboardingPage"
-                  ContentTemplate="{DataTemplate local:MainPage}"
-                  IsVisible="False" />
+    <!-- صفحات مخفية خارج التاب -->
+    <ShellContent Route="MainPage"
+              ContentTemplate="{DataTemplate local:MainPage}"
+              IsVisible="False" />
+
     <ShellContent Route="LoginPage"
                   ContentTemplate="{DataTemplate view:LoginPage}"
                   IsVisible="False" />
-
     <ShellContent Route="SinginPage"
                   ContentTemplate="{DataTemplate view:SinginPage}"
                   IsVisible="False" />
@@ -32,26 +31,20 @@
             Title="Home"
             ContentTemplate="{DataTemplate view:HomePage}"
             Route="HomePage" />
-
-      
-
         <ShellContent
             Icon="nbarber.png"
             Title="Services"
             ContentTemplate="{DataTemplate view:ServicesPage}"
             Route="ServicesPage" />
-
         <ShellContent
             Icon="calendar.png"
             Title="Booking"
             ContentTemplate="{DataTemplate view:BookingPage}"
             Route="BookingPage" />
-
         <ShellContent
             Icon="nprofil.png"
             Title="Profile"
             ContentTemplate="{DataTemplate view:ProfilePage}"
             Route="ProfilePage" />
     </TabBar>
-
 </Shell>

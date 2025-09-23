@@ -16,4 +16,9 @@ public partial class LoginPage : ContentPage
     {
         await Navigation.PushAsync(new HomePage());
     }
+
+    private  async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushAsync(new RestPassword());
+    }
 }

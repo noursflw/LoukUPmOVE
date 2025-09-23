@@ -8,8 +8,13 @@
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              BackgroundColor="#252525"
              Title="BookingPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
-        <ScrollView Margin="0,0,0,10">
+        <ScrollView Margin="0,0,0,40">
             <VerticalStackLayout>
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                     <!-- العنوان على اليسار -->
@@ -41,6 +46,76 @@
                      sk:Skeleton.IsBusy="{Binding    IsloadBooking}" 
                      sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
                      BorderColor="#444444" />
+                <CollectionView ItemsSource="{Binding AllBooking}" IsVisible="{Binding IsloadBooking, Converter={StaticResource InverseBoolConverter}}" >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="25,20,25,0" BorderColor="#444444" BackgroundColor="#444444" >
+                                <VerticalStackLayout>
+                                    <Button Text="{Binding Stutes}" BackgroundColor="Black" TextColor="White" CornerRadius="16" WidthRequest="86" HorizontalOptions="Start" HeightRequest="40" FontSize="16" FontFamily="Oswald"  />
+                                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*">
+                                        <Label Text="Day" TextColor="#D3D3D3" FontFamily="Oswald"
+                                           Margin="0,10,0,0" Grid.Column="0"/>
+
+                                        <Label Text=" - " TextColor="#D3D3D3"
+                                               Margin="0,10,0,0" Grid.Column="1"/>
+
+                                        <Label Text="{Binding MontBooking}" TextColor="#D3D3D3" FontFamily="Oswald"
+                                               Margin="0,10,0,0" Grid.Column="2"/>
+
+                                        <Label Text="{Binding TimeBooking}" TextColor="#D3D3D3" FontFamily="Oswald"
+                                                Margin="0,10,0,0" Grid.Column="3"/>
+
+
+                                        <Label Text="{Binding PriceBooking}" TextColor="#D3D3D3" FontFamily="Oswald"
+                                               Margin="0,10,0,0" HorizontalOptions="End" VerticalOptions="End"
+                                               Grid.Column="4"/>
+                                    </Grid>
+                                    <Image WidthRequest="1000"  Margin="10,10,0,0" Source="split.png"/>
+                                    <Grid ColumnDefinitions="Auto,* ,Auto,Auto">
+
+                                        <Label Text="Day" TextColor="#D3D3D3" FontFamily="Oswald" 
+                                               Margin="0,10,0,0" Grid.Column="0" />
+
+                                        <Label Text="{Binding Total, StringFormat='{}{0} €'}"
+                                               TextColor="#D3D3D3"
+                                               FontFamily="Oswald"
+                                               Margin="0,10,0,0"
+                                               Grid.Column="2" />
+
+                                        <Label Text="{Binding  TimePrice }" TextColor="#D3D3D3" FontFamily="Oswald" 
+                                               Margin="10,10,0,0" Grid.Column="3" />
+                                    </Grid>
+                                    <Image WidthRequest="1000"  Margin="10,10,0,0" Source="split.png"/>
+                                    <HorizontalStackLayout>
+                                        <Frame BorderColor="Black" HeightRequest="52" BackgroundColor="Black"
+                                               WidthRequest="52" 
+                                               CornerRadius="25" 
+                                               Margin="0,10,0,0"
+                                               Padding="0"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center">
+
+                                            <Image BackgroundColor="Black" Source="{Binding ImgePerson}"
+                                                   HeightRequest="50"
+                                                   WidthRequest="50"
+                                                   Aspect="AspectFill">
+                                                <Image.Clip>
+                                                    <!-- دائرية بنفس الحجم -->
+                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25"/>
+                                                </Image.Clip>
+                                            </Image>
+
+                                        </Frame>
+                                        <Label Text="{Binding NamePerson}" TextColor="#D3D3D3" FontFamily="Oswald" 
+                                               Margin="10,25,0,0" Grid.Column="3" />
+                                    </HorizontalStackLayout>
+
+                                    <Button HorizontalOptions="End" BorderColor="White" BorderWidth="1" CornerRadius="16" BackgroundColor="#444444" Text=" Buchung stornieren"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
             </VerticalStackLayout>
         </ScrollView>

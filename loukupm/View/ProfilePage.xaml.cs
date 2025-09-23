@@ -78,4 +78,9 @@ public partial class ProfilePage : ContentPage
     {
         await Navigation.PushAsync(new EditeUserPage());
     }
+    protected override bool OnBackButtonPressed()
+    {
+        Shell.Current.GoToAsync("//HomePage");
+        return true;
+    }
 }

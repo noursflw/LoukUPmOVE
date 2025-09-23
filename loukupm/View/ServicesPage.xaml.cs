@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using loukupm.ViewModel;
 
 namespace loukupm.View;
@@ -19,4 +21,12 @@ public partial class ServicesPage : ContentPage
     {
         await Navigation.PushAsync(new TerminbuchenPage());
     }
+
+    private DateTime _lastBackPressed;
+
+    protected override bool OnBackButtonPressed()
+    {
+        Shell.Current.GoToAsync("//HomePage");
+        return true;
+    }  
 }

@@ -6,4 +6,9 @@ public partial class SinginPage : ContentPage
 	{
 		InitializeComponent();
 	}
+
+	private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+	{
+		await Navigation.PopAsync();
+	}
 }

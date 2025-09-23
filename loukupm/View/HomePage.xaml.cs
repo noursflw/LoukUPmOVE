@@ -1,4 +1,7 @@
 namespace loukupm.View;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+
 
 using loukupm.ViewModel;
 
@@ -27,4 +30,42 @@ using loukupm.ViewModel;
     {
         await Navigation.PushAsync(new AboutUS());
     }
+
+    private DateTime _lastBackPressed;
+
+    protected override bool OnBackButtonPressed()
+    {
+        // ≈–« ﬂ«‰ Â‰«ﬂ ’›Õ«  ”«»ﬁ…
+        if (Navigation.NavigationStack.Count > 1)
+        {
+            Shell.Current.GoToAsync("//HomePage");
+            return true; // „‰⁄ «·≈Ã—«¡ «·«› —«÷Ì
+        }
+        else
+        {
+            var currentTime = DateTime.Now;
+            if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
+            {
+                // Œ—ÊÃ „‰ «· ÿ»Ìﬁ »⁄œ «·÷€ÿ „— Ì‰
+                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
+            }
+            else
+            {
+                _lastBackPressed = currentTime;
+                // ⁄—÷ Toast
+                ShowToast("«÷€ÿ „—… √Œ—Ï ··Œ—ÊÃ");
+            }
+            return true; // „‰⁄ «·≈Ã—«¡ «·«› —«÷Ì
+        }
+    }
+    private async void ShowToast(string message)
+    {
+        var toast = Toast.Make(message, ToastDuration.Short);
+        await toast.Show();
+    }
+
+
+
+
+
 }

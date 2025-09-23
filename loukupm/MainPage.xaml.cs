@@ -1,20 +1,24 @@
-﻿namespace loukupm
+﻿using loukupm.View;
+namespace loukupm
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        
 
         public MainPage()
         {
             InitializeComponent();
         }
 
-
-      
-        private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+        private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
         {
-            Shell.Current.GoToAsync("//LoginPage");
+            await Navigation.PushAsync(new LoginPage());
+        }
+        protected override bool OnBackButtonPressed()
+        {
+            Shell.Current.GoToAsync("//MainPage");
+            return true;
+
         }
     }
-
 }

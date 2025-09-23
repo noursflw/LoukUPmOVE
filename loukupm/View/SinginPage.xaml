@@ -3,12 +3,65 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.SinginPage"
              Shell.NavBarIsVisible="False"
-                Shell.TabBarIsVisible="False"
-             Title="SinginPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Shell.TabBarIsVisible="False"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+                 BackgroundImageSource="baackgroundpage.png"
+             FlowDirection="LeftToRight">
+    <ScrollView  Orientation="Vertical" >
+    <StackLayout>
+        <Grid RowDefinitions="20*,80*" >
+            <Image WidthRequest="200" HeightRequest="60"  Grid.Row="0" Margin="0,10,0,0"  Source="slogo.png"/>
+            <Label Text="Registrieren" Grid.Row="0"  FontSize="32" FontFamily="georgia-bold" Margin="100,130,0,0" TextColor="White" />
+        </Grid>
+        <VerticalStackLayout >
+            <Label Text="Name" Margin="12,3,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+            <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.svg"     HeightRequest="50" Title="Name" />
+            <Label Text="E-Mail" Margin="12,3,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+            <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
+            <Label FontSize="16" Margin="12,24,0,0"  Text="Password" TextColor="White" Padding="10" />
+                <material:TextField Title="Password"  InputBackgroundColor="#444444" IsPassword="True"  Margin="25,0,25,0" >
+                    <material:TextField.Attachments>
+                        <material:TextFieldPasswordShowHideAttachment />
+                    </material:TextField.Attachments>
+                </material:TextField>
+                <Label FontSize="16" Margin="12,24,0,0"  Text="Password bestätigen" TextColor="White" Padding="10" />
+                <material:TextField Title="Password"  InputBackgroundColor="#444444" IsPassword="True"  Margin="25,0,25,0" >
+                    <material:TextField.Attachments>
+                        <material:TextFieldPasswordShowHideAttachment />
+                    </material:TextField.Attachments>
+                </material:TextField>
+
+
+                <Button  
+                     TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
+                     BorderWidth="1" Text="Registrieren" CornerRadius="16"
+                     HeightRequest="60" Margin="25"  />
+            <HorizontalStackLayout Margin="60,20,0,0" Spacing="2">
+                <Label Text="Haben Sie schon ein Konto?" FontSize="18" TextColor="White"/>
+                <Label FontSize="18">
+                    <Label.FormattedText>
+                        <FormattedString>
+                                <Span Text=" Login "
+                               TextDecorations="Underline"
+                                TextColor="#EBD750">
+                                <Span.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                </Span.GestureRecognizers>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        <Image Margin="25,0"  Source="or.svg" HeightRequest="24"/>
+                  <Button Margin="30" Text="Mit Google fortfahren" BackgroundColor="#202020" FontFamily="Oswald"
+                      BorderColor="#D3D3D3" ImageSource="google.png"
+                      BorderWidth="1" CornerRadius="18" 
+                      HeightRequest="60"  />
+    </StackLayout>
+
+
+    </ScrollView>
 </ContentPage>

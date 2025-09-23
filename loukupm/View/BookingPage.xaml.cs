@@ -21,4 +21,10 @@ public partial class BookingPage : ContentPage
     {
         await Navigation.PopAsync();
     }
+    protected override bool OnBackButtonPressed()
+    {
+        Shell.Current.GoToAsync("//HomePage");
+         return true;
+
+    }
 }

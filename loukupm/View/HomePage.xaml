@@ -22,7 +22,7 @@
                 <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,0">
                     <!-- العناصر الأولى -->
 
-                    <CollectionView>
+                    <CollectionView ItemsSource="{Binding User}" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <HorizontalStackLayout Grid.Column="0" Spacing="5">

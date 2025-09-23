@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.Verificationpage"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+            BackgroundImageSource="baackgroundpage.png"
+             Title="Verificationpage">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid>
+                <Image Grid.Row="0" Margin="0,100,0,0" WidthRequest="300" HeightRequest="100" Source="slogo.svg"/>
+            </Grid>
+            <Label Text="Code wurde gesendet" FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="32" TextColor="#D3D3D3" />
+            <Label Text="Sie erhalten in Kürze eine E-Mail mit einem Code, um ein neues Passwort einzurichten." FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="16" TextColor="#999999" />
+            <HorizontalStackLayout Margin="0,50,0,0" x:Name="PinLayout" Spacing="10" HorizontalOptions="Center">
+
+                <material:TextField x:Name="Digit1" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"         TextColor="#EBD750"   HeightRequest="50"  />
+                <material:TextField x:Name="Digit2" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"     TextColor="#EBD750"   HeightRequest="50"  />
+                <material:TextField x:Name="Digit3" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"     TextColor="#EBD750"   HeightRequest="50"  />
+                <material:TextField x:Name="Digit4" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"     TextColor="#EBD750"   HeightRequest="50"  />
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
