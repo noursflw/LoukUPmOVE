@@ -9,8 +9,8 @@ namespace loukupm.Model
     public class Servies
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public double Price { get; set; }
+        public string NameServies { get; set; }
+        public double PriceServies { get; set; }
         public string Description { get; set; }
         public DateTime TimeServies { get; set; }
         public string? Image { get; set; }
@@ -19,8 +19,8 @@ namespace loukupm.Model
         public Servies(int id, string name, double price, string description, DateTime timeServies, string? image, string catgery)
         {
             Id = id;
-            Name = name;
-            Price = price;
+            NameServies = name;
+            PriceServies = price;
             Description = description;
             TimeServies = timeServies;
             Image = image;
