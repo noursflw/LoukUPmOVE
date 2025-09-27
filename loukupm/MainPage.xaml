@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
+             FlowDirection="LeftToRight"
              Title="MainPage"
                BackgroundImageSource="startpage.png"
              x:Class="loukupm.MainPage">

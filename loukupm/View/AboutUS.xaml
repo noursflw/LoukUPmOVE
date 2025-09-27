@@ -1,12 +1,168 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="#252525"
+             FlowDirection="LeftToRight"
+             BackgroundImageSource="baackgroundpage.png"
              x:Class="loukupm.View.AboutUS"
              Title="AboutUS">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout>
+            <VerticalStackLayout Spacing="10" >
+                <Label Text="Herzlich Willkommen bei" FontFamily="georgia-bold"  FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#D3D3D3" Margin="0,80,0,10"/>
+                <Label Text="LOOK UP Friseur" FontFamily="georgia-bold" TextColor="#EBD750" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center"  Margin="0,10,0,10"/>
+                <Label Text="Bei LOOK UP Friseur in Landshut bieten wir Ihnen einen exklusiven Haarschnitt- und Styling-Service, der genau auf Ihre individuellen Wünsche und Bedürfnisse abgestimmt ist. Unsere erfahrenen Friseure verwenden die neuesten Techniken und hochwertige Produkte, um sicherzustellen, dass Sie bei jedem Besuch das bestmögliche Ergebnis erzielen" FontFamily="georgia-bold" TextColor="#999999" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center"  Margin="20,10,20,20"/>
+                <Label Text="Reinkommen - Drankommen! Besuchen Sie uns einfach spontan - auch ohne Termin!" FontFamily="georgia-bold" TextColor="#EBD750" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"  Margin="20,10,20,10"/>
+                <Button  
+                       Clicked="Button_Clicked"
+                    WidthRequest="300"
+                      TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
+                      BorderWidth="1" Text="Einen Termin buchen" CornerRadius="16"
+                      Margin="35,60,35,20"  />
+                <Border Stroke="White" StrokeThickness="3" StrokeShape="Ellipse"
+        HeightRequest="300"
+        WidthRequest="300"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="#EBD750"
+                Offset="0,5"
+                Radius="10"
+                Opacity="0.2" />
+                    </Border.Shadow>
+                    <Image Source="hh.jpg"
+           Aspect="AspectFill"
+           HeightRequest="300"
+                          
+           WidthRequest="300">
+                        <Image.Clip>
+                            <EllipseGeometry Center="150,150" RadiusX="150" RadiusY="150" />
+                        </Image.Clip>
+                    </Image>
+                </Border>
+
+                <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,10"/>
+                <Label Text=" Treffen Sie unser Team" FontFamily="georgia-bold" TextColor="#EBD750" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center"  Margin="0,10,0,10"/>
+                <Border Stroke="White" StrokeThickness="4" StrokeShape="Ellipse"
+HeightRequest="300"
+WidthRequest="300"
+HorizontalOptions="Center"
+VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="#EBD750"
+Offset="0,5"
+Radius="10"
+Opacity="0.2" />
+                    </Border.Shadow>
+                    <Image Source="team1.jpg"  Margin="25"
+                   HeightRequest="300"
+                   WidthRequest="300"
+                   Aspect="AspectFill">
+                        <Image.Clip>
+                            <EllipseGeometry Center="150,150" RadiusX="150" RadiusY="150" />
+                        </Image.Clip>
+                    </Image>
+                </Border>
+                <Label Text=" Nasradin Albarho" FontFamily="georgia-bold" TextColor="#EBD750" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center"  Margin="0,10,0,10"/>
+                <Label Text="Unsere Top-Stylisten sind darauf spezialisiert, individuelle Schönheit hervorzuheben und bieten professionelle Haarschnitte, Stylings und Färbungen für Männer, Frauen und Kinder an. Egal ob klassisch, trendy oder ausgefallen - wir finden den perfekten Look für Sie. Unsere erfahrenen Stylisten bei LOOK UP Friseur in Landshut sind Experten auf ihrem Gebiet und bieten exklusive Haarschnitte und Stylings, die individuell auf Ihre Bedürfnisse zugeschnitten sind. Mit den neuesten Techniken und hochwertigen Produkten sorgen sie dafür, dass Sie sich rundum wohl und schön fühlen." FontFamily="georgia-bold" TextColor="#999999" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center"  Margin="20,10,20,20"/>
+                <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,10"/>
+                <Border Stroke="White" StrokeThickness="2" StrokeShape="Ellipse"
+                        HeightRequest="300"
+                        WidthRequest="300"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="#EBD750"
+Offset="0,5"
+Radius="10"
+Opacity="0.2" />
+                    </Border.Shadow>
+                    <Image Source="team2.jpg"  Margin="25"
+                      HeightRequest="300"
+                      WidthRequest="300"
+                      Aspect="AspectFill">
+                    <Image.Clip>
+                        <EllipseGeometry Center="150,150" RadiusX="150" RadiusY="150" />
+                    </Image.Clip>
+                   
+                </Image>
+              </Border>
+                <Label Text="Jacqueline Oberhofer" FontFamily="georgia-bold" TextColor="#EBD750" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center"  Margin="0,10,0,10"/>
+                <Label Text="Unsere Top-Stylisten sind darauf spezialisiert, individuelle Schönheit hervorzuheben und bieten professionelle Haarschnitte, Stylings und Färbungen " FontFamily="georgia-bold" TextColor="#999999" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center"  Margin="20,10,20,20"/>
+                <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,10"/>
+                <Border Stroke="White" StrokeThickness="2" StrokeShape="Ellipse"
+                        HeightRequest="300"
+                        WidthRequest="300"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="#EBD750"
+                             Offset="0,5"
+                             Radius="10"
+                             Opacity="0.2" />
+                    </Border.Shadow>
+                    <Image Source="team3.jpg"  Margin="25"
+                       HeightRequest="300"
+                       WidthRequest="300"
+                       Aspect="AspectFill">
+                        <Image.Clip>
+                            <EllipseGeometry Center="150,150" RadiusX="150" RadiusY="150" />
+                        </Image.Clip>
+                    </Image>
+                </Border>
+                <Label Text="Romy Stadler " FontFamily="georgia-bold" TextColor="#EBD750" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center"  Margin="0,10,0,10"/>
+                <Label Text="Künstlerin im Damenbereich mit leichter Hand und besonderem Feingefühl" FontFamily="georgia-bold" TextColor="#999999" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center"  Margin="20,10,20,20"/>
+                <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,10"/>
+                <Label Text="Über uns" FontFamily="georgia-bold" TextColor="#EBD750" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center"  Margin="0,10,0,10"/>
+                <VerticalStackLayout Padding="20">
+               
+                    <CarouselView HeightRequest="250" 
+                               PeekAreaInsets="13"
+                 
+                  IndicatorView="{x:Reference indicatorView}" 
+                  Loop="True"
+                  IsSwipeEnabled="True">
+                        <CarouselView.ItemsSource>
+                            <x:Array Type="{x:Type ImageSource}">
+                                <FileImageSource File="macn1.jpg"/>
+                                <FileImageSource File="macan2.jpg"/>
+                                <FileImageSource File="macan3.jpg"/>
+                                <FileImageSource File="m1.jpg"/>
+                                <FileImageSource File="m2.jpg"/>
+                                <FileImageSource File="m3.jpg"/>
+
+                            </x:Array>
+                        </CarouselView.ItemsSource>
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Frame Padding="0"
+                           HasShadow="True"
+                           CornerRadius="20"
+                           HeightRequest="250"
+                           WidthRequest="300"
+                           HorizontalOptions="Center">
+                                        <Image Source="{Binding .}"
+                               Aspect="Fill"/>
+                                    </Frame>
+                                </Grid>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+
+                    <!-- Indicator Dots -->
+                    <IndicatorView x:Name="indicatorView"
+                   IndicatorColor="LightGray"
+                   SelectedIndicatorColor="#EBD750"
+                   HorizontalOptions="Center"
+                   Margin="0,10"/>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

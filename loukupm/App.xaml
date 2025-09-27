@@ -5,6 +5,10 @@
              x:Class="loukupm.App">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- اللون الأساسي (Accent/Primary) -->
+            <Color x:Key="PrimaryColor">#EBD750</Color>
+            <Color x:Key="AccentColor">#EBD750</Color>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />

@@ -26,7 +26,16 @@
                 <Image Grid.Row="0" Margin="25,310,25,0" Source="or.svg" HeightRequest="24"/>
                 <VerticalStackLayout   Grid.Row="1">
                     <Label Text="E-Mail" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
-                    <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
+                    <material:TextField
+                        TextColor="#EBD750"
+                         AccentColor="#EBD750"
+                      
+                        Margin="25,0,25,0"
+                        InputBackgroundColor="#444444"
+                        CornerRadius="16"
+                        Icon="email.png" 
+                        HeightRequest="50"
+                        Title="E-Mail" />
                     <Label FontSize="16" Margin="12,24,0,0"  Text="Password" TextColor="White" Padding="10" />
                     <material:TextField Title="Password"  InputBackgroundColor="#444444" IsPassword="True"  Margin="25,0,25,0" >
                         <material:TextField.Attachments>

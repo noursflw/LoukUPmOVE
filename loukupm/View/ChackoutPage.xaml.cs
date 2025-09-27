@@ -1,14 +1,14 @@
 namespace loukupm.View;
 
-public partial class AboutUS : ContentPage
+public partial class ChackoutPage : ContentPage
 {
-	public AboutUS()
+	public ChackoutPage()
 	{
 		InitializeComponent();
 	}
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-		await Navigation.PushAsync(new ServicesPage());
+	  await	Navigation.PushAsync(new LoginPage());	
     }
 }

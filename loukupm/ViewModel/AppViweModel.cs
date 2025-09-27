@@ -21,6 +21,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool isLoadNotifiction;
 
         // Collections
+        
         [ObservableProperty] private ObservableCollection<Servies> services;
         [ObservableProperty] private ObservableCollection<Servies> filteredServices;
         [ObservableProperty] private ObservableCollection<Booking> bookings;
@@ -108,7 +109,7 @@ namespace loukupm.ViewModel
         {
             try
             {
-                var data = await _apiServices.GetServicesAsync(); // ✅ مو WorkTeams
+                var data = await _apiServices.GetServiesasync(); // ✅ مو WorkTeams
                 Services = new ObservableCollection<Servies>(data);
 
                 // نسخة للفلترة
@@ -134,7 +135,7 @@ namespace loukupm.ViewModel
             else
             {
                 FilteredServices = new ObservableCollection<Servies>(
-                    Services?.Where(s => s.Type == type) ?? Enumerable.Empty<Servies>()
+                    Services?.Where(s => s.Catgery== type) ?? Enumerable.Empty<Servies>()
                 );
             }
         }
