@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.Paymentgetway"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             BackgroundColor="#252525"
+             Title="Paymentgetway">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+                <!-- العنوان على اليسار -->
+                <Label Text="Karte hinzufügen"
+                        TextColor="White"
+                        Margin="24,0,0,0"
+                        FontSize="24"
+                        FontFamily="georgia-bold"
+                        VerticalOptions="Center" />
+
+                <!-- الزر على اليمين -->
+                <Button Grid.Column="1"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        CornerRadius="12"
+                        ImageSource="backbuttonpmg.png"
+                        BackgroundColor="#202020"
+                        BorderColor="#999999"
+                        Margin="0,0,10,0"            
+                        BorderWidth="1"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Clicked="Button_Clicked" />
+            </Grid>
+
+            <Frame
+                HeightRequest="180"
+                WidthRequest="350"
+               CornerRadius="20"
+               HasShadow="True"
+               Padding="20"
+               Margin="10">
+                <Frame.Background>
+                    <RadialGradientBrush Center="0.5,0.3" Radius="1.2">
+                        <GradientStop Color="#d4c95d" Offset="0.0" />
+                        <!-- المركز أصفر -->
+                        <GradientStop Color="#3a3a3a" Offset="1.2" />
+                        <!-- بسرعة يصير رمادي -->
+                        <GradientStop Color="#3a3a3a" Offset="1.2" />
+                        <!-- الأطراف أسود -->
+                    </RadialGradientBrush>
+
+                </Frame.Background>
+
+                <VerticalStackLayout>
+                    <Label Text="VISA" FontSize="18" TextColor="White" />
+                    <Label Text="4416 **** **** ****" FontSize="22" TextColor="White" />
+                    <Label Text="Karteninhaber" FontSize="12" TextColor="LightGray"/>
+                    <Label Text="Ahmad alahmad" FontSize="16" TextColor="White"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout>
+                <Label Text="Kartennummer" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.png"     HeightRequest="50" Title="Name" />
+                <Label Text="Karteninhaber" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
+               
+                <HorizontalStackLayout Spacing="20" Margin="5,10,10,10" >
+                    <VerticalStackLayout >
+                        <Label Text="Gültig bis" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                        <material:DatePickerField
+                                 WidthRequest="180"
+                                 Margin="15,0,0,0"
+                                 TextColor="#999999"
+                                 InputBackgroundColor="#444444"
+                                 CornerRadius="16"
+                                 Title="MM/YYYY"
+                                 AllowClear="True"
+                                 Format="MM/yyyy"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout>
+
+                        <Label Text="CVV" Margin="2,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                        <material:TextField
+                                  WidthRequest="180"
+                                  HeightRequest="50"
+                                  Margin="5,0,25,0"
+                                  InputBackgroundColor="#444444"
+                                  CornerRadius="16"
+                                  Title="1234"
+                                  MaxLength="4" />
+                    </VerticalStackLayout>
+                   
+                </HorizontalStackLayout>
+
+                <Button  
+                    Clicked="Button_Clicked_1"    TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
+                     BorderWidth="1" Text="Karte hinzufügen" CornerRadius="16"
+                     HeightRequest="60" Margin="25,50,25,25"  />
+            </VerticalStackLayout>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+        

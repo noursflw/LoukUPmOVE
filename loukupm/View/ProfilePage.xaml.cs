@@ -7,6 +7,7 @@ public partial class ProfilePage : ContentPage
 	public ProfilePage()
 	{
 		InitializeComponent();
+        Shell.SetNavBarIsVisible(this, false);
 	}
 
     private void Button_Clicked(object sender, EventArgs e)

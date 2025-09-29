@@ -20,24 +20,38 @@
                           VerticalOptions="Center" 
                           HorizontalOptions="Center" />
 
-                <Button Grid.Row="0" Margin="25,200,25,0" BackgroundColor="#202020" FontFamily="Oswald" BorderColor="#D3D3D3" ImageSource="google.png"    BorderWidth="1" CornerRadius="18" Text="Mit Google fortfahren"
-                      HeightRequest="60"  />
+                <Button Grid.Row="0" 
+                       Margin="25,200,25,0" 
+                       BackgroundColor="#202020" 
+                       FontFamily="Oswald" 
+                       BorderColor="#D3D3D3" 
+                       ImageSource="google.png"    
+                       BorderWidth="1" 
+                       CornerRadius="18" 
+                       Text="Mit Google fortfahren"
+                       HeightRequest="60" />
 
                 <Image Grid.Row="0" Margin="25,310,25,0" Source="or.svg" HeightRequest="24"/>
-                <VerticalStackLayout   Grid.Row="1">
-                    <Label Text="E-Mail" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                <VerticalStackLayout Grid.Row="1">
+                    <Label Text="E-Mail" Margin="12,5,0,0" TextColor="White" Padding="10" FontSize="16"/>
                     <material:TextField
+                        x:Name="EmailEntry"
                         TextColor="#EBD750"
-                         AccentColor="#EBD750"
-                      
+                        AccentColor="#EBD750"
                         Margin="25,0,25,0"
                         InputBackgroundColor="#444444"
                         CornerRadius="16"
                         Icon="email.png" 
                         HeightRequest="50"
                         Title="E-Mail" />
-                    <Label FontSize="16" Margin="12,24,0,0"  Text="Password" TextColor="White" Padding="10" />
-                    <material:TextField Title="Password"  InputBackgroundColor="#444444" IsPassword="True"  Margin="25,0,25,0" >
+                    <Label FontSize="16" Margin="12,24,0,0" Text="Password" TextColor="White" Padding="10" />
+                    <material:TextField 
+                        x:Name="PasswordEntry"
+                        Title="Password"  
+                        CornerRadius="16"  
+                        InputBackgroundColor="#444444" 
+                        IsPassword="True"  
+                        Margin="25,0,25,0" >
                         <material:TextField.Attachments>
                             <material:TextFieldPasswordShowHideAttachment />
                         </material:TextField.Attachments>
@@ -46,8 +60,8 @@
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Passwort vergessen?" 
-                                TextDecorations="Underline" 
-                                TextColor="#EBD750">
+                                    TextDecorations="Underline" 
+                                    TextColor="#EBD750">
                                     <Span.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
                                     </Span.GestureRecognizers>
@@ -56,20 +70,25 @@
                         </Label.FormattedText>
                     </Label>
 
-
                     <Button  
-                      Clicked="Button_Clicked"
-                      TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
-                      BorderWidth="1" Text="Log in" CornerRadius="16"
-                      HeightRequest="60" Margin="25"  />
+                        TextColor="#1F1B04" 
+                        FontSize="22" 
+                        FontFamily="georgia-bold"
+                        BorderWidth="1" 
+                        Text="Log in" 
+                        Clicked="Button_Clicked"
+                        CornerRadius="16"
+                        HeightRequest="60" 
+                        Margin="25"  />
+                    
                     <HorizontalStackLayout Margin="80,34,0,0" Spacing="2">
                         <Label Text="Noch kein Konto?" FontSize="18" TextColor="White"/>
                         <Label FontSize="18">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="Registrieren"
-                                    TextDecorations="Underline"
-                                     TextColor="#EBD750">
+                                        TextDecorations="Underline"
+                                        TextColor="#EBD750">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                         </Span.GestureRecognizers>
@@ -77,11 +96,8 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-
-
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
-
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

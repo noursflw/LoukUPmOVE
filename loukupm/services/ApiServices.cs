@@ -31,18 +31,28 @@ namespace loukupm.services
                     new AuthenticationHeaderValue("Bearer", token);
             }
         }
+        //public async Task<List<WorkTeam>> GetWorkTeamsAsync()
+        //{
+        //    SetAuthorizationHeader();
+        //    var response = await _httpClient.GetAsync("https://mocki.io/v1/66002b9b-c1c0-4dc0-92e1-63334554ccbd");
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var json = await response.Content.ReadAsStringAsync();
+        //        return JsonSerializer.Deserialize<List<WorkTeam>>(json);
+        //    }
+        //    return new List<WorkTeam>();
+
+        //}
         public async Task<List<WorkTeam>> GetWorkTeamsAsync()
         {
-            SetAuthorizationHeader();
-            var response = await _httpClient.GetAsync("https://api.example.com/workteams");
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<WorkTeam>>(json);
-            }
-            return new List<WorkTeam>();
+            using var client = new HttpClient();
+            var json = await client.GetStringAsync("https://mocki.io/v1/66002b9b-c1c0-4dc0-92e1-63334554ccbd");
 
+            var root = JsonSerializer.Deserialize<Root>(json);
+
+            return root?.Workers ?? new List<WorkTeam>();
         }
+
         public async Task<List<Notifiction>> GetNotifictionsAsync()
         {
             SetAuthorizationHeader();
@@ -184,6 +194,57 @@ namespace loukupm.services
                 return new List<string>();
             }
         }
+        public async Task<AuthResponse> LoginAsync(string email, string password)
+        {
+            try
+            {
+                var loginData = new { Email = email, Password = password };
+                var json = JsonSerializer.Serialize(loginData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                
+                var response = await _httpClient.PostAsync("https://api.example.com/auth/login", content);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseJson = await response.Content.ReadAsStringAsync();
+                    var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseJson);
+                    if (authResponse?.Token != null)
+                    {
+                        Preferences.Set("auth_token", authResponse.Token);
+                    }
+                    return authResponse;
+                }
+                
+                return new AuthResponse { Success = false, Message = "Login failed" };
+            }
+            catch (Exception ex)
+            {
+                return new AuthResponse { Success = false, Message = ex.Message };
+            }
+        }
+
+        public async Task<AuthResponse> RegisterAsync(User user)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(user);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                
+                var response = await _httpClient.PostAsync("https://api.example.com/auth/register", content);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseJson = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<AuthResponse>(responseJson);
+                }
+                
+                return new AuthResponse { Success = false, Message = "Registration failed" };
+            }
+            catch (Exception ex)
+            {
+                return new AuthResponse { Success = false, Message = ex.Message };
+            }
+        }
 
 
 
@@ -191,6 +252,12 @@ namespace loukupm.services
 
     }
 
+}
+public class AuthResponse
+{
+    public bool Success { get; set; }
+    public string Message { get; set; }
+    public string Token { get; set; }
 }
 public class ServiesResponse
 {

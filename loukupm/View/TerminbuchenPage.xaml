@@ -229,7 +229,7 @@
            BorderWidth="1"
            HorizontalOptions="End"
            VerticalOptions="Center"
-           Clicked="Button_Clicked" />
+           Clicked="Button_Clicked_1" />
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

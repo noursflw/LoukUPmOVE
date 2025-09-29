@@ -5,6 +5,7 @@ public partial class RestPassword : ContentPage
 	public RestPassword()
 	{
 		InitializeComponent();
+        Shell.SetNavBarIsVisible(this, false);
 	}
 
     private async void Button_Clicked(object sender, EventArgs e)

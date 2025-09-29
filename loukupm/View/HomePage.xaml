@@ -79,7 +79,7 @@
 
                 <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"         />
 
-                <CollectionView ItemsSource="{Binding Team}" ItemsLayout="HorizontalList" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
+                <CollectionView ItemsSource="{Binding WorkTeams}" ItemsLayout="HorizontalList" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <VerticalStackLayout Margin="12">

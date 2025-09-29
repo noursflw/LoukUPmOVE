@@ -3,11 +3,10 @@ namespace loukupm
 {
     public partial class MainPage : ContentPage
     {
-        
-
         public MainPage()
         {
             InitializeComponent();
+            Shell.SetNavBarIsVisible(this, false);
         }
 
         private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -18,7 +17,6 @@ namespace loukupm
         {
             Shell.Current.GoToAsync("//MainPage");
             return true;
-
         }
     }
 }

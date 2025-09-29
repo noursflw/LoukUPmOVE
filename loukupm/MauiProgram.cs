@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using UraniumUI;
 
+
 using CommunityToolkit.Maui;
 
 namespace loukupm
@@ -30,6 +31,8 @@ namespace loukupm
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+
+         
 
             return builder.Build();
         }
