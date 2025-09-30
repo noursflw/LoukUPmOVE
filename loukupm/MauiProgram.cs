@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
+using The49.Maui.BottomSheet;
+
 using UraniumUI;
-
-
-using CommunityToolkit.Maui;
 
 namespace loukupm
 {
@@ -23,6 +23,7 @@ namespace loukupm
                 })
                 .UseUraniumUI()
                 .UseUraniumUIMaterial()
+                .UseBottomSheet()
                 .UseMauiCommunityToolkit();
 
 

@@ -62,8 +62,8 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.5" />
 		<PackageReference Include="Sharpnado.HorusSkeleton.Maui" Version="2.0.0" />
+		<PackageReference Include="The49.Maui.BottomSheet" Version="8.0.3" />
 		<PackageReference Include="UraniumUI.Icons.MaterialIcons" Version="2.12.1" />
 		<PackageReference Include="UraniumUI.Icons.MaterialSymbols" Version="2.11.1" />
 		<PackageReference Include="UraniumUI.Material" Version="2.11.1" />
@@ -71,10 +71,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="View\BottomShee.xaml.cs">
+	    <DependentUpon>BottomShee.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="View\AboutUS.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\BookingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\BottomShee.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\ChackoutPage.xaml">
@@ -93,9 +102,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\LoginPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="View\MyCustomPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\NotifictionPage.xaml">

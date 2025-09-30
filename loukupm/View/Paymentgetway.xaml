@@ -32,24 +32,29 @@
                         VerticalOptions="Center"
                         Clicked="Button_Clicked" />
             </Grid>
-
             <Frame
-                HeightRequest="180"
-                WidthRequest="350"
-               CornerRadius="20"
-               HasShadow="True"
-               Padding="20"
-               Margin="10">
+                      HeightRequest="180"
+                      WidthRequest="350"
+                      CornerRadius="20"
+                      HasShadow="True"
+                      Padding="20"
+                      BorderColor="#444444"
+                       Margin="10">
                 <Frame.Background>
-                    <RadialGradientBrush Center="0.5,0.3" Radius="1.2">
-                        <GradientStop Color="#d4c95d" Offset="0.0" />
-                        <!-- المركز أصفر -->
-                        <GradientStop Color="#3a3a3a" Offset="1.2" />
-                        <!-- بسرعة يصير رمادي -->
-                        <GradientStop Color="#3a3a3a" Offset="1.2" />
-                        <!-- الأطراف أسود -->
+                    <RadialGradientBrush Center="0.5,0.15" Radius="1.2">
+                        <!-- أصفر بالنص -->
+                        <!--<GradientStop Color="#d4c95d" Offset="0.4" />-->
+                        <!-- أصفر أغمق -->
+                        <!--<GradientStop Color="#b8ae4a" Offset="0.0" />-->
+                        <!-- منطقة مزج: أصفر + فضي (ذهبي فاتح) -->
+                        
+                        <!-- فضي غامق -->
+                       
+                     
+                        <GradientStop Color="#a8a16e" Offset="0.55" />
+                        <GradientStop Color="#d4c95d" Offset="0.35" />
+                        <GradientStop Color="#444444" Offset="0.50" />
                     </RadialGradientBrush>
-
                 </Frame.Background>
 
                 <VerticalStackLayout>
@@ -59,6 +64,13 @@
                     <Label Text="Ahmad alahmad" FontSize="16" TextColor="White"/>
                 </VerticalStackLayout>
             </Frame>
+
+
+
+
+
+
+
 
             <VerticalStackLayout>
                 <Label Text="Kartennummer" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
@@ -83,9 +95,9 @@
 
                         <Label Text="CVV" Margin="2,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
                         <material:TextField
-                                  WidthRequest="180"
+                                  WidthRequest="140"
                                   HeightRequest="50"
-                                  Margin="5,0,25,0"
+                                  Margin="0,0,20,0"
                                   InputBackgroundColor="#444444"
                                   CornerRadius="16"
                                   Title="1234"

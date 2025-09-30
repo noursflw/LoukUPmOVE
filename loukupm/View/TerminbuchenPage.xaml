@@ -5,6 +5,7 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
              FlowDirection="LeftToRight"
+             xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
               xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              xmlns:converters="clr-namespace:loukupm.Converter"
              Title="TerminbuchenPage">
@@ -58,7 +59,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                    <Frame HeightRequest="150" Margin="20,10,40,0"
+                    <Frame HeightRequest="150" Margin="20,10,20,0"
          WidthRequest="350"
          CornerRadius="16" 
          BackgroundColor="#444444"
@@ -67,7 +68,7 @@
          BorderColor="#444444" />
                     
 
-                    <Button  Text="Eine weitere Dienstleistung hinzufügen" TextColor="White" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16" WidthRequest="286" HeightRequest="48" Margin="-90,15,0,0" />
+                    <Button  Text="Eine weitere Dienstleistung hinzufügen" TextColor="White" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16" WidthRequest="286" HeightRequest="48" Margin="-70,15,0,0" />
             </VerticalStackLayout>
             <Label Text="Wählen Sie den Friseur" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
             <ScrollView Orientation="Horizontal">
@@ -110,7 +111,7 @@
 
                 <HorizontalStackLayout VerticalOptions="Start" HorizontalOptions="Fill">
 
-                    <Label x:Name="MonthYearLabel"  
+                    <Label x:Name="MonthYearLabel"  Margin="10,0,0,0"
                        FontSize="18" TextColor="#999999" FontFamily="Oswald" 
                        VerticalOptions="Center" HorizontalOptions="CenterAndExpand"/>
                     <Button x:Name="PrevDayButton" 
@@ -190,7 +191,7 @@
             </VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60">
                 <!-- العنوان على اليسار -->
-                <VerticalStackLayout>
+                <VerticalStackLayout Margin="40,0,0,0" >
                     <Label Text="Gesamt"
                      TextColor="#D3D3D3"
                     Margin="20,0,0,0"
@@ -224,7 +225,7 @@
             TextColor="Black"
            Text="Jetzt buchen"
            CornerRadius="12"
-           Margin="0,0,10,0"       
+           Margin="0,0,10,10"       
            FontFamily="georgia-bold"
            BorderWidth="1"
            HorizontalOptions="End"

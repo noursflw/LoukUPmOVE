@@ -1,0 +1,112 @@
+<the49:BottomSheet xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
+           x:Class="loukupm.View.BottomShee">
+    <VerticalStackLayout>
+        <VerticalStackLayout Padding="20" Spacing="20" HeightRequest="300" BackgroundColor="#202020">
+            <Grid VerticalOptions="Center" HorizontalOptions="Fill" Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- الصورة على اليسار -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- المسافة -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- النص على اليمين -->
+                </Grid.ColumnDefinitions>
+
+                <!-- الصورة على اليسار -->
+                <ImageButton Grid.Column="2"
+                 Source="iconclose.png"
+                 Clicked="CloseButton_Clicked"
+                 WidthRequest="24"
+                 HeightRequest="24"
+                 BackgroundColor="Transparent"
+                 VerticalOptions="Center"/>
+
+                <!-- النص على اليمين -->
+                <Label Grid.Column="1"
+                    Text="Zahlungsmethode"
+                     FontSize="18"
+           TextColor="White"
+           FontFamily="georgia"
+           VerticalOptions="Center"/>
+            </Grid>
+
+
+            <StackLayout Orientation="Vertical" Spacing="15">
+                <Frame  x:Name="CardFrame"
+                    BackgroundColor="#202020"
+                                 HeightRequest="60"
+                                 CornerRadius="16"
+                                 Padding="10"
+                                BorderColor="Transparent"
+                               >
+
+                    <Grid VerticalOptions="Center" HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- للصورة -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- للمسافة الفارغة -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- للـ RadioButton -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- الصورة على اليسار -->
+                        <Image Grid.Column="0"
+                               Source="visa.png"
+                               WidthRequest="40"
+                               HeightRequest="40"
+                              VerticalOptions="Center"/>
+
+                        <!-- RadioButton على اليمين -->
+                        <RadioButton Grid.Column="2"
+                                     x:Name="CardRadio"
+                                    TextColor="White"
+                                    GroupName="Options"
+                                    VerticalOptions="Center"
+                                    CheckedChanged="CardRadio_CheckedChanged"
+                                     >
+                           
+                        </RadioButton>
+                    </Grid>
+                </Frame>
+
+
+                <Frame x:Name="CashFrame"
+                       BackgroundColor="#202020"
+                       HeightRequest="60"
+                      CornerRadius="16"
+                      Padding="10"
+                      BorderColor="Transparent">
+
+                    <Grid VerticalOptions="Center" HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <!-- للصورة + نص -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- للـ RadioButton -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- الصورة + النص -->
+                        <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                            <Image Source="coin.png" WidthRequest="40" HeightRequest="40"/>
+                            <Label Text="Cash" Margin="0,6,0,0" TextColor="White" FontSize="16" FontFamily="Oswald"/>
+                        </HorizontalStackLayout>
+
+                        <!-- RadioButton على اليمين -->
+                        <RadioButton Grid.Column="1"
+                     x:Name="CashRadio"
+                     GroupName="Options"
+                     VerticalOptions="Center"
+                     CheckedChanged="CashRadio_CheckedChanged"/>
+                    </Grid>
+                </Frame>
+
+            </StackLayout>
+
+            <Button Text="Weiter" FontFamily="georgia"  FontSize="22" TextColor="Black" CornerRadius="16" Clicked="Button_Clicked"/>
+        </VerticalStackLayout>
+
+    </VerticalStackLayout>
+</the49:BottomSheet>
