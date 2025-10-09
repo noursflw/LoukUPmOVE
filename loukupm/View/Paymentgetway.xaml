@@ -4,14 +4,22 @@
              x:Class="loukupm.View.Paymentgetway"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:vm="clr-namespace:loukupm.ViewModel"
+             xmlns:conv="clr-namespace:loukupm.Converter"
              BackgroundColor="#252525"
              Title="Paymentgetway">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ScrollView>
         <VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                 <!-- العنوان على اليسار -->
-                <Label Text="Karte hinzufügen"
+                <Label Text="{Loc:Translate Name=addcard}"
                         TextColor="White"
                         Margin="24,0,0,0"
                         FontSize="24"
@@ -73,14 +81,14 @@
 
 
             <VerticalStackLayout>
-                <Label Text="Kartennummer" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                <Label Text="{Loc:Translate Name=nubercrad}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
                 <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.png"     HeightRequest="50" Title="Name" />
-                <Label Text="Karteninhaber" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                <Label Text="{Loc:Translate Name=pesoncard}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
                 <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
                
                 <HorizontalStackLayout Spacing="20" Margin="5,10,10,10" >
                     <VerticalStackLayout >
-                        <Label Text="Gültig bis" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
+                        <Label Text="{Loc:Translate Name=cardsaleh}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
                         <material:DatePickerField
                                  WidthRequest="180"
                                  Margin="15,0,0,0"
@@ -109,11 +117,25 @@
                 <Button  
                     Clicked="Button_Clicked_1"    TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
                      BorderWidth="1" Text="Karte hinzufügen" CornerRadius="16"
-                     HeightRequest="60" Margin="25,50,25,25"  />
+                     HeightRequest="60" Margin="25,50,25,10"  />
+
+                <Button
+                    x:Name="PayButton"
+                    Text="Jetzt bezahlen"
+                    TextColor="#1F1B04"
+                    FontSize="22"
+                    FontFamily="georgia-bold"
+                    BorderWidth="1"
+                    CornerRadius="16"
+                    HeightRequest="60"
+                    Margin="25,10,25,10"
+                    Command="{Binding PayCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" />
+
+               
             </VerticalStackLayout>
 
 
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
-        

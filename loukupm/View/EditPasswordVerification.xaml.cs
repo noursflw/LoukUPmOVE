@@ -1,3 +1,5 @@
+using loukupm.ViewModel;
+
 namespace loukupm.View;
 
 public partial class EditPasswordVerification : ContentPage
@@ -6,7 +8,9 @@ public partial class EditPasswordVerification : ContentPage
 	{
 		InitializeComponent();
         Shell.SetNavBarIsVisible(this, false);
-	}
+		this.BindingContext = AppViewModel.Instance;
+
+    }
 
     private async void Button_Clicked(object sender, EventArgs e)
     {

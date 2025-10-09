@@ -4,10 +4,12 @@
              x:Class="loukupm.View.ServicesPage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:converters="clr-namespace:loukupm.Converter"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              FlowDirection="LeftToRight"
+             xmlns:vm="clr-namespace:loukupm.ViewModel"
              Title="ServicesPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -19,7 +21,7 @@
             <VerticalStackLayout>
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                     <!-- العنوان على اليسار -->
-                    <Label Text="Alle Services"
+                    <Label Text="{Loc:Translate Name=AllServies}"
         TextColor="White"
         Margin="24,0,0,0"
         FontSize="24"
@@ -61,7 +63,7 @@
                 </HorizontalStackLayout>
                 <ScrollView>
                     <VerticalStackLayout>
-                        <CollectionView ItemsSource="{Binding AllServices}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
+                        <CollectionView ItemsSource="{Binding services}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <VerticalStackLayout Margin="24,0,24,0">
@@ -70,7 +72,20 @@
                                                 <Label  Grid.Column="0" Text="{Binding NameServies}" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="18"  />
                                                 <Label  Grid.Column="0" Text="{Binding PriceServies}" Margin="0,30,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
                                                 <Label  Grid.Column="0" Text="{Binding TimeServies}" Margin="0,55,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
-                                                <Button Grid.Column="1" Text="Auswählen" TextColor="White" BackgroundColor="Black" WidthRequest="132" FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" Margin="32,-30,0,0" />
+                                                <Button 
+                                                      Grid.Column="1" 
+                                                      Text="Auswählen" 
+                                                      TextColor="White" 
+                                                      BackgroundColor="Black" 
+                                                      WidthRequest="132" 
+                                                      FontFamily="Oswald" 
+                                                      FontSize="16"   
+                                                      CornerRadius="16"  
+                                                      HeightRequest="48" 
+                                                      Margin="32,-30,0,0"
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
+                                                      CommandParameter="{Binding .}" />
+
                                             </Grid>
                                         </Frame>
                                     </VerticalStackLayout>
@@ -86,7 +101,7 @@
                                BorderColor="#444444" />
                     </VerticalStackLayout>
                 </ScrollView>
-                <Button Text="Weiter" CornerRadius="16" FontSize="16" FontFamily="georgia-bold" TextColor="Black" Clicked="Button_Clicked_1"  Margin="25,35,25,0" />
+                <Button Text="{Loc:Translate Name=add}" CornerRadius="16" FontSize="16" FontFamily="georgia-bold" TextColor="Black" Clicked="Button_Clicked_1"  Margin="25,35,25,0" />
             </VerticalStackLayout>
         </ScrollView>
         <Border Margin="0,0,0,0"

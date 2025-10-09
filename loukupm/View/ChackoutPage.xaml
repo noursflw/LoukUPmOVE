@@ -5,6 +5,7 @@
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              BackgroundColor="#252525"
+             xmlns:loc="clr-namespace:loukupm.Langue"
              BackgroundImageSource="baackgroundpage.png"
              Title="ChackoutPage">
     <ScrollView>
@@ -13,13 +14,13 @@
                 <Image Source="checkoutpage.png"/>
                 <Image Source="vector.png" HeightRequest="210" />
             </Grid>
-            <Label Text="Passwort zurücksetzen" FontFamily="georgia-bold"  FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#D3D3D3" />
-            <Label Text="Ihr Passwort wurde erfolgreich zurückgesetzt." FontFamily="georgia-bold" HorizontalOptions="Center" VerticalOptions="Center" FontSize="16" TextColor="#999999" />
+            <Label Text="{loc:Translate Name=changvaldechen}" FontFamily="georgia-bold"  FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#D3D3D3" />
+            <Label Text="{loc:Translate Name=AcsepPassword}" FontFamily="georgia-bold" HorizontalOptions="Center" VerticalOptions="Center" FontSize="16" TextColor="#999999" />
             <Button  
             Clicked="Button_Clicked"
            TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
       
-           BorderWidth="1" Text="Login" CornerRadius="16"
+           BorderWidth="1" Text="{loc:Translate Name=Login}" CornerRadius="16"
            Margin="25,80,25,0"  />
         </VerticalStackLayout>
     </ScrollView>

@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="aboutaswelcom" xml:space="preserve">
+    <value>Herzlich Willkommen bei</value>
+  </data>
+  <data name="aboutusga" xml:space="preserve">
+    <value>Über uns</value>
+  </data>
+  <data name="AboutUsTeam" xml:space="preserve">
+    <value>Treffen Sie unser Team</value>
+  </data>
+  <data name="AboutUSTeam3" xml:space="preserve">
+    <value>Romy Stadler</value>
+  </data>
+  <data name="AbutUSTeam2" xml:space="preserve">
+    <value>Jacqueline Oberhofer</value>
+  </data>
+  <data name="AcsepPassword" xml:space="preserve">
+    <value>Ihr Passwort wurde erfolgreich zurückgesetzt.</value>
+  </data>
+  <data name="AcspetNewpassword" xml:space="preserve">
+    <value>Neues Passwort bestätigen</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="addcard" xml:space="preserve">
+    <value>Karte hinzufügen</value>
+  </data>
+  <data name="addservies" xml:space="preserve">
+    <value>Eine weitere Dienstleistung hinzufüge</value>
+  </data>
+  <data name="AllServies" xml:space="preserve">
+    <value>Alle Services</value>
+  </data>
+  <data name="AppInfo" xml:space="preserve">
+    <value>Über die App</value>
+  </data>
+  <data name="Benachrichtigungen" xml:space="preserve">
+    <value>Benachrichtigungen</value>
+  </data>
+  <data name="Booking" xml:space="preserve">
+    <value>Termin buchen</value>
+  </data>
+  <data name="bookingNow" xml:space="preserve">
+    <value>Jetzt buchen</value>
+  </data>
+  <data name="bookinNowAbotus" xml:space="preserve">
+    <value>Einen Termin buchen</value>
+  </data>
+  <data name="cardsaleh" xml:space="preserve">
+    <value>Gültig bis</value>
+  </data>
+  <data name="ChangMyPassword1" xml:space="preserve">
+    <value>Aktuelles Passwort</value>
+  </data>
+  <data name="ChangPassord" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="changvaldechen" xml:space="preserve">
+    <value>Passwort zurücksetzen</value>
+  </data>
+  <data name="chosesservies" xml:space="preserve">
+    <value>Eine Dienstleistung auswählen</value>
+  </data>
+  <data name="ConifermPassword" xml:space="preserve">
+    <value>Password bestätigen</value>
+  </data>
+  <data name="CreatAccount" xml:space="preserve">
+    <value>Noch kein Konto?</value>
+  </data>
+  <data name="CreatAcount2" xml:space="preserve">
+    <value>Noch kein</value>
+  </data>
+  <data name="datebooking" xml:space="preserve">
+    <value>Verfügbare Zeiten an diesem Tag</value>
+  </data>
+  <data name="DescriptionAboutus" xml:space="preserve">
+    <value>Verfügbare Zeiten an diesem Bei LOOK UP Friseur in Landshut bieten wir Ihnen einen exklusiven Haarschnitt- und Styling-Service, der genau auf Ihre individuellen Wünsche und Bedürfnisse abgestimmt ist. Unsere erfahrenen Friseure verwenden die neuesten Techniken und hochwertige Produkte, um sicherzustellen, dass Sie bei jedem Besuch das bestmögliche Ergebnis erzielenTag</value>
+  </data>
+  <data name="descrtiondate" xml:space="preserve">
+    <value>Zum Auswählen klicken</value>
+  </data>
+  <data name="desRestPass" xml:space="preserve">
+    <value>Sie erhalten in Kürze eine E-Mail mit einem Code, um ein neues Passwort einzurichten.</value>
+  </data>
+  <data name="DesStartPage" xml:space="preserve">
+    <value>Bei LOOK UP Friseur in Landshut bieten wir Ihnen einen exklusiven Haarschnitt- und Styling-Service, der genau auf Ihre individuellen Wünsche und Bedürfnisse abgestimmt ist. Unsere erfahrenen Friseure verwenden die neuesten Techniken und hochwertige Produkte, um sicherzustellen, dass Sie bei jedem Besuch das bestmögliche Ergebnis erzielen..</value>
+  </data>
+  <data name="DesTeam1" xml:space="preserve">
+    <value>Unsere Top-Stylisten sind darauf spezialisiert, individuelle Schönheit hervorzuheben und bieten professionelle Haarschnitte, Stylings und Färbungen </value>
+  </data>
+  <data name="DesTeam2" xml:space="preserve">
+    <value>Eine Künstlerin mit leichter Hand und besonderer Sensibilität</value>
+  </data>
+  <data name="DesTeam3" xml:space="preserve">
+    <value>Kontodaten bKünstlerin im Damenbereich mit leichter Hand und besonderem Feingefühlearbeiten</value>
+  </data>
+  <data name="detailesMyAccount" xml:space="preserve">
+    <value>Kontodaten bearbeiten</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="GoogleLogin" xml:space="preserve">
+    <value>Mit Google fortfahren</value>
+  </data>
+  <data name="historey" xml:space="preserve">
+    <value>Datum wählen</value>
+  </data>
+  <data name="hrearchooes" xml:space="preserve">
+    <value>Wählen Sie den Friseur</value>
+  </data>
+  <data name="invoic" xml:space="preserve">
+    <value>Gesamt</value>
+    <comment>في المجموع</comment>
+  </data>
+  <data name="linkpass" xml:space="preserve">
+    <value>Link senden</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Mybook" xml:space="preserve">
+    <value>Meine Termine</value>
+    <comment>مواعيدي</comment>
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NewMyPassord" xml:space="preserve">
+    <value>Neues Passwort</value>
+  </data>
+  <data name="NPasswordOnLogin" xml:space="preserve">
+    <value>Passwort vergessen?</value>
+  </data>
+  <data name="nubercrad" xml:space="preserve">
+    <value>Kartennummer</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="paymentgetwaymethod" xml:space="preserve">
+    <value>Zahlungsmethode</value>
+  </data>
+  <data name="paynaw" xml:space="preserve">
+    <value>Jetzt bezahlen</value>
+  </data>
+  <data name="pesoncard" xml:space="preserve">
+    <value>Karteninhaber</value>
+  </data>
+  <data name="ResetPasswordvv" xml:space="preserve">
+    <value>Bitte geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen Ihres Passworts zu erhaltenn</value>
+  </data>
+  <data name="SaveChangFoeMyAccount" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="sendotp" xml:space="preserve">
+    <value>Code wurde gesendet</value>
+  </data>
+  <data name="setting" xml:space="preserve">
+    <value>App-Einstellungen</value>
+  </data>
+  <data name="Singin" xml:space="preserve">
+    <value>Registrieren</value>
+  </data>
+  <data name="standpay" xml:space="preserve">
+    <value>Fertig</value>
+  </data>
+  <data name="TeamNaser" xml:space="preserve">
+    <value>Nasradin Albarho</value>
+  </data>
+  <data name="TitelTeam" xml:space="preserve">
+    <value>Treffen Sie unser Team</value>
+  </data>
+  <data name="Titledescrption" xml:space="preserve">
+    <value>Erfahrene Stylisten mit Leidenschaft und Kreativität für Ihr persönliches Styling.</value>
+  </data>
+  <data name="TitlwMyPrefile" xml:space="preserve">
+    <value>Mein Profil</value>
+  </data>
+  <data name="VisteInAboutUS" xml:space="preserve">
+    <value>Reinkommen - Drankommen! Besuchen Sie uns einfach spontan - auch ohne Termin!</value>
+  </data>
+  <data name="YouHaveAcount" xml:space="preserve">
+    <value>Haben Sie schon ein Konto?</value>
+  </data>
+</root>

@@ -5,8 +5,10 @@
                Shell.NavBarIsVisible="False"
                Shell.TabBarIsVisible="False"
                FlowDirection="LeftToRight"
+              xmlns:loc="clr-namespace:loukupm.Langue"
                BackgroundColor="#202020"
               xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+          
               BackgroundImageSource="baackgroundpage.png"
              Title="LoginPage">
     <ScrollView>
@@ -16,7 +18,7 @@
                 <Image Grid.Row="0" Margin="0,-100,0,0" WidthRequest="200" HeightRequest="60" Source="slogo.svg"/>
 
                 <Label Grid.Row="0" Margin="25,70,0,25" FontSize="32" FontFamily="georgia-bold"
-                         Text="Log in" TextColor="White"
+                         Text="{loc:Translate Name=Login}" TextColor="White"
                           VerticalOptions="Center" 
                           HorizontalOptions="Center" />
 
@@ -28,12 +30,12 @@
                        ImageSource="google.png"    
                        BorderWidth="1" 
                        CornerRadius="18" 
-                       Text="Mit Google fortfahren"
+                       Text="{ loc:Translate Name=GoogleLogin}"
                        HeightRequest="60" />
 
                 <Image Grid.Row="0" Margin="25,310,25,0" Source="or.svg" HeightRequest="24"/>
                 <VerticalStackLayout Grid.Row="1">
-                    <Label Text="E-Mail" Margin="12,5,0,0" TextColor="White" Padding="10" FontSize="16"/>
+                    <Label Text="{loc:Translate Name=EMail}" Margin="12,5,0,0" TextColor="White" Padding="10" FontSize="16"/>
                     <material:TextField
                         x:Name="EmailEntry"
                         TextColor="#EBD750"
@@ -44,7 +46,7 @@
                         Icon="email.png" 
                         HeightRequest="50"
                         Title="E-Mail" />
-                    <Label FontSize="16" Margin="12,24,0,0" Text="Password" TextColor="White" Padding="10" />
+                    <Label FontSize="16" Margin="12,24,0,0" Text="{loc:Translate Name=Password}" TextColor="White" Padding="10" />
                     <material:TextField 
                         x:Name="PasswordEntry"
                         Title="Password"  
@@ -59,7 +61,7 @@
                     <Label FontSize="16" Margin="20,8,0,0">
                         <Label.FormattedText>
                             <FormattedString>
-                                <Span Text="Passwort vergessen?" 
+                                <Span Text="{loc:Translate Name=NPasswordOnLogin}" 
                                     TextDecorations="Underline" 
                                     TextColor="#EBD750">
                                     <Span.GestureRecognizers>
@@ -75,18 +77,18 @@
                         FontSize="22" 
                         FontFamily="georgia-bold"
                         BorderWidth="1" 
-                        Text="Log in" 
+                        Text="{loc:Translate Name=Login}" 
                         Clicked="Button_Clicked"
                         CornerRadius="16"
                         HeightRequest="60" 
                         Margin="25"  />
                     
                     <HorizontalStackLayout Margin="80,34,0,0" Spacing="2">
-                        <Label Text="Noch kein Konto?" FontSize="18" TextColor="White"/>
+                        <Label Text="{loc:Translate Name=CreatAccount}" FontSize="18" TextColor="White"/>
                         <Label FontSize="18">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="Registrieren"
+                                    <Span Text="{loc:Translate Name=Singin}"
                                         TextDecorations="Underline"
                                         TextColor="#EBD750">
                                         <Span.GestureRecognizers>

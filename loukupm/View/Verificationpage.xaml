@@ -5,6 +5,7 @@
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              Shell.NavBarIsVisible="False"
+             xmlns:loc="clr-namespace:loukupm.Langue"
              Shell.TabBarIsVisible="False"
             BackgroundImageSource="baackgroundpage.png"
              Title="Verificationpage">
@@ -13,22 +14,28 @@
             <Grid>
                 <Image Grid.Row="0" Margin="0,100,0,0" WidthRequest="300" HeightRequest="100" Source="slogo.svg"/>
             </Grid>
-            <Label Text="Code wurde gesendet" FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="32" TextColor="#D3D3D3" />
-            <Label Text="Sie erhalten in Kürze eine E-Mail mit einem Code, um ein neues Passwort einzurichten." FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="16" TextColor="#999999" />
+            <Label Text="{loc:Translate Name=sendotp}" FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="32" TextColor="#D3D3D3" />
+            <Label Text="{loc:Translate Name=desRestPass}" FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="16" TextColor="#999999" />
             <HorizontalStackLayout Margin="0,50,0,0" x:Name="PinLayout" Spacing="20" HorizontalOptions="Center">
+                <material:TextField x:Name="Digit1" Keyboard="Numeric" MaxLength="1"
+                            TextChanged="Digit_TextChanged" Text="{Binding Digit1,Mode=TwoWay}" />
+                <material:TextField x:Name="Digit2" Keyboard="Numeric" MaxLength="1"
+                            TextChanged="Digit_TextChanged" Text="{Binding Digit2,Mode=TwoWay}" />
+                <material:TextField x:Name="Digit3" Keyboard="Numeric" MaxLength="1"
+                            TextChanged="Digit_TextChanged" Text="{Binding Digit3,Mode=TwoWay}" />
+                <material:TextField x:Name="Digit4" Keyboard="Numeric" MaxLength="1"
+                            TextChanged="Digit_TextChanged" Text="{Binding Digit4,Mode=TwoWay}" />
 
-                <material:TextField x:Name="Digit1" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"         TextColor="#EBD750"   HeightRequest="50"  />
-                <material:TextField x:Name="Digit2" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"     TextColor="#EBD750"   HeightRequest="50"  />
-                <material:TextField x:Name="Digit3" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"     TextColor="#EBD750"   HeightRequest="50"  />
-                <material:TextField x:Name="Digit4" Keyboard="Numeric" HorizontalTextAlignment="Center" FontSize="14"  MaxLength="1" InputBackgroundColor="#444444" CornerRadius="16"     TextColor="#EBD750"   HeightRequest="50"  />
-             
+
+
 
             </HorizontalStackLayout>
+           
             <Button  
-                Clicked="Button_Clicked"
+              Command="{Binding ConfirmCommand}"
                 TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
                 WidthRequest="300"
-                BorderWidth="1" Text="Fertig" CornerRadius="16"
+                BorderWidth="1" Text="{loc:Translate Name=standpay}" CornerRadius="16"
                 HeightRequest="60" Margin="25,80,25,0"  />
         </VerticalStackLayout>
     </ScrollView>

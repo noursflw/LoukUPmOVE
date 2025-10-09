@@ -47,4 +47,12 @@
             ContentTemplate="{DataTemplate view:ProfilePage}"
             Route="ProfilePage" />
     </TabBar>
+
+    <!-- Deep link routes for Stripe Checkout -->
+    <ShellContent Route="checkout/success"
+                  ContentTemplate="{DataTemplate view:HomePage}"
+                  IsVisible="False" />
+    <ShellContent Route="checkout/cancel"
+                  ContentTemplate="{DataTemplate view:HomePage}"
+                  IsVisible="False" />
 </Shell>

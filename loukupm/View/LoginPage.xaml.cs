@@ -18,13 +18,16 @@ public partial class LoginPage : ContentPage
     private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
     {
 
-        await Navigation.PushAsync(new Verificationpage());
-
-
+        await Navigation.PushAsync(new RestPassword());
 
 
     }
 
+    protected override bool OnBackButtonPressed()
+    {
+        Shell.Current.GoToAsync("//MainPage");
+        return true;
+    }
     private async void Button_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new HomePage());

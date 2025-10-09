@@ -6,7 +6,7 @@ public partial class NotifictionPage : ContentPage
 	public NotifictionPage()
 	{
 		InitializeComponent();
-		this.BindingContext = new AppViewModel();
+		this.BindingContext = AppViewModel.Instance;
 	}
 
     private async void Button_Clicked(object sender, EventArgs e)

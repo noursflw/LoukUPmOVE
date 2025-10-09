@@ -4,7 +4,8 @@
              x:Class="loukupm.View.BookingPage"
              Shell.NavBarIsVisible="False"
              FlowDirection="LeftToRight"
-              xmlns:converters="clr-namespace:loukupm.Converter"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:converters="clr-namespace:loukupm.Converter"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              BackgroundColor="#252525"
              Title="BookingPage">
@@ -16,9 +17,10 @@
     <Grid>
         <ScrollView Margin="0,0,0,40">
             <VerticalStackLayout>
+                
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                     <!-- العنوان على اليسار -->
-                    <Label Text="Meine Termine"
+                    <Label Text="{Loc:Translate Name=Mybook}"
                            TextColor="White"
                            Margin="24,0,0,0"
                              FontSize="24"

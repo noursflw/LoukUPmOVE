@@ -4,7 +4,8 @@
              x:Class="loukupm.View.NotifictionPage"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
-              xmlns:converters="clr-namespace:loukupm.Converter"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:converters="clr-namespace:loukupm.Converter"
              BackgroundColor="#252525"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              FlowDirection="LeftToRight"
@@ -19,7 +20,7 @@
         <VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                 <!-- العنوان على اليسار -->
-                <Label Text="Benachrichtigungen"
+                <Label Text="{Loc:Translate Name=Benachrichtigungen}"
                      TextColor="White"
                      Margin="24,0,0,0"
                      FontSize="24"

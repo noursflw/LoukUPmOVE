@@ -26,5 +26,6 @@ namespace loukupm
             Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#202020"));
 
         }
+
     }
 }

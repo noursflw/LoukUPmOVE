@@ -1,13 +1,14 @@
-﻿using System;
+﻿using loukupm.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Net.Http;
-using loukupm.Model;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace loukupm.services
 {
@@ -247,6 +248,72 @@ namespace loukupm.services
         }
 
 
+        public async Task<CreatePaymentIntentResponse?> CreatePaymentIntentAsync(decimal amount, string currency, string email)
+        {
+            SetAuthorizationHeader();
+
+            var payload = new
+            {
+                amount = (int)(amount * 100), // Stripe expects amount in cents
+                currency = currency,
+                email = email
+            };
+
+            var json = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Endpoint Backend لإنشاء PaymentIntent
+            var endpoint = "https://your-backend.example.com/api/stripe/create-payment-intent";
+
+            var response = await _httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[STRIPE PAYMENT INTENT ERROR] {response.StatusCode}: {body}");
+                return null;
+            }
+
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<CreatePaymentIntentResponse>(body, options);
+        }
+
+        public async Task<CreateCheckoutSessionResponse?> CreateCheckoutSessionAsync(int amount, string currency, string email)
+        {
+            SetAuthorizationHeader();
+
+            var payload = new CreateCheckoutSessionRequest
+            {
+                Amount = amount,
+                Currency = currency,
+                Description = "Test Product",
+                SuccessUrl = "myapp://payment-success",
+                CancelUrl = "myapp://payment-cancel"
+            };
+
+            var json = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // استبدل هذا بالـ Backend endpoint الخاص بك
+            var endpoint = "https://donate.stripe.com/test_9B63cn516f04amv1fBgnK00";
+
+            var response = await _httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[STRIPE CHECKOUT ERROR] {response.StatusCode}: {body}");
+                return null;
+            }
+
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<CreateCheckoutSessionResponse>(body, options);
+        }
+
+        public class CreateCheckoutSessionResponse
+        {
+            public string Url { get; set; } = string.Empty;
+        }
 
 
 
@@ -259,6 +326,17 @@ public class AuthResponse
     public string Message { get; set; }
     public string Token { get; set; }
 }
+
+public class CreateCheckoutSessionRequest
+{
+    public int Amount { get; set; }
+    public string Currency { get; set; } = "eur";
+    public string SuccessUrl { get; set; } = string.Empty;
+    public string CancelUrl { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+}
+
+
 public class ServiesResponse
 {
     public List<Servies> Data { get; set; }
@@ -270,4 +348,9 @@ public class CategoriesResponse
     public string Message { get; set; } = string.Empty;
     public bool Success { get; set; }
 }
+public class CreatePaymentIntentResponse
+{
+    public string ClientSecret { get; set; } = string.Empty;
+}
+
 

@@ -1,3 +1,5 @@
+using loukupm.ViewModel;
+
 namespace loukupm.View;
 
 public partial class RestPassword : ContentPage
@@ -6,7 +8,10 @@ public partial class RestPassword : ContentPage
 	{
 		InitializeComponent();
         Shell.SetNavBarIsVisible(this, false);
-	}
+        this.BindingContext = AppViewModel.Instance;
+        
+
+    }
 
     private async void Button_Clicked(object sender, EventArgs e)
     {

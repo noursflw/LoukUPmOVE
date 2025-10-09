@@ -81,7 +81,12 @@ public partial class ProfilePage : ContentPage
     }
     protected override bool OnBackButtonPressed()
     {
-        Shell.Current.GoToAsync("//HomePage");
+        Shell.Current.GoToAsync("//ProfilePage");
         return true;
+    }
+
+    private async void Button_Clicked_8(object sender, EventArgs e)
+    {
+      await Navigation.PushAsync(new LoginPage());  
     }
 }

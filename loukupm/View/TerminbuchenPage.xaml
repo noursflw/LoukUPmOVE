@@ -4,9 +4,9 @@
              x:Class="loukupm.View.TerminbuchenPage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
-             FlowDirection="LeftToRight"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
-              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              xmlns:converters="clr-namespace:loukupm.Converter"
              Title="TerminbuchenPage">
 
@@ -20,7 +20,7 @@
         <VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
                 <!-- العنوان على اليسار -->
-                <Label Text="Termin buchen"
+                <Label Text="{Loc:Translate Name=Booking}"
                        TextColor="White"
                        Margin="24,0,0,0"
                        FontSize="24"
@@ -43,7 +43,7 @@
             </Grid>
 
             <VerticalStackLayout>
-                    <CollectionView ItemsSource="{Binding allService}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" >
+                <CollectionView ItemsSource="{Binding services}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <VerticalStackLayout Margin="24,0,24,0">
@@ -66,11 +66,11 @@
          sk:Skeleton.IsBusy="{Binding IsCatogory}" 
          sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
          BorderColor="#444444" />
-                    
 
-                    <Button  Text="Eine weitere Dienstleistung hinzufügen" TextColor="White" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16" WidthRequest="286" HeightRequest="48" Margin="-70,15,0,0" />
+
+                <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16" WidthRequest="286" HeightRequest="48" Margin="-70,15,0,0" />
             </VerticalStackLayout>
-            <Label Text="Wählen Sie den Friseur" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
+            <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
             <ScrollView Orientation="Horizontal">
                 <HorizontalStackLayout>
                     <CollectionView ItemsSource="{Binding Team}" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}" ItemsLayout="HorizontalList">
@@ -106,7 +106,7 @@
  
                 </HorizontalStackLayout>
             </ScrollView>
-            <Label Text="Datum wählen" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
+            <Label Text="{Loc:Translate Name=historey}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
             <VerticalStackLayout  Padding="10">
 
                 <HorizontalStackLayout VerticalOptions="Start" HorizontalOptions="Fill">
@@ -159,8 +159,8 @@
                     sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
                     BorderColor="#444444" />
                 </HorizontalStackLayout>
-                <Label Text="Verfügbare Zeiten an diesem Tag" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
-                <Label Text="Zum Auswählen klicken" FontSize="14" TextColor="#999999" FontFamily="Oswald" Margin="22,10,0,0" />
+                <Label Text="{Loc:Translate Name=datebooking}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
+                <Label Text="{Loc:Translate Name=descrtiondate}" FontSize="14" TextColor="#999999" FontFamily="Oswald" Margin="22,10,0,0" />
                 <CollectionView ItemsSource="{Binding WorkTime}" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}" >
                     <CollectionView.ItemTemplate >
                         <DataTemplate>
@@ -192,7 +192,7 @@
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60">
                 <!-- العنوان على اليسار -->
                 <VerticalStackLayout Margin="40,0,0,0" >
-                    <Label Text="Gesamt"
+                    <Label Text="{Loc:Translate Name=invoic}"
                      TextColor="#D3D3D3"
                     Margin="20,0,0,0"
                     FontSize="18"
@@ -223,7 +223,7 @@
            HeightRequest="56"
            FontSize="22"
             TextColor="Black"
-           Text="Jetzt buchen"
+           Text="{Loc:Translate Name=bookingNow}"
            CornerRadius="12"
            Margin="0,0,10,10"       
            FontFamily="georgia-bold"

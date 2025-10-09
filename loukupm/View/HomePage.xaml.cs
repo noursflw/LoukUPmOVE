@@ -1,9 +1,9 @@
 namespace loukupm.View;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-
-
 using loukupm.ViewModel;
+using System.Globalization;
+
 
 
    public partial class HomePage : ContentPage
@@ -11,7 +11,7 @@ using loukupm.ViewModel;
 	public HomePage()
 	{
 		InitializeComponent();
-    	this.BindingContext=new AppViewModel();
+    	this.BindingContext= AppViewModel.Instance;
 
     }
 
@@ -65,7 +65,28 @@ using loukupm.ViewModel;
     }
 
 
+    
+    private void Button_Clicked_2(object sender, EventArgs e)
+    {
+        var current = Langue.LocalizationResourcesManager.Instanse.CurrentCulture.TwoLetterISOLanguageName;
+        CultureInfo newCulture;
 
-
-
+        switch (current)
+        {
+            case "en":
+                newCulture = new CultureInfo("de-DE");
+                FlowDirection= FlowDirection.LeftToRight;
+                break;
+            case "de":
+                newCulture = new CultureInfo("ar-AR");
+                FlowDirection= FlowDirection.RightToLeft;
+                break;
+            default:
+                newCulture = new CultureInfo("de-DE");
+                FlowDirection = FlowDirection.LeftToRight;
+                break;
+        }
+        Preferences.Set("AppLanguage", newCulture.Name);
+        Langue.LocalizationResourcesManager.Instanse.SetCulture(newCulture);
+    }
 }

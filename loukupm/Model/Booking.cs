@@ -9,14 +9,12 @@ namespace loukupm.Model
     //كلاس المواعيد
     public class Booking
     {
-        public int Id { get; set; }
-        public string Monthbooking { get; set; }    
-        public string TimeBooking { get; set; }
-        public DateTime PriceBooking { get; set; }
-        public int Total { get; set; }
-        public DateTime TimePrice { get; set; }
-        public string? ImagePerson { get; set; }
-        public string NamePerson { get; set; }
-        public Booking() { }    
+        public string ServiceType { get; set; }
+        public string ServiceName { get; set; }
+        public string ProviderId { get; set; }
+        public string ProviderName { get; set; }
+        public DateTime Date { get; set; }
+        public TimeSpan Time { get; set; }
+        public string PaymentMethod { get; set; }
     }
 }

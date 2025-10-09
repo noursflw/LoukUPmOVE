@@ -4,14 +4,14 @@
              x:Class="loukupm.View.ProfilePage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
-             FlowDirection="LeftToRight"
+              xmlns:Loc="clr-namespace:loukupm.Langue"
              Title="ProfilePage">
     <Grid>
         <ScrollView Margin="0,0,0,30">
             <VerticalStackLayout Spacing="10" >
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="180" BackgroundColor="#202020">
 
-                    <Label Text="Mein Profil"
+                    <Label Text="{Loc:Translate Name=TitlwMyPrefile}"
                      TextColor="White"
                       Margin="24,10,0,0"
                        FontSize="24"
@@ -87,7 +87,7 @@
 
                             <HorizontalStackLayout>
                                 <Image Source="editee.png" Margin="20,0,0,0" />
-                                <Label Text="Kontodaten bearbeiten"
+                                <Label Text="{Loc:Translate Name=detailesMyAccount}"
                                       TextColor="White"
                                        Margin="24,0,0,0"
                                        FontSize="16" VerticalOptions="Center" />
@@ -116,7 +116,7 @@
 
                             <HorizontalStackLayout>
                                 <Image Source="password1.png" Margin="20,0,0,0" />
-                                <Label Text="Passwort ändern"
+                                <Label Text="{Loc:Translate Name=ChangPassord}"
                                      TextColor="White"
                                       Margin="24,0,0,0"
                                       FontSize="16" VerticalOptions="Center" />
@@ -145,7 +145,7 @@
 
                             <HorizontalStackLayout>
                                 <Image Source="calendar.png" Margin="20,0,0,0" />
-                                <Label Text="Meine Termine"
+                                <Label Text="{Loc:Translate Name=Mybook}"
                                      TextColor="White"
                                      Margin="24,0,0,0"
                                      FontSize="16" VerticalOptions="Center" />
@@ -173,7 +173,7 @@
 
                             <HorizontalStackLayout>
                                 <Image Source="notification.png" Margin="20,0,0,0" />
-                                <Label Text="Benachrichtigungen"
+                                <Label Text="{Loc:Translate Name=Benachrichtigungen}"
                                  TextColor="White"
                                  Margin="24,0,0,0"
                                  FontSize="16" VerticalOptions="Center" />
@@ -202,7 +202,7 @@
 
                             <HorizontalStackLayout>
                                 <Image Source="settings.png" Margin="20,0,0,0" />
-                                <Label Text="App-Einstellungen"
+                                <Label Text="{Loc:Translate Name=setting}"
                                   TextColor="White"
                                   Margin="24,0,0,0"
                                  FontSize="16" VerticalOptions="Center" />
@@ -231,7 +231,7 @@
 
                             <HorizontalStackLayout>
                                 <Image Source="info.png" Margin="20,0,0,0" />
-                                <Label Text="Über die App"
+                                <Label Text="{Loc:Translate Name=AppInfo}"
                                      TextColor="White"
                                      Margin="24,0,0,0"
                                      FontSize="16" VerticalOptions="Center" />
@@ -255,7 +255,7 @@
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_5" />
                         </Frame.GestureRecognizers>
                     </Frame>
-                    <Button BackgroundColor="Black" Text="Log Out" ImageSource="logout.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
+                    <Button Clicked="Button_Clicked_8" BackgroundColor="Black" Text="Log Out" ImageSource="logout.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
                     <Button BackgroundColor="Black" Text="Remove My Account" ImageSource="exite.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
                 </VerticalStackLayout>
                

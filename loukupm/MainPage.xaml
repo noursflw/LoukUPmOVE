@@ -5,6 +5,7 @@
              Shell.TabBarIsVisible="False"
              FlowDirection="LeftToRight"
              Title="MainPage"
+             xmlns:loc="clr-namespace:loukupm.Langue"
                BackgroundImageSource="startpage.png"
              x:Class="loukupm.MainPage">
 
@@ -13,9 +14,9 @@
 
 
             <Image Margin="0,0,0,-262"   Source="start2.png"/>
-            <Label Text="Herzlich Willkommen bei " FontSize="24" Margin="40,440,0,0" TextColor="White"/>
+            <Label Text="{loc:Translate Name=aboutaswelcom}" FontSize="24" Margin="40,440,0,0" TextColor="White"/>
             <Label Text="LOOK UP Friseur " FontSize="24" Margin="40,470,0,0"  FontAttributes="Bold" TextColor="#EBD750"/>
-            <Label Text="Bei LOOK UP Friseur in Landshut bieten wir Ihnen einen exklusiven Haarschnitt- und Styling-Service, der genau auf Ihre individuellen Wünsche und Bedürfnisse abgestimmt ist. Unsere erfahrenen Friseure verwenden die neuesten Techniken und hochwertige Produkte, um sicherzustellen, dass Sie bei jedem Besuch das bestmögliche Ergebnis erzielen.. " FontSize="14" Margin="40,500,10,0" TextColor="White"/>
+            <Label Text="{loc:Translate Name=DesStartPage}" FontSize="14" Margin="40,500,10,0" TextColor="White"/>
             <HorizontalStackLayout Margin="160,620,0,0" Spacing="-3">
 
                 <HorizontalStackLayout>
