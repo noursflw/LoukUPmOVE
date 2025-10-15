@@ -1,3 +1,4 @@
+using loukupm.ViewModel;
 using The49.Maui.BottomSheet;
 
 namespace loukupm.View;
@@ -36,25 +37,24 @@ public partial class BottomShee : BottomSheet
             CardFrame.BorderColor = Colors.Transparent;
         }
     }
-     
+
     private async void Button_Clicked(object sender, EventArgs e)
     {
-      if(CashRadio.IsChecked)
+        var booking = AppViewModel.Instance.CurrentBooking;
+
+        if (CashRadio.IsChecked)
         {
+            booking.PaymentMethod = "Cash";
 
             await Application.Current.MainPage.DisplayAlert("Payment Method", "You selected Cash payment.", "OK");
             await Shell.Current.GoToAsync("//HomePage");
             await this.DismissAsync();
-           
-           
-
         }
         else if (CardRadio.IsChecked)
         {
-
+            booking.PaymentMethod = "Card";
 
             await Shell.Current.GoToAsync(nameof(Paymentgetway));
-
             await this.DismissAsync();
         }
         else
@@ -62,5 +62,6 @@ public partial class BottomShee : BottomSheet
             await Application.Current.MainPage.DisplayAlert("Payment Method", "Please select a payment method.", "OK");
         }
     }
+
 
 }

@@ -147,6 +147,15 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="View\MassegBoxLogout.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="View\RemoveUserPoup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	</ItemGroup>
+
 	
 
 

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+     xmlns:Loc="clr-namespace:loukupm.Langue"
+    Color="Transparent"
+    x:Class="loukupm.View.RemoveUserPopup">
+
+    <Frame
+        BackgroundColor="#444444"
+        CornerRadius="20"
+        HasShadow="True"
+        Padding="0"
+        BorderColor="#444444"
+        WidthRequest="320"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="18"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+
+            <Image
+    Source="messagbox.png"
+    HeightRequest="120"
+    Aspect="AspectFit"
+    HorizontalOptions="Center" />
+
+            <Label
+                Text="{Loc:Translate Name=RemoveMyCount}"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="White"
+                HorizontalTextAlignment="Center" />
+
+           
+            <HorizontalStackLayout Spacing="30" 
+                
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="240">
+                <Button
+    BackgroundColor="#444444"
+    Text="{Loc:Translate Name=no}"
+    BorderColor="#D3D3D3"
+    BorderWidth="1"
+    WidthRequest="100"
+    CornerRadius="10"
+    HeightRequest="44"
+    FontFamily="georgia"                       
+    Clicked="CancelClicked" />
+
+                <Button
+    Text="{Loc:Translate Name=yes}"
+    CornerRadius="10"
+    BackgroundColor="#FF4C4C"
+    TextColor="White"
+    HeightRequest="44"
+    FontFamily="georgia"                
+    WidthRequest="100"
+    Clicked="YesClicked"
+    Command="{Binding DeleteAccountCommand}"/>
+
+
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>

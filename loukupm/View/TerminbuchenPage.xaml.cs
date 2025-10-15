@@ -20,18 +20,18 @@ public partial class TerminbuchenPage : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        // √‰‘∆ «·‹ Bottom Sheet
-        var sheet = new BottomShee(); //  √ﬂœ «”„ «·ﬂ·«” ’ÕÌÕ
+        
+        var sheet = new BottomShee(); 
 
-        // ﬁ„ » ⁄ÌÌ‰ BindingContext ≈–« ﬂ‰   ” Œœ„ »Ì«‰« 
-        sheet.BindingContext = this.BindingContext; // ‰›” ViewModel «·’›Õ…
+       
+        sheet.BindingContext = this.BindingContext; 
 
-        // ⁄—÷ «·‹ Bottom Sheet
-        await sheet.ShowAsync(); // »œÊ‰  „—Ì— Window
+       
+        await sheet.ShowAsync(); 
     }
 
 
-    // √Ê √Ì ‰Ê⁄ Ì„À· „ﬁœ„ «·Œœ„…
+    
 
 
     private async void OnNext_Clicked(object sender, EventArgs e)

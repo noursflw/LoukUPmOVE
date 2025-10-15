@@ -1,9 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using loukupm.Model;
 using loukupm.services;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -40,7 +44,7 @@ namespace loukupm.ViewModel
         private static AppViewModel _instance;     // يخزن النسخة الوحيدة
         public static AppViewModel Instance        // واجهة الوصول العامة
             => _instance ??= new AppViewModel();
-
+        private readonly string _token;
         public ICommand SelectServiceButtonCommand { get; }
         public AppViewModel()
         {
@@ -51,10 +55,14 @@ namespace loukupm.ViewModel
             _ = LoadNotificationsAsync();
             _ = LoadWorkTeamsAsync();
             _ = LoadServicesAsync();
+            _token = SecureStorage.GetAsync("auth_token").Result;
+            DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
             ConfirmCommand = new Command(async () => await SendCodeAsync());
             PostEmailCommand = new Command<string>(async (email) => await PostEmailAsync(email));
             ChangePasswordCommand = new Command(async () => await ChangePasswordAsync());
             PostBookingCommand = new Command(async () => await PostBookingAsync());
+            UpDateUserCommand = new Command(async () => await PostUserAsync());
+            ChangePasswordUserCommand = new Command(async () => await ChangeUserPasswordAsync());
             SelectServiceButtonCommand = new Command<Servies>(service =>
             {
                 if (service == null) return;
@@ -241,7 +249,7 @@ namespace loukupm.ViewModel
 
         //Post for new password
         public string NewPassword { get; set; }
-        public string ConfirmPassword { get; set; }
+        //public string ConfirmPassword { get; set; }
 
         public ICommand ChangePasswordCommand { get; }
 
@@ -338,10 +346,99 @@ namespace loukupm.ViewModel
 
 
         ///Section Post User
-        ///
+        [ObservableProperty] private string userName;
+        [ObservableProperty] private string password;
+        [ObservableProperty] private string confirmPassword;
+        [ObservableProperty] private string imageUser;
+        [ObservableProperty] private string email;
+        public ICommand UpDateUserCommand { get; }
+        private async Task PostUserAsync()
+        {
+            using var client = new HttpClient { BaseAddress = new Uri("https://eee/") };
+            if (!string.IsNullOrWhiteSpace(_token))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var user = new User
+            {
+                UserName = userName,
+                Email = email,
+                ImageUser =imageUser,
+                Password = password
+            };
+
+            var response = await client.PutAsJsonAsync("api/users/update", user);
+            if (response.IsSuccessStatusCode)
+            {
+                await Toast.Make("تم تحديث البيانات بنجاح", ToastDuration.Short).Show();
+            }
+            else
+            {
+                await Toast.Make("فشل تحديث البيانات", ToastDuration.Short).Show();
+            }
+
+        }
 
 
-        /// End Section Post User
+        /// End Section Upate User
+
+        //// Edite Paswwoerd User section
+        public ICommand ChangePasswordUserCommand { get;}  
+        private async Task ChangeUserPasswordAsync()
+        {
+
+            using var client = new HttpClient { BaseAddress = new Uri("https://eee/") };
+            if (!string.IsNullOrWhiteSpace(_token))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var user = new User
+            {
+                Password = password,
+                confirmPassword = confirmPassword
+            };
+            var response = await client.PutAsJsonAsync("api/users/change-password", user);
+            if (response.IsSuccessStatusCode)
+            {
+                Toast.Make("تم تحديث كلمة المرور بنجاح", ToastDuration.Short).Show();
+            }
+            else
+            {
+                Toast.Make("فشل تحديث كلمة المرور", ToastDuration.Short).Show();
+            }
+        }
+
+
+        ///// sexstion Remove User
+        public ICommand DeleteAccountCommand { get; }
+        private async Task DeleteAccountAsync()
+        {
+            using var client = new HttpClient { BaseAddress = new Uri("https/eee/RemoveUser") };
+            if (!string.IsNullOrWhiteSpace(_token))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            try
+            {
+                var response = await client.DeleteAsync("users/me"); // غيّر المسار حسب الباك ايند
+                if (!response.IsSuccessStatusCode)
+                {
+                    await Application.Current.MainPage.DisplayAlert("خطأ", "فشل حذف الحساب.", "موافق");
+                    return;
+                }
+                
+
+                // تنظيف البيانات المحلية
+                SecureStorage.RemoveAll();
+                Preferences.Clear();
+
+                // الانتقال لشاشة تسجيل الدخول
+                await Shell.Current.GoToAsync("//LoginPage");
+            }
+            catch (Exception)
+            {
+                await Application.Current.MainPage.DisplayAlert("خطأ", "حدث خطأ أثناء العملية.", "موافق");
+            }
+        }
+
+        ///End Section User 
 
     }
 

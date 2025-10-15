@@ -187,7 +187,7 @@
     <value>Noch kein Konto?</value>
   </data>
   <data name="CreatAcount2" xml:space="preserve">
-    <value>Noch kein</value>
+    <value>Registrieren</value>
   </data>
   <data name="datebooking" xml:space="preserve">
     <value>Verfügbare Zeiten an diesem Tag</value>
@@ -238,6 +238,9 @@
   <data name="Login" xml:space="preserve">
     <value>Log in</value>
   </data>
+  <data name="Logoutmessag" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie sich abmelden möchten?</value>
+  </data>
   <data name="Mybook" xml:space="preserve">
     <value>Meine Termine</value>
     <comment>مواعيدي</comment>
@@ -247,6 +250,9 @@
   </data>
   <data name="NewMyPassord" xml:space="preserve">
     <value>Neues Passwort</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>Abbrechen</value>
   </data>
   <data name="NPasswordOnLogin" xml:space="preserve">
     <value>Passwort vergessen?</value>
@@ -265,6 +271,9 @@
   </data>
   <data name="pesoncard" xml:space="preserve">
     <value>Karteninhaber</value>
+  </data>
+  <data name="RemoveMyCount" xml:space="preserve">
+    <value>Möchten Sie das Konto wirklich löschen?</value>
   </data>
   <data name="ResetPasswordvv" xml:space="preserve">
     <value>Bitte geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen Ihres Passworts zu erhaltenn</value>
@@ -298,6 +307,9 @@
   </data>
   <data name="VisteInAboutUS" xml:space="preserve">
     <value>Reinkommen - Drankommen! Besuchen Sie uns einfach spontan - auch ohne Termin!</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>abmelden</value>
   </data>
   <data name="YouHaveAcount" xml:space="preserve">
     <value>Haben Sie schon ein Konto?</value>

@@ -237,6 +237,9 @@
   <data name="Login" xml:space="preserve">
     <value>تسجيل الدخول </value>
   </data>
+  <data name="Logoutmessag" xml:space="preserve">
+    <value>هل أنت متأكد من  تسجيل الخروج من  الحساب؟</value>
+  </data>
   <data name="Mybook" xml:space="preserve">
     <value>مواعيدي</value>
   </data>
@@ -245,6 +248,9 @@
   </data>
   <data name="NewMyPassord" xml:space="preserve">
     <value>كلمة المرور الجديدة</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>إلغاء</value>
   </data>
   <data name="NPasswordOnLogin" xml:space="preserve">
     <value>نسيت كلمة السر؟</value>
@@ -263,6 +269,9 @@
   </data>
   <data name="pesoncard" xml:space="preserve">
     <value>حامل البطاقة</value>
+  </data>
+  <data name="RemoveMyCount" xml:space="preserve">
+    <value>هل أنت متأكد من حذف الحساب؟</value>
   </data>
   <data name="ResetPasswordvv" xml:space="preserve">
     <value>الرجاء إدخال عنوان بريدك الإلكتروني لتلقي التعليمات حول كيفية إعادة تعيين كلمة المرور الخاصة بك</value>
@@ -296,6 +305,9 @@
   </data>
   <data name="VisteInAboutUS" xml:space="preserve">
     <value>تفضلوا بزيارتنا! تفضلوا بزيارتنا تلقائيًا - حتى بدون موعد!</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>تأكيد</value>
   </data>
   <data name="YouHaveAcount" xml:space="preserve">
     <value>هل لديك حساب بالفعل؟</value>

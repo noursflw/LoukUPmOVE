@@ -12,6 +12,7 @@ namespace loukupm.Model
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string confirmPassword { get; set; } 
         public string? ImageUser { get; set; }
 
         public User() { }

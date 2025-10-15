@@ -1,3 +1,7 @@
+using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
+using Microsoft.Maui.Controls.Shapes;     // RoundRectangle
+using Microsoft.Maui.Graphics;
+
 using System.Threading.Tasks;
 
 namespace loukupm.View;
@@ -87,6 +91,18 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_8(object sender, EventArgs e)
     {
-      await Navigation.PushAsync(new LoginPage());  
+        var popup = new MassegBoxLogout();
+        await this.ShowPopupAsync(popup);  
+    }
+
+    private async void Button_Clicked_9(object sender, EventArgs e)
+    {
+
+        var popup = new RemoveUserPopup();
+
+       
+
+        await this.ShowPopupAsync(popup);
+
     }
 }

@@ -12,6 +12,14 @@ public partial class SinginPage : ContentPage
 
     private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//LoginPage");
+        await Shell.Current.GoToAsync("LoginPage");
     }
+
+    protected override bool OnBackButtonPressed()
+    {
+        Shell.Current.GoToAsync("LoginPage");
+        return true;
+    }
+
+
 }

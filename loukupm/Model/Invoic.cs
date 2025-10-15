@@ -9,5 +9,6 @@ namespace loukupm.Model
     //كلاس المواعيد
     public class Invoic
     {
+        
     }
 }

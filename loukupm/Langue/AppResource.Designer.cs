@@ -268,7 +268,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Noch kein.
+        ///   Looks up a localized string similar to Registrieren.
         /// </summary>
         internal static string CreatAcount2 {
             get {
@@ -421,6 +421,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sind Sie sicher, dass Sie sich abmelden möchten?.
+        /// </summary>
+        internal static string Logoutmessag {
+            get {
+                return ResourceManager.GetString("Logoutmessag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meine Termine.
         /// </summary>
         internal static string Mybook {
@@ -444,6 +453,15 @@ namespace loukupm.Langue {
         internal static string NewMyPassord {
             get {
                 return ResourceManager.GetString("NewMyPassord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abbrechen.
+        /// </summary>
+        internal static string no {
+            get {
+                return ResourceManager.GetString("no", resourceCulture);
             }
         }
         
@@ -498,6 +516,15 @@ namespace loukupm.Langue {
         internal static string pesoncard {
             get {
                 return ResourceManager.GetString("pesoncard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Möchten Sie das Konto wirklich löschen?.
+        /// </summary>
+        internal static string RemoveMyCount {
+            get {
+                return ResourceManager.GetString("RemoveMyCount", resourceCulture);
             }
         }
         
@@ -597,6 +624,15 @@ namespace loukupm.Langue {
         internal static string VisteInAboutUS {
             get {
                 return ResourceManager.GetString("VisteInAboutUS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to abmelden.
+        /// </summary>
+        internal static string yes {
+            get {
+                return ResourceManager.GetString("yes", resourceCulture);
             }
         }
         

@@ -256,7 +256,7 @@
                         </Frame.GestureRecognizers>
                     </Frame>
                     <Button Clicked="Button_Clicked_8" BackgroundColor="Black" Text="Log Out" ImageSource="logout.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
-                    <Button BackgroundColor="Black" Text="Remove My Account" ImageSource="exite.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
+                    <Button BackgroundColor="Black" Clicked="Button_Clicked_9" Text="Remove My Account" ImageSource="exite.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
                 </VerticalStackLayout>
                
             </VerticalStackLayout>
