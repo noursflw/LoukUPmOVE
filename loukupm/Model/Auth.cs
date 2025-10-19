@@ -22,6 +22,8 @@ namespace loukupm.Model
         {
             [JsonPropertyName("access_token")]
             public string Token { get; set; }
+
+            [JsonPropertyName("user")]
             public UserData User { get; set; }
         }
 
@@ -67,6 +69,13 @@ namespace loukupm.Model
 
             [JsonPropertyName("errors")]
             public Dictionary<string, string[]> Errors { get; set; }
+        }
+
+       
+        public class OTP 
+        { 
+            public string Email { get; set; }
+            public string Code { get; set; }
         }
 
 

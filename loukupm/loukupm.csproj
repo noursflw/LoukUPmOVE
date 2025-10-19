@@ -63,6 +63,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.83" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.83" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+		<PackageReference Include="OneSignalSDK.DotNet" Version="5.2.2" />
 		<PackageReference Include="Sharpnado.HorusSkeleton.Maui" Version="2.0.0" />
 		<PackageReference Include="Stripe.net" Version="49.0.0" />
 		<PackageReference Include="The49.Maui.BottomSheet" Version="8.0.3" />
@@ -103,6 +104,9 @@
 	  <MauiXaml Update="View\ChackoutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\DisplayAlretCoustm.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\EditePasswordPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -112,10 +116,19 @@
 	  <MauiXaml Update="View\EditPasswordVerification.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\EroreInputEmaile.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\NoEnternetConacted.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\NoEqaulData.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\NotifictionPage.xaml">

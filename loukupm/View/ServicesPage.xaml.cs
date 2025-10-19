@@ -26,13 +26,15 @@ public partial class ServicesPage : ContentPage
         if (service == null) return;
 
         var vm = AppViewModel.Instance;
-       
+
+        //  ÂÌ∆… ÕÃ“ ÃœÌœ
+        vm.CurrentBooking = new Booking();
+
         vm.CurrentBooking.ServiceName = service.NameServies;
         vm.CurrentBooking.ServiceType = service.Catgery;
         await Navigation.PushAsync(new TerminbuchenPage());
-
-
     }
+
 
     private DateTime _lastBackPressed;
 

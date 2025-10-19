@@ -1,6 +1,8 @@
 ﻿using loukupm.View;
-using System.Globalization;
 using Microsoft.Maui.Storage;
+using OneSignalSDK.DotNet;
+using OneSignalSDK.DotNet.Core.Debug;
+using System.Globalization;
 
 namespace loukupm
 {
@@ -9,6 +11,9 @@ namespace loukupm
         public App()
         {
             InitializeComponent();
+            OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
+            OneSignal.Initialize("c3ea5015-81d2-456f-8453-97bb1f773d7b");
+            OneSignal.Notifications.RequestPermissionAsync(true);
 
             Langue.LocalizationResourcesManager.Instanse.LanguageChanged += (culture) =>
             {

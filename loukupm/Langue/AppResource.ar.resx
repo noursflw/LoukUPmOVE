@@ -219,6 +219,21 @@
   <data name="EMail" xml:space="preserve">
     <value>اسم المستخدم </value>
   </data>
+  <data name="EnterEmailOrPassword" xml:space="preserve">
+    <value>يرجى إدخال البريد الإلكتروني وكلمة المرور</value>
+  </data>
+  <data name="EroreConacted" xml:space="preserve">
+    <value>خطأ في الاتصال</value>
+  </data>
+  <data name="EroreInput" xml:space="preserve">
+    <value>خطأ في الإدخال</value>
+  </data>
+  <data name="ErorEmailInput" xml:space="preserve">
+    <value>يرجى إدخال بريد إلكتروني صحيح</value>
+  </data>
+  <data name="ErorlogIn" xml:space="preserve">
+    <value>Anmeldefehler</value>
+  </data>
   <data name="GoogleLogin" xml:space="preserve">
     <value>واصل مع جوجل</value>
   </data>
@@ -251,6 +266,12 @@
   </data>
   <data name="no" xml:space="preserve">
     <value>إلغاء</value>
+  </data>
+  <data name="NoEnternetConctesd" xml:space="preserve">
+    <value>لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى</value>
+  </data>
+  <data name="NOTEqlalepor" xml:space="preserve">
+    <value>البريد الإلكتروني أو كلمة المرور غير صحيحة</value>
   </data>
   <data name="NPasswordOnLogin" xml:space="preserve">
     <value>نسيت كلمة السر؟</value>

@@ -78,7 +78,7 @@
                         FontFamily="georgia-bold"
                         BorderWidth="1" 
                         Text="{loc:Translate Name=Login}" 
-                        Clicked="Button_Clicked"
+                        Clicked="OnLoginClicked"
                         CornerRadius="16"
                         HeightRequest="60" 
                         Margin="25"  />

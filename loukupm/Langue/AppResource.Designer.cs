@@ -367,6 +367,51 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein..
+        /// </summary>
+        internal static string EnterEmailOrPassword {
+            get {
+                return ResourceManager.GetString("EnterEmailOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kommunikationsfehler.
+        /// </summary>
+        internal static string EroreConacted {
+            get {
+                return ResourceManager.GetString("EroreConacted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eingabefehler.
+        /// </summary>
+        internal static string EroreInput {
+            get {
+                return ResourceManager.GetString("EroreInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie eine gültige E-Mail-Adresse ein..
+        /// </summary>
+        internal static string ErorEmailInput {
+            get {
+                return ResourceManager.GetString("ErorEmailInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anmeldefehler.
+        /// </summary>
+        internal static string ErorlogIn {
+            get {
+                return ResourceManager.GetString("ErorlogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mit Google fortfahren.
         /// </summary>
         internal static string GoogleLogin {
@@ -462,6 +507,24 @@ namespace loukupm.Langue {
         internal static string no {
             get {
                 return ResourceManager.GetString("no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Es besteht keine Internetverbindung. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut..
+        /// </summary>
+        internal static string NoEnternetConctesd {
+            get {
+                return ResourceManager.GetString("NoEnternetConctesd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Falsche E-Mail oder falsches Passwort.
+        /// </summary>
+        internal static string NOTEqlalepor {
+            get {
+                return ResourceManager.GetString("NOTEqlalepor", resourceCulture);
             }
         }
         

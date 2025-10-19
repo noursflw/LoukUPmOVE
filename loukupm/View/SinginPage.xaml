@@ -16,17 +16,17 @@
             </Grid>
             <VerticalStackLayout>
                 <Label Text="{loc:Translate Name=NameUser}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
-                <material:TextField x:Name="NameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="Name" />
+                <material:TextField x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="Name" />
                 <Label Text="{loc:Translate Name=EMail}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
-                <material:TextField x:Name="EmailEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=EMail}" />
+                <material:TextField x:Name="RegisterEmailEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=EMail}" />
                 <Label FontSize="16" Margin="12,24,0,0" Text="{loc:Translate Name=Password}" TextColor="White" Padding="10" />
-                <material:TextField x:Name="PasswordEntry" Title="{loc:Translate Name=Password }" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
+                <material:TextField x:Name="RegisterPasswordEntry" Title="{loc:Translate Name=Password }" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
                     <material:TextField.Attachments>
                         <material:TextFieldPasswordShowHideAttachment />
                     </material:TextField.Attachments>
                 </material:TextField>
                 <Label FontSize="16" Margin="12,24,0,0" Text="{loc:Translate Name=AcspetNewpassword}" TextColor="White" Padding="10" />
-                <material:TextField x:Name="ConfirmPasswordEntry" Title="{loc:Translate Name=AcspetNewpassword}" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
+                <material:TextField x:Name="RegisterConfirmPasswordEntry" Title="{loc:Translate Name=AcspetNewpassword}" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
                     <material:TextField.Attachments>
                         <material:TextFieldPasswordShowHideAttachment />
                     </material:TextField.Attachments>
@@ -34,6 +34,7 @@
 
                 <Button
                     TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
+                    Clicked="OnRegisterClicked"
                     BorderWidth="1" Text="{loc:Translate Name=CreatAcount2}" CornerRadius="16"
                     HeightRequest="60" Margin="25" />
                 <HorizontalStackLayout Margin="60,20,0,0" Spacing="2">
