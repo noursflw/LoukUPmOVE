@@ -104,6 +104,9 @@
 	  <MauiXaml Update="View\ChackoutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\CompletedLogin.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\DisplayAlretCoustm.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

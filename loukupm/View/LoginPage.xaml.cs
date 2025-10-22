@@ -121,7 +121,8 @@ public partial class LoginPage : ContentPage
                 if (!string.IsNullOrEmpty(loginResponse.Token))
                     await SecureStorage.SetAsync("auth_token", loginResponse.Token);
 
-                await DisplayAlert(" „  ”ÃÌ· «·œŒÊ·", $"„—Õ»« {loginResponse.User.Name} ??", "„Ê«›ﬁ");
+                var popup = new CompletedLogin();
+                await this.ShowPopupAsync(popup);
                 await Shell.Current.GoToAsync("//HomePage");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)

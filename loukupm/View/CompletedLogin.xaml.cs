@@ -1,20 +1,17 @@
 using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.ApplicationModel.Communication;
-using Stripe.Climate;
 namespace loukupm.View;
 
-public partial class NoEqaulData : Popup
+public partial class CompletedLogin : Popup
 {
-	public NoEqaulData()
+	public CompletedLogin()
 	{
 		InitializeComponent();
         this.Color = Colors.Transparent;
-
     }
 
     private void CancelClicked(object? sender, EventArgs e)
     {
-      
+
         Close(false);
     }
 }

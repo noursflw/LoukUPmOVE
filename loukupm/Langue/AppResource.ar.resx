@@ -180,6 +180,9 @@
   <data name="chosesservies" xml:space="preserve">
     <value>اختيار ال خدمة</value>
   </data>
+  <data name="CompletedLogin" xml:space="preserve">
+    <value>تم تسجيل الدخول</value>
+  </data>
   <data name="ConifermPassword" xml:space="preserve">
     <value>تأكيد كلمة المرور</value>
   </data>
@@ -290,6 +293,9 @@
   </data>
   <data name="pesoncard" xml:space="preserve">
     <value>حامل البطاقة</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>رقم الهاتف</value>
   </data>
   <data name="RemoveMyCount" xml:space="preserve">
     <value>هل أنت متأكد من حذف الحساب؟</value>

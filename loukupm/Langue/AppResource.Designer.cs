@@ -250,6 +250,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sie sind angemeldet.
+        /// </summary>
+        internal static string CompletedLogin {
+            get {
+                return ResourceManager.GetString("CompletedLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password bestätigen.
         /// </summary>
         internal static string ConifermPassword {
@@ -579,6 +588,15 @@ namespace loukupm.Langue {
         internal static string pesoncard {
             get {
                 return ResourceManager.GetString("pesoncard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telefonnummer.
+        /// </summary>
+        internal static string PhoneNumber {
+            get {
+                return ResourceManager.GetString("PhoneNumber", resourceCulture);
             }
         }
         

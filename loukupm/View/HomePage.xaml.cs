@@ -1,6 +1,7 @@
-namespace loukupm.View;
+ï»¿namespace loukupm.View;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using loukupm.Model;
 using loukupm.ViewModel;
 using System.Globalization;
 
@@ -35,27 +36,27 @@ using System.Globalization;
 
     protected override bool OnBackButtonPressed()
     {
-        // ÅĞÇ ßÇä åäÇß ÕİÍÇÊ ÓÇÈŞÉ
+        // Ø¥Ø°Ø§ ÙƒØ§Ù† Ù‡Ù†Ø§Ùƒ ØµÙØ­Ø§Øª Ø³Ø§Ø¨Ù‚Ø©
         if (Navigation.NavigationStack.Count > 1)
         {
             Shell.Current.GoToAsync("//HomePage");
-            return true; // ãäÚ ÇáÅÌÑÇÁ ÇáÇİÊÑÇÖí
+            return true; // Ù…Ù†Ø¹ Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡ Ø§Ù„Ø§ÙØªØ±Ø§Ø¶ÙŠ
         }
         else
         {
             var currentTime = DateTime.Now;
             if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
             {
-                // ÎÑæÌ ãä ÇáÊØÈíŞ ÈÚÏ ÇáÖÛØ ãÑÊíä
+                // Ø®Ø±ÙˆØ¬ Ù…Ù† Ø§Ù„ØªØ·Ø¨ÙŠÙ‚ Ø¨Ø¹Ø¯ Ø§Ù„Ø¶ØºØ· Ù…Ø±ØªÙŠÙ†
                 System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
             }
             else
             {
                 _lastBackPressed = currentTime;
-                // ÚÑÖ Toast
-                ShowToast("ÇÖÛØ ãÑÉ ÃÎÑì ááÎÑæÌ");
+                // Ø¹Ø±Ø¶ Toast
+                ShowToast("Ø§Ø¶ØºØ· Ù…Ø±Ø© Ø£Ø®Ø±Ù‰ Ù„Ù„Ø®Ø±ÙˆØ¬");
             }
-            return true; // ãäÚ ÇáÅÌÑÇÁ ÇáÇİÊÑÇÖí
+            return true; // Ù…Ù†Ø¹ Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡ Ø§Ù„Ø§ÙØªØ±Ø§Ø¶ÙŠ
         }
     }
     private async void ShowToast(string message)
@@ -89,4 +90,34 @@ using System.Globalization;
         Preferences.Set("AppLanguage", newCulture.Name);
         Langue.LocalizationResourcesManager.Instanse.SetCulture(newCulture);
     }
+
+
+    private Frame _lastSelectedFrame;
+
+    private async void OnCategoryTapped(object sender, TappedEventArgs e)
+    {
+        if (sender is Frame tappedFrame && tappedFrame.BindingContext is Category selectedCategory)
+        {
+            var vm = BindingContext as AppViewModel;
+            vm?.FilterServices(selectedCategory);
+
+            if (_lastSelectedFrame != null)
+                _lastSelectedFrame.BorderColor = Color.FromArgb("#444444");
+
+            tappedFrame.BorderColor = Color.FromArgb("#EBD750");
+            _lastSelectedFrame = tappedFrame;
+
+            // ğŸ”¹ Ø¶Ø¨Ø· AnchorX/AnchorY
+            tappedFrame.AnchorX = 0.5;
+            tappedFrame.AnchorY = 0.5;
+
+            // ØªØ£Ø«ÙŠØ± Scale
+            await tappedFrame.ScaleTo(1.05, 100, Easing.CubicOut);
+            await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
+        }
+    }
+
+
+
+
 }

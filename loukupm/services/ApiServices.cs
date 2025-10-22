@@ -45,14 +45,41 @@ namespace loukupm.services
 
         //}
         public async Task<List<WorkTeam>> GetWorkTeamsAsync()
+{
+    try
+    {
+        SetAuthorizationHeader();
+
+        var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/providers?search=&branch_id=1&service_id=&sort_by=first_name&sort_direction=asc&per_page=15");
+        if (!response.IsSuccessStatusCode)
         {
-            using var client = new HttpClient();
-            var json = await client.GetStringAsync("https://mocki.io/v1/66002b9b-c1c0-4dc0-92e1-63334554ccbd");
-
-            var root = JsonSerializer.Deserialize<Root>(json);
-
-            return root?.Workers ?? new List<WorkTeam>();
+            Console.WriteLine($"❌ API error: {response.StatusCode}");
+            return new List<WorkTeam>();
         }
+
+        var json = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"🧾 Raw JSON: {json}");
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        // تحويل JSON إلى الكلاس
+        var wrapper = JsonSerializer.Deserialize<WorkTeamWrapper>(json, options);
+
+        var list = wrapper?.Data ?? new List<WorkTeam>();
+
+        Console.WriteLine($"✅ Loaded {list.Count} work team members");
+        return list;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Exception while loading work teams: {ex.Message}");
+        return new List<WorkTeam>();
+    }
+}
+
 
         public async Task<List<Notifiction>> GetNotifictionsAsync()
         {
@@ -87,17 +114,50 @@ namespace loukupm.services
             }
             return new List<User>();
         }
-        public async Task<List<Servies>> GetServiesasync()
+      
+
+
+        public async Task<List<Servies>> GetServiesAsync()
         {
-            SetAuthorizationHeader();
-            var response = await _httpClient.GetAsync("https://api.example.com/services");
-            if (response.IsSuccessStatusCode)
+            try
             {
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/services?category_id=&featured=&search=&sort_by=sort_order&sort_direction=asc&per_page=15");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ API error: {response.StatusCode}");
+                    return new List<Servies>();
+                }
+
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Servies>>(json);
+                Console.WriteLine($"🧾 Raw JSON: {json}");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                // ✅ Deserialize حسب الموديل الجديد
+                var wrapper = JsonSerializer.Deserialize<ServiesWrapper>(json, options);
+
+                // ✅ الـ Data صارت قائمة جاهزة
+                var list = wrapper?.Data ?? new List<Servies>();
+
+                Console.WriteLine($"✅ Loaded {list.Count} services");
+                return list;
             }
-            return new List<Servies>();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading services: {ex.Message}");
+                return new List<Servies>();
+            }
         }
+
+
+
+
+
         public async Task<bool> SubmitBookingAsync(Booking booking)
         {
             SetAuthorizationHeader();

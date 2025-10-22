@@ -42,6 +42,8 @@ namespace loukupm.Model
 
             [JsonPropertyName("email")]
             public string Email { get; set; }
+            [JsonPropertyName("Phone")]
+            public string Phone { get; set; }
 
             [JsonPropertyName("password")]
             public string Password { get; set; }

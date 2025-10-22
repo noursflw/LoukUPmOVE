@@ -180,6 +180,9 @@
   <data name="chosesservies" xml:space="preserve">
     <value>Eine Dienstleistung auswählen</value>
   </data>
+  <data name="CompletedLogin" xml:space="preserve">
+    <value>Sie sind angemeldet</value>
+  </data>
   <data name="ConifermPassword" xml:space="preserve">
     <value>Password bestätigen</value>
   </data>
@@ -290,6 +293,9 @@
   </data>
   <data name="pesoncard" xml:space="preserve">
     <value>Karteninhaber</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Telefonnummer</value>
   </data>
   <data name="RemoveMyCount" xml:space="preserve">
     <value>Möchten Sie das Konto wirklich löschen?</value>

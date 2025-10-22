@@ -29,6 +29,7 @@ public partial class SinginPage : ContentPage
     {
         string name = RegisterNameEntry.Text?.Trim();
         string email = RegisterEmailEntry.Text?.Trim();
+        string phone = RegisterPhoneEntry.Text?.Trim();
         string password = RegisterPasswordEntry.Text;
         string password_confirmation = RegisterConfirmPasswordEntry.Text;
 
@@ -36,6 +37,7 @@ public partial class SinginPage : ContentPage
         if (string.IsNullOrWhiteSpace(name) ||
             string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password) ||
+            string.IsNullOrWhiteSpace(phone) ||
             string.IsNullOrWhiteSpace(password_confirmation))
         {
             await DisplayAlert("خطأ في الإدخال", "يرجى تعبئة جميع الحقول المطلوبة", "موافق");
@@ -73,6 +75,7 @@ public partial class SinginPage : ContentPage
         {
             Name = name,
             Email = email,
+            Phone = phone,
             Password = password,
             password_confirmation = password_confirmation
         };

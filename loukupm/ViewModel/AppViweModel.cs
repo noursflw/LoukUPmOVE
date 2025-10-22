@@ -34,16 +34,18 @@ namespace loukupm.ViewModel
 
         // Collections
 
-        [ObservableProperty] private ObservableCollection<Servies> services;
-        [ObservableProperty] private ObservableCollection<Servies> filteredServices;
+        [ObservableProperty] private ObservableCollection<Servies> services = new();
+        [ObservableProperty] private ObservableCollection<Servies> filteredServices = new(); 
+    
         [ObservableProperty] private ObservableCollection<Booking> bookings;
-        [ObservableProperty] private ObservableCollection<WorkTeam> workTeams;
+        [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
+        [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
         [ObservableProperty] private ObservableCollection<Notifiction> notifications;
+        private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel());
+        public static AppViewModel Instance => _instance.Value;
 
         private readonly ApiServices _apiServices = new ApiServices();
-        private static AppViewModel _instance;     // يخزن النسخة الوحيدة
-        public static AppViewModel Instance        // واجهة الوصول العامة
-            => _instance ??= new AppViewModel();
+       
         private readonly string _token;
         public ICommand SelectServiceButtonCommand { get; }
         public AppViewModel()
@@ -127,53 +129,157 @@ namespace loukupm.ViewModel
         {
             try
             {
+                IsWorkTeamLoad = true; 
+
                 var data = await _apiServices.GetWorkTeamsAsync();
-                WorkTeams = new ObservableCollection<WorkTeam>(data);
+
+               
+                if (data == null || data.Count == 0)
+                    return;
+
+
+                WorkTeams.Clear();
+
+
+                foreach (var member in data)
+                    WorkTeams.Add(member);
+
+               
+                FilteredWorkTeams = new ObservableCollection<WorkTeam>(WorkTeams);
+
+                
+
+                Console.WriteLine($"✅ Loaded {WorkTeams.Count} work team members");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading work teams: {ex.Message}");
+                Console.WriteLine($"❌ Error loading work teams: {ex}");
             }
             finally
             {
-                IsWorkTeamLoad = false;
+                IsWorkTeamLoad = false; 
             }
         }
 
+
+
+        public ObservableCollection<Category> Categories { get; set; } = new();
+
+        //private async Task LoadServicesAsync()
+        //{
+        //    try
+        //    {
+        //        IsServicesLoad = true;
+        //        IsCatogory = true;
+        //        Console.WriteLine("⏳ Starting service load...");
+
+        //        var data = await _apiServices.GetServiesAsync();
+        //        Console.WriteLine($"✅ Data fetched successfully: {data?.Count} items");
+
+        //        if (data == null || data.Count == 0)
+        //        {
+        //            Console.WriteLine("⚠️ No services returned from API.");
+        //            return;
+        //        }
+
+        //        Services.Clear();
+        //        foreach (var item in data)
+        //            Services.Add(item);
+
+        //        FilteredServices.Clear();
+        //        foreach (var item in Services)
+        //            FilteredServices.Add(item);
+        //        IsServicesLoad = false;
+        //        IsCatogory = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"❌ Error loading services: {ex}");
+        //    }
+        //    finally
+        //    {
+
+        //        Console.WriteLine("🏁 Done loading services.");
+        //    }
+        //}
         private async Task LoadServicesAsync()
         {
             try
             {
-                var data = await _apiServices.GetServiesasync(); // ✅ مو WorkTeams
-                Services = new ObservableCollection<Servies>(data);
+                IsServicesLoad = true;
+                IsCatogory = true;
 
-                // نسخة للفلترة
+                var data = await _apiServices.GetServiesAsync();
+                if (data == null || data.Count == 0)
+                    return;
+
+                Services.Clear();
+                foreach (var item in data)
+                    Services.Add(item);
+
                 FilteredServices = new ObservableCollection<Servies>(Services);
+
+                // استخراج التصنيفات بدون تكرار
+                Categories.Clear();
+                var uniqueCategories = Services
+                    .Where(s => s.Category != null)
+                    .GroupBy(s => s.Category.Name)
+                    .Select(g => g.First().Category)
+                    .ToList();
+
+                foreach (var cat in uniqueCategories)
+                    Categories.Add(cat);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading services: {ex.Message}");
+                Console.WriteLine($"❌ Error loading services: {ex}");
             }
             finally
             {
                 IsServicesLoad = false;
+                IsCatogory = false;
             }
         }
 
-        // فلترة الخدمات حسب النوع
-        public void FilterServices(string type)
+        [ObservableProperty]
+        private Category selectedCategory;
+        public void FilterServices(Category category)
         {
-            if (string.IsNullOrWhiteSpace(type) || type == "الكل")
+            SelectedCategory = category;
+
+            if (category == null || string.IsNullOrWhiteSpace(category.Name) || category.Name == "الكل")
             {
                 FilteredServices = new ObservableCollection<Servies>(Services);
             }
             else
             {
                 FilteredServices = new ObservableCollection<Servies>(
-                    Services?.Where(s => s.Catgery == type) ?? Enumerable.Empty<Servies>()
+                    Services.Where(s => s.Category?.Name == category.Name)
                 );
             }
         }
+
+
+
+
+
+
+        // فلترة الخدمات حسب النوع
+        //public void FilterServices(string type)
+        //{
+        //    if (string.IsNullOrWhiteSpace(type) || type == "الكل")
+        //    {
+        //        FilteredServices = new ObservableCollection<Servies>(Services);
+        //    }
+        //    else
+        //    {
+        //        FilteredServices = new ObservableCollection<Servies>(
+        //            Services?.Where(s => s.Category != null && s.Category.Name == type)
+        //                     ?? Enumerable.Empty<Servies>()
+        //        );
+        //    }
+        //}
+
 
 
         ///post For send Email use on forget password 
