@@ -21,6 +21,7 @@ namespace loukupm.Model
 
         [JsonPropertyName("avatar_url")]
         public string? Image { get; set; }
+        public string ImageSafe => string.IsNullOrEmpty(Image) ? "placeholder.png" : Image;
 
         [JsonPropertyName("created_at")]
         public DateTime WorkTime { get; set; }

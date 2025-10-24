@@ -18,31 +18,17 @@ public partial class ServicesPage : ContentPage
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
 
-        var vm = AppViewModel.Instance;
+        if (AppViewModel.Instance.CurrentBooking.SelectedServices == null)
+            AppViewModel.Instance.CurrentBooking.SelectedServices = new List<Servies>();
 
-        vm.CurrentBooking = new Booking
-        {
-            ServiceName = service.NameServies,
-            ServiceType = service.Category?.Name
-        };
-
-        await Navigation.PushAsync(new TerminbuchenPage());
+        if (!AppViewModel.Instance.CurrentBooking.SelectedServices.Contains(service))
+            AppViewModel.Instance.CurrentBooking.SelectedServices.Add(service);
+        else
+            AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
     }
 
-    //private void OnCategoryTapped(object sender, TappedEventArgs e)
-    //{
-    //    if (sender is Frame frame && frame.BindingContext is Category selectedCategory)
-    //    {
-    //        var vm = BindingContext as AppViewModel;
-    //        vm?.FilterServices(selectedCategory.Name);
 
-    //        // 🔥 تغيير لون الفريم لتوضيح التحديد (اختياري)
-    //        frame.BackgroundColor = Color.FromArgb("#666666");
-
-    //        // ممكن نضيف تأثير بصري بسيط
-    //        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(50));
-    //    }
-    //}
+   
 
     private Frame _lastSelectedFrame;
 
@@ -82,5 +68,10 @@ public partial class ServicesPage : ContentPage
     private async void Button_Clicked(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
+    }
+
+    private async void Button_Clicked_2(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new TerminbuchenPage());
     }
 }

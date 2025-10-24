@@ -47,7 +47,7 @@
                 <material:TextField  Margin="25,35,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="search.svg" Title="search"    HeightRequest="56"  />
                 <CollectionView x:Name="CategoriesCollectionView"
                 ItemsSource="{Binding Categories}" 
-                Margin="17,10,10,10">
+                Margin="30,10,10,10">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
                     </CollectionView.ItemsLayout>
@@ -135,7 +135,7 @@
             </VerticalStackLayout>
         </ScrollView>
         <Button  VerticalOptions="End" 
-                 HorizontalOptions="Fill" Text="{Loc:Translate Name=add}" CornerRadius="16" FontSize="16" FontFamily="georgia-bold" TextColor="Black"  Margin="35" />
+                 HorizontalOptions="Fill" Text="{Loc:Translate Name=add}" CornerRadius="16" FontSize="16" Clicked="Button_Clicked_2" FontFamily="georgia-bold" TextColor="Black"  Margin="35" />
         <Border Margin="0,20,0,0"
              BackgroundColor="#444444"
              HeightRequest="20"

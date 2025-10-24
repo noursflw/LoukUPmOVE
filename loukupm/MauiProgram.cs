@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Maui;
+using FFImageLoading.Maui;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Threading;
 using The49.Maui.BottomSheet;
 using UraniumUI;
+
 
 namespace loukupm
 {
@@ -26,7 +28,10 @@ namespace loukupm
                 .UseUraniumUI()
                 .UseUraniumUIMaterial()
                 .UseBottomSheet()
-                .UseMauiCommunityToolkit();
+                .UseMauiCommunityToolkit()
+                .UseFFImageLoading();
+
+
 
 #if DEBUG
             builder.Logging.AddDebug();

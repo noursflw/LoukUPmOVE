@@ -1,13 +1,14 @@
 ﻿namespace loukupm.View;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using FFImageLoading.Maui;
 using loukupm.Model;
 using loukupm.ViewModel;
 using System.Globalization;
 
 
 
-   public partial class HomePage : ContentPage
+public partial class HomePage : ContentPage
 {
 	public HomePage()
 	{
@@ -29,7 +30,16 @@ using System.Globalization;
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AboutUS());
+        var service = (sender as Button)?.BindingContext as Servies;
+        if (service == null) return;
+
+        if (AppViewModel.Instance.CurrentBooking.SelectedServices == null)
+            AppViewModel.Instance.CurrentBooking.SelectedServices = new List<Servies>();
+
+        if (!AppViewModel.Instance.CurrentBooking.SelectedServices.Contains(service))
+            AppViewModel.Instance.CurrentBooking.SelectedServices.Add(service);
+        else
+            AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
     }
 
     private DateTime _lastBackPressed;
@@ -116,7 +126,7 @@ using System.Globalization;
             await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
         }
     }
-
+    
 
 
 

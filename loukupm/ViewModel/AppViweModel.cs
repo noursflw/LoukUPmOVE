@@ -69,9 +69,24 @@ namespace loukupm.ViewModel
             {
                 if (service == null) return;
 
-                SelectedService = service;
-                CurrentBooking.ServiceName = service.NameServies;
+                if (CurrentBooking.SelectedServices == null)
+                    CurrentBooking.SelectedServices = new List<Servies>();
+
+                if (!CurrentBooking.SelectedServices.Contains(service))
+                    CurrentBooking.SelectedServices.Add(service);
+                else
+                    CurrentBooking.SelectedServices.Remove(service);
+
+                // طباعة القائمة
+                Console.WriteLine("✅ Current Selected Services:");
+                foreach (var s in CurrentBooking.SelectedServices)
+                    Console.WriteLine($"- {s.NameServies}");
             });
+
+
+
+
+
 
 
         }
@@ -403,6 +418,8 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string selectedServiceName;
         [ObservableProperty] private DateTime selectedDate;
         [ObservableProperty] private TimeSpan selectedTime;
+       
+
 
         public Booking CurrentBooking { get; set; } = new();
 
@@ -411,7 +428,11 @@ namespace loukupm.ViewModel
         public async Task PostBookingAsync()
         {
             var booking = CurrentBooking;
-            if (booking == null) return;
+            if (booking == null || booking.SelectedServices.Count == 0)
+            {
+                await App.Current.MainPage.DisplayAlert("خطأ", "الرجاء اختيار خدمة واحدة على الأقل", "موافق");
+                return;
+            }
 
             using var client = new HttpClient();
             var json = JsonSerializer.Serialize(booking);
@@ -427,8 +448,8 @@ namespace loukupm.ViewModel
             {
                 await App.Current.MainPage.DisplayAlert("خطأ", ex.Message, "موافق");
             }
-
         }
+
         ///Section Remove Booking
 
 

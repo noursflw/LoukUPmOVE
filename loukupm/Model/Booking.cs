@@ -11,6 +11,8 @@ namespace loukupm.Model
     {
         public string ServiceType { get; set; }
         public string ServiceName { get; set; }
+        public List<Servies> SelectedServices { get; set; } = new();
+
         public string ProviderId { get; set; }
         public string ProviderName { get; set; }
         public DateTime Date { get; set; }
