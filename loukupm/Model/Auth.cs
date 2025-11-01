@@ -16,12 +16,17 @@ namespace loukupm.Model
 
             [JsonPropertyName("password")]
             public string Password { get; set; }
+
+            [JsonPropertyName("refresh_token")]
+            public string RefreshToken { get; set; }
         }
 
         public class LoginResponse
         {
             [JsonPropertyName("access_token")]
             public string Token { get; set; }
+            [JsonPropertyName("refresh_token")]
+            public string Refresh_Token { get; set; }
 
             [JsonPropertyName("user")]
             public UserData User { get; set; }
@@ -85,9 +90,22 @@ namespace loukupm.Model
 
     public class AuthResponse
     {
+        public string Token { get; set; }
         public bool Success { get; set; }
         public string Message { get; set; }
-        public string Token { get; set; }
         public User User { get; set; }
+
+        [JsonPropertyName("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonPropertyName("refresh_token")]
+        public string RefreshToken { get; set; }
+
+        [JsonPropertyName("access_expires_at")]
+        public string AccessExpiresAt { get; set; }
+
+        [JsonPropertyName("refresh_expires_at")]
+        public string RefreshExpiresAt { get; set; }
     }
+
 }

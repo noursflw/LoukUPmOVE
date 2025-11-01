@@ -1,8 +1,11 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using loukupm.Model;
 using loukupm.services;
+using loukupm.View;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -28,6 +31,8 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool invoiceLoad;
         [ObservableProperty] private bool isloadBooking;
         [ObservableProperty] private bool isLoadNotifiction;
+        [ObservableProperty] private bool isLoadUser;
+
         /// <summary>
         /// /loclazion
         /// </summary>
@@ -35,9 +40,11 @@ namespace loukupm.ViewModel
         // Collections
 
         [ObservableProperty] private ObservableCollection<Servies> services = new();
-        [ObservableProperty] private ObservableCollection<Servies> filteredServices = new(); 
-    
-        [ObservableProperty] private ObservableCollection<Booking> bookings;
+        [ObservableProperty] private ObservableCollection<Servies> filteredServices = new();
+
+        [ObservableProperty] private ObservableCollection<Booking> bookings = new();
+        [ObservableProperty] private ObservableCollection<Appointment> appointments = new();
+
         [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
         [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
         [ObservableProperty] private ObservableCollection<Notifiction> notifications;
@@ -57,13 +64,15 @@ namespace loukupm.ViewModel
             _ = LoadNotificationsAsync();
             _ = LoadWorkTeamsAsync();
             _ = LoadServicesAsync();
+            _ = LoadUser();
+            _ = LoadBookingsAsync();
             _token = SecureStorage.GetAsync("auth_token").Result;
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
             ConfirmCommand = new Command(async () => await SendCodeAsync());
             PostEmailCommand = new Command<string>(async (email) => await PostEmailAsync(email));
             ChangePasswordCommand = new Command(async () => await ChangePasswordAsync());
             PostBookingCommand = new Command(async () => await PostBookingAsync());
-            UpDateUserCommand = new Command(async () => await PostUserAsync());
+            UpdateUserCommand = new Command(async () => await UpdateUserInfo());
             ChangePasswordUserCommand = new Command(async () => await ChangeUserPasswordAsync());
             SelectServiceButtonCommand = new Command<Servies>(service =>
             {
@@ -72,16 +81,21 @@ namespace loukupm.ViewModel
                 if (CurrentBooking.SelectedServices == null)
                     CurrentBooking.SelectedServices = new List<Servies>();
 
-                if (!CurrentBooking.SelectedServices.Contains(service))
+                // استخدام الـ Id للمقارنة بدلاً من المرجع
+                var exists = CurrentBooking.SelectedServices.Any(s => s.Id == service.Id);
+
+                if (!exists)
                     CurrentBooking.SelectedServices.Add(service);
                 else
-                    CurrentBooking.SelectedServices.Remove(service);
+                    CurrentBooking.SelectedServices.Remove(CurrentBooking.SelectedServices.First(s => s.Id == service.Id));
 
-                // طباعة القائمة
+                // طباعة القائمة للمراجعة
                 Console.WriteLine("✅ Current Selected Services:");
                 foreach (var s in CurrentBooking.SelectedServices)
                     Console.WriteLine($"- {s.NameServies}");
             });
+           
+
 
 
 
@@ -106,22 +120,60 @@ namespace loukupm.ViewModel
             IsLoadNotifiction = true;
         }
 
+
+
+        //private async Task LoadBookingsAsync()
+        //{
+        //    if (currentUser == null)
+        //        return; // تأكد من وجود المستخدم قبل تحميل الحجوزات
+
+        //    IsloadBooking = true;
+
+        //    try
+        //    {
+        //        var data = await _apiServices.GetUserAppointmentsAsync(currentUser);
+
+        //        if (data == null || data.Count == 0)
+        //            return;
+
+        //        Bookings.Clear();
+
+        //        foreach (var item in data)
+        //            Bookings.Add(item);
+        //    }
+        //    finally
+        //    {
+        //        IsloadBooking = false;
+        //    }
+        //}
+        public IAsyncRelayCommand LoadAppointmentsCommand { get; }
         private async Task LoadBookingsAsync()
         {
+            if (currentUser == null)
+                return;
+
+            IsloadBooking = true;
+
             try
             {
-                var data = await _apiServices.GetBookingsAsync();
-                Bookings = new ObservableCollection<Booking>(data);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading bookings: {ex.Message}");
+                var data = await _apiServices.GetUserAppointmentsAsync(currentUser);
+
+                if (data == null || data.Count == 0)
+                    return;
+
+               Appointments.Clear();
+
+                foreach (var item in data)
+                    Appointments.Add(item);
             }
             finally
             {
                 IsloadBooking = false;
             }
         }
+
+
+
 
         private async Task LoadNotificationsAsync()
         {
@@ -180,43 +232,7 @@ namespace loukupm.ViewModel
 
         public ObservableCollection<Category> Categories { get; set; } = new();
 
-        //private async Task LoadServicesAsync()
-        //{
-        //    try
-        //    {
-        //        IsServicesLoad = true;
-        //        IsCatogory = true;
-        //        Console.WriteLine("⏳ Starting service load...");
-
-        //        var data = await _apiServices.GetServiesAsync();
-        //        Console.WriteLine($"✅ Data fetched successfully: {data?.Count} items");
-
-        //        if (data == null || data.Count == 0)
-        //        {
-        //            Console.WriteLine("⚠️ No services returned from API.");
-        //            return;
-        //        }
-
-        //        Services.Clear();
-        //        foreach (var item in data)
-        //            Services.Add(item);
-
-        //        FilteredServices.Clear();
-        //        foreach (var item in Services)
-        //            FilteredServices.Add(item);
-        //        IsServicesLoad = false;
-        //        IsCatogory = false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"❌ Error loading services: {ex}");
-        //    }
-        //    finally
-        //    {
-
-        //        Console.WriteLine("🏁 Done loading services.");
-        //    }
-        //}
+      
         private async Task LoadServicesAsync()
         {
             try
@@ -418,19 +434,21 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string selectedServiceName;
         [ObservableProperty] private DateTime selectedDate;
         [ObservableProperty] private TimeSpan selectedTime;
-       
 
 
-        public Booking CurrentBooking { get; set; } = new();
+
+        public Booking CurrentBooking { get; set; } = new Booking { SelectedServices = new List<Servies>() };
+
 
         public ICommand PostBookingCommand { get; }
 
         public async Task PostBookingAsync()
         {
             var booking = CurrentBooking;
-            if (booking == null || booking.SelectedServices.Count == 0)
+
+            if (booking == null || booking.SelectedServices == null || booking.SelectedServices.Count == 0)
             {
-                await App.Current.MainPage.DisplayAlert("خطأ", "الرجاء اختيار خدمة واحدة على الأقل", "موافق");
+                await Toast.Make(Langue.AppResource.pleaseselectoneservice).Show();
                 return;
             }
 
@@ -442,68 +460,209 @@ namespace loukupm.ViewModel
             {
                 var response = await client.PostAsync("https://example.com/api/bookings", content);
                 response.EnsureSuccessStatusCode();
-                await App.Current.MainPage.DisplayAlert("تم", "تم إرسال الحجز بنجاح", "موافق");
+                await Toast.Make(Langue.AppResource.bookingsentsuccessfully).Show();
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("خطأ", ex.Message, "موافق");
+                await Toast.Make(ex.Message).Show();
             }
         }
 
-        ///Section Remove Booking
+
+        //[ObservableProperty]
+        //private ObservableCollection<DayItem> providerDays = new();
+
+        //[ObservableProperty]
+        //private ObservableCollection<SlotItem> availableSlots = new();
+
+        //[ObservableProperty]
+        //private bool isLoading;
+
+        //public async Task LoadMonthDaysAsync(int providerId, int serviceId, int branchId)
+        //{
+        //    Isloadday = true;
+
+        //    var today = DateTime.Today;
+        //    var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+
+        //    providerDays.Clear();
+
+        //    // توليد الأيام المتبقية من الشهر
+        //    for (int i = today.Day; i <= daysInMonth; i++)
+        //    {
+        //        var date = new DateTime(today.Year, today.Month, i);
+        //        providerDays.Add(new DayItem
+        //        {
+        //            FullDate = date,
+        //            Date = date.ToString("dd"),
+        //            Day = date.ToString("ddd"),
+        //            BorderColor = "#444444",
+        //            IsAvailable = false
+        //        });
+        //    }
+
+        //    // تحقق من الأيام المتاحة
+        //    foreach (var day in providerDays)
+        //    {
+        //        var availability = await _apiServices.GetProviderAvailability(serviceId, providerId, branchId, day.FullDate.ToString("yyyy-MM-dd"));
+        //        if (availability != null && availability.AvailableSlots.Any())
+        //            day.IsAvailable = true;
+        //    }
+
+        //    Isloadday = false;
+        //}
+
+        //[RelayCommand]
+        //private async Task SelectDayAsync(DayItem day)
+        //{
+        //    if (!day.IsAvailable) return; // تجاهل الأيام الغير متاحة
+
+        //    // تغيير لون جميع الأيام
+        //    foreach (var d in providerDays)
+        //        d.BorderColor = "#444444";
+
+        //    day.BorderColor = "#EBD750";
+
+        //    // جلب المواعيد لليوم المختار
+        //    var availability = await _apiServices.GetProviderAvailability(1, 4, 1, day.FullDate.ToString("yyyy-MM-dd"));
+        //    AvailableSlots = new ObservableCollection<SlotItem>(availability?.AvailableSlots ?? new List<SlotItem>());
+        //}
+        public ObservableCollection<DayItem> ProviderDays { get; set; } = new();
+       
+        public async Task LoadProviderDaysAsync(int providerId)
+        {
+            ProviderDays.Clear();
+
+            var availabilityWrapper = await _apiServices.GetProviderAvailabilityAsync(providerId);
+            if (availabilityWrapper != null && availabilityWrapper.Success && availabilityWrapper.Data != null)
+            {
+                var data = availabilityWrapper.Data;
+
+              
+                var dayItem = new DayItem
+                {
+                    Date = data.Date.ToString("yyyy-MM-dd"),
+                    Day = data.DayName,
+                    IsAvailable = data.AvailableSlots != null && data.AvailableSlots.Count > 0,
+                    BorderColor = data.AvailableSlots != null && data.AvailableSlots.Count > 0 ? "#00FF00" : "#444444",
+                    FullDate = data.Date
+                };
+
+                ProviderDays.Add(dayItem);
+            }
+        }
 
 
 
-        /// End Section Booking
 
 
 
-        ///Section Invoice
-        ///
-
-        /// End Section Invoice
-        /// 
-
-        ///Section Post Payment Stripe
+            ///Section Remove Booking
 
 
 
-        /// End Section Post Payment Stripe
-        /// 
+            /// End Section Booking
 
 
-        ///Section Post User
+
+            ///Section Invoice
+            ///
+
+            /// End Section Invoice
+            /// 
+
+            ///Section Post Payment Stripe
+
+
+
+            /// End Section Post Payment Stripe
+            /// 
+
+
+            ///Section Post User
         [ObservableProperty] private string userName;
         [ObservableProperty] private string password;
         [ObservableProperty] private string confirmPassword;
-        [ObservableProperty] private string imageUser;
+        [ObservableProperty] private string? imageUser;
         [ObservableProperty] private string email;
+        [ObservableProperty] private string fullName;
         public ICommand UpDateUserCommand { get; }
-        private async Task PostUserAsync()
+        //private async Task LoadUser()
+        //{
+        //    IsLoadUser = true;
+        //    var user = await _apiServices.GetUserAsync();
+
+        //    if (user != null)
+        //    {
+        //        UserName = user.UserName;
+        //        Email = user.Email;
+        //        FullName = user.FullName;
+        //        ImageUser = user.ProfileImageUrl ?? "default_avatar.png";
+        //    }
+        //    IsLoadUser = false;
+        //}
+        private User currentUser;
+
+        private async Task LoadUser()
         {
-            using var client = new HttpClient { BaseAddress = new Uri("https://eee/") };
-            if (!string.IsNullOrWhiteSpace(_token))
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-
-            var user = new User
+            IsLoadUser = true;
+            currentUser = await _apiServices.GetUserAsync(); // تخزين المستخدم الحالي
+            if (currentUser != null)
             {
-                UserName = userName,
-                Email = email,
-                ImageUser =imageUser,
-                Password = password
-            };
-
-            var response = await client.PutAsJsonAsync("api/users/update", user);
-            if (response.IsSuccessStatusCode)
-            {
-                await Toast.Make("تم تحديث البيانات بنجاح", ToastDuration.Short).Show();
+                UserName = currentUser.UserName;
+                Email = currentUser.Email;
+                FullName = currentUser.FullName;
+                ImageUser = currentUser.ProfileImageUrl ?? "default_avatar.png";
             }
-            else
-            {
-                await Toast.Make("فشل تحديث البيانات", ToastDuration.Short).Show();
-            }
-
+            IsLoadUser = false;
         }
+
+
+        public ICommand LoadCurrentUserCommand { get; }
+
+        public string Name { get; set; }
+       
+      
+
+        public ICommand UpdateUserCommand { get; }
+
+
+
+
+        private async Task UpdateUserInfo()
+        {
+            try
+            {
+                bool updated = await _apiServices.UpdateUserAsync(UserName, Email, ImageUser);
+
+                if (updated)
+                {
+
+                    var popup = new ConfermChange();
+                    await Application.Current.MainPage.ShowPopupAsync(popup);
+                }
+                else
+                {
+
+                    var popup = new NoConfermChange();
+                    await Application.Current.MainPage.ShowPopupAsync(popup);
+                }
+            }
+            catch
+            {
+
+                var popup = new NoConfermChange();
+                await Application.Current.MainPage.ShowPopupAsync(popup);
+            }
+        }
+
+        /// <summary>
+        /// Creat the  Coustem messagebox to show the propety changed 
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+
 
 
         /// End Section Upate User
@@ -520,7 +679,7 @@ namespace loukupm.ViewModel
             var user = new User
             {
                 Password = password,
-                confirmPassword = confirmPassword
+                ConfirmPassword = confirmPassword
             };
             var response = await client.PutAsJsonAsync("api/users/change-password", user);
             if (response.IsSuccessStatusCode)

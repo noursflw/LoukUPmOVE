@@ -139,30 +139,32 @@
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout>
-                    <CollectionView x:Name="DayCollectionView" ItemsLayout="HorizontalList">
+                    <CollectionView ItemsSource="{Binding ProviderDays}"
+                x:Name="DayCollectionView"
+                ItemsLayout="HorizontalList"
+                SelectionMode="None">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <VerticalStackLayout Margin="12">
                                     <Frame HeightRequest="86" WidthRequest="86" CornerRadius="16"
-                                      BackgroundColor="#444444" 
-                                      BorderColor="{Binding BorderColor}">
+                       BackgroundColor="#444444"
+                       BorderColor="{Binding BorderColor}">
                                         <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                                            <Label Text="{Binding date}" 
-                                                FontFamily="Oswald" 
-                                                 TextColor="White" 
-                                                 FontSize="16" 
-                                                  HorizontalOptions="Center" />
-                                            <Label Text="{Binding day}" 
-                                            FontFamily="Oswald" 
-                                               TextColor="White" 
-                                               FontSize="12" 
-                                               HorizontalOptions="Center" />
+                                            <Label Text="{Binding Date}" TextColor="White" FontSize="16" HorizontalOptions="Center"/>
+                                            <Label Text="{Binding Day}" TextColor="White" FontSize="12" HorizontalOptions="Center"/>
                                         </VerticalStackLayout>
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                            Command="{Binding Source={x:Reference DayCollectionView}, Path=BindingContext.SelectDayCommand}"
+                            CommandParameter="{Binding}"/>
+                                        </Frame.GestureRecognizers>
                                     </Frame>
                                 </VerticalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+
+
                     <Frame HeightRequest="86" Margin="20,10,40,0"
                    WidthRequest="88"
                     CornerRadius="16" 

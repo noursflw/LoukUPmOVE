@@ -126,7 +126,8 @@ public partial class HomePage : ContentPage
             await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
         }
     }
-    
+
+  
 
 
 

@@ -196,6 +196,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Die Buchung wurde erfolgreich gesendet.
+        /// </summary>
+        internal static string bookingsentsuccessfully {
+            get {
+                return ResourceManager.GetString("bookingsentsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Einen Termin buchen.
         /// </summary>
         internal static string bookinNowAbotus {
@@ -210,6 +219,15 @@ namespace loukupm.Langue {
         internal static string cardsaleh {
             get {
                 return ResourceManager.GetString("cardsaleh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ändern Sie das Bild.
+        /// </summary>
+        internal static string ChangeImage {
+            get {
+                return ResourceManager.GetString("ChangeImage", resourceCulture);
             }
         }
         
@@ -250,11 +268,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Der Dienst wurde erfolgreich hinzugefügt..
+        /// </summary>
+        internal static string CompletedAddServies {
+            get {
+                return ResourceManager.GetString("CompletedAddServies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sie sind angemeldet.
         /// </summary>
         internal static string CompletedLogin {
             get {
                 return ResourceManager.GetString("CompletedLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die Benutzerdaten wurden erfolgreich aktualisiert..
+        /// </summary>
+        internal static string ConfermUpateChane {
+            get {
+                return ResourceManager.GetString("ConfermUpateChane", resourceCulture);
             }
         }
         
@@ -520,6 +556,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Es ist ein Fehler aufgetreten; die Daten wurden nicht aktualisiert. Bitte versuchen Sie es erneut..
+        /// </summary>
+        internal static string NoConfermChangeDataUser {
+            get {
+                return ResourceManager.GetString("NoConfermChangeDataUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Es besteht keine Internetverbindung. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut..
         /// </summary>
         internal static string NoEnternetConctesd {
@@ -601,6 +646,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen Sie mindestens einen Dienst aus, bevor Sie fortfahren..
+        /// </summary>
+        internal static string pleaseselectoneservice {
+            get {
+                return ResourceManager.GetString("pleaseselectoneservice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Möchten Sie das Konto wirklich löschen?.
         /// </summary>
         internal static string RemoveMyCount {
@@ -673,6 +727,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Der Dienst wurde bereits hinzugefügt.
+        /// </summary>
+        internal static string theserviewasdone {
+            get {
+                return ResourceManager.GetString("theserviewasdone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Treffen Sie unser Team.
         /// </summary>
         internal static string TitelTeam {
@@ -705,6 +768,15 @@ namespace loukupm.Langue {
         internal static string VisteInAboutUS {
             get {
                 return ResourceManager.GetString("VisteInAboutUS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Willkommen.
+        /// </summary>
+        internal static string Wellcom {
+            get {
+                return ResourceManager.GetString("Wellcom", resourceCulture);
             }
         }
         

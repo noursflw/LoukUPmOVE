@@ -44,7 +44,7 @@
                Padding="0"
                HorizontalOptions="Center"
                VerticalOptions="Center">
-                    <Image Source="adienst.png"
+                    <Image Source="{Binding Avatar}" 
              HeightRequest="125"
               WidthRequest="125"
               Aspect="AspectFill">
@@ -56,16 +56,7 @@
 
                 </Frame>
 
-                <!-- زر بنفس الثيم -->
-                <Button HeightRequest="40"
-                WidthRequest="40"
-                Padding="0"
-                ImageSource="edit.png"
-                CornerRadius="20"
-                Margin="100,50,0,0"
-                HorizontalOptions="Start"
-                
-               VerticalOptions="Start"/>
+              
             </Grid>
 
 
@@ -76,11 +67,23 @@
             <ScrollView>
                 <VerticalStackLayout>
                     <Label Text="{Loc:Translate Name=NameUser}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
-                    <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.png"     HeightRequest="50" Title="Name" />
+                    <material:TextField Text="{Binding UserName}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.png"     HeightRequest="50" Title="Name" />
                     <Label Text="{Loc:Translate Name=EMail}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
-                    <material:TextField  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
-                    <Button Text="{Loc:Translate Name= SaveChangFoeMyAccount}" FontSize="22" HeightRequest="50" FontFamily="georgia-bold" Margin="25" TextColor="Black" />
-
+                    <material:TextField  Text="{Binding Email}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
+                    <Button 
+                            Margin="23,30,0,0" TextColor="Black"
+                            Text="{ Loc:Translate Name=ChangeImage}"
+                            ImageSource="edit.png"
+                            CornerRadius="10" 
+                            FontSize="22"
+                            FontFamily="georgia-bold"
+                            HorizontalOptions="Start"
+                            Clicked="Button_Clicked_1"
+                            VerticalOptions="Center"/>
+                    <Button Command="{Binding UpdateUserCommand}"  Text="{Loc:Translate Name= SaveChangFoeMyAccount}" FontSize="22" HeightRequest="50" FontFamily="georgia-bold" Margin="25" TextColor="Black" />
+                    
+                    <!-- زر بنفس الثيم -->
+                  
                 </VerticalStackLayout>
             </ScrollView>
         </VerticalStackLayout>

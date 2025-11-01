@@ -120,6 +120,9 @@ public partial class LoginPage : ContentPage
                 // ?  Œ“Ì‰ «· Êﬂ‰ »√„«‰
                 if (!string.IsNullOrEmpty(loginResponse.Token))
                     await SecureStorage.SetAsync("auth_token", loginResponse.Token);
+                if (!string.IsNullOrEmpty(loginResponse.Refresh_Token))
+                    await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
+
 
                 var popup = new CompletedLogin();
                 await this.ShowPopupAsync(popup);

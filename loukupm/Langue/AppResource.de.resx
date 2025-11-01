@@ -162,11 +162,17 @@
   <data name="bookingNow" xml:space="preserve">
     <value>Jetzt buchen</value>
   </data>
+  <data name="bookingsentsuccessfully" xml:space="preserve">
+    <value>Die Buchung wurde erfolgreich gesendet</value>
+  </data>
   <data name="bookinNowAbotus" xml:space="preserve">
     <value>Einen Termin buchen</value>
   </data>
   <data name="cardsaleh" xml:space="preserve">
     <value>Gültig bis</value>
+  </data>
+  <data name="ChangeImage" xml:space="preserve">
+    <value>Ändern Sie das Bild</value>
   </data>
   <data name="ChangMyPassword1" xml:space="preserve">
     <value>Aktuelles Passwort</value>
@@ -180,8 +186,14 @@
   <data name="chosesservies" xml:space="preserve">
     <value>Eine Dienstleistung auswählen</value>
   </data>
+  <data name="CompletedAddServies" xml:space="preserve">
+    <value>Der Dienst wurde erfolgreich hinzugefügt.</value>
+  </data>
   <data name="CompletedLogin" xml:space="preserve">
     <value>Sie sind angemeldet</value>
+  </data>
+  <data name="ConfermUpateChane" xml:space="preserve">
+    <value>Die Benutzerdaten wurden erfolgreich aktualisiert.</value>
   </data>
   <data name="ConifermPassword" xml:space="preserve">
     <value>Password bestätigen</value>
@@ -270,6 +282,9 @@
   <data name="no" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
+  <data name="NoConfermChangeDataUser" xml:space="preserve">
+    <value>Es ist ein Fehler aufgetreten; die Daten wurden nicht aktualisiert. Bitte versuchen Sie es erneut.</value>
+  </data>
   <data name="NoEnternetConctesd" xml:space="preserve">
     <value>Es besteht keine Internetverbindung. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.</value>
   </data>
@@ -297,6 +312,9 @@
   <data name="PhoneNumber" xml:space="preserve">
     <value>Telefonnummer</value>
   </data>
+  <data name="pleaseselectoneservice" xml:space="preserve">
+    <value>Bitte wählen Sie mindestens einen Dienst aus, bevor Sie fortfahren.</value>
+  </data>
   <data name="RemoveMyCount" xml:space="preserve">
     <value>Möchten Sie das Konto wirklich löschen?</value>
   </data>
@@ -321,6 +339,9 @@
   <data name="TeamNaser" xml:space="preserve">
     <value>Nasradin Albarho</value>
   </data>
+  <data name="theserviewasdone" xml:space="preserve">
+    <value>Der Dienst wurde bereits hinzugefügt</value>
+  </data>
   <data name="TitelTeam" xml:space="preserve">
     <value>Treffen Sie unser Team</value>
   </data>
@@ -332,6 +353,9 @@
   </data>
   <data name="VisteInAboutUS" xml:space="preserve">
     <value>Reinkommen - Drankommen! Besuchen Sie uns einfach spontan - auch ohne Termin!</value>
+  </data>
+  <data name="Wellcom" xml:space="preserve">
+    <value>Willkommen</value>
   </data>
   <data name="yes" xml:space="preserve">
     <value>abmelden</value>

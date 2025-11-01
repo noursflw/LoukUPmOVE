@@ -162,11 +162,17 @@
   <data name="bookingNow" xml:space="preserve">
     <value>احجز الآن</value>
   </data>
+  <data name="bookingsentsuccessfully" xml:space="preserve">
+    <value>تم إرسال الحجز بنجاح.</value>
+  </data>
   <data name="bookinNowAbotus" xml:space="preserve">
     <value>حجز موعد</value>
   </data>
   <data name="cardsaleh" xml:space="preserve">
     <value>صالحة حتى</value>
+  </data>
+  <data name="ChangeImage" xml:space="preserve">
+    <value>تغيير الصورة</value>
   </data>
   <data name="ChangMyPassword1" xml:space="preserve">
     <value>كلمة المرور الحالية</value>
@@ -180,8 +186,14 @@
   <data name="chosesservies" xml:space="preserve">
     <value>اختيار ال خدمة</value>
   </data>
+  <data name="CompletedAddServies" xml:space="preserve">
+    <value>تمت اضافة الخدمة بنجاح</value>
+  </data>
   <data name="CompletedLogin" xml:space="preserve">
     <value>تم تسجيل الدخول</value>
+  </data>
+  <data name="ConfermUpateChane" xml:space="preserve">
+    <value> تم تحديث بيانات المستخدم بنجاح </value>
   </data>
   <data name="ConifermPassword" xml:space="preserve">
     <value>تأكيد كلمة المرور</value>
@@ -270,6 +282,9 @@
   <data name="no" xml:space="preserve">
     <value>إلغاء</value>
   </data>
+  <data name="NoConfermChangeDataUser" xml:space="preserve">
+    <value>حدث خطأ لم يتم تحديث البيانات حاول مرة أخرى</value>
+  </data>
   <data name="NoEnternetConctesd" xml:space="preserve">
     <value>لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى</value>
   </data>
@@ -297,6 +312,9 @@
   <data name="PhoneNumber" xml:space="preserve">
     <value>رقم الهاتف</value>
   </data>
+  <data name="pleaseselectoneservice" xml:space="preserve">
+    <value>الرجاء اختيار خدمة واحدة على الأقل قبل المتابعة.</value>
+  </data>
   <data name="RemoveMyCount" xml:space="preserve">
     <value>هل أنت متأكد من حذف الحساب؟</value>
   </data>
@@ -321,6 +339,9 @@
   <data name="TeamNaser" xml:space="preserve">
     <value>نصرالدين البرهو</value>
   </data>
+  <data name="theserviewasdone" xml:space="preserve">
+    <value>الخدمة موجودة مسبقا</value>
+  </data>
   <data name="TitelTeam" xml:space="preserve">
     <value>تعرف على فريقنا </value>
   </data>
@@ -332,6 +353,9 @@
   </data>
   <data name="VisteInAboutUS" xml:space="preserve">
     <value>تفضلوا بزيارتنا! تفضلوا بزيارتنا تلقائيًا - حتى بدون موعد!</value>
+  </data>
+  <data name="Wellcom" xml:space="preserve">
+    <value>مرحباً</value>
   </data>
   <data name="yes" xml:space="preserve">
     <value>تأكيد</value>

@@ -20,7 +20,7 @@
         <ScrollView   Margin="0,0,0,10" >
             <VerticalStackLayout>
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
-                    <!-- العنوان على اليسار -->
+                 
                     <Label Text="{Loc:Translate Name=AllServies}"
                                       TextColor="White"
                                       Margin="24,0,0,0"
@@ -28,7 +28,6 @@
                                       FontFamily="georgia-bold"
                                       VerticalOptions="Center" />
 
-                    <!-- الزر على اليمين -->
                     <Button Grid.Column="1"
          WidthRequest="40"
          HeightRequest="40"
@@ -102,26 +101,48 @@
                                         <VerticalStackLayout Margin="24,0,24,0" Spacing="10">
                                             <Frame Margin="3" BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" HeightRequest="122" >
                                                 <Grid ColumnDefinitions="50*,50*">
-                                                    <Label  Grid.Column="0" Text="{Binding NameServies}" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="18"  />
-                                                    <Label  Grid.Column="0" Text="{Binding PriceServies}" Margin="0,30,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
+                                              
+                                                    <Label 
+        Grid.Column="0"
+        Text="{Binding NameServies}" 
+        FontFamily="Oswald" 
+        TextColor="#D3D3D3" 
+        FontSize="18"  />
 
-                                                    <Label  Grid.Column="0" Text="{Binding TimeServies}" Margin="0,55,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
+                                                    <Label  
+        Grid.Column="0" 
+        Text="{Binding PriceServies}" 
+        Margin="0,30,0,0" 
+        FontFamily="Oswald" 
+        TextColor="#D3D3D3" 
+        FontSize="14"  />
+
+                                                    <Label  
+        Grid.Column="0" 
+        Text="{Binding TimeServies}" 
+        Margin="0,55,0,0" 
+        FontFamily="Oswald" 
+        TextColor="#D3D3D3" 
+        FontSize="14"  />
+
+
                                                     <Button 
-                                        Grid.Column="1" 
-                                        Text="Auswählen" 
-                                        TextColor="White" 
-                                        BackgroundColor="Black" 
-                                        WidthRequest="132" 
-                                        FontFamily="Oswald" 
-                                        FontSize="16"   
-                                        CornerRadius="16"  
-                                        HeightRequest="48" 
-                                        Margin="10,-30,0,0"
-                                       Clicked="Button_Clicked_1"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
-                                        CommandParameter="{Binding .}" />
-
+        Grid.Column="1"
+        Text="Auswählen"
+        TextColor="White"
+        BackgroundColor="Black"
+        WidthRequest="92"
+        HeightRequest="48"
+        FontFamily="Oswald"
+        FontSize="16"
+        CornerRadius="10"
+        HorizontalOptions="End"
+        VerticalOptions="Start"
+        Margin="0,5,5,0"
+        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
+        CommandParameter="{Binding .}" />
                                                 </Grid>
+
                                             </Frame>
                                         </VerticalStackLayout>
                                     </DataTemplate>

@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
+using loukupm.ViewModel;
 using Microsoft.Maui.Controls.Shapes;     // RoundRectangle
 using Microsoft.Maui.Graphics;
 
@@ -11,6 +12,7 @@ public partial class ProfilePage : ContentPage
 	public ProfilePage()
 	{
 		InitializeComponent();
+        this.BindingContext = AppViewModel.Instance;
         Shell.SetNavBarIsVisible(this, false);
 	}
 
@@ -99,9 +101,6 @@ public partial class ProfilePage : ContentPage
     {
 
         var popup = new RemoveUserPopup();
-
-       
-
         await this.ShowPopupAsync(popup);
 
     }

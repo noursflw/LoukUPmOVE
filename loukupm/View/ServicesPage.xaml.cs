@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
+using loukupm.Langue;
 using loukupm.Model;
 using loukupm.ViewModel;
 
@@ -21,10 +23,22 @@ public partial class ServicesPage : ContentPage
         if (AppViewModel.Instance.CurrentBooking.SelectedServices == null)
             AppViewModel.Instance.CurrentBooking.SelectedServices = new List<Servies>();
 
+
         if (!AppViewModel.Instance.CurrentBooking.SelectedServices.Contains(service))
+        {
             AppViewModel.Instance.CurrentBooking.SelectedServices.Add(service);
+            await Toast.Make(Langue.AppResource.CompletedAddServies).Show();
+        }
+
         else
+        {
             AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
+            await Toast.Make(Langue.AppResource.theserviewasdone).Show();
+        }
+        //var popup = new CompletedAddSerives();
+        //await this.ShowPopupAsync(popup);
+
+
     }
 
 
@@ -72,6 +86,14 @@ public partial class ServicesPage : ContentPage
 
     private async void Button_Clicked_2(object sender, EventArgs e)
     {
+        var selected = AppViewModel.Instance.CurrentBooking.SelectedServices;
+
+        if (selected == null || selected.Count == 0)
+        {
+            await Toast.Make(Langue.AppResource.pleaseselectoneservice).Show();
+            return;
+        }
+
         await Navigation.PushAsync(new TerminbuchenPage());
     }
 }

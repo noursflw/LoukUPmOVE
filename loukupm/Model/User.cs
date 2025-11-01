@@ -1,28 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
     public class User
     {
         public int Id { get; set; }
+
+        [JsonPropertyName("first_name")]
         public string UserName { get; set; }
+
+        [JsonPropertyName("last_name")]
+        public string LastName { get; set; }
+
+        [JsonPropertyName("full_name")]
+        public string FullName { get; set; }
+
+        [JsonPropertyName("email")]
         public string Email { get; set; }
-        public string Password { get; set; }
-        public string confirmPassword { get; set; } 
+
+        [JsonPropertyName("phone")]
+        public string Phone { get; set; }
+
+        [JsonPropertyName("avatar_url")]
         public string? ImageUser { get; set; }
 
-        public User() { }
-        public User(int id, string name, string email, string password)
-        {
-            Id = id;
-            UserName = name;
-            Email = email;
-            Password = password;
-        }
-      
+        [JsonPropertyName("profile_image_url")]
+        public string? ProfileImageUrl { get; set; }
+
+        [JsonPropertyName("is_active")]
+        public bool IsActive { get; set; }
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
+        [JsonPropertyName("ConfirmPassword")]
+        public string ConfirmPassword { get; set; }
+
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonPropertyName("updated_at")]
+        public DateTime UpdatedAt { get; set; }
+    }
+
+
+    public class UserResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public User Data { get; set; }
     }
 }
+
