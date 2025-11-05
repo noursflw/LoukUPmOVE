@@ -1,5 +1,7 @@
-﻿using loukupm.Model;
+﻿using CommunityToolkit.Maui.Views;
+using loukupm.Model;
 using loukupm.services;
+using loukupm.View.MassgingApp;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -40,34 +42,40 @@ public partial class SinginPage : ContentPage
             string.IsNullOrWhiteSpace(phone) ||
             string.IsNullOrWhiteSpace(password_confirmation))
         {
-            await DisplayAlert("خطأ في الإدخال", "يرجى تعبئة جميع الحقول المطلوبة", "موافق");
+            var popup = new EnterAllFailed();
+            await this.ShowPopupAsync(popup);
+          
             return;
         }
 
         // ✅ تحقق من صيغة البريد الإلكتروني
         if (!IsValidEmail(email))
         {
-            await DisplayAlert("خطأ في البريد الإلكتروني", "يرجى إدخال بريد إلكتروني صحيح", "موافق");
+            var popup = new EroreInputEmaile();
+            await this.ShowPopupAsync(popup);
             return;
         }
 
         // ✅ تحقق من كلمة المرور
         if (password != password_confirmation)
         {
-            await DisplayAlert("خطأ في كلمة المرور", "كلمتا المرور غير متطابقتين", "موافق");
+            var popup = new Paswordmatch();
+            await this.ShowPopupAsync(popup);
             return;
         }
 
         if (password.Length < 6)
         {
-            await DisplayAlert("خطأ في كلمة المرور", "كلمة المرور يجب أن تكون 6 أحرف على الأقل", "موافق");
+            var popup = new paslen();
+            await this.ShowPopupAsync(popup);
             return;
         }
 
         // ✅ تحقق من الاتصال بالإنترنت
         if (Connectivity.NetworkAccess != NetworkAccess.Internet)
         {
-            await DisplayAlert("خطأ في الاتصال", "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك", "موافق");
+            var popup = new NoEnternetConacted();
+            await this.ShowPopupAsync(popup);
             return;
         }
 
@@ -103,7 +111,8 @@ public partial class SinginPage : ContentPage
                 if (!string.IsNullOrEmpty(registerResponse?.Token))
                     await SecureStorage.SetAsync("auth_token", registerResponse.Token);
 
-                await DisplayAlert("تم التسجيل", "مرحباً بك في التطبيق 🎉", "موافق");
+                var popup = new CompletedLogin();
+                await this.ShowPopupAsync(popup);
                 await Shell.Current.GoToAsync("//HomePage");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
@@ -124,29 +133,34 @@ public partial class SinginPage : ContentPage
                 {
                     errorMessage = errorResponse?.Message ?? "حدث خطأ في إنشاء الحساب";
                 }
-                await DisplayAlert("خطأ في إنشاء الحساب", errorMessage, "موافق");
+                var popup = new NoServerResponse();
+                await this.ShowPopupAsync(popup);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                await DisplayAlert("خطأ في إنشاء الحساب", "البريد الإلكتروني مستخدم بالفعل", "موافق");
+                var popup = new EmaileUsed();
+                await this.ShowPopupAsync(popup);
             }
             else
             {
-                await DisplayAlert("خطأ في الاتصال",
-                    $"حدث خطأ في الاتصال بالخادم (رمز الخطأ: {(int)response.StatusCode})", "موافق");
+                var popup = new NoServerResponse();
+                await this.ShowPopupAsync(popup);
             }
         }
         catch (HttpRequestException)
         {
-            await DisplayAlert("خطأ في الاتصال", "تعذر الاتصال بالخادم. حاول مرة أخرى", "موافق");
+            var popup = new NoServerResponse();
+            await this.ShowPopupAsync(popup);
         }
         catch (TaskCanceledException)
         {
-            await DisplayAlert("خطأ في الاتصال", "انتهت مهلة الاتصال. حاول لاحقاً", "موافق");
+            var popup = new NoServerResponse();
+            await this.ShowPopupAsync(popup);
         }
         catch (Exception)
         {
-            await DisplayAlert("خطأ غير متوقع", "حدث خطأ غير متوقع. حاول مرة أخرى", "موافق");
+            var popup = new NoServerResponse();
+            await this.ShowPopupAsync(popup);
         }
     }
 

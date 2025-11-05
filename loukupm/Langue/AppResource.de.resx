@@ -150,6 +150,9 @@
   <data name="AllServies" xml:space="preserve">
     <value>Alle Services</value>
   </data>
+  <data name="Alltext" xml:space="preserve">
+    <value>Bitte füllen Sie alle Felder aus</value>
+  </data>
   <data name="AppInfo" xml:space="preserve">
     <value>Über die App</value>
   </data>
@@ -237,6 +240,9 @@
   <data name="EnterEmailOrPassword" xml:space="preserve">
     <value>Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein.</value>
   </data>
+  <data name="EROR" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
   <data name="EroreConacted" xml:space="preserve">
     <value>Kommunikationsfehler</value>
   </data>
@@ -288,6 +294,9 @@
   <data name="NoEnternetConctesd" xml:space="preserve">
     <value>Es besteht keine Internetverbindung. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.</value>
   </data>
+  <data name="noresponseserver" xml:space="preserve">
+    <value>Es wurde keine Antwort vom Server erhalten</value>
+  </data>
   <data name="NOTEqlalepor" xml:space="preserve">
     <value>Falsche E-Mail oder falsches Passwort</value>
   </data>
@@ -297,8 +306,14 @@
   <data name="nubercrad" xml:space="preserve">
     <value>Kartennummer</value>
   </data>
+  <data name="pasl" xml:space="preserve">
+    <value>Das Passwort muss mehr als 6 Zeichen enthalten</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
+  </data>
+  <data name="Passwordnotmatch" xml:space="preserve">
+    <value>Die Passwörter stimmen nicht überein</value>
   </data>
   <data name="paymentgetwaymethod" xml:space="preserve">
     <value>Zahlungsmethode</value>
@@ -338,6 +353,9 @@
   </data>
   <data name="TeamNaser" xml:space="preserve">
     <value>Nasradin Albarho</value>
+  </data>
+  <data name="TheEmailisUSED" xml:space="preserve">
+    <value>Benutzername bereits vergeben</value>
   </data>
   <data name="theserviewasdone" xml:space="preserve">
     <value>Der Dienst wurde bereits hinzugefügt</value>

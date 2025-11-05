@@ -160,6 +160,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bitte füllen Sie alle Felder aus.
+        /// </summary>
+        internal static string Alltext {
+            get {
+                return ResourceManager.GetString("Alltext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Über die App.
         /// </summary>
         internal static string AppInfo {
@@ -421,6 +430,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fehler.
+        /// </summary>
+        internal static string EROR {
+            get {
+                return ResourceManager.GetString("EROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kommunikationsfehler.
         /// </summary>
         internal static string EroreConacted {
@@ -574,6 +592,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Es wurde keine Antwort vom Server erhalten.
+        /// </summary>
+        internal static string noresponseserver {
+            get {
+                return ResourceManager.GetString("noresponseserver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Falsche E-Mail oder falsches Passwort.
         /// </summary>
         internal static string NOTEqlalepor {
@@ -601,11 +628,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Das Passwort muss mehr als 6 Zeichen enthalten.
+        /// </summary>
+        internal static string pasl {
+            get {
+                return ResourceManager.GetString("pasl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         internal static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die Passwörter stimmen nicht überein.
+        /// </summary>
+        internal static string Passwordnotmatch {
+            get {
+                return ResourceManager.GetString("Passwordnotmatch", resourceCulture);
             }
         }
         
@@ -723,6 +768,15 @@ namespace loukupm.Langue {
         internal static string TeamNaser {
             get {
                 return ResourceManager.GetString("TeamNaser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Benutzername bereits vergeben.
+        /// </summary>
+        internal static string TheEmailisUSED {
+            get {
+                return ResourceManager.GetString("TheEmailisUSED", resourceCulture);
             }
         }
         

@@ -13,9 +13,10 @@ namespace loukupm
             InitializeComponent();
 
             // 🔹 تهيئة OneSignal
-            OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
-            OneSignal.Initialize("c3ea5015-81d2-456f-8453-97bb1f773d7b");
-            OneSignal.Notifications.RequestPermissionAsync(true);
+        //    OneSignal.User.AddTags(new Dictionary<string, string>
+        //{
+        //    { "id", "1" }
+        //});
 
             // 🔹 تحميل اللغة المحفوظة من Preferences
             var savedLang = Preferences.Get("AppLanguage", string.Empty);

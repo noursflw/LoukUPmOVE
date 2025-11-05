@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using loukupm.Model;
 using loukupm.services;
+using loukupm.View.MassgingApp;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -102,7 +103,8 @@ public partial class LoginPage : ContentPage
 
             if (response == null)
             {
-                await DisplayAlert("Œÿ√", "·„ Ì „ «·Õ’Ê· ⁄·Ï «” Ã«»… „‰ «·Œ«œ„", "„Ê«›ﬁ");
+                var popup = new NoServerResponse();
+                await this.ShowPopupAsync(popup);
                 return;
             }
 
@@ -155,21 +157,24 @@ public partial class LoginPage : ContentPage
             }
             else
             {
-                await DisplayAlert("Œÿ√ ›Ì «·« ’«·",
-                    $"ÕœÀ Œÿ√ ›Ì «·« ’«· »«·Œ«œ„ (—„“ «·Œÿ√: {(int)response.StatusCode})", "„Ê«›ﬁ");
+                var popup = new NoServerResponse();
+                await this.ShowPopupAsync(popup);
             }
         }
         catch (HttpRequestException)
         {
-            await DisplayAlert("Œÿ√ ›Ì «·« ’«·", " ⁄–— «·« ’«· »«·Œ«œ„. Õ«Ê· „—… √Œ—Ï ·«Õﬁ«", "„Ê«›ﬁ");
+            var popup = new NoServerResponse();
+            await this.ShowPopupAsync(popup);
         }
         catch (TaskCanceledException)
         {
-            await DisplayAlert("„Â·… «·« ’«·", "«‰ Â  „Â·… «·« ’«· »«·Œ«œ„. Õ«Ê· „Ãœœ«", "„Ê«›ﬁ");
+            var popup = new NoServerResponse();
+            await this.ShowPopupAsync(popup);
         }
         catch (Exception)
         {
-            await DisplayAlert("Œÿ√ €Ì— „ Êﬁ⁄", "ÕœÀ Œÿ√ €Ì— „ Êﬁ⁄. Ì—ÃÏ «·„Õ«Ê·… „—… √Œ—Ï", "„Ê«›ﬁ");
+            var popup = new NoServerResponse();
+            await this.ShowPopupAsync(popup);
         }
     }
 

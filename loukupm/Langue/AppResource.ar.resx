@@ -150,6 +150,9 @@
   <data name="AllServies" xml:space="preserve">
     <value>كل الخدمات </value>
   </data>
+  <data name="Alltext" xml:space="preserve">
+    <value>يُرجى ملء جميع الحقول</value>
+  </data>
   <data name="AppInfo" xml:space="preserve">
     <value>حول التطبيق</value>
   </data>
@@ -237,6 +240,9 @@
   <data name="EnterEmailOrPassword" xml:space="preserve">
     <value>يرجى إدخال البريد الإلكتروني وكلمة المرور</value>
   </data>
+  <data name="EROR" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
   <data name="EroreConacted" xml:space="preserve">
     <value>خطأ في الاتصال</value>
   </data>
@@ -288,6 +294,9 @@
   <data name="NoEnternetConctesd" xml:space="preserve">
     <value>لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى</value>
   </data>
+  <data name="noresponseserver" xml:space="preserve">
+    <value>لم يتم الحصول على استجابة من الخادم</value>
+  </data>
   <data name="NOTEqlalepor" xml:space="preserve">
     <value>البريد الإلكتروني أو كلمة المرور غير صحيحة</value>
   </data>
@@ -297,8 +306,14 @@
   <data name="nubercrad" xml:space="preserve">
     <value>رقم البطاقة</value>
   </data>
+  <data name="pasl" xml:space="preserve">
+    <value>يجب أن تحتوي الكلمة على أكثر من 6 أحرف</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>كلمة المرور</value>
+  </data>
+  <data name="Passwordnotmatch" xml:space="preserve">
+    <value>كلمتا المرور غير متطابقتين</value>
   </data>
   <data name="paymentgetwaymethod" xml:space="preserve">
     <value>طريقة الدفع</value>
@@ -338,6 +353,9 @@
   </data>
   <data name="TeamNaser" xml:space="preserve">
     <value>نصرالدين البرهو</value>
+  </data>
+  <data name="TheEmailisUSED" xml:space="preserve">
+    <value>اسم المستخدم مستخدم بالفعل</value>
   </data>
   <data name="theserviewasdone" xml:space="preserve">
     <value>الخدمة موجودة مسبقا</value>
