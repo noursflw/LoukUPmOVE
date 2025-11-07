@@ -17,7 +17,7 @@
         <VerticalStackLayout>
             <Frame BackgroundColor="Transparent" BorderColor="Transparent" CornerRadius="20" Margin="0,-8,0,0" Opacity="0.66"  >
                 <Label 
-         Text="{Loc:Translate Name=ErorlogIn}" 
+         Text="{Loc:Translate Name=EROR}" 
          HorizontalOptions="Center" 
          VerticalOptions="Center" 
           TextColor="White"

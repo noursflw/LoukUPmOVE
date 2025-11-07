@@ -12,6 +12,6 @@ public partial class EmaileUsed : Popup
 	}
 	private async void CancelClicked(object? sender, EventArgs e)
 	{
-        await Shell.Current.GoToAsync("//LoginPage");
+        await Shell.Current.GoToAsync("LoginPage");
     }
 }

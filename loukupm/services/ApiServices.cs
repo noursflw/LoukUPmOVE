@@ -28,7 +28,7 @@ namespace loukupm.services
         {
             // استدعاء SecureStorage بشكل غير متزامن
             string? token = await SecureStorage.GetAsync("auth_token");
-            SecureStorage.Remove("auth_token");
+           
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =

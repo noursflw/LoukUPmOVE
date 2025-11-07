@@ -42,32 +42,50 @@ namespace loukupm.Model
         // إنشاء حساب
         public class RegisterRequest
         {
-            [JsonPropertyName("name")]
-            public string Name { get; set; }
+            [JsonPropertyName("first_name")]
+            public string FirstName { get; set; }
+
+            [JsonPropertyName("last_name")]
+            public string LastName { get; set; }
 
             [JsonPropertyName("email")]
             public string Email { get; set; }
-            [JsonPropertyName("Phone")]
+
+            [JsonPropertyName("phone")]
             public string Phone { get; set; }
 
             [JsonPropertyName("password")]
             public string Password { get; set; }
 
             [JsonPropertyName("password_confirmation")]
-            public string password_confirmation { get; set; }
+            public string PasswordConfirmation { get; set; }
         }
+
 
         public class RegisterResponse
         {
-            [JsonPropertyName("access_token")]
-            public string Token { get; set; }
-
             [JsonPropertyName("user")]
             public UserData User { get; set; }
 
-            [JsonPropertyName("status")]
-            public string Status { get; set; }
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; set; }
+
+            [JsonPropertyName("access_expires_at")]
+            public string AccessExpiresAt { get; set; }
+
+            [JsonPropertyName("refresh_token")]
+            public string RefreshToken { get; set; }
+
+            [JsonPropertyName("refresh_expires_at")]
+            public string RefreshExpiresAt { get; set; }
+
+            [JsonPropertyName("token_type")]
+            public string TokenType { get; set; }
+
+            [JsonPropertyName("otp")]
+            public string Otp { get; set; }
         }
+
 
         // نموذج لمعالجة أخطاء 422
         public class ErrorResponse

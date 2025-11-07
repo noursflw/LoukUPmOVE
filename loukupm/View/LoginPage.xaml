@@ -26,9 +26,12 @@
                        Margin="25,200,25,0" 
                        BackgroundColor="#202020" 
                        FontFamily="Oswald" 
+                        TextColor="White"
                        BorderColor="#D3D3D3" 
                        ImageSource="google.png"    
+                        
                        BorderWidth="1" 
+                       x:Name="GoogleButton"
                        CornerRadius="18" 
                        Text="{ loc:Translate Name=GoogleLogin}"
                        HeightRequest="60" />
@@ -58,7 +61,7 @@
                             <material:TextFieldPasswordShowHideAttachment />
                         </material:TextField.Attachments>
                     </material:TextField>
-                    <Label FontSize="16" Margin="20,8,0,0">
+                    <Label FontSize="16" FlowDirection="RightToLeft" Margin="20,8,30,0">
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="{loc:Translate Name=NPasswordOnLogin}" 
@@ -78,14 +81,25 @@
                         FontFamily="georgia-bold"
                         BorderWidth="1" 
                         Text="{loc:Translate Name=Login}" 
+                        x:Name="RegisterButton"
                         Clicked="OnLoginClicked"
                         CornerRadius="16"
                         HeightRequest="60" 
                         Margin="25"  />
-                    
-                    <HorizontalStackLayout Margin="80,34,0,0" Spacing="2">
-                        <Label Text="{loc:Translate Name=CreatAccount}" FontSize="18" TextColor="White"/>
-                        <Label FontSize="18">
+                    <!-- مؤشر التحميل -->
+                    <ActivityIndicator 
+                     x:Name="LoadingIndicator"
+                    Margin="20"
+                    IsRunning="False"
+                    IsVisible="False"
+                    Color="White"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Scale="1.4" />
+
+                    <HorizontalStackLayout  Margin="80,34,0,0" Spacing="2">
+                        <Label Text="{loc:Translate Name=CreatAccount}" FontSize="18"  TextColor="White"/>
+                        <Label Margin="3,5,0,0" FontSize="18">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=Singin}"

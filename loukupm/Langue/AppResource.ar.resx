@@ -267,6 +267,9 @@
   <data name="invoic" xml:space="preserve">
     <value>في المجموع</value>
   </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اسم العائلة</value>
+  </data>
   <data name="linkpass" xml:space="preserve">
     <value>إرسال الرابط</value>
   </data>

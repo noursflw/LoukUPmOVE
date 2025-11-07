@@ -29,67 +29,71 @@ public partial class SinginPage : ContentPage
 
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
-        string name = RegisterNameEntry.Text?.Trim();
-        string email = RegisterEmailEntry.Text?.Trim();
-        string phone = RegisterPhoneEntry.Text?.Trim();
-        string password = RegisterPasswordEntry.Text;
-        string password_confirmation = RegisterConfirmPasswordEntry.Text;
+        await Task.WhenAll(
+            RegisterButton.RotateTo(10),
+            RegisterButton.RotateTo(-10),
+            RegisterButton.ScaleTo(0.5, 100, Easing.Linear),
+            RegisterButton.ScaleTo(0, 150, Easing.CubicIn));
 
-        // ✅ تحقق من الإدخالات
-        if (string.IsNullOrWhiteSpace(name) ||
-            string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(password) ||
-            string.IsNullOrWhiteSpace(phone) ||
-            string.IsNullOrWhiteSpace(password_confirmation))
-        {
-            var popup = new EnterAllFailed();
-            await this.ShowPopupAsync(popup);
-          
-            return;
-        }
-
-        // ✅ تحقق من صيغة البريد الإلكتروني
-        if (!IsValidEmail(email))
-        {
-            var popup = new EroreInputEmaile();
-            await this.ShowPopupAsync(popup);
-            return;
-        }
-
-        // ✅ تحقق من كلمة المرور
-        if (password != password_confirmation)
-        {
-            var popup = new Paswordmatch();
-            await this.ShowPopupAsync(popup);
-            return;
-        }
-
-        if (password.Length < 6)
-        {
-            var popup = new paslen();
-            await this.ShowPopupAsync(popup);
-            return;
-        }
-
-        // ✅ تحقق من الاتصال بالإنترنت
-        if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-        {
-            var popup = new NoEnternetConacted();
-            await this.ShowPopupAsync(popup);
-            return;
-        }
-
-        var registerData = new RegisterRequest
-        {
-            Name = name,
-            Email = email,
-            Phone = phone,
-            Password = password,
-            password_confirmation = password_confirmation
-        };
+        RegisterButton.IsVisible = false;
+        RegisterButton.Text = "";
+        LoadingIndicator.IsVisible = true;
+        LoadingIndicator.IsRunning = true;
 
         try
         {
+            string firstName = RegisterNameEntry.Text?.Trim();
+            string lastName = RegisterLastNameEntry.Text?.Trim();
+            string email = RegisterEmailEntry.Text?.Trim();
+            string phone = RegisterPhoneEntry.Text?.Trim();
+            string password = RegisterPasswordEntry.Text;
+            string passwordConfirmation = RegisterConfirmPasswordEntry.Text;
+
+            if (string.IsNullOrWhiteSpace(firstName) ||
+                string.IsNullOrWhiteSpace(lastName) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(password) ||
+                string.IsNullOrWhiteSpace(phone) ||
+                string.IsNullOrWhiteSpace(passwordConfirmation))
+            {
+                await this.ShowPopupAsync(new EnterAllFailed());
+                return;
+            }
+
+            if (!IsValidEmail(email))
+            {
+                await this.ShowPopupAsync(new EroreInputEmaile());
+                return;
+            }
+
+            if (password != passwordConfirmation)
+            {
+                await this.ShowPopupAsync(new Paswordmatch());
+                return;
+            }
+
+            if (password.Length < 6)
+            {
+                await this.ShowPopupAsync(new paslen());
+                return;
+            }
+
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await this.ShowPopupAsync(new NoEnternetConacted());
+                return;
+            }
+
+            var registerData = new RegisterRequest
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                Phone = phone,
+                Password = password,
+                PasswordConfirmation = passwordConfirmation
+            };
+
             var json = JsonSerializer.Serialize(registerData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -107,73 +111,44 @@ public partial class SinginPage : ContentPage
                 var registerResponse = JsonSerializer.Deserialize<RegisterResponse>(result,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                // ✅ تخزين التوكن بطريقة آمنة
-                if (!string.IsNullOrEmpty(registerResponse?.Token))
-                    await SecureStorage.SetAsync("auth_token", registerResponse.Token);
+                if (!string.IsNullOrEmpty(registerResponse?.AccessToken))
+                {
+                    await SecureStorage.SetAsync("auth_token", registerResponse.AccessToken);
+                    await SecureStorage.SetAsync("refresh_token", registerResponse.RefreshToken);
+                }
 
-                var popup = new CompletedLogin();
-                await this.ShowPopupAsync(popup);
+                await this.ShowPopupAsync(new CompletedLogin());
                 await Shell.Current.GoToAsync("//HomePage");
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
-            {
-                var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(result,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                string errorMessage = "يرجى تصحيح الأخطاء التالية:\n";
-                if (errorResponse?.Errors != null)
-                {
-                    foreach (var error in errorResponse.Errors)
-                    {
-                        string fieldName = GetArabicFieldName(error.Key);
-                        errorMessage += $"• {fieldName}: {string.Join(", ", error.Value)}\n";
-                    }
-                }
-                else
-                {
-                    errorMessage = errorResponse?.Message ?? "حدث خطأ في إنشاء الحساب";
-                }
-                var popup = new NoServerResponse();
-                await this.ShowPopupAsync(popup);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                var popup = new EmaileUsed();
-                await this.ShowPopupAsync(popup);
+                await this.ShowPopupAsync(new EmaileUsed());
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+            {
+                await this.ShowPopupAsync(new NoServerResponse()); // أو يمكن Popup مخصص "بيانات غير صالحة"
             }
             else
             {
-                var popup = new NoServerResponse();
-                await this.ShowPopupAsync(popup);
+                await this.ShowPopupAsync(new NoServerResponse());
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex)
         {
-            var popup = new NoServerResponse();
-            await this.ShowPopupAsync(popup);
+            Console.WriteLine($"Register Error: {ex.Message}");
+            await this.ShowPopupAsync(new NoServerResponse());
         }
-        catch (TaskCanceledException)
+        finally
         {
-            var popup = new NoServerResponse();
-            await this.ShowPopupAsync(popup);
+            LoadingIndicator.IsRunning = false;
+            LoadingIndicator.IsVisible = false;
+            RegisterButton.Text = "إنشاء حساب";
+            RegisterButton.IsVisible = true;
+            RegisterButton.Scale = 0;
+            await RegisterButton.RotateTo(0);
+            await RegisterButton.ScaleTo(1.1, 150, Easing.CubicOut);
+            await RegisterButton.ScaleTo(1.0, 100, Easing.Linear);
         }
-        catch (Exception)
-        {
-            var popup = new NoServerResponse();
-            await this.ShowPopupAsync(popup);
-        }
-    }
-
-    private string GetArabicFieldName(string fieldName)
-    {
-        return fieldName.ToLower() switch
-        {
-            "email" => "البريد الإلكتروني",
-            "password" => "كلمة المرور",
-            "name" => "الاسم",
-            "password_confirmation" => "تأكيد كلمة المرور",
-            _ => fieldName
-        };
     }
 
     private bool IsValidEmail(string email)
@@ -183,5 +158,36 @@ public partial class SinginPage : ContentPage
 
         string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
         return Regex.IsMatch(email, pattern);
+    }
+
+    bool isGoogleButtonAnimating = true;
+    async void StartGoogleButtonAnimation()
+    {
+        while (isGoogleButtonAnimating)
+        {
+            await GoogleButton.RotateTo(2, 250, Easing.SinInOut);
+            await GoogleButton.RotateTo(-2, 250, Easing.SinInOut);
+            await GoogleButton.RotateTo(0, 300, Easing.SinInOut);
+            await Task.Delay(600);
+        }
+    }
+
+    void StopGoogleButtonAnimation()
+    {
+        isGoogleButtonAnimating = false;
+        GoogleButton.RotateTo(0, 300, Easing.CubicOut);
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        isGoogleButtonAnimating = true;
+        StartGoogleButtonAnimation();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        StopGoogleButtonAnimation();
     }
 }

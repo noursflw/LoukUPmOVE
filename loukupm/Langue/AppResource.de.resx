@@ -267,6 +267,9 @@
   <data name="invoic" xml:space="preserve">
     <value>Gesamt</value>
   </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
   <data name="linkpass" xml:space="preserve">
     <value>Link senden</value>
   </data>

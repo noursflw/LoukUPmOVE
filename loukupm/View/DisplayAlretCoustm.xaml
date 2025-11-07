@@ -39,7 +39,7 @@
                     HorizontalTextAlignment="Center" />
 
             </VerticalStackLayout>
-            <Button FontFamily="georgia-bold" FontSize="19"  BackgroundColor="#EBD750"  Margin="10"  BorderWidth="1" Clicked="CancelClicked" TextColor="White"  Text="{Loc:Translate Name=yes}"/>
+            <Button FontFamily="georgia-bold" FontSize="19"  BackgroundColor="#EBD750"  Margin="10"  BorderWidth="1" Clicked="CancelClicked" TextColor="Black"  Text="{Loc:Translate Name=yes}"/>
         </VerticalStackLayout>
   
     </Frame>

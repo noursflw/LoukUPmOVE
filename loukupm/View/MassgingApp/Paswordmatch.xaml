@@ -29,8 +29,8 @@
              HorizontalTextAlignment="Center" />
             <Image
             Source="erorematchpass.svg"
-            HeightRequest="300"
-            WidthRequest="200"  
+            
+              
             Aspect="AspectFit"
             HorizontalOptions="Center" />
 
@@ -49,6 +49,7 @@
                Text="{Loc:Translate Name=yes}"
                BorderWidth="1"
                TextColor="Black"
+              
                CornerRadius="10"
                HeightRequest="44"
                FontFamily="georgia"                        

@@ -17,6 +17,8 @@
             <VerticalStackLayout>
                 <Label Text="{loc:Translate Name=NameUser}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
                 <material:TextField x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="Name" />
+                <Label Text="{loc:Translate Name=LastName}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
+                <material:TextField x:Name="RegisterLastNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="{loc:Translate Name=LastName}" />
                 <Label Text="{loc:Translate Name=EMail}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
                 <material:TextField x:Name="RegisterEmailEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=EMail}" />
                 <Label Text="{loc:Translate Name=PhoneNumber}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
@@ -34,11 +36,31 @@
                     </material:TextField.Attachments>
                 </material:TextField>
 
-                <Button
-                    TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
-                    Clicked="OnRegisterClicked"
-                    BorderWidth="1" Text="{loc:Translate Name=CreatAcount2}" CornerRadius="16"
-                    HeightRequest="60" Margin="25" />
+             
+                    <Button
+        x:Name="RegisterButton"
+        TextColor="#1F1B04"
+                    Margin="25"
+        FontSize="22"
+        FontFamily="georgia-bold"
+        Clicked="OnRegisterClicked"
+        BorderWidth="1"
+        Text="{loc:Translate Name=CreatAcount2}"
+        CornerRadius="16"
+        HeightRequest="60"
+        BackgroundColor="#F7E76A"
+        />
+
+                <!-- مؤشر التحميل -->
+                <ActivityIndicator 
+        x:Name="LoadingIndicator"
+                    Margin="20"
+        IsRunning="False"
+        IsVisible="False"
+        Color="White"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        Scale="1.4" />
                 <HorizontalStackLayout Margin="60,20,0,0" Spacing="2">
                     <Label Text="{loc:Translate Name=YouHaveAcount}" FontSize="18" TextColor="White"/>
                     <Label FontSize="18">
@@ -57,10 +79,15 @@
                 </HorizontalStackLayout>
             </VerticalStackLayout>
             <Image Margin="25,0" Source="or.svg" HeightRequest="24"/>
-            <Button Margin="30" Text="{loc:Translate Name=GoogleLogin}" BackgroundColor="#202020" FontFamily="Oswald"
-                BorderColor="#D3D3D3" ImageSource="google.png"
-                BorderWidth="1" CornerRadius="18" 
-                HeightRequest="60" />
+            <Button Margin="30" Text="{loc:Translate Name=GoogleLogin}"
+               BackgroundColor="#202020"
+               FontFamily="Oswald"
+               BorderColor="White"
+               TextColor="White"
+               ImageSource="google.png"
+               x:Name="GoogleButton"
+               BorderWidth="1" CornerRadius="18" 
+               HeightRequest="60" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

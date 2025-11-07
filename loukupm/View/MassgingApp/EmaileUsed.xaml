@@ -3,7 +3,8 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             x:Class="loukupm.View.MassgingApp.EmaileUsed"
             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-            xmlns:Loc="clr-namespace:loukupm.Langue">
+            xmlns:Loc="clr-namespace:loukupm.Langue"
+             Color="Transparent">
     <Frame
        BackgroundColor="#444444"
        CornerRadius="20"

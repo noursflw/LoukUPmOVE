@@ -56,7 +56,7 @@
    CornerRadius="10"
    FontFamily="georgia"       
    BackgroundColor="#FF4C4C"
-   TextColor="White"
+   TextColor="Black"
    HeightRequest="44"
    WidthRequest="100"
    Clicked="Button_Clicked"/>
