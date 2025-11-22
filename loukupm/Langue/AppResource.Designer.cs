@@ -439,6 +439,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Es ist ein Fehler während des Vorgangs aufgetreten..
+        /// </summary>
+        internal static string ErorDeletAccount {
+            get {
+                return ResourceManager.GetString("ErorDeletAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kommunikationsfehler.
         /// </summary>
         internal static string EroreConacted {
@@ -471,6 +480,15 @@ namespace loukupm.Langue {
         internal static string ErorlogIn {
             get {
                 return ResourceManager.GetString("ErorlogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Das Aktualisieren des Passworts ist fehlgeschlagen.
+        /// </summary>
+        internal static string FeildUpdatePassord {
+            get {
+                return ResourceManager.GetString("FeildUpdatePassord", resourceCulture);
             }
         }
         
@@ -660,6 +678,15 @@ namespace loukupm.Langue {
         internal static string Passwordnotmatch {
             get {
                 return ResourceManager.GetString("Passwordnotmatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Das Passwort wurde erfolgreich aktualisiert.
+        /// </summary>
+        internal static string PasswordUpdated {
+            get {
+                return ResourceManager.GetString("PasswordUpdated", resourceCulture);
             }
         }
         

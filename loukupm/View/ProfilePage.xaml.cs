@@ -94,6 +94,7 @@ public partial class ProfilePage : ContentPage
     private async void Button_Clicked_8(object sender, EventArgs e)
     {
         var popup = new MassegBoxLogout();
+        SecureStorage.Remove("auth_token");
         await this.ShowPopupAsync(popup);  
     }
 

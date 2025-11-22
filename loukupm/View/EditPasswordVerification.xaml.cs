@@ -8,7 +8,7 @@ public partial class EditPasswordVerification : ContentPage
 	{
 		InitializeComponent();
         Shell.SetNavBarIsVisible(this, false);
-		this.BindingContext = AppViewModel.Instance;
+        this.BindingContext = new AppViewModel();
 
     }
 

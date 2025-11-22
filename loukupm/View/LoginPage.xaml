@@ -21,22 +21,46 @@
                          Text="{loc:Translate Name=Login}" TextColor="White"
                           VerticalOptions="Center" 
                           HorizontalOptions="Center" />
+                <StackLayout>
+                     
+                    <!-- Wrap button and spinner in a Grid so we can show spinner while hiding button -->
+                    <Grid Margin="25,240,25,0" HeightRequest="60">
+                        <Button
+                           BackgroundColor="#202020"
+                           FontFamily="Oswald"
+                           TextColor="White"
+                           BorderColor="#D3D3D3"
+                           ImageSource="google.png"
+                           Clicked="GoogleButton_Clicked"
+                           BorderWidth="1"
+                           x:Name="GoogleButton"
+                           CornerRadius="18"
+                           Text="{ loc:Translate Name=GoogleLogin}"
+                           VerticalOptions="Fill"
+                           HorizontalOptions="Fill" />
 
-                <Button Grid.Row="0" 
-                       Margin="25,200,25,0" 
-                       BackgroundColor="#202020" 
-                       FontFamily="Oswald" 
-                        TextColor="White"
-                       BorderColor="#D3D3D3" 
-                       ImageSource="google.png"    
-                        
-                       BorderWidth="1" 
-                       x:Name="GoogleButton"
-                       CornerRadius="18" 
-                       Text="{ loc:Translate Name=GoogleLogin}"
-                       HeightRequest="60" />
+                        <ActivityIndicator x:Name="GoogleLoadingIndicator"
+                                           IsVisible="False"
+                                           IsRunning="False"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center"
+                                           Color="White"
+                                           Scale="1.0"/>
+                    </Grid>
+                    <!-- WebView مخفي -->
+                    <Frame Margin="15" BackgroundColor="#252525" ZIndex="1" x:Name="fg"  IsVisible="False" >
+                        <WebView x:Name="webView" 
+                                BackgroundColor="#AA000000"
+                                IsVisible="False"
+                                HeightRequest="600"
+                                WidthRequest="300"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"/>
+                    </Frame>
+                    <Image Grid.Row="0" Margin="25,10,25,0" Source="or.svg" HeightRequest="24"/>
+                </StackLayout>
 
-                <Image Grid.Row="0" Margin="25,310,25,0" Source="or.svg" HeightRequest="24"/>
+                
                 <VerticalStackLayout Grid.Row="1">
                     <Label Text="{loc:Translate Name=EMail}" Margin="12,5,0,0" TextColor="White" Padding="10" FontSize="16"/>
                     <material:TextField

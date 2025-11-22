@@ -3,9 +3,11 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using loukupm.Langue;
 using loukupm.Model;
 using loukupm.services;
 using loukupm.View;
+using loukupm.View.MassgingApp;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,6 +17,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using loukupm.Langue;
 
 
 namespace loukupm.ViewModel
@@ -55,10 +58,11 @@ namespace loukupm.ViewModel
        
         private readonly string _token;
         public ICommand SelectServiceButtonCommand { get; }
+        private readonly HttpClient _httpClient;
         public AppViewModel()
         {
             LoadData();
-
+            _httpClient = new HttpClient();
             // Fire and forget
             _ = LoadBookingsAsync();
             _ = LoadNotificationsAsync();
@@ -69,7 +73,7 @@ namespace loukupm.ViewModel
             _token = SecureStorage.GetAsync("auth_token").Result;
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
             ConfirmCommand = new Command(async () => await SendCodeAsync());
-            PostEmailCommand = new Command<string>(async (email) => await PostEmailAsync(email));
+         
             ChangePasswordCommand = new Command(async () => await ChangePasswordAsync());
             PostBookingCommand = new Command(async () => await PostBookingAsync());
             UpdateUserCommand = new Command(async () => await UpdateUserInfo());
@@ -94,17 +98,27 @@ namespace loukupm.ViewModel
                 foreach (var s in CurrentBooking.SelectedServices)
                     Console.WriteLine($"- {s.NameServies}");
             });
-           
 
+        }
+        private async Task SetAuthorizationHeaderAsync()
+        {
+            // استدعاء SecureStorage بشكل غير متزامن
+            string? token = await SecureStorage.GetAsync("auth_token");
 
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
 
-
-
-
+            }
+            else
+            {
+                // إزالة أي Authorization قديمة إذا لم يكن هناك توكن
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
 
 
         }
-
 
         ///Section Load Data    
         private void LoadData()
@@ -314,15 +328,23 @@ namespace loukupm.ViewModel
 
 
         ///post For send Email use on forget password 
-        public ICommand PostEmailCommand { get; set; }
-        public async Task PostEmailAsync(string email)
+       
+
+        [RelayCommand]
+        public async Task PostEmailAsync()
         {
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                await App.Current.MainPage.DisplayAlert("خطأ", "يرجى إدخال البريد الإلكتروني", "موافق");
+                return;
+            }
+
             using var client = new HttpClient();
-            var json = JsonSerializer.Serialize(new { email });
+            var json = JsonSerializer.Serialize(new { email = Email });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             try
             {
-                // ضع عنوان الـ API الصحيح هنا
                 var response = await client.PostAsync("https://example.com/api/send-email", content);
                 if (response.IsSuccessStatusCode)
                 {
@@ -338,6 +360,12 @@ namespace loukupm.ViewModel
                 await App.Current.MainPage.DisplayAlert("خطأ", ex.Message, "موافق");
             }
         }
+
+
+
+
+
+
 
         //section OTP FORGET PASSWORD
         public string Digit1 { get; set; }
@@ -661,10 +689,6 @@ namespace loukupm.ViewModel
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-
-
-
         /// End Section Upate User
 
         //// Edite Paswwoerd User section
@@ -672,23 +696,23 @@ namespace loukupm.ViewModel
         private async Task ChangeUserPasswordAsync()
         {
 
-            using var client = new HttpClient { BaseAddress = new Uri("https://eee/") };
-            if (!string.IsNullOrWhiteSpace(_token))
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            
+            await SetAuthorizationHeaderAsync();
 
             var user = new User
             {
                 Password = password,
                 ConfirmPassword = confirmPassword
             };
-            var response = await client.PutAsJsonAsync("api/users/change-password", user);
+            var response = await _httpClient.PutAsJsonAsync("https://test.center-yazan.com/api/auth/reset-password", user);
             if (response.IsSuccessStatusCode)
             {
-                Toast.Make("تم تحديث كلمة المرور بنجاح", ToastDuration.Short).Show();
+                Toast.Make(AppResource.PasswordUpdated, ToastDuration.Short).Show();
+
             }
             else
             {
-                Toast.Make("فشل تحديث كلمة المرور", ToastDuration.Short).Show();
+                Toast.Make(AppResource.FeildUpdatePassord, ToastDuration.Short).Show();
             }
         }
 
@@ -706,7 +730,9 @@ namespace loukupm.ViewModel
                 var response = await client.DeleteAsync("users/me"); // غيّر المسار حسب الباك ايند
                 if (!response.IsSuccessStatusCode)
                 {
-                    await Application.Current.MainPage.DisplayAlert("خطأ", "فشل حذف الحساب.", "موافق");
+                    var popup = new ErorRemoveMyAccount();
+
+                    await App.Current.MainPage.ShowPopupAsync(popup);
                     return;
                 }
                 
@@ -720,7 +746,9 @@ namespace loukupm.ViewModel
             }
             catch (Exception)
             {
-                await Application.Current.MainPage.DisplayAlert("خطأ", "حدث خطأ أثناء العملية.", "موافق");
+                var popup = new ErorRemoveMyAccount();
+
+                await App.Current.MainPage.ShowPopupAsync(popup);
             }
         }
 

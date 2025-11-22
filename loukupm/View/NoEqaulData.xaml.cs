@@ -1,6 +1,6 @@
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.ApplicationModel.Communication;
-using Stripe.Climate;
+
 namespace loukupm.View;
 
 public partial class NoEqaulData : Popup

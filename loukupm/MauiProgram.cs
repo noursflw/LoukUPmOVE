@@ -1,16 +1,18 @@
 ﻿using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
+using Firebase.Auth;
+using Firebase.Auth.Providers;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
-using System.Threading;
 using The49.Maui.BottomSheet;
 using UraniumUI;
-
 
 namespace loukupm
 {
     public static class MauiProgram
     {
+        public static FirebaseAuthClient firebaseclient;
+        public static FirebaseAuthConfig firebaseconfig;
+
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -31,11 +33,23 @@ namespace loukupm
                 .UseMauiCommunityToolkit()
                 .UseFFImageLoading();
 
-
-
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+
+            // 🔹 إعداد Firebase
+            firebaseconfig = new FirebaseAuthConfig
+            {
+                ApiKey = "AIzaSyCB5tz3iuvqgKzL6QldndSrK94ePgMIAOg", // استخدم API Key الخاص بك
+                AuthDomain = "app-test-2c25c.firebaseapp.com", // AuthDomain الصحيح
+                Providers = new FirebaseAuthProvider[]
+                {
+                    new GoogleProvider().AddScopes("email"),
+                    new EmailProvider()
+                }
+            };
+
+            firebaseclient = new FirebaseAuthClient(firebaseconfig);
 
             return builder.Build();
         }

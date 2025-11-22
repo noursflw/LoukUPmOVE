@@ -243,6 +243,9 @@
   <data name="EROR" xml:space="preserve">
     <value>Fehler</value>
   </data>
+  <data name="ErorDeletAccount" xml:space="preserve">
+    <value>Es ist ein Fehler während des Vorgangs aufgetreten.</value>
+  </data>
   <data name="EroreConacted" xml:space="preserve">
     <value>Kommunikationsfehler</value>
   </data>
@@ -254,6 +257,9 @@
   </data>
   <data name="ErorlogIn" xml:space="preserve">
     <value>خطأ في تسجيل الدخول</value>
+  </data>
+  <data name="FeildUpdatePassord" xml:space="preserve">
+    <value>Das Aktualisieren des Passworts ist fehlgeschlagen</value>
   </data>
   <data name="GoogleLogin" xml:space="preserve">
     <value>Mit Google fortfahren</value>
@@ -317,6 +323,9 @@
   </data>
   <data name="Passwordnotmatch" xml:space="preserve">
     <value>Die Passwörter stimmen nicht überein</value>
+  </data>
+  <data name="PasswordUpdated" xml:space="preserve">
+    <value>PasswordUpdated</value>
   </data>
   <data name="paymentgetwaymethod" xml:space="preserve">
     <value>Zahlungsmethode</value>

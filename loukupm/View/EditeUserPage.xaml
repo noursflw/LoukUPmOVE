@@ -69,7 +69,7 @@
                     <Label Text="{Loc:Translate Name=NameUser}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
                     <material:TextField Text="{Binding UserName}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.png"     HeightRequest="50" Title="Name" />
                     <Label Text="{Loc:Translate Name=EMail}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
-                    <material:TextField  Text="{Binding Email}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="E-Mail" />
+                    <material:TextField  IsReadOnly="True" Text="{Binding Email}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="Locked" />
                     <Button 
                             Margin="23,30,0,0" TextColor="Black"
                             Text="{ Loc:Translate Name=ChangeImage}"
