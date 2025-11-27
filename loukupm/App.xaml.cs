@@ -3,6 +3,7 @@ using Microsoft.Maui.Storage;
 using OneSignalSDK.DotNet;
 using OneSignalSDK.DotNet.Core.Debug;
 using System.Globalization;
+using loukupm.Services;
 
 namespace loukupm
 {
@@ -11,14 +12,17 @@ namespace loukupm
         public App()
         {
             InitializeComponent();
+            try 
+            {
+                _ = OneSignalService.Init();
+                Console.WriteLine("✅ OneSignal initialized");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ OneSignal init failed: {ex.Message}");
+                // يمكنك تسجيل الخطأ في Sentry أو logging service
+            }
 
-            // 🔹 تهيئة OneSignal
-        //    OneSignal.User.AddTags(new Dictionary<string, string>
-        //{
-        //    { "id", "1" }
-        //});
-
-            // 🔹 تحميل اللغة المحفوظة من Preferences
             var savedLang = Preferences.Get("AppLanguage", string.Empty);
             var direction = Microsoft.Maui.FlowDirection.LeftToRight;
 
@@ -32,17 +36,17 @@ namespace loukupm
                     : Microsoft.Maui.FlowDirection.LeftToRight;
             }
 
-            // 🔹 إنشاء AppShell (يجب قبل أي تنقل)
+           
             MainPage = new AppShell
             {
                 FlowDirection = direction
             };
 
-            // ✅ بعد تحميل الصفحة بالكامل، تحقق من حالة التوكن
+          
             MainPage.Loaded += async (s, e) => await CheckAuthentication();
         }
 
-        // 🔹 دالة التحقق من تسجيل الدخول
+        
         private async Task CheckAuthentication()
         {
             try

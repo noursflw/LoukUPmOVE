@@ -30,6 +30,7 @@ public partial class HomePage : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
+        await Navigation.PushAsync(new AboutUS());
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
 
@@ -41,34 +42,29 @@ public partial class HomePage : ContentPage
         else
             AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
     }
-
-    private DateTime _lastBackPressed;
+    private DateTime _lastBackPressed = DateTime.MinValue;
 
     protected override bool OnBackButtonPressed()
     {
-        // إذا كان هناك صفحات سابقة
-        if (Navigation.NavigationStack.Count > 1)
+        var currentTime = DateTime.Now;
+
+       
+        if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
         {
-            Shell.Current.GoToAsync("//HomePage");
-            return true; // منع الإجراء الافتراضي
+#if ANDROID
+            Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+#endif
+            return true;
         }
-        else
-        {
-            var currentTime = DateTime.Now;
-            if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
-            {
-                // خروج من التطبيق بعد الضغط مرتين
-                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
-            }
-            else
-            {
-                _lastBackPressed = currentTime;
-                // عرض Toast
-                ShowToast("اضغط مرة أخرى للخروج");
-            }
-            return true; // منع الإجراء الافتراضي
-        }
+ 
+        _lastBackPressed = currentTime;
+
+        
+        ShowToast("اضغط مرة أخرى للخروج");
+
+        return true; 
     }
+
     private async void ShowToast(string message)
     {
         var toast = Toast.Make(message, ToastDuration.Short);

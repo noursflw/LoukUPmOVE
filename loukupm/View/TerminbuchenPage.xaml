@@ -71,10 +71,10 @@
 
                 <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16" WidthRequest="286" HeightRequest="48" Margin="-70,15,0,0" />
             </VerticalStackLayout>
-            <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
+            <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,15" />
             <ScrollView Orientation="Horizontal">
                 <HorizontalStackLayout>
-                    <CollectionView ItemsSource="{Binding WorkTeams}" ItemsLayout="HorizontalList" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
+                    <!--<CollectionView ItemsSource="{Binding WorkTeams}" ItemsLayout="HorizontalList" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -91,7 +91,7 @@
                                            LoadingPlaceholder="placeholder.png"
                                            ErrorPlaceholder="placeholder.png"
                                            Source="{Binding ImageSafe}" />
-                                        <!-- ملاحظة هنا -->
+                                     
 
 
                                         <Label Text="{Binding Name}" TextColor="#999999" />
@@ -99,7 +99,50 @@
                                 </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
+                    </CollectionView>-->
+
+
+                    <CollectionView 
+    ItemsSource="{Binding WorkTeams}" 
+    x:Name="WorkTeamsCollectionView"
+    ItemsLayout="HorizontalList"
+    SelectionMode="None"
+    HeightRequest="170">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame   
+                BackgroundColor="#202020" 
+                BorderColor="{Binding BorderColor}" 
+                Margin="6" 
+                 HeightRequest="170"
+                CornerRadius="16">
+
+                                    <VerticalStackLayout Margin="12">
+                                        <ff:CachedImage
+                        WidthRequest="70"
+                        HeightRequest="70"
+                        Aspect="AspectFill"
+                        FadeAnimationEnabled="True"
+                        DownsampleToViewSize="True"
+                        LoadingPlaceholder="placeholder.png"
+                        ErrorPlaceholder="placeholder.png"
+                        Source="{Binding ImageSafe}" />
+
+                                        <Label Text="{Binding Name}" TextColor="#999999" />
+                                    </VerticalStackLayout>
+
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                        Command="{Binding Source={x:Reference WorkTeamsCollectionView}, Path=BindingContext.SelectWorkTeamCommand}" 
+                        CommandParameter="{Binding}" />
+                                    </Frame.GestureRecognizers>
+
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
                     </CollectionView>
+
 
                     <Frame HeightRequest="150" Margin="20,10,40,0"
                         WidthRequest="132"
@@ -126,43 +169,54 @@
                     <Label x:Name="MonthYearLabel"  Margin="10,0,0,0"
                        FontSize="18" TextColor="#999999" FontFamily="Oswald" 
                        VerticalOptions="Center" HorizontalOptions="CenterAndExpand"/>
-                    <Button x:Name="PrevDayButton" 
-                 HeightRequest="40" WidthRequest="40"
-                 BackgroundColor="#202020" ImageSource="backbuttonpmg.png"
-                 CornerRadius="12" Margin="150,0,0,0" BorderColor="#999999" BorderWidth="1"
-                 Rotation="180"/>
-                    <Button x:Name="NextDayButton" Margin="10,0,0,0"
-                    HeightRequest="40" WidthRequest="40"
-                   BackgroundColor="#202020" ImageSource="backbuttonpmg.png" 
-                    CornerRadius="12" BorderColor="#999999" BorderWidth="1"
-                   />
+
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout>
-                    <CollectionView ItemsSource="{Binding ProviderDays}"
-                x:Name="DayCollectionView"
-                ItemsLayout="HorizontalList"
-                SelectionMode="None">
+                 
+                    <CollectionView 
+                             x:Name="DayCollectionView"
+                             ItemsSource="{Binding ProviderDays}"
+                             ItemsLayout="HorizontalList"
+                             SelectionMode="None"
+                             HorizontalScrollBarVisibility="Always"
+                             Margin="10">
+
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <VerticalStackLayout Margin="12">
-                                    <Frame HeightRequest="86" WidthRequest="86" CornerRadius="16"
-                       BackgroundColor="#444444"
-                       BorderColor="{Binding BorderColor}">
+                                <VerticalStackLayout Margin="6" HorizontalOptions="Start">
+
+                                    <Frame 
+                    HeightRequest="86" 
+                    WidthRequest="86"
+                    CornerRadius="16"
+                    BackgroundColor="#444444"
+                    BorderColor="{Binding BorderColor}"
+                    HasShadow="False">
+
                                         <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                                            <Label Text="{Binding Date}" TextColor="White" FontSize="16" HorizontalOptions="Center"/>
-                                            <Label Text="{Binding Day}" TextColor="White" FontSize="12" HorizontalOptions="Center"/>
+                                            <Label Text="{Binding Date}" 
+                               TextColor="White" 
+                               FontSize="16" 
+                               HorizontalOptions="Center"/>
+                                            <Label Text="{Binding Day}" 
+                               TextColor="White" 
+                               FontSize="12" 
+                               HorizontalOptions="Center"/>
                                         </VerticalStackLayout>
+
                                         <Frame.GestureRecognizers>
                                             <TapGestureRecognizer 
-                            Command="{Binding Source={x:Reference DayCollectionView}, Path=BindingContext.SelectDayCommand}"
+                            Command="{Binding Source={x:Reference DayCollectionView}, Path=BindingContext.SelectDayCommand}" 
                             CommandParameter="{Binding}"/>
                                         </Frame.GestureRecognizers>
+
                                     </Frame>
                                 </VerticalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+
 
 
                     <Frame HeightRequest="86" Margin="20,10,40,0"
@@ -242,9 +296,9 @@
            Margin="0,0,10,10"       
            FontFamily="georgia-bold"
            BorderWidth="1"
+            Command="{Binding PostBookingCommand}"            
            HorizontalOptions="End"
-           VerticalOptions="Center"
-           Clicked="Button_Clicked_1" />
+           VerticalOptions="Center"/>
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

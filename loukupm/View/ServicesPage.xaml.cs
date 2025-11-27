@@ -96,4 +96,9 @@ public partial class ServicesPage : ContentPage
 
         await Navigation.PushAsync(new TerminbuchenPage());
     }
+
+    private async void Button_Clicked_3(object sender, EventArgs e)
+    {
+        await Toast.Make(Langue.AppResource.celectedserviesiddone).Show();
+    }
 }

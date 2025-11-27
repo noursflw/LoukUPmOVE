@@ -468,38 +468,38 @@ namespace loukupm.services
         {
             public string Url { get; set; } = string.Empty;
         }
-        public async Task<AvailabilityResponseWrapper?> GetProviderAvailabilityAsync(int providerId, string date = "")
-        {
-            try
-            {
-                await SetAuthorizationHeaderAsync();
+        //public async Task<AvailabilityResponseWrapper?> GetProviderAvailabilityAsync(int providerId, string date = "")
+        //{
+        //    try
+        //    {
+        //        await SetAuthorizationHeaderAsync();
 
-                // يمكنك تمرير التاريخ إذا أردت فلترة حسب يوم محدد
-                string url = $"https://test.center-yazan.com/api/provider/{providerId}/availability";
-                if (!string.IsNullOrEmpty(date))
-                {
-                    url += $"?date={date}";
-                }
+        //        // يمكنك تمرير التاريخ إذا أردت فلترة حسب يوم محدد
+        //        string url = $"https://test.center-yazan.com/api/provider/{providerId}/availability";
+        //        if (!string.IsNullOrEmpty(date))
+        //        {
+        //            url += $"?date={date}";
+        //        }
 
-                var response = await _httpClient.GetAsync(url);
-                if (!response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"❌ API error: {response.StatusCode}");
-                    return null;
-                }
+        //        var response = await _httpClient.GetAsync(url);
+        //        if (!response.IsSuccessStatusCode)
+        //        {
+        //            Console.WriteLine($"❌ API error: {response.StatusCode}");
+        //            return null;
+        //        }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var wrapper = JsonSerializer.Deserialize<AvailabilityResponseWrapper>(json, options);
+        //        var json = await response.Content.ReadAsStringAsync();
+        //        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        //        var wrapper = JsonSerializer.Deserialize<AvailabilityResponseWrapper>(json, options);
 
-                return wrapper;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Exception while fetching availability: {ex.Message}");
-                return null;
-            }
-        }
+        //        return wrapper;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"❌ Exception while fetching availability: {ex.Message}");
+        //        return null;
+        //    }
+        //}
         public async Task<bool> UpdateUserAsync(string name, string email, string avatarBase64 = null)
         {
             await SetAuthorizationHeaderAsync();

@@ -1,4 +1,5 @@
-using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
+﻿using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
+using loukupm.Services;
 using loukupm.ViewModel;
 using Microsoft.Maui.Controls.Shapes;     // RoundRectangle
 using Microsoft.Maui.Graphics;
@@ -93,8 +94,11 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_8(object sender, EventArgs e)
     {
-        var popup = new MassegBoxLogout();
+        await OneSignalService.LogoutAsync();  // ✨ استخدم async
         SecureStorage.Remove("auth_token");
+        SecureStorage.Remove("refresh_token");
+        
+        var popup = new MassegBoxLogout();
         await this.ShowPopupAsync(popup);  
     }
 
@@ -102,6 +106,8 @@ public partial class ProfilePage : ContentPage
     {
 
         var popup = new RemoveUserPopup();
+        await OneSignalService.LogoutAsync();
+
         await this.ShowPopupAsync(popup);
 
     }

@@ -232,6 +232,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Der Service wurde erfolgreich hinzugefügt..
+        /// </summary>
+        internal static string celectedserviesiddone {
+            get {
+                return ResourceManager.GetString("celectedserviesiddone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ändern Sie das Bild.
         /// </summary>
         internal static string ChangeImage {

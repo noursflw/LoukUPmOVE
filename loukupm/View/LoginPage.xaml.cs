@@ -10,6 +10,8 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using static loukupm.Model.Auth;
 using System.Diagnostics.CodeAnalysis;
+using OneSignalSDK.DotNet;
+
 
 namespace loukupm.View;
 
@@ -51,13 +53,13 @@ public partial class LoginPage : ContentPage
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        // ✅ منع الضغط المزدوج مباشرة
+       
         if (!RegisterButton.IsEnabled)
             return;
 
         RegisterButton.IsEnabled = false;
 
-        // 🎬 أنيميشن ضغط الزر + إخفاء ناعم
+       
         await Task.WhenAll(
           RegisterButton.RotateTo(10),
           RegisterButton.RotateTo(-10),
@@ -74,7 +76,7 @@ public partial class LoginPage : ContentPage
 
         try
         {
-            // ✅ التحقق من الإدخالات بعد إخفاء الزر (حتى المستخدم ما يضغط مرتين)
+          
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
                 var popup = new DisplayAlretCoustm();
@@ -114,21 +116,36 @@ public partial class LoginPage : ContentPage
             var response = await client.PostAsync("https://test.center-yazan.com/api/auth/login", content);
             var result = await response.Content.ReadAsStringAsync();
 
+          
             if (response.IsSuccessStatusCode)
             {
                 var loginResponse = JsonSerializer.Deserialize<LoginResponse>(result,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
+                // حفظ التوكن
                 if (!string.IsNullOrEmpty(loginResponse?.Token))
                     await SecureStorage.SetAsync("auth_token", loginResponse.Token);
 
                 if (!string.IsNullOrEmpty(loginResponse?.Refresh_Token))
                     await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
 
+                // ⭐ هنا تعريف اليوزر ل OneSignal
+                if (loginResponse?.User != null)
+                {
+                    var userId = loginResponse.User.Id.ToString();
+
+                    // ربط الجهاز بالمستخدم
+                    OneSignal.Login(userId);
+
+                    // إضافة Tag (حتى تقدر تعمل Filter من Dashboard)
+                    OneSignal.User.AddTag("user_no", userId);
+                }
+
                 var popup = new CompletedLogin();
                 await this.ShowPopupAsync(popup);
                 await Shell.Current.GoToAsync("//HomePage");
             }
+
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 var popup = new NoEqaulData();
@@ -147,7 +164,7 @@ public partial class LoginPage : ContentPage
         }
         finally
         {
-            // 🎯 إعادة الحالة الطبيعية دائمًا
+            
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;
 
@@ -163,7 +180,7 @@ public partial class LoginPage : ContentPage
             );
             await RegisterButton.ScaleTo(1.0, 100, Easing.CubicOut);
 
-            RegisterButton.IsEnabled = true; // ✅ تفعيل الزر من جديد
+            RegisterButton.IsEnabled = true; 
         }
     }
 
@@ -201,14 +218,14 @@ public partial class LoginPage : ContentPage
         }
     }
 
-    // لإيقاف الحركة (عندما تغادر الصفحة أو تنتهي العملية)
+  
     void StopGoogleButtonAnimation()
     {
         isGoogleButtonAnimating = false;
         GoogleButton.RotateTo(0, 300, Easing.CubicOut); // يرجع للوضع الطبيعي
     }
 
-    // مثلاً تبدأ الأنيميشن في OnAppearing()
+   
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -216,7 +233,7 @@ public partial class LoginPage : ContentPage
         StartGoogleButtonAnimation();
     }
 
-    // وتوقفها في OnDisappearing()
+   
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
@@ -228,6 +245,8 @@ public partial class LoginPage : ContentPage
         try
         {
             // show spinner, hide button
+            fglogin.IsVisible = true;
+            fglogin.IsVisible = false;
             GoogleButton.IsVisible = false;
             GoogleLoadingIndicator.IsVisible = true;
             GoogleLoadingIndicator.IsRunning = true;
@@ -256,11 +275,13 @@ public partial class LoginPage : ContentPage
                 webView.Source = uri;
                 webView.IsVisible = true;
                 fg.IsVisible = true;
+                fglogin.IsVisible = false;
                 webView.Opacity = 1;
 
                 // wait for redirect with timeout
-                string finalUrl = await WaitForNavigationToUrlAsync("https://test-23def.web.app/__/auth/handler", TimeSpan.FromSeconds(60));
+                string finalUrl = await WaitForNavigationToUrlAsync("https://test-23def.web.app/__/auth/handler", TimeSpan.FromSeconds(80));
                 fg.IsVisible = false;
+                fglogin.IsVisible = true;
                 webView.IsVisible = false;
                 webView.Source = null;
 
@@ -273,12 +294,13 @@ public partial class LoginPage : ContentPage
 
             userCredential = await signInTask;
 
-            if (userCredential != null)
+            if (userCredential?.User != null)
             {
-                var user = userCredential.User;
-                Console.WriteLine($"Logged in: {user.Info.DisplayName} ({user.Info.Email})");
-                await DisplayAlert("Sign In", "Welcome: " + user.Info.DisplayName, "OK");
-                IsLogged = true;
+                var userId = userCredential.User.Uid;
+                OneSignal.Login(userId);
+                OneSignal.User.AddTag("email", userCredential.User.Info.Email);
+                OneSignal.User.AddTag("login_type", "google");
+                OneSignal.User.AddTag("display_name", userCredential.User.Info.DisplayName);
             }
         }
         catch (FirebaseAuthHttpException fae)
@@ -306,6 +328,7 @@ public partial class LoginPage : ContentPage
             GoogleLoadingIndicator.IsRunning = false;
             GoogleLoadingIndicator.IsVisible = false;
             GoogleButton.IsVisible = true;
+           fglogin.IsVisible = true;
         }
     }
 
@@ -344,6 +367,6 @@ public partial class LoginPage : ContentPage
         throw new TimeoutException("Navigation to redirect URL timed out.");
     }
 
-    // ... other methods unchanged ...
+    // ... other methods unchanged ... End Section Log IN and Google Login WITH Firebase
 }
 

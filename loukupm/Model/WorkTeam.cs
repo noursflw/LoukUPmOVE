@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
     // كلاس فريق العمل
-    public class WorkTeam
+    public partial class WorkTeam : ObservableObject
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -25,7 +26,8 @@ namespace loukupm.Model
 
         [JsonPropertyName("created_at")]
         public DateTime WorkTime { get; set; }
-
+        [ObservableProperty]
+        private string borderColor = "#202020";
         public WorkTeam() { }
 
         public WorkTeam(int id, string name, string description, string job, string image, DateTime workTime)

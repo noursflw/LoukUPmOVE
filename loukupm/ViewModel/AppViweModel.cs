@@ -73,9 +73,11 @@ namespace loukupm.ViewModel
             _token = SecureStorage.GetAsync("auth_token").Result;
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
             ConfirmCommand = new Command(async () => await SendCodeAsync());
-         
+            ProviderDays = new ObservableCollection<DayItem>();
+            SelectDayCommand = new Command<DayItem>(OnSelectDay);
+            LoadCurrentWeekDays();
             ChangePasswordCommand = new Command(async () => await ChangePasswordAsync());
-            PostBookingCommand = new Command(async () => await PostBookingAsync());
+            PostBookingCommand = new AsyncRelayCommand(PostBookingAsync);
             UpdateUserCommand = new Command(async () => await UpdateUserInfo());
             ChangePasswordUserCommand = new Command(async () => await ChangeUserPasswordAsync());
             SelectServiceButtonCommand = new Command<Servies>(service =>
@@ -241,6 +243,24 @@ namespace loukupm.ViewModel
                 IsWorkTeamLoad = false; 
             }
         }
+
+        [ObservableProperty]
+        private WorkTeam selectedWorkTeam;
+
+        public IRelayCommand<WorkTeam> SelectWorkTeamCommand => new RelayCommand<WorkTeam>(OnSelectProvider);
+
+        private async void OnSelectProvider(WorkTeam provider)
+        {
+            foreach (var p in WorkTeams)
+                p.BorderColor = "#202020";
+
+            provider.BorderColor = "#FFD700";
+            SelectedProvider = provider;
+
+            if (SelectedDate != default)
+                await LoadAvailableSlotsAsync(); // جلب الأوقات بعد اختيار الـ Provider
+        }
+
 
 
 
@@ -460,7 +480,7 @@ namespace loukupm.ViewModel
         ///Sectipn Post Booking
         [ObservableProperty] private WorkTeam selectedProvider;
         [ObservableProperty] private string selectedServiceName;
-        [ObservableProperty] private DateTime selectedDate;
+        
         [ObservableProperty] private TimeSpan selectedTime;
 
 
@@ -555,30 +575,30 @@ namespace loukupm.ViewModel
         //    var availability = await _apiServices.GetProviderAvailability(1, 4, 1, day.FullDate.ToString("yyyy-MM-dd"));
         //    AvailableSlots = new ObservableCollection<SlotItem>(availability?.AvailableSlots ?? new List<SlotItem>());
         //}
-        public ObservableCollection<DayItem> ProviderDays { get; set; } = new();
+        //public ObservableCollection<DayItem> ProviderDays { get; set; } = new();
        
-        public async Task LoadProviderDaysAsync(int providerId)
-        {
-            ProviderDays.Clear();
+        //public async Task LoadProviderDaysAsync(int providerId)
+        //{
+        //    ProviderDays.Clear();
 
-            var availabilityWrapper = await _apiServices.GetProviderAvailabilityAsync(providerId);
-            if (availabilityWrapper != null && availabilityWrapper.Success && availabilityWrapper.Data != null)
-            {
-                var data = availabilityWrapper.Data;
+        //    var availabilityWrapper = await _apiServices.GetProviderAvailabilityAsync(providerId);
+        //    if (availabilityWrapper != null && availabilityWrapper.Success && availabilityWrapper.Data != null)
+        //    {
+        //        var data = availabilityWrapper.Data;
 
               
-                var dayItem = new DayItem
-                {
-                    Date = data.Date.ToString("yyyy-MM-dd"),
-                    Day = data.DayName,
-                    IsAvailable = data.AvailableSlots != null && data.AvailableSlots.Count > 0,
-                    BorderColor = data.AvailableSlots != null && data.AvailableSlots.Count > 0 ? "#00FF00" : "#444444",
-                    FullDate = data.Date
-                };
+        //        var dayItem = new DayItem
+        //        {
+        //            Date = data.Date.ToString("yyyy-MM-dd"),
+        //            Day = data.DayName,
+        //            IsAvailable = data.AvailableSlots != null && data.AvailableSlots.Count > 0,
+        //            BorderColor = data.AvailableSlots != null && data.AvailableSlots.Count > 0 ? "#00FF00" : "#444444",
+        //            FullDate = data.Date
+        //        };
 
-                ProviderDays.Add(dayItem);
-            }
-        }
+        //        ProviderDays.Add(dayItem);
+        //    }
+        //}
 
 
 
@@ -753,6 +773,105 @@ namespace loukupm.ViewModel
         }
 
         ///End Section User 
+        ///
+
+        [ObservableProperty]
+        private ObservableCollection<DayItem> providerDays = new();
+
+        [ObservableProperty]
+        private DateTime selectedDate;
+
+        public ICommand SelectDayCommand { get; }
+
+
+        private void LoadCurrentWeekDays()
+        {
+            ProviderDays.Clear();
+
+            var today = DateTime.Today;
+            int diff = (int)today.DayOfWeek - (int)DayOfWeek.Monday;
+            if (diff < 0) diff += 7;
+
+            var startOfWeek = today.AddDays(-diff);
+
+            for (int i = 0; i < 7; i++)
+            {
+                var date = startOfWeek.AddDays(i);
+
+                ProviderDays.Add(new DayItem
+                {
+                    Day = date.ToString("ddd"),
+                    Date = date.ToString("dd"),
+                    FullDate = date,
+                    BorderColor = "#444444",
+                    IsAvailable = true
+                });
+            }
+        }
+
+        private async void OnSelectDay(DayItem day)
+        {
+            foreach (var d in ProviderDays)
+                d.BorderColor = "#444444";
+
+            day.BorderColor = "#FFD700";
+            SelectedDate = day.FullDate;
+
+            if (SelectedProvider != null)
+                await LoadAvailableSlotsAsync(); // جلب الأوقات بعد اختيار اليوم
+        }
+
+        [ObservableProperty]
+        private ObservableCollection<SlotItem> availableSlots = new();
+        public async Task LoadAvailableSlotsAsync()
+        {
+            if (SelectedProvider == null || SelectedDate == default)
+                return; // تأكد أن هناك يوم و provider مختار
+
+            try
+            {
+                Isloadday = true; // لتفعيل الـ loader إذا أردت
+
+                using var client = new HttpClient();
+                // إرسال البيانات للباك إند
+                var json = JsonSerializer.Serialize(new
+                {
+                    providerId = SelectedProvider.Id,
+                    date = SelectedDate.ToString("yyyy-MM-dd")
+                });
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("https://example.com/api/get-available-slots", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var slots = JsonSerializer.Deserialize<List<SlotItem>>(responseBody);
+
+                    AvailableSlots.Clear();
+                    foreach (var slot in slots)
+                        AvailableSlots.Add(slot);
+                }
+                else
+                {
+                    await Toast.Make("فشل في جلب الأوقات").Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
+            }
+            finally
+            {
+                Isloadday = false;
+            }
+        }
+
+
+
+
+
 
     }
 

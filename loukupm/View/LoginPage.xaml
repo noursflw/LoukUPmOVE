@@ -23,7 +23,7 @@
                           HorizontalOptions="Center" />
                 <StackLayout>
                      
-                    <!-- Wrap button and spinner in a Grid so we can show spinner while hiding button -->
+                    
                     <Grid Margin="25,240,25,0" HeightRequest="60">
                         <Button
                            BackgroundColor="#202020"
@@ -60,8 +60,8 @@
                     <Image Grid.Row="0" Margin="25,10,25,0" Source="or.svg" HeightRequest="24"/>
                 </StackLayout>
 
-                
-                <VerticalStackLayout Grid.Row="1">
+
+                <VerticalStackLayout Grid.Row="1" x:Name="fglogin">
                     <Label Text="{loc:Translate Name=EMail}" Margin="12,5,0,0" TextColor="White" Padding="10" FontSize="16"/>
                     <material:TextField
                         x:Name="EmailEntry"
@@ -110,7 +110,7 @@
                         CornerRadius="16"
                         HeightRequest="60" 
                         Margin="25"  />
-                    <!-- مؤشر التحميل -->
+                   
                     <ActivityIndicator 
                      x:Name="LoadingIndicator"
                     Margin="20"
@@ -121,7 +121,7 @@
                     HorizontalOptions="Center"
                     Scale="1.4" />
 
-                    <HorizontalStackLayout  Margin="80,34,0,0" Spacing="2">
+                    <HorizontalStackLayout   Margin="80,34,0,0" Spacing="2">
                         <Label Text="{loc:Translate Name=CreatAccount}" FontSize="18"  TextColor="White"/>
                         <Label Margin="3,5,0,0" FontSize="18">
                             <Label.FormattedText>
