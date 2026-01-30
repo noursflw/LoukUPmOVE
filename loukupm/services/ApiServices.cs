@@ -26,7 +26,7 @@ namespace loukupm.services
 
         private async Task SetAuthorizationHeaderAsync()
         {
-            // استدعاء SecureStorage بشكل غير متزامن
+          
             string? token = await SecureStorage.GetAsync("auth_token");
            
             if (!string.IsNullOrEmpty(token))
@@ -37,7 +37,7 @@ namespace loukupm.services
             }
             else
             {
-                // إزالة أي Authorization قديمة إذا لم يكن هناك توكن
+               
                 _httpClient.DefaultRequestHeaders.Authorization = null;
             }
             
@@ -45,7 +45,16 @@ namespace loukupm.services
         }
 
 
-     
+     public async Task<List<PolicyandPrivacyS>> GetPolicyandPrivaciesAsync()
+        {
+            var response = await _httpClient.GetAsync("https://api.example.com/policies");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<PolicyandPrivacyS>>(json);
+            }
+            return new List<PolicyandPrivacyS>();
+        }
 
 
 

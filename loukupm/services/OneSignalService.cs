@@ -1,50 +1,55 @@
 ﻿using OneSignalSDK.DotNet;
+using System;
 using System.Threading.Tasks;
 
 namespace loukupm.Services
 {
     public static class OneSignalService
     {
-        // ⚠️ تحديث: استبدل "YOUR-APP-ID" بـ معرّف تطبيقك الحقيقي من OneSignal Dashboard
-        private static readonly string _appId = "YOUR-APP-ID";
+        private static readonly string _appId =
+            "68c49ad8-113c-4160-91cc-5eb9d2c908d5";
+
+        private static bool _initialized = false;
 
         public static async Task Init()
         {
+            if (_initialized)
+                return;
+
             try
             {
-                if (string.IsNullOrEmpty(_appId) || _appId == "YOUR-APP-ID")
+                if (string.IsNullOrWhiteSpace(_appId))
                 {
-                    Console.WriteLine("⚠️ OneSignal: AppId not configured! Using placeholder.");
+                    Console.WriteLine("⚠️ OneSignal: AppId not configured!");
                     return;
                 }
 
                 OneSignal.Initialize(_appId);
                 await OneSignal.Notifications.RequestPermissionAsync(true);
-                
+
+                _initialized = true;
                 Console.WriteLine("✅ OneSignal initialized successfully");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ OneSignal Init Error: {ex.Message}");
-                // Log to remote service if needed
             }
         }
 
-        
         /// <param name="userId">معرف المستخدم</param>
         public static void RegisterUser(string userId)
         {
             try
             {
-                if (string.IsNullOrEmpty(userId))
+                if (string.IsNullOrWhiteSpace(userId))
                 {
                     Console.WriteLine("⚠️ Cannot register: UserId is null or empty");
                     return;
                 }
 
                 OneSignal.Login(userId);
-                OneSignal.User.AddTag("user_id", userId);
-                
+                OneSignal.User.AddTag("user_no", userId);
+
                 Console.WriteLine($"✅ User {userId} registered with OneSignal");
             }
             catch (Exception ex)
@@ -53,12 +58,12 @@ namespace loukupm.Services
             }
         }
 
-      
-        public static async Task LogoutAsync()
+        public static void Logout()
         {
             try
             {
                 OneSignal.Logout();
+
                 OneSignal.User.RemoveTag("user_id");
                 OneSignal.User.RemoveTag("user_no");
                 OneSignal.User.RemoveTag("email");
@@ -67,7 +72,7 @@ namespace loukupm.Services
                 OneSignal.User.RemoveTag("login_type");
                 OneSignal.User.RemoveTag("signup_date");
                 OneSignal.User.RemoveTag("display_name");
-                
+
                 Console.WriteLine("✅ OneSignal logout completed");
             }
             catch (Exception ex)
@@ -76,12 +81,12 @@ namespace loukupm.Services
             }
         }
 
-       
         public static void AddTag(string key, string value)
         {
             try
             {
-                if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(key) ||
+                    string.IsNullOrWhiteSpace(value))
                 {
                     Console.WriteLine("⚠️ AddTag: key or value is null or empty");
                     return;
@@ -96,12 +101,11 @@ namespace loukupm.Services
             }
         }
 
-       
         public static void RemoveTag(string key)
         {
             try
             {
-                if (string.IsNullOrEmpty(key))
+                if (string.IsNullOrWhiteSpace(key))
                 {
                     Console.WriteLine("⚠️ RemoveTag: key is null or empty");
                     return;

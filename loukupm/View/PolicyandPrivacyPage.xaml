@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="loukupm.View.PolicyandPrivacyPage"
+             BackgroundImageSource="baackgroundpage.png"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+              xmlns:loc="clr-namespace:loukupm.Langue"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             FlowDirection="LeftToRight"
+             Title="Policy and Privacy">
+
+    <ScrollView>
+        <Frame Opacity="0.85"
+      
+       BorderColor="#444444"
+       IsVisible="True"
+       CornerRadius="30"
+       Margin="20">
+
+
+            <Frame.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+
+                    <!-- بداية داكنة ناعمة -->
+                    <GradientStop Color="#44000000" Offset="0.0" />
+
+                    <!-- انتقال للرمادي لطراوة -->
+                    <GradientStop Color="#33444444" Offset="0.25" />
+
+                    <!-- لمعة بيضاء خفيفة في الوسط -->
+                    <GradientStop Color="#22FFFFFF" Offset="0.5" />
+
+                    <!-- رجوع للرمادي الناعم -->
+                    <GradientStop Color="#33444444" Offset="0.75" />
+
+                    <!-- نهاية داكنة متوازنة -->
+                    <GradientStop Color="#44000000" Offset="1.0" />
+
+                </LinearGradientBrush>
+            </Frame.Background>
+
+
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <Label Text="{loc:Translate Name=PolicyandPrivacy}"
+               HorizontalOptions="Center"
+               FontSize="26"
+               FontAttributes="Bold"
+               TextColor="#EBD750" />
+                <HorizontalStackLayout Spacing="6">
+                    <CollectionView ItemsSource="{Binding ListpolicyandPrivacy}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <VerticalStackLayout>
+                                    <HorizontalStackLayout>
+                                        <Label Text="•" TextColor="White" FontSize="20"/>
+                                        <Label Text="{loc:Translate Name=Introduction}" TextColor="White" FontSize="20"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+        </Frame>
+
+    </ScrollView>
+
+</ContentPage>

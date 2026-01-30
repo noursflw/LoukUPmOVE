@@ -51,11 +51,17 @@ namespace loukupm.ViewModel
         [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
         [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
         [ObservableProperty] private ObservableCollection<Notifiction> notifications;
+        [ObservableProperty] private ObservableCollection<Booking> viewSrves;
+        [ObservableProperty] private ObservableCollection<PolicyandPrivacyS> listpolicyandPrivacy = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Servies> selectedServices = new();
+
         private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel());
         public static AppViewModel Instance => _instance.Value;
 
         private readonly ApiServices _apiServices = new ApiServices();
-       
+
         private readonly string _token;
         public ICommand SelectServiceButtonCommand { get; }
         private readonly HttpClient _httpClient;
@@ -84,21 +90,27 @@ namespace loukupm.ViewModel
             {
                 if (service == null) return;
 
-                if (CurrentBooking.SelectedServices == null)
-                    CurrentBooking.SelectedServices = new List<Servies>();
-
                 // استخدام الـ Id للمقارنة بدلاً من المرجع
-                var exists = CurrentBooking.SelectedServices.Any(s => s.Id == service.Id);
+                var exists = SelectedServices.Any(s => s.Id == service.Id);
 
                 if (!exists)
-                    CurrentBooking.SelectedServices.Add(service);
+                {
+                    SelectedServices.Add(service);  // ✨ إضافة للـ Collection
+                    CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
+                    Console.WriteLine($"✅ Service added: {service.NameServies}");
+                }
                 else
-                    CurrentBooking.SelectedServices.Remove(CurrentBooking.SelectedServices.First(s => s.Id == service.Id));
+                {
+                    var serviceToRemove = SelectedServices.First(s => s.Id == service.Id);
+                    SelectedServices.Remove(serviceToRemove);  // ✨ حذف من Collection
+                    CurrentBooking.SelectedServices.Remove(serviceToRemove);  // حذف من List
+                    Console.WriteLine($"❌ Service removed: {service.NameServies}");
+                }
 
                 // طباعة القائمة للمراجعة
-                Console.WriteLine("✅ Current Selected Services:");
-                foreach (var s in CurrentBooking.SelectedServices)
-                    Console.WriteLine($"- {s.NameServies}");
+                Console.WriteLine("📋 Current Selected Services:");
+                foreach (var s in SelectedServices)
+                    Console.WriteLine($"   - {s.NameServies} (${s.PriceServies})");
             });
 
         }
@@ -177,7 +189,7 @@ namespace loukupm.ViewModel
                 if (data == null || data.Count == 0)
                     return;
 
-               Appointments.Clear();
+                Appointments.Clear();
 
                 foreach (var item in data)
                     Appointments.Add(item);
@@ -212,11 +224,11 @@ namespace loukupm.ViewModel
         {
             try
             {
-                IsWorkTeamLoad = true; 
+                IsWorkTeamLoad = true;
 
                 var data = await _apiServices.GetWorkTeamsAsync();
 
-               
+
                 if (data == null || data.Count == 0)
                     return;
 
@@ -227,10 +239,10 @@ namespace loukupm.ViewModel
                 foreach (var member in data)
                     WorkTeams.Add(member);
 
-               
+
                 FilteredWorkTeams = new ObservableCollection<WorkTeam>(WorkTeams);
 
-                
+
 
                 Console.WriteLine($"✅ Loaded {WorkTeams.Count} work team members");
             }
@@ -240,7 +252,7 @@ namespace loukupm.ViewModel
             }
             finally
             {
-                IsWorkTeamLoad = false; 
+                IsWorkTeamLoad = false;
             }
         }
 
@@ -266,7 +278,7 @@ namespace loukupm.ViewModel
 
         public ObservableCollection<Category> Categories { get; set; } = new();
 
-      
+
         private async Task LoadServicesAsync()
         {
             try
@@ -327,28 +339,8 @@ namespace loukupm.ViewModel
 
 
 
-
-
-        // فلترة الخدمات حسب النوع
-        //public void FilterServices(string type)
-        //{
-        //    if (string.IsNullOrWhiteSpace(type) || type == "الكل")
-        //    {
-        //        FilteredServices = new ObservableCollection<Servies>(Services);
-        //    }
-        //    else
-        //    {
-        //        FilteredServices = new ObservableCollection<Servies>(
-        //            Services?.Where(s => s.Category != null && s.Category.Name == type)
-        //                     ?? Enumerable.Empty<Servies>()
-        //        );
-        //    }
-        //}
-
-
-
         ///post For send Email use on forget password 
-       
+
 
         [RelayCommand]
         public async Task PostEmailAsync()
@@ -427,8 +419,6 @@ namespace loukupm.ViewModel
         }
         [ObservableProperty]
         private Servies selectedService;
-       
-
 
 
 
@@ -480,7 +470,7 @@ namespace loukupm.ViewModel
         ///Sectipn Post Booking
         [ObservableProperty] private WorkTeam selectedProvider;
         [ObservableProperty] private string selectedServiceName;
-        
+
         [ObservableProperty] private TimeSpan selectedTime;
 
 
@@ -516,118 +506,7 @@ namespace loukupm.ViewModel
             }
         }
 
-
-        //[ObservableProperty]
-        //private ObservableCollection<DayItem> providerDays = new();
-
-        //[ObservableProperty]
-        //private ObservableCollection<SlotItem> availableSlots = new();
-
-        //[ObservableProperty]
-        //private bool isLoading;
-
-        //public async Task LoadMonthDaysAsync(int providerId, int serviceId, int branchId)
-        //{
-        //    Isloadday = true;
-
-        //    var today = DateTime.Today;
-        //    var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
-
-        //    providerDays.Clear();
-
-        //    // توليد الأيام المتبقية من الشهر
-        //    for (int i = today.Day; i <= daysInMonth; i++)
-        //    {
-        //        var date = new DateTime(today.Year, today.Month, i);
-        //        providerDays.Add(new DayItem
-        //        {
-        //            FullDate = date,
-        //            Date = date.ToString("dd"),
-        //            Day = date.ToString("ddd"),
-        //            BorderColor = "#444444",
-        //            IsAvailable = false
-        //        });
-        //    }
-
-        //    // تحقق من الأيام المتاحة
-        //    foreach (var day in providerDays)
-        //    {
-        //        var availability = await _apiServices.GetProviderAvailability(serviceId, providerId, branchId, day.FullDate.ToString("yyyy-MM-dd"));
-        //        if (availability != null && availability.AvailableSlots.Any())
-        //            day.IsAvailable = true;
-        //    }
-
-        //    Isloadday = false;
-        //}
-
-        //[RelayCommand]
-        //private async Task SelectDayAsync(DayItem day)
-        //{
-        //    if (!day.IsAvailable) return; // تجاهل الأيام الغير متاحة
-
-        //    // تغيير لون جميع الأيام
-        //    foreach (var d in providerDays)
-        //        d.BorderColor = "#444444";
-
-        //    day.BorderColor = "#EBD750";
-
-        //    // جلب المواعيد لليوم المختار
-        //    var availability = await _apiServices.GetProviderAvailability(1, 4, 1, day.FullDate.ToString("yyyy-MM-dd"));
-        //    AvailableSlots = new ObservableCollection<SlotItem>(availability?.AvailableSlots ?? new List<SlotItem>());
-        //}
-        //public ObservableCollection<DayItem> ProviderDays { get; set; } = new();
-       
-        //public async Task LoadProviderDaysAsync(int providerId)
-        //{
-        //    ProviderDays.Clear();
-
-        //    var availabilityWrapper = await _apiServices.GetProviderAvailabilityAsync(providerId);
-        //    if (availabilityWrapper != null && availabilityWrapper.Success && availabilityWrapper.Data != null)
-        //    {
-        //        var data = availabilityWrapper.Data;
-
-              
-        //        var dayItem = new DayItem
-        //        {
-        //            Date = data.Date.ToString("yyyy-MM-dd"),
-        //            Day = data.DayName,
-        //            IsAvailable = data.AvailableSlots != null && data.AvailableSlots.Count > 0,
-        //            BorderColor = data.AvailableSlots != null && data.AvailableSlots.Count > 0 ? "#00FF00" : "#444444",
-        //            FullDate = data.Date
-        //        };
-
-        //        ProviderDays.Add(dayItem);
-        //    }
-        //}
-
-
-
-
-
-
-            ///Section Remove Booking
-
-
-
-            /// End Section Booking
-
-
-
-            ///Section Invoice
-            ///
-
-            /// End Section Invoice
-            /// 
-
-            ///Section Post Payment Stripe
-
-
-
-            /// End Section Post Payment Stripe
-            /// 
-
-
-            ///Section Post User
+        ///Section Post User
         [ObservableProperty] private string userName;
         [ObservableProperty] private string password;
         [ObservableProperty] private string confirmPassword;
@@ -669,8 +548,8 @@ namespace loukupm.ViewModel
         public ICommand LoadCurrentUserCommand { get; }
 
         public string Name { get; set; }
-       
-      
+
+
 
         public ICommand UpdateUserCommand { get; }
 
@@ -704,19 +583,15 @@ namespace loukupm.ViewModel
             }
         }
 
-        /// <summary>
-        /// Creat the  Coustem messagebox to show the propety changed 
-        /// </summary>
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// End Section Upate User
 
-        //// Edite Paswwoerd User section
-        public ICommand ChangePasswordUserCommand { get;}  
+        public ICommand ChangePasswordUserCommand { get; }
         private async Task ChangeUserPasswordAsync()
         {
 
-            
+
             await SetAuthorizationHeaderAsync();
 
             var user = new User
@@ -737,7 +612,7 @@ namespace loukupm.ViewModel
         }
 
 
-        ///// sexstion Remove User
+
         public ICommand DeleteAccountCommand { get; }
         private async Task DeleteAccountAsync()
         {
@@ -755,7 +630,7 @@ namespace loukupm.ViewModel
                     await App.Current.MainPage.ShowPopupAsync(popup);
                     return;
                 }
-                
+
 
                 // تنظيف البيانات المحلية
                 SecureStorage.RemoveAll();
@@ -772,8 +647,7 @@ namespace loukupm.ViewModel
             }
         }
 
-        ///End Section User 
-        ///
+
 
         [ObservableProperty]
         private ObservableCollection<DayItem> providerDays = new();
@@ -826,12 +700,11 @@ namespace loukupm.ViewModel
         public async Task LoadAvailableSlotsAsync()
         {
             if (SelectedProvider == null || SelectedDate == default)
-                return; // تأكد أن هناك يوم و provider مختار
+                return;
 
             try
             {
-                Isloadday = true; // لتفعيل الـ loader إذا أردت
-
+                Isloadday = true;
                 using var client = new HttpClient();
                 // إرسال البيانات للباك إند
                 var json = JsonSerializer.Serialize(new
@@ -871,16 +744,85 @@ namespace loukupm.ViewModel
 
 
 
+        public void AddSelectedService(Servies service)
+        {
+            if (service == null) return;
+
+            var exists = SelectedServices.Any(s => s.Id == service.Id);
+            if (!exists)
+            {
+                SelectedServices.Add(service);
+                CurrentBooking.SelectedServices.Add(service);
+                Console.WriteLine($"✅ Service added: {service.NameServies}");
+            }
+        }
 
 
+        public void RemoveSelectedService(Servies service)
+        {
+            if (service == null) return;
+
+            var serviceToRemove = SelectedServices.FirstOrDefault(s => s.Id == service.Id);
+            if (serviceToRemove != null)
+            {
+                SelectedServices.Remove(serviceToRemove);
+                CurrentBooking.SelectedServices.Remove(serviceToRemove);
+                Console.WriteLine($"❌ Service removed: {service.NameServies}");
+            }
+        }
+
+
+        [RelayCommand]
+        public void ClearSelectedServices()
+        {
+            SelectedServices.Clear();
+            CurrentBooking.SelectedServices.Clear();
+            Console.WriteLine("🗑️  All selected services cleared");
+        }
+
+        public int GetSelectedServicesCount() => SelectedServices.Count;
+
+
+        public bool HasSelectedServices() => SelectedServices.Count > 0;
+
+
+        /// الحصول على إجمالي السعر  لسا ما استملتها 
+
+        public decimal GetTotalPrice()
+        {
+            return SelectedServices.Sum(s =>
+            {
+                if (decimal.TryParse(s.PriceServies, out var price))
+                    return price;
+                return 0m;
+            });
+        }
+
+        /// مي مستعملة بس احتياطا 
+        public int GetTotalDuration()
+        {
+            return SelectedServices.Sum(s => s.TimeServies);
+        }
+        ///section PolicyandPrivacy   سياسة الخصوصية يبا 
+        public async Task LoadPolicyandPrivacyAsync()
+        {
+            try
+            {
+                var data = await _apiServices.GetPolicyandPrivaciesAsync();
+
+                ListpolicyandPrivacy.Clear();
+                foreach (var item in data)
+                    ListpolicyandPrivacy.Add(item);
+
+              
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading Policy and Privacy: {ex.Message}");
+            }
+        }
     }
-
-
-
-
-
-
-
 }
 
 

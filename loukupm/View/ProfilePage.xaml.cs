@@ -94,7 +94,7 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_8(object sender, EventArgs e)
     {
-        await OneSignalService.LogoutAsync();  // ✨ استخدم async
+        OneSignalService.Logout();  // ✨ استخدم async
         SecureStorage.Remove("auth_token");
         SecureStorage.Remove("refresh_token");
         
@@ -106,9 +106,20 @@ public partial class ProfilePage : ContentPage
     {
 
         var popup = new RemoveUserPopup();
-        await OneSignalService.LogoutAsync();
+         OneSignalService.Logout();
 
         await this.ShowPopupAsync(popup);
 
+    }
+
+    private async void TapGestureRecognizer_Tapped_6(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushAsync(new PolicyandPrivacyPage());
+    }
+
+    
+    private async void Button_Clicked_11(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new PolicyandPrivacyPage());
     }
 }

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.NotificationSettingsPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#252525"
+             Title="إعدادات الإشعارات">
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <!-- عنوان -->
+        <Label Text="إعدادات الإشعارات"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="White"
+               HorizontalOptions="Center" />
+
+        <!-- القسم الأول: تفعيل الإشعارات -->
+        <Frame BorderColor="#444444"
+               BackgroundColor="#202020"
+               CornerRadius="16"
+               Padding="16"
+               HasShadow="False">
+            <VerticalStackLayout Spacing="12">
+                <HorizontalStackLayout Spacing="12"
+                                       VerticalOptions="Center">
+                    <Label Text="الإشعارات"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand" />
+
+                    <Switch x:Name="NotificationToggle"
+                            Toggled="OnNotificationToggled"
+                            ThumbColor="White"
+                            OnColor="#4CAF50"
+                            OffColor="#F44336" />
+                </HorizontalStackLayout>
+
+                <Label x:Name="StatusLabel"
+                       Text="⏳ تحميل..."
+                       FontSize="14"
+                       TextColor="#FF9800" />
+
+                <Label Text="تلقي إشعارات عن الحجوزات والعروض والتحديثات المهمة"
+                       FontSize="12"
+                       TextColor="#999999"
+                       LineHeight="1.4" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- معلومات -->
+        <Frame BorderColor="#444444"
+               BackgroundColor="#1a1a1a"
+               CornerRadius="12"
+               Padding="12"
+               HasShadow="False">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="ℹ️ معلومات"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#EBD750" />
+                <Label Text="• الإشعارات ستساعدك على عدم فقدان أي حجز أو عرض
+• يمكنك تعطيل الإشعارات في أي وقت من الإعدادات
+• لن نزعجك بإشعارات غير ضرورية"
+                       FontSize="12"
+                       TextColor="#999999"
+                       LineHeight="1.6" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- مسافة -->
+        <BoxView Color="Transparent" HeightRequest="20" />
+
+        <!-- زر إعادة التعيين -->
+        <Button Text="إعادة تعيين الخيار"
+                Clicked="OnResetConsent"
+                TextColor="White"
+                BackgroundColor="#F44336"
+                CornerRadius="12"
+                Padding="12"
+                FontSize="14" />
+
+        <!-- مسافة نهائية -->
+        <BoxView Color="Transparent" HeightRequest="40" />
+    </VerticalStackLayout>
+</ContentPage>

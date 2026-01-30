@@ -21,6 +21,7 @@ public partial class SinginPage : ContentPage
         InitializeComponent();
         webView.Navigated += WebView_Navigated;
         webView.UserAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012)";
+        UpdateButtonsState();
     }
     private void WebView_Navigated(object sender, WebNavigatedEventArgs e)
     {
@@ -306,8 +307,32 @@ public partial class SinginPage : ContentPage
             fglogin.IsVisible = true;
         }
     }
+    private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushAsync(new PolicyandPrivacyPage());
+    }
+    private void CheckBox_CheckChanged(object sender, EventArgs e)
+    {
+        UpdateButtonsState();
+    }
+    private void UpdateButtonsState()
+    {
+        if (DD.IsChecked)
+        {
+            GoogleButton.IsEnabled = true;
+            RegisterButton.IsEnabled = true;
+            GoogleButton.Opacity = 1;
+            RegisterButton.Opacity = 1;
+        }
+        else
+        {
+            GoogleButton.IsEnabled = false;
+            RegisterButton.IsEnabled = false;
+            GoogleButton.Opacity = 0.5;
+            RegisterButton.Opacity = 0.5;
+        }
+    }
 
-   
     private async Task<string> WaitForNavigationToUrlAsync(string targetUrl, TimeSpan timeout)
     {
         var tcs = new TaskCompletionSource<string>();

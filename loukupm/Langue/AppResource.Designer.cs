@@ -169,6 +169,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to und.
+        /// </summary>
+        internal static string AND {
+            get {
+                return ResourceManager.GetString("AND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Über die App.
         /// </summary>
         internal static string AppInfo {
@@ -286,6 +295,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Der Code ist ungültig. Bitte versuchen Sie es erneut.
+        /// </summary>
+        internal static string CodeNotIncorrect {
+            get {
+                return ResourceManager.GetString("CodeNotIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der Dienst wurde erfolgreich hinzugefügt..
         /// </summary>
         internal static string CompletedAddServies {
@@ -300,6 +318,15 @@ namespace loukupm.Langue {
         internal static string CompletedLogin {
             get {
                 return ResourceManager.GetString("CompletedLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Bestätigungscode wurde an Ihre E-Mail-Adresse gesendet.
+        /// </summary>
+        internal static string CompletedSendEmaileSucsees {
+            get {
+                return ResourceManager.GetString("CompletedSendEmaileSucsees", resourceCulture);
             }
         }
         
@@ -529,11 +556,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1. Einführung.
+        /// </summary>
+        internal static string Introduction {
+            get {
+                return ResourceManager.GetString("Introduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gesamt.
         /// </summary>
         internal static string invoic {
             get {
                 return ResourceManager.GetString("invoic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die E-Mail-Adresse ist im System nicht registriert..
+        /// </summary>
+        internal static string IsYourEmailNotREGSTER {
+            get {
+                return ResourceManager.GetString("IsYourEmailNotREGSTER", resourceCulture);
             }
         }
         
@@ -745,6 +790,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Datenschutzrichtlinie.
+        /// </summary>
+        internal static string PolicyandPrivacy {
+            get {
+                return ResourceManager.GetString("PolicyandPrivacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Möchten Sie das Konto wirklich löschen?.
         /// </summary>
         internal static string RemoveMyCount {
@@ -759,6 +813,15 @@ namespace loukupm.Langue {
         internal static string ResetPasswordvv {
             get {
                 return ResourceManager.GetString("ResetPasswordvv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Erfolg.
+        /// </summary>
+        internal static string Sacsess {
+            get {
+                return ResourceManager.GetString("Sacsess", resourceCulture);
             }
         }
         
@@ -808,11 +871,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to „Der Code wurde erfolgreich verifiziert.
+        /// </summary>
+        internal static string SuccessfullyVerified {
+            get {
+                return ResourceManager.GetString("SuccessfullyVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nasradin Albarho.
         /// </summary>
         internal static string TeamNaser {
             get {
                 return ResourceManager.GetString("TeamNaser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nutzungsbedingungen.
+        /// </summary>
+        internal static string TermsandConditions {
+            get {
+                return ResourceManager.GetString("TermsandConditions", resourceCulture);
             }
         }
         
@@ -867,6 +948,15 @@ namespace loukupm.Langue {
         internal static string VisteInAboutUS {
             get {
                 return ResourceManager.GetString("VisteInAboutUS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ein OTP wurde kürzlich angefordert. Bitte warten Sie, bevor Sie es erneut versuchen..
+        /// </summary>
+        internal static string WateResposeOTP {
+            get {
+                return ResourceManager.GetString("WateResposeOTP", resourceCulture);
             }
         }
         

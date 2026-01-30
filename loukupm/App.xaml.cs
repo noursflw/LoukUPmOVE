@@ -3,6 +3,7 @@ using Microsoft.Maui.Storage;
 using OneSignalSDK.DotNet;
 using OneSignalSDK.DotNet.Core.Debug;
 using System.Globalization;
+
 using loukupm.Services;
 
 namespace loukupm
@@ -12,15 +13,21 @@ namespace loukupm
         public App()
         {
             InitializeComponent();
-            try 
+           
+            try
+
             {
-                _ = OneSignalService.Init();
-                Console.WriteLine("✅ OneSignal initialized");
+                OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
+                OneSignal.Initialize("68c49ad8-113c-4160-91cc-5eb9d2c908d5");
+                OneSignal.Notifications.RequestPermissionAsync(true);
+
+                //_ = OneSignalService.Init();
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ OneSignal init failed: {ex.Message}");
-                // يمكنك تسجيل الخطأ في Sentry أو logging service
+               
             }
 
             var savedLang = Preferences.Get("AppLanguage", string.Empty);

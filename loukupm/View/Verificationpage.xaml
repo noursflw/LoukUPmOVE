@@ -7,7 +7,7 @@
              Shell.NavBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
              Shell.TabBarIsVisible="False"
-            BackgroundImageSource="baackgroundpage.png"
+             BackgroundImageSource="baackgroundpage.png"
              Title="Verificationpage">
     <ScrollView>
         <VerticalStackLayout>
@@ -32,11 +32,11 @@
             </HorizontalStackLayout>
            
             <Button  
-              Command="{Binding ConfirmCommand}"
+              Clicked="ConfirmCode_Clicked"
                 TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
                 WidthRequest="300"
                 BorderWidth="1" Text="{loc:Translate Name=standpay}" CornerRadius="16"
-                HeightRequest="60" Margin="25,80,25,0"  />
+                HeightRequest="60" Margin="25,80,25,0" x:Name="VerifyButton" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

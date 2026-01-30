@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace loukupm.Model
 {
-    //كلاس المواعيد
+  
     public class Booking
     {
         public string ServiceType { get; set; }
@@ -20,12 +20,12 @@ namespace loukupm.Model
 
 
 
-        // الدفع
-        public string PaymentMethod { get; set; }   // "Cash" أو "Card"
-        public string CardHolderName { get; set; }      // من واجهة الدفع
-        public string CardNumber { get; set; }          // يمكن إخفاؤه جزئياً
-        public string ExpirationDate { get; set; }      // MM/YYYY
-        public string CVV { get; set; }                 // لا يُرسل إن لم يُستخدم Stripe
+        
+        public string PaymentMethod { get; set; } 
+        public string CardHolderName { get; set; }      
+        public string CardNumber { get; set; }     
+        public string ExpirationDate { get; set; }    
+        public string CVV { get; set; }                 
         public string StripePaymentId { get; set; }
     }
 }

@@ -1,0 +1,66 @@
+# ? „·Œ’ ”—Ì⁄ - «· Õﬁﬁ „‰ OTP
+
+## ? „«  „ ≈‰Ã«“Â:
+
+### **Verificationpage.xaml.cs** ?
+
+```csharp
+// 1. „⁄«·Ã «·“—
+private async void ConfirmCode_Clicked(object sender, EventArgs e)
+{
+    // „‰⁄ «·‰ﬁ—«  «·„ ﬂ——…
+    if (_isVerifying) return;
+    
+    // «· Õﬁﬁ „‰ «·Œ«‰« 
+    // ≈—”«· «·—„“
+    // «· ⁄«„· „⁄ «·‰ ÌÃ…
+}
+
+// 2. ≈—”«· «·—„“
+private async Task<bool> VerifyOtpAsync(string code)
+{
+    var payload = new { email = viewModel.Email, code = code };
+    var response = await client.PostAsync(
+        "https://test.center-yazan.com/api/auth/verify-otp",
+        content
+    );
+    
+    return response.IsSuccessStatusCode;
+}
+```
+
+---
+
+## ?? «·Õ«·« :
+
+| «·”Ì‰«—ÌÊ | «·‰ ÌÃ… |
+|---------|--------|
+| —„“ ’ÕÌÕ | ? «‰ ﬁ· |
+| Œ«‰«  ›«—€… | ?  Õ„Ì— |
+| —„“ Œ«ÿ∆ | ? „”Õ |
+| »œÊ‰ ≈‰ —‰  | ? Œÿ√ |
+| ‰ﬁ— „ ﬂ—— | ? „‰⁄ |
+
+---
+
+## ?? «·≈Ã—«¡« :
+
+```
+? ’ÕÌÕ ? EditPasswordVerification
+? Œÿ√ ? „”Õ + —”«·…
+```
+
+---
+
+## ? «·Õ«·…:
+
+```
+Build:       ? ‰ÃÕ
+Updates:     ? ﬂ«„·
+Testing:     ? Ã«Â“
+Deployment:  ?? Ã«Â“
+```
+
+---
+
+**Ã«Â“ ··«” Œœ«„ «·›Ê—Ì! ??**

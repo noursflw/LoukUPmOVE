@@ -153,6 +153,9 @@
   <data name="Alltext" xml:space="preserve">
     <value>Bitte füllen Sie alle Felder aus</value>
   </data>
+  <data name="AND" xml:space="preserve">
+    <value>und</value>
+  </data>
   <data name="AppInfo" xml:space="preserve">
     <value>Über die App</value>
   </data>
@@ -192,11 +195,17 @@
   <data name="chosesservies" xml:space="preserve">
     <value>Eine Dienstleistung auswählen</value>
   </data>
+  <data name="CodeNotIncorrect" xml:space="preserve">
+    <value>Der Code ist ungültig. Bitte versuchen Sie es erneut</value>
+  </data>
   <data name="CompletedAddServies" xml:space="preserve">
     <value>Der Dienst wurde erfolgreich hinzugefügt.</value>
   </data>
   <data name="CompletedLogin" xml:space="preserve">
     <value>Sie sind angemeldet</value>
+  </data>
+  <data name="CompletedSendEmaileSucsees" xml:space="preserve">
+    <value>Der Bestätigungscode wurde an Ihre E-Mail-Adresse gesendet</value>
   </data>
   <data name="ConfermUpateChane" xml:space="preserve">
     <value>Die Benutzerdaten wurden erfolgreich aktualisiert.</value>
@@ -273,8 +282,14 @@
   <data name="hrearchooes" xml:space="preserve">
     <value>Wählen Sie den Friseur</value>
   </data>
+  <data name="Introduction" xml:space="preserve">
+    <value>1.Einführung</value>
+  </data>
   <data name="invoic" xml:space="preserve">
     <value>Gesamt</value>
+  </data>
+  <data name="IsYourEmailNotREGSTER" xml:space="preserve">
+    <value>Die E-Mail-Adresse ist im System nicht registriert.</value>
   </data>
   <data name="LastName" xml:space="preserve">
     <value>Nachname</value>
@@ -345,11 +360,17 @@
   <data name="pleaseselectoneservice" xml:space="preserve">
     <value>Bitte wählen Sie mindestens einen Dienst aus, bevor Sie fortfahren.</value>
   </data>
+  <data name="PolicyandPrivacy" xml:space="preserve">
+    <value>Datenschutzrichtlinie</value>
+  </data>
   <data name="RemoveMyCount" xml:space="preserve">
     <value>Möchten Sie das Konto wirklich löschen?</value>
   </data>
   <data name="ResetPasswordvv" xml:space="preserve">
     <value>Bitte geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen Ihres Passworts zu erhaltenn</value>
+  </data>
+  <data name="Sacsess" xml:space="preserve">
+    <value>Erfolg</value>
   </data>
   <data name="SaveChangFoeMyAccount" xml:space="preserve">
     <value>Änderungen speichern</value>
@@ -366,8 +387,14 @@
   <data name="standpay" xml:space="preserve">
     <value>Fertig</value>
   </data>
+  <data name="SuccessfullyVerified" xml:space="preserve">
+    <value>Der Code wurde erfolgreich verifiziert</value>
+  </data>
   <data name="TeamNaser" xml:space="preserve">
     <value>Nasradin Albarho</value>
+  </data>
+  <data name="TermsandConditions" xml:space="preserve">
+    <value>Nutzungsbedingungen</value>
   </data>
   <data name="TheEmailisUSED" xml:space="preserve">
     <value>Benutzername bereits vergeben</value>
@@ -386,6 +413,9 @@
   </data>
   <data name="VisteInAboutUS" xml:space="preserve">
     <value>Reinkommen - Drankommen! Besuchen Sie uns einfach spontan - auch ohne Termin!</value>
+  </data>
+  <data name="WateResposeOTP" xml:space="preserve">
+    <value>Ein OTP wurde kürzlich angefordert. Bitte warten Sie, bevor Sie es erneut versuchen.</value>
   </data>
   <data name="Wellcom" xml:space="preserve">
     <value>Willkommen</value>

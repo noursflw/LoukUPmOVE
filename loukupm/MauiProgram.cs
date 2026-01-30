@@ -4,6 +4,7 @@ using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Microsoft.Extensions.Logging;
 using The49.Maui.BottomSheet;
+using UraniumUI.Blurs;
 using UraniumUI;
 
 namespace loukupm
@@ -31,6 +32,7 @@ namespace loukupm
                 .UseUraniumUIMaterial()
                 .UseBottomSheet()
                 .UseMauiCommunityToolkit()
+                .UseUraniumUIBlurs()
                 .UseFFImageLoading();
 
 #if DEBUG

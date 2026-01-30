@@ -43,17 +43,28 @@
                     Clicked="Button_Clicked" />
             </Grid>
 
-            <VerticalStackLayout>
-                <CollectionView ItemsSource="{Binding services}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" >
+            <VerticalStackLayout Spacing="10" >
+                <CollectionView Margin="6" ItemsSource="{Binding SelectedServices}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <VerticalStackLayout Margin="24,0,24,0">
+                            <VerticalStackLayout Spacing="10" Margin="24,10,24,0">
                                 <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" HeightRequest="122" >
-                                    <Grid ColumnDefinitions="50*,50*">
+                                    <Grid  ColumnDefinitions="50*,50*">
                                         <Label  Grid.Column="0" Text="{Binding NameServies}" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="18"  />
                                         <Label  Grid.Column="0" Text="{Binding PriceServies}" Margin="0,30,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
                                         <Label  Grid.Column="0" Text="{Binding TimeServies}" Margin="0,55,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
-                                        <Button Grid.Column="1"  TextColor="White" BackgroundColor="Black" WidthRequest="40" FontFamily="Oswald" FontSize="16" ImageSource="exite.svg"  CornerRadius="30"  HeightRequest="40" Margin="122,-40,0,0" />
+                                        <Button Grid.Column="1"  
+                                                TextColor="White" 
+                                                BackgroundColor="Black" 
+                                                WidthRequest="40" 
+                                                FontFamily="Oswald" 
+                                                FontSize="16" 
+                                                ImageSource="exite.svg"  
+                                                CornerRadius="30"  
+                                                HeightRequest="40" 
+                                                VerticalOptions="Start"
+                                                HorizontalOptions="End"
+                                                Clicked="OnRemoveService" />
                                     </Grid>
                                 </Frame>
                             </VerticalStackLayout>
@@ -62,6 +73,7 @@
                 </CollectionView>
                     <Frame HeightRequest="150" Margin="20,10,20,0"
          WidthRequest="350"
+                           IsVisible="False"
          CornerRadius="16" 
          BackgroundColor="#444444"
          sk:Skeleton.IsBusy="{Binding IsCatogory}" 
@@ -69,39 +81,11 @@
          BorderColor="#444444" />
 
 
-                <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16" WidthRequest="286" HeightRequest="48" Margin="-70,15,0,0" />
+                <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" Margin="10,15,170,0" />
             </VerticalStackLayout>
             <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,15" />
             <ScrollView Orientation="Horizontal">
                 <HorizontalStackLayout>
-                    <!--<CollectionView ItemsSource="{Binding WorkTeams}" ItemsLayout="HorizontalList" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
-
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame   BackgroundColor="#202020" BorderColor="#202020" Margin="6">
-                                    <VerticalStackLayout  Margin="12">
-
-                                        <ff:CachedImage
-                                           WidthRequest="70"
-                                           HeightRequest="70"
-                                           Aspect="AspectFill"
-                                           Margin="0,0,0,20"                
-                                           FadeAnimationEnabled="True"
-                                           DownsampleToViewSize="True"
-                                           LoadingPlaceholder="placeholder.png"
-                                           ErrorPlaceholder="placeholder.png"
-                                           Source="{Binding ImageSafe}" />
-                                     
-
-
-                                        <Label Text="{Binding Name}" TextColor="#999999" />
-                                    </VerticalStackLayout>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>-->
-
-
                     <CollectionView 
     ItemsSource="{Binding WorkTeams}" 
     x:Name="WorkTeamsCollectionView"
@@ -171,51 +155,54 @@
                        VerticalOptions="Center" HorizontalOptions="CenterAndExpand"/>
 
                 </HorizontalStackLayout>
+                <CollectionView 
+    x:Name="DayCollectionView"
+    ItemsSource="{Binding ProviderDays}"
+    ItemsLayout="HorizontalList"
+    SelectionMode="None"
+    HorizontalScrollBarVisibility="Always"
+    Margin="10">
 
-                <HorizontalStackLayout>
-                 
-                    <CollectionView 
-                             x:Name="DayCollectionView"
-                             ItemsSource="{Binding ProviderDays}"
-                             ItemsLayout="HorizontalList"
-                             SelectionMode="None"
-                             HorizontalScrollBarVisibility="Always"
-                             Margin="10">
-
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ScrollView>
                                 <VerticalStackLayout Margin="6" HorizontalOptions="Start">
 
                                     <Frame 
-                    HeightRequest="86" 
-                    WidthRequest="86"
-                    CornerRadius="16"
-                    BackgroundColor="#444444"
-                    BorderColor="{Binding BorderColor}"
-                    HasShadow="False">
+HeightRequest="86" 
+WidthRequest="86"
+CornerRadius="16"
+BackgroundColor="#444444"
+BorderColor="{Binding BorderColor}"
+HasShadow="False">
 
                                         <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
                                             <Label Text="{Binding Date}" 
-                               TextColor="White" 
-                               FontSize="16" 
-                               HorizontalOptions="Center"/>
+        TextColor="White" 
+        FontSize="16" 
+        HorizontalOptions="Center"/>
                                             <Label Text="{Binding Day}" 
-                               TextColor="White" 
-                               FontSize="12" 
-                               HorizontalOptions="Center"/>
+        TextColor="White" 
+        FontSize="12" 
+        HorizontalOptions="Center"/>
                                         </VerticalStackLayout>
 
                                         <Frame.GestureRecognizers>
                                             <TapGestureRecognizer 
-                            Command="{Binding Source={x:Reference DayCollectionView}, Path=BindingContext.SelectDayCommand}" 
-                            CommandParameter="{Binding}"/>
+     Command="{Binding Source={x:Reference DayCollectionView}, Path=BindingContext.SelectDayCommand}" 
+     CommandParameter="{Binding}"/>
                                         </Frame.GestureRecognizers>
 
                                     </Frame>
                                 </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                            </ScrollView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <HorizontalStackLayout Margin="0,1,40,10">
+
+                  
+
 
 
 
