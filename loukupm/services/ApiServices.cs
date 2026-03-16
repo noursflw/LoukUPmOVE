@@ -106,27 +106,7 @@ namespace loukupm.services
             }
             return new List<Notifiction>();
         }
-        //public async Task<List<Appointment>> GetAppointmentsAsync()
-        //{
-        //    await SetAuthorizationHeaderAsync();
-
-        //    var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/appointments");
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var json = await response.Content.ReadAsStringAsync();
-
-        //        var result = JsonSerializer.Deserialize<AppointmentResponse>(json, new JsonSerializerOptions
-        //        {
-        //            PropertyNameCaseInsensitive = true
-        //        });
-
-
-        //        return result?.Data?.Data ?? new List<Appointment>();
-        //    }
-
-        //    return new List<Appointment>();
-        //}
+        
         public async Task<List<Appointment>> GetUserAppointmentsAsync(User user, string status = "ALL")
         {
             await SetAuthorizationHeaderAsync();
@@ -213,6 +193,51 @@ namespace loukupm.services
             }
         }
 
+        /// <summary>
+        /// جلب خدمات البروفايدر المحددة فقط
+        /// ملاحظة: إذا لم يكن هناك endpoint منفصل، سنستخدم جميع الخدمات
+        /// </summary>
+        public async Task<List<Servies>> GetProviderServicesAsync(int providerId)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                // محاولة أولاً: جلب خدمات البروفايدر من endpoint منفصل
+                string url = $"https://test.center-yazan.com/api/providers/{providerId}/services";
+                
+                var response = await _httpClient.GetAsync(url);
+                
+                // إذا نجحت الطلبة: رجع البيانات
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"📋 Provider {providerId} Services: {json}");
+
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var wrapper = JsonSerializer.Deserialize<ServiesWrapper>(json, options);
+                    var list = wrapper?.Data ?? new List<Servies>();
+
+                    Console.WriteLine($"✅ Loaded {list.Count} services for provider {providerId}");
+                    return list;
+                }
+                else
+                {
+                    // إذا فشلت: استخدم جميع الخدمات كبديل
+                    Console.WriteLine($"⚠️ Provider services endpoint not available ({response.StatusCode})");
+                    Console.WriteLine($"⚠️ Returning all services as fallback for provider {providerId}");
+                    
+                    return await GetServiesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception loading provider services: {ex.Message}");
+                // في حالة الخطأ: رجع جميع الخدمات كبديل
+                return await GetServiesAsync();
+            }
+        }
+
 
         public async Task<bool> RefreshTokenAsync()
 {
@@ -259,16 +284,6 @@ namespace loukupm.services
     }
 }
 
-
-
-        public async Task<bool> SubmitBookingAsync(Booking booking)
-        {
-            await SetAuthorizationHeaderAsync();
-            var json = JsonSerializer.Serialize(booking);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://api.example.com/bookings", content);
-            return response.IsSuccessStatusCode;
-        }
         public async Task<List<string>> GetCategoriesAsync()
         {
             try
@@ -387,28 +402,7 @@ namespace loukupm.services
             }
         }
 
-        public async Task<AuthResponse> RegisterAsync(User user)
-        {
-            try
-            {
-                var json = JsonSerializer.Serialize(user);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync("https://api.example.com/auth/register", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseJson = await response.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<AuthResponse>(responseJson);
-                }
-
-                return new AuthResponse { Success = false, Message = "Registration failed" };
-            }
-            catch (Exception ex)
-            {
-                return new AuthResponse { Success = false, Message = ex.Message };
-            }
-        }
+     
 
 
         public async Task<CreatePaymentIntentResponse?> CreatePaymentIntentAsync(decimal amount, string currency, string email)
@@ -509,7 +503,8 @@ namespace loukupm.services
         //        return null;
         //    }
         //}
-        public async Task<bool> UpdateUserAsync(string name, string email, string avatarBase64 = null)
+        /// عدل هون منشان تزبط 
+        public async Task<bool> UpdateUserAsync(string name, string avatarBase64 = null)
         {
             await SetAuthorizationHeaderAsync();
 
@@ -520,8 +515,7 @@ namespace loukupm.services
                 if (!string.IsNullOrWhiteSpace(name))
                     userData.Add("name", name);
 
-                if (!string.IsNullOrWhiteSpace(email))
-                    userData.Add("email", email);
+                
 
                 if (!string.IsNullOrWhiteSpace(avatarBase64))
                     userData.Add("avatar", avatarBase64);

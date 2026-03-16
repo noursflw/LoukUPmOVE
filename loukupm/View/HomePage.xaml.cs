@@ -1,4 +1,4 @@
-Ôªønamespace loukupm.View;
+namespace loukupm.View;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using FFImageLoading.Maui;
@@ -6,21 +6,24 @@ using loukupm.Model;
 using loukupm.ViewModel;
 using System.Globalization;
 
-
-
+/// <summary>
+/// «·’›Õ… «·—∆Ì”Ì…
+///   ÕœÌÀ « Ã«ÂÂ«  ·ﬁ«∆Ì« ⁄‰œ  €ÌÌ— «··€…
+/// </summary>
 public partial class HomePage : ContentPage
 {
 	public HomePage()
 	{
 		InitializeComponent();
     	this.BindingContext= AppViewModel.Instance;
-
+    	
+    	//  ÂÌ∆…   »⁄ «··€… Ê«·« Ã«Â «· ·ﬁ«∆Ì
+    	this.InitializeLanguageTracking();
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
 		await Navigation.PushAsync(new ServicesPage());   
-
     }
 
     private async void Button_Clicked(object sender, EventArgs e)
@@ -30,7 +33,6 @@ public partial class HomePage : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AboutUS());
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
 
@@ -38,17 +40,22 @@ public partial class HomePage : ContentPage
             AppViewModel.Instance.CurrentBooking.SelectedServices = new List<Servies>();
 
         if (!AppViewModel.Instance.CurrentBooking.SelectedServices.Contains(service))
+        {
             AppViewModel.Instance.CurrentBooking.SelectedServices.Add(service);
+            await Toast.Make(Langue.AppResource.CompletedAddServies).Show();
+        }
         else
+        {
             AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
+            await Toast.Make(Langue.AppResource.theserviewasdone).Show();
+        }
     }
-    private DateTime _lastBackPressed = DateTime.MinValue;
 
+    private DateTime _lastBackPressed = DateTime.MinValue;
     protected override bool OnBackButtonPressed()
     {
         var currentTime = DateTime.Now;
 
-       
         if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
         {
 #if ANDROID
@@ -58,10 +65,7 @@ public partial class HomePage : ContentPage
         }
  
         _lastBackPressed = currentTime;
-
-        
-        ShowToast("ÿßÿ∂ÿ∫ÿ∑ ŸÖÿ±ÿ© ÿ£ÿÆÿ±Ÿâ ŸÑŸÑÿÆÿ±Ÿàÿ¨");
-
+        ShowToast("«÷€ÿ „—… √Œ—Ï ··Œ—ÊÃ");
         return true; 
     }
 
@@ -71,8 +75,11 @@ public partial class HomePage : ContentPage
         await toast.Show();
     }
 
-
-    
+    /// <summary>
+    /// “—  €ÌÌ— «··€…
+    /// «·œÊ—…: English ? German ? Arabic
+    /// «· ÕœÌÀ «· ·ﬁ«∆Ì ··« Ã«Â Ì „ „‰ ﬁ»· LocalizationResourcesManager Ê«·‹ PageLanguageHelper
+    /// </summary>
     private void Button_Clicked_2(object sender, EventArgs e)
     {
         var current = Langue.LocalizationResourcesManager.Instanse.CurrentCulture.TwoLetterISOLanguageName;
@@ -82,21 +89,24 @@ public partial class HomePage : ContentPage
         {
             case "en":
                 newCulture = new CultureInfo("de-DE");
-                FlowDirection= FlowDirection.LeftToRight;
                 break;
             case "de":
                 newCulture = new CultureInfo("ar-AR");
-                FlowDirection= FlowDirection.RightToLeft;
                 break;
             default:
                 newCulture = new CultureInfo("de-DE");
-                FlowDirection = FlowDirection.LeftToRight;
                 break;
         }
-        Preferences.Set("AppLanguage", newCulture.Name);
-        Langue.LocalizationResourcesManager.Instanse.SetCulture(newCulture);
-    }
 
+        // Save language preference
+        Preferences.Set("AppLanguage", newCulture.Name);
+        
+        // Update language and flow direction
+        // All subscribed pages will update automatically via the LanguageChanged event
+        Langue.LocalizationResourcesManager.Instanse.SetCulture(newCulture);
+
+        Console.WriteLine($"? Language Changed to {newCulture.DisplayName}");
+    }
 
     private Frame _lastSelectedFrame;
 
@@ -113,18 +123,18 @@ public partial class HomePage : ContentPage
             tappedFrame.BorderColor = Color.FromArgb("#EBD750");
             _lastSelectedFrame = tappedFrame;
 
-            // üîπ ÿ∂ÿ®ÿ∑ AnchorX/AnchorY
+            // ?? ÷»ÿ AnchorX/AnchorY
             tappedFrame.AnchorX = 0.5;
             tappedFrame.AnchorY = 0.5;
 
-            // ÿ™ÿ£ÿ´Ÿäÿ± Scale
+            //  √ÀÌ— Scale
             await tappedFrame.ScaleTo(1.05, 100, Easing.CubicOut);
             await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
         }
     }
 
-  
-
-
-
+    private async void ImageButton_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AboutUS());
+    }
 }

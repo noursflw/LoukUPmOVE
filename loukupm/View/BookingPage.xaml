@@ -45,10 +45,33 @@
                      WidthRequest="350"
                      CornerRadius="16" 
                      BackgroundColor="#444444"
+                     IsVisible="{Binding IsloadBooking }"
                      sk:Skeleton.IsBusy="{Binding    IsloadBooking}" 
                      sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
                      BorderColor="#444444" />
-                <CollectionView ItemsSource="{Binding  Appointments}" IsVisible="{Binding IsloadBooking, Converter={StaticResource InverseBoolConverter}}" >
+                
+                <!-- Empty State - عندما ما يكون في حجوزات -->
+                <StackLayout Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
+                             IsVisible="{Binding HasNoAppointments}">
+                    <Image Source="empty_bookings.png" 
+                           WidthRequest="150" 
+                           HeightRequest="150"
+                           Margin="0,20,0,0"
+                           HorizontalOptions="Center" />
+                    <Label Text="لا توجد حجوزات"
+                           TextColor="#D3D3D3"
+                           FontSize="20"
+                           FontFamily="georgia-bold"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,20,0,10" />
+                    <Label Text="لم تقم بحجز أي موعد حتى الآن"
+                           TextColor="#888888"
+                           FontSize="14"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,20" />
+                </StackLayout>
+                
+                <CollectionView  ItemsSource="{Binding  Appointments}" IsVisible="{Binding IsloadBooking, Converter={StaticResource InverseBoolConverter}}" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="25,20,25,0" BorderColor="#444444" BackgroundColor="#444444" >

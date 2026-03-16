@@ -43,7 +43,14 @@
                 </Grid>
 
 
-                <material:TextField  Margin="25,35,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="search.svg" Title="search"    HeightRequest="56"  />
+                <material:TextField  Margin="25,35,25,0" 
+                                     InputBackgroundColor="#444444" 
+                                     CornerRadius="16"  
+                                     Icon="search.svg" 
+                                     Title="search"    
+                                     HeightRequest="56"
+                                     Text="{Binding SearchServiceTerm}" />
+
                 <CollectionView x:Name="CategoriesCollectionView"
                 ItemsSource="{Binding Categories}" 
                 Margin="30,10,10,10">

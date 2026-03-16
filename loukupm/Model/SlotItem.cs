@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
-    public class SlotItem
+    public partial class SlotItem : ObservableObject
     {
         [JsonPropertyName("start_time")]
         public string StartTime { get; set; }
@@ -18,6 +19,12 @@ namespace loukupm.Model
 
         [JsonPropertyName("duration_minutes")]
         public int DurationMinutes { get; set; }
-    }
 
+        /// <summary>
+        /// property لتتبع إذا كان الوقت مختار
+        /// </summary>
+        [ObservableProperty]
+        private bool isSelected = false;
+    }
 }
+

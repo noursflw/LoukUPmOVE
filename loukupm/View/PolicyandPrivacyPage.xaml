@@ -6,68 +6,357 @@
              BackgroundImageSource="baackgroundpage.png"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
-              xmlns:loc="clr-namespace:loukupm.Langue"
+             xmlns:loc="clr-namespace:loukupm.Langue"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
-             FlowDirection="LeftToRight"
-             Title="Policy and Privacy">
+             Title="{loc:Translate Name=PolicyandPrivacy}">
 
-    <ScrollView>
-        <Frame Opacity="0.85"
-      
-       BorderColor="#444444"
-       IsVisible="True"
-       CornerRadius="30"
-       Margin="20">
+    <ScrollView BackgroundColor="#252525">
+        <VerticalStackLayout Padding="0" Spacing="0">
+            
+            <!-- Header -->
+            <Frame BackgroundColor="#202020"
+                   BorderColor="Transparent"
+                   CornerRadius="0"
+                   Padding="20"
+                   Margin="0">
+                <Label Text="{loc:Translate Name=PolicyandPrivacy}"
+                       HorizontalOptions="Center"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="#EBD750" />
+            </Frame>
 
-
-            <Frame.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-
-                    <!-- بداية داكنة ناعمة -->
-                    <GradientStop Color="#44000000" Offset="0.0" />
-
-                    <!-- انتقال للرمادي لطراوة -->
-                    <GradientStop Color="#33444444" Offset="0.25" />
-
-                    <!-- لمعة بيضاء خفيفة في الوسط -->
-                    <GradientStop Color="#22FFFFFF" Offset="0.5" />
-
-                    <!-- رجوع للرمادي الناعم -->
-                    <GradientStop Color="#33444444" Offset="0.75" />
-
-                    <!-- نهاية داكنة متوازنة -->
-                    <GradientStop Color="#44000000" Offset="1.0" />
-
-                </LinearGradientBrush>
-            </Frame.Background>
-
-
+            <!-- Main Content -->
             <VerticalStackLayout Padding="20" Spacing="15">
 
-                <Label Text="{loc:Translate Name=PolicyandPrivacy}"
-               HorizontalOptions="Center"
-               FontSize="26"
-               FontAttributes="Bold"
-               TextColor="#EBD750" />
-                <HorizontalStackLayout Spacing="6">
-                    <CollectionView ItemsSource="{Binding ListpolicyandPrivacy}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout>
-                                    <HorizontalStackLayout>
-                                        <Label Text="•" TextColor="White" FontSize="20"/>
-                                        <Label Text="{loc:Translate Name=Introduction}" TextColor="White" FontSize="20"/>
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </HorizontalStackLayout>
+                <!-- Introduction Section -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyIntroduction}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyIntroductionText}"
+                               FontSize="14"
+                               TextColor="White"
+                               LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 1. Data Collection -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyDataCollection}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+
+                        <!-- Account Information -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{loc:Translate Name=PolicyAccountInfo}" FontSize="16" FontAttributes="Bold" TextColor="#D3D3D3" />
+                            <Label Text="{loc:Translate Name=PolicyAccountInfoDesc}" FontSize="13" TextColor="#999999" />
+                            <Label Text="{loc:Translate Name=PolicyName}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyLastName}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyEmail}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyPassword}" FontSize="13" TextColor="White" />
+                        </VerticalStackLayout>
+
+                        <!-- Google Login -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{loc:Translate Name=PolicyGoogleLogin}" FontSize="16" FontAttributes="Bold" TextColor="#D3D3D3" />
+                            <Label Text="{loc:Translate Name=PolicyGoogleLoginDesc}" FontSize="13" TextColor="#999999" />
+                            <Label Text="{loc:Translate Name=PolicyName}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyEmail}" FontSize="13" TextColor="White" />
+                            <Label Text="• صورة الحساب (إن وجدت)" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyGoogleInfo}" FontSize="12" TextColor="#999999" />
+                        </VerticalStackLayout>
+
+                        <!-- Booking Information -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{loc:Translate Name=PolicyBookingInfo}" FontSize="16" FontAttributes="Bold" TextColor="#D3D3D3" />
+                            <Label Text="{loc:Translate Name=PolicyBookingInfoDesc}" FontSize="13" TextColor="#999999" />
+                            <Label Text="{loc:Translate Name=PolicyServiceType}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyServiceProvider}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyBookingDate}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyBookingTime}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyBookingInfoUsage}" FontSize="12" TextColor="#999999" />
+                        </VerticalStackLayout>
+
+                        <!-- Device Information -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{loc:Translate Name=PolicyDeviceInfo}" FontSize="16" FontAttributes="Bold" TextColor="#D3D3D3" />
+                            <Label Text="{loc:Translate Name=PolicyDeviceInfoDesc}" FontSize="13" TextColor="#999999" />
+                            <Label Text="{loc:Translate Name=PolicyDeviceType}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyOperatingSystem}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyIPAddress}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyCrashLogs}" FontSize="13" TextColor="White" />
+                            <Label Text="{loc:Translate Name=PolicyDeviceInfoUsage}" FontSize="12" TextColor="#999999" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 2. Usage -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyUsage}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyUsageDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyUsageCreateAccount}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsageManageAccount}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsageManageBooking}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsageSendNotifications}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsageImproveApp}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsagePreventFraud}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsageSupport}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUsageDisclaimer}" 
+                               FontSize="12" 
+                               TextColor="#FFD700"
+                               FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 3. Notifications -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyNotifications}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyNotificationsDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyNotificationBookingConfirm}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyNotificationReminder}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyNotificationUpdates}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyNotificationsDisable}" 
+                               FontSize="12" 
+                               TextColor="#999999" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 4. Data Sharing -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyDataSharing}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyDataSharingNo}" 
+                               FontSize="14" 
+                               TextColor="#FFD700"
+                               FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyDataSharingOnlyWhen}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyDataSharingCompliance}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyDataSharingProtect}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyDataSharingInfrastructure}" FontSize="13" TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 5. Data Protection -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyDataProtection}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyDataProtectionDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyDataProtectionHTTPS}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyDataProtectionPassword}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyDataProtectionDatabase}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyDataProtectionDisclaimer}" 
+                               FontSize="12" 
+                               TextColor="#999999" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 6. Data Retention -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyDataRetention}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyDataRetentionDesc}" 
+                               FontSize="13" 
+                               TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 7. Account Deletion -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletion}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletionDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletionPath}" FontSize="13" TextColor="White" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletionWhenDelete}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletionInfo}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletionData}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyAccountDeletionLegal}" FontSize="13" TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 8. Account Recovery -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyAccountRecovery}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyAccountRecoveryDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyAccountRecoveryOTP}" FontSize="13" TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 9. User Rights -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyUserRights}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyUserRightsDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyUserRightsAccess}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUserRightsModify}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUserRightsDelete}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyUserRightsRequest}" FontSize="13" TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 10. Children -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyChildren}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyChildrenDesc}" 
+                               FontSize="13" 
+                               TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 11. Third-party Services -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyThirdParty}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyThirdPartyDesc}" FontSize="14" TextColor="#D3D3D3" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyThirdPartyGoogle}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyThirdPartyNotifications}" FontSize="13" TextColor="White" />
+                        <Label Text="{loc:Translate Name=PolicyThirdPartyDisclaimer}" 
+                               FontSize="12" 
+                               TextColor="#999999" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 12. Policy Changes -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyPolicyChanges}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyPolicyChangesDesc}" 
+                               FontSize="13" 
+                               TextColor="White" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 13. Contact Us -->
+                <Frame BorderColor="#444444"
+                       BackgroundColor="#2A2A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{loc:Translate Name=PolicyContactUs}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750" />
+                        <Label Text="{loc:Translate Name=PolicyContactUsDesc}" 
+                               FontSize="14" 
+                               TextColor="#D3D3D3" 
+                               FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Name=PolicyContactEmail}" 
+                               FontSize="13" 
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Last Update -->
+                <Frame BorderColor="#FFD700"
+                       BackgroundColor="#3A3A2A"
+                       CornerRadius="16"
+                       Padding="15"
+                       Margin="0,10,0,20"
+                       HasShadow="True">
+                    <Label Text="{loc:Translate Name=PolicyLastUpdate}"
+                           HorizontalOptions="Center"
+                           FontSize="14"
+                           TextColor="#FFD700"
+                           FontAttributes="Bold" />
+                </Frame>
 
             </VerticalStackLayout>
-
-        </Frame>
-
+        </VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>

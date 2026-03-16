@@ -44,16 +44,22 @@
                Padding="0"
                HorizontalOptions="Center"
                VerticalOptions="Center">
-                    <Image Source="{Binding Avatar}" 
-             HeightRequest="125"
-              WidthRequest="125"
-              Aspect="AspectFill">
-                        <Image.Clip>
-                            <EllipseGeometry Center="62.5,62.5" RadiusX="62.5" RadiusY="62.5"/>
-                        </Image.Clip>
-                    </Image>
+                    <Grid>
+                        <Image Source="{Binding Avatar}"
+                               HeightRequest="125"
+                               WidthRequest="125"
+                               Aspect="AspectFill">
+                            <Image.Clip>
+                                <EllipseGeometry Center="62.5,62.5" RadiusX="62.5" RadiusY="62.5"/>
+                            </Image.Clip>
+                        </Image>
 
-
+                        <!-- مؤشر التحميل يظهر فوق الصورة أثناء تحميل بيانات المستخدم -->
+                        <ActivityIndicator IsRunning="{Binding IsLoadUser}" IsVisible="{Binding IsLoadUser}"
+                                           Color="White"
+                                           WidthRequest="40" HeightRequest="40"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
                 </Frame>
 
               
@@ -68,8 +74,6 @@
                 <VerticalStackLayout>
                     <Label Text="{Loc:Translate Name=NameUser}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
                     <material:TextField Text="{Binding UserName}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="person.png"     HeightRequest="50" Title="Name" />
-                    <Label Text="{Loc:Translate Name=EMail}" Margin="12,5,0,0"  TextColor="White" Padding="10" FontSize="16"/>
-                    <material:TextField  IsReadOnly="True" Text="{Binding Email}"  Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16"  Icon="email.png"     HeightRequest="50" Title="Locked" />
                     <Button 
                             Margin="23,30,0,0" TextColor="Black"
                             Text="{ Loc:Translate Name=ChangeImage}"

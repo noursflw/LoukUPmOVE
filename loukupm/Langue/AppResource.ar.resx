@@ -426,4 +426,379 @@
   <data name="YouHaveAcount" xml:space="preserve">
     <value>هل لديك حساب بالفعل؟</value>
   </data>
+  <!-- Privacy Policy Keys - Arabic -->
+  <data name="PolicyIntroduction" xml:space="preserve">
+    <value>مقدمة</value>
+  </data>
+  <data name="PolicyIntroductionText" xml:space="preserve">
+    <value>نحن في تطبيق حجز مواعيد الحلاق نحترم خصوصية المستخدمين ونلتزم بحماية بياناتهم الشخصية. توضح سياسة الخصوصية هذه كيفية جمع المعلومات واستخدامها وحمايتها عند استخدام التطبيق.
+
+باستخدام التطبيق فإنك توافق على الممارسات الموضحة في هذه السياسة.</value>
+  </data>
+  <data name="PolicyDataCollection" xml:space="preserve">
+    <value>1. المعلومات التي نقوم بجمعها</value>
+  </data>
+  <data name="PolicyAccountInfo" xml:space="preserve">
+    <value>معلومات الحساب</value>
+  </data>
+  <data name="PolicyAccountInfoDesc" xml:space="preserve">
+    <value>عند إنشاء حساب داخل التطبيق قد نقوم بجمع:</value>
+  </data>
+  <data name="PolicyName" xml:space="preserve">
+    <value>• الاسم</value>
+  </data>
+  <data name="PolicyLastName" xml:space="preserve">
+    <value>• الكنية</value>
+  </data>
+  <data name="PolicyEmail" xml:space="preserve">
+    <value>• البريد الإلكتروني</value>
+  </data>
+  <data name="PolicyPassword" xml:space="preserve">
+    <value>• كلمة المرور (يتم تخزينها بشكل مشفر)</value>
+  </data>
+  <data name="PolicyGoogleLogin" xml:space="preserve">
+    <value>تسجيل الدخول عبر Google</value>
+  </data>
+  <data name="PolicyGoogleLoginDesc" xml:space="preserve">
+    <value>في حال اختيار تسجيل الدخول باستخدام حساب Google قد نحصل على:</value>
+  </data>
+  <data name="PolicyGoogleInfo" xml:space="preserve">
+    <value>نستخدم هذه المعلومات فقط لإنشاء حساب المستخدم داخل التطبيق.</value>
+  </data>
+  <data name="PolicyBookingInfo" xml:space="preserve">
+    <value>معلومات الحجز</value>
+  </data>
+  <data name="PolicyBookingInfoDesc" xml:space="preserve">
+    <value>عند استخدام خدمة الحجز يتم تخزين المعلومات التالية:</value>
+  </data>
+  <data name="PolicyServiceType" xml:space="preserve">
+    <value>• نوع الخدمة المطلوبة</value>
+  </data>
+  <data name="PolicyServiceProvider" xml:space="preserve">
+    <value>• مزود الخدمة (الحلاق)</value>
+  </data>
+  <data name="PolicyBookingDate" xml:space="preserve">
+    <value>• تاريخ الحجز</value>
+  </data>
+  <data name="PolicyBookingTime" xml:space="preserve">
+    <value>• وقت الحجز</value>
+  </data>
+  <data name="PolicyBookingInfoUsage" xml:space="preserve">
+    <value>يتم استخدام هذه المعلومات فقط لإدارة المواعيد.</value>
+  </data>
+  <data name="PolicyDeviceInfo" xml:space="preserve">
+    <value>معلومات الجهاز</value>
+  </data>
+  <data name="PolicyDeviceInfoDesc" xml:space="preserve">
+    <value>قد يتم جمع معلومات تقنية تلقائياً مثل:</value>
+  </data>
+  <data name="PolicyDeviceType" xml:space="preserve">
+    <value>• نوع الجهاز</value>
+  </data>
+  <data name="PolicyOperatingSystem" xml:space="preserve">
+    <value>• نظام التشغيل</value>
+  </data>
+  <data name="PolicyIPAddress" xml:space="preserve">
+    <value>• عنوان IP</value>
+  </data>
+  <data name="PolicyCrashLogs" xml:space="preserve">
+    <value>• بيانات الأعطال (Crash logs)</value>
+  </data>
+  <data name="PolicyDeviceInfoUsage" xml:space="preserve">
+    <value>تستخدم هذه المعلومات لتحسين أداء التطبيق.</value>
+  </data>
+  <data name="PolicyUsage" xml:space="preserve">
+    <value>2. كيفية استخدام المعلومات</value>
+  </data>
+  <data name="PolicyUsageDesc" xml:space="preserve">
+    <value>نستخدم المعلومات للأغراض التالية:</value>
+  </data>
+  <data name="PolicyUsageCreateAccount" xml:space="preserve">
+    <value>• إنشاء حساب المستخدم</value>
+  </data>
+  <data name="PolicyUsageManageAccount" xml:space="preserve">
+    <value>• تسجيل الدخول وإدارة الحساب</value>
+  </data>
+  <data name="PolicyUsageManageBooking" xml:space="preserve">
+    <value>• إدارة حجوزات المواعيد</value>
+  </data>
+  <data name="PolicyUsageSendNotifications" xml:space="preserve">
+    <value>• إرسال إشعارات متعلقة بالحجوزات</value>
+  </data>
+  <data name="PolicyUsageImproveApp" xml:space="preserve">
+    <value>• تحسين أداء التطبيق</value>
+  </data>
+  <data name="PolicyUsagePreventFraud" xml:space="preserve">
+    <value>• منع الاحتيال أو إساءة الاستخدام</value>
+  </data>
+  <data name="PolicyUsageSupport" xml:space="preserve">
+    <value>• دعم المستخدمين</value>
+  </data>
+  <data name="PolicyUsageDisclaimer" xml:space="preserve">
+    <value>لن يتم استخدام المعلومات لأي غرض آخر دون موافقة المستخدم.</value>
+  </data>
+  <data name="PolicyNotifications" xml:space="preserve">
+    <value>3. الإشعارات</value>
+  </data>
+  <data name="PolicyNotificationsDesc" xml:space="preserve">
+    <value>قد يرسل التطبيق إشعارات للمستخدمين مثل:</value>
+  </data>
+  <data name="PolicyNotificationBookingConfirm" xml:space="preserve">
+    <value>• تأكيد الحجز</value>
+  </data>
+  <data name="PolicyNotificationReminder" xml:space="preserve">
+    <value>• تذكير بموعد الحجز</value>
+  </data>
+  <data name="PolicyNotificationUpdates" xml:space="preserve">
+    <value>• تحديثات تتعلق بالخدمة</value>
+  </data>
+  <data name="PolicyNotificationsDisable" xml:space="preserve">
+    <value>يمكن للمستخدم إيقاف الإشعارات في أي وقت من إعدادات الجهاز.</value>
+  </data>
+  <data name="PolicyDataSharing" xml:space="preserve">
+    <value>4. مشاركة المعلومات</value>
+  </data>
+  <data name="PolicyDataSharingNo" xml:space="preserve">
+    <value>نحن لا نقوم ببيع أو تأجير بيانات المستخدمين لأي طرف ثالث.</value>
+  </data>
+  <data name="PolicyDataSharingOnlyWhen" xml:space="preserve">
+    <value>قد تتم مشاركة المعلومات فقط في الحالات التالية:</value>
+  </data>
+  <data name="PolicyDataSharingCompliance" xml:space="preserve">
+    <value>• الامتثال للقوانين أو الطلبات القانونية</value>
+  </data>
+  <data name="PolicyDataSharingProtect" xml:space="preserve">
+    <value>• حماية حقوق التطبيق</value>
+  </data>
+  <data name="PolicyDataSharingInfrastructure" xml:space="preserve">
+    <value>• تشغيل خدمات البنية التحتية التقنية (مثل الخوادم)</value>
+  </data>
+  <data name="PolicyDataProtection" xml:space="preserve">
+    <value>5. حماية البيانات</value>
+  </data>
+  <data name="PolicyDataProtectionDesc" xml:space="preserve">
+    <value>نحن نتخذ إجراءات أمنية مناسبة لحماية البيانات، مثل:</value>
+  </data>
+  <data name="PolicyDataProtectionHTTPS" xml:space="preserve">
+    <value>• استخدام الاتصال المشفر HTTPS</value>
+  </data>
+  <data name="PolicyDataProtectionPassword" xml:space="preserve">
+    <value>• تشفير كلمات المرور</value>
+  </data>
+  <data name="PolicyDataProtectionDatabase" xml:space="preserve">
+    <value>• حماية قواعد البيانات</value>
+  </data>
+  <data name="PolicyDataProtectionDisclaimer" xml:space="preserve">
+    <value>ومع ذلك لا يمكن ضمان أمان البيانات بشكل كامل على الإنترنت.</value>
+  </data>
+  <data name="PolicyDataRetention" xml:space="preserve">
+    <value>6. الاحتفاظ بالبيانات</value>
+  </data>
+  <data name="PolicyDataRetentionDesc" xml:space="preserve">
+    <value>نحتفظ ببيانات المستخدم فقط طالما كان الحساب نشطاً أو عند الحاجة لتقديم الخدمة.
+
+قد يتم الاحتفاظ ببعض البيانات لفترة محدودة للأغراض القانونية أو التقنية.</value>
+  </data>
+  <data name="PolicyAccountDeletion" xml:space="preserve">
+    <value>7. حذف الحساب</value>
+  </data>
+  <data name="PolicyAccountDeletionDesc" xml:space="preserve">
+    <value>يمكن للمستخدم حذف حسابه في أي وقت من داخل التطبيق عبر:</value>
+  </data>
+  <data name="PolicyAccountDeletionPath" xml:space="preserve">
+    <value>الملف الشخصي → حذف الحساب</value>
+  </data>
+  <data name="PolicyAccountDeletionWhenDelete" xml:space="preserve">
+    <value>عند حذف الحساب:</value>
+  </data>
+  <data name="PolicyAccountDeletionInfo" xml:space="preserve">
+    <value>• يتم حذف معلومات الحساب</value>
+  </data>
+  <data name="PolicyAccountDeletionData" xml:space="preserve">
+    <value>• يتم حذف بيانات المستخدم المرتبطة به</value>
+  </data>
+  <data name="PolicyAccountDeletionLegal" xml:space="preserve">
+    <value>• قد يتم الاحتفاظ ببعض البيانات لفترة محدودة لأسباب قانونية</value>
+  </data>
+  <data name="PolicyAccountRecovery" xml:space="preserve">
+    <value>8. استعادة الحساب</value>
+  </data>
+  <data name="PolicyAccountRecoveryDesc" xml:space="preserve">
+    <value>يمكن للمستخدم استعادة الوصول إلى حسابه باستخدام:</value>
+  </data>
+  <data name="PolicyAccountRecoveryOTP" xml:space="preserve">
+    <value>رمز التحقق OTP المرسل إلى البريد الإلكتروني</value>
+  </data>
+  <data name="PolicyUserRights" xml:space="preserve">
+    <value>9. حقوق المستخدم</value>
+  </data>
+  <data name="PolicyUserRightsDesc" xml:space="preserve">
+    <value>يحق للمستخدم:</value>
+  </data>
+  <data name="PolicyUserRightsAccess" xml:space="preserve">
+    <value>• الوصول إلى بياناته</value>
+  </data>
+  <data name="PolicyUserRightsModify" xml:space="preserve">
+    <value>• تعديل بياناته</value>
+  </data>
+  <data name="PolicyUserRightsDelete" xml:space="preserve">
+    <value>• حذف حسابه</value>
+  </data>
+  <data name="PolicyUserRightsRequest" xml:space="preserve">
+    <value>• طلب حذف بياناته</value>
+  </data>
+  <data name="PolicyChildren" xml:space="preserve">
+    <value>10. الأطفال</value>
+  </data>
+  <data name="PolicyChildrenDesc" xml:space="preserve">
+    <value>هذا التطبيق غير موجه للأطفال دون سن 13 عاماً ولا نقوم بجمع بياناتهم عمداً.</value>
+  </data>
+  <data name="PolicyThirdParty" xml:space="preserve">
+    <value>11. خدمات الطرف الثالث</value>
+  </data>
+  <data name="PolicyThirdPartyDesc" xml:space="preserve">
+    <value>قد يستخدم التطبيق خدمات خارجية مثل:</value>
+  </data>
+  <data name="PolicyThirdPartyGoogle" xml:space="preserve">
+    <value>• تسجيل الدخول عبر Google</value>
+  </data>
+  <data name="PolicyThirdPartyNotifications" xml:space="preserve">
+    <value>• خدمات الإشعارات</value>
+  </data>
+  <data name="PolicyThirdPartyDisclaimer" xml:space="preserve">
+    <value>وقد تخضع هذه الخدمات لسياسات الخصوصية الخاصة بها.</value>
+  </data>
+  <data name="PolicyPolicyChanges" xml:space="preserve">
+    <value>12. التعديلات على سياسة الخصوصية</value>
+  </data>
+  <data name="PolicyPolicyChangesDesc" xml:space="preserve">
+    <value>قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم إعلام المستخدمين بأي تغييرات مهمة عبر التطبيق.</value>
+  </data>
+  <data name="PolicyContactUs" xml:space="preserve">
+    <value>13. التواصل معنا</value>
+  </data>
+  <data name="PolicyContactUsDesc" xml:space="preserve">
+    <value>في حال وجود أي استفسار حول سياسة الخصوصية يمكن التواصل معنا عبر:</value>
+  </data>
+  <data name="PolicyContactEmail" xml:space="preserve">
+    <value>البريد الإلكتروني: support@example.com</value>
+  </data>
+  <data name="PolicyLastUpdate" xml:space="preserve">
+    <value>آخر تحديث: ديسمبر 2024</value>
+  </data>
+  <!-- Terms and Conditions Keys - Arabic -->
+  <data name="TermsIntroduction" xml:space="preserve">
+    <value>باستخدام تطبيق حجز مواعيد الحلاق فإنك توافق على الشروط التالية.</value>
+  </data>
+  <data name="TermsAppUsage" xml:space="preserve">
+    <value>1. استخدام التطبيق</value>
+  </data>
+  <data name="TermsAppUsageDesc" xml:space="preserve">
+    <value>التطبيق مخصص لحجز مواعيد خدمات الحلاقة.</value>
+  </data>
+  <data name="TermsAppUsageAgreement" xml:space="preserve">
+    <value>يوافق المستخدم على:</value>
+  </data>
+  <data name="TermsProvideCorrectInfo" xml:space="preserve">
+    <value>• تقديم معلومات صحيحة عند التسجيل</value>
+  </data>
+  <data name="TermsUseLegalWay" xml:space="preserve">
+    <value>• استخدام التطبيق بطريقة قانونية</value>
+  </data>
+  <data name="TermsNoHacking" xml:space="preserve">
+    <value>• عدم محاولة اختراق أو تعطيل النظام</value>
+  </data>
+  <data name="TermsAccounts" xml:space="preserve">
+    <value>2. الحسابات</value>
+  </data>
+  <data name="TermsAccountResponsibility" xml:space="preserve">
+    <value>المستخدم مسؤول عن:</value>
+  </data>
+  <data name="TermsKeepPassword" xml:space="preserve">
+    <value>• الحفاظ على سرية كلمة المرور</value>
+  </data>
+  <data name="TermsAccountActivities" xml:space="preserve">
+    <value>• جميع الأنشطة التي تتم عبر حسابه</value>
+  </data>
+  <data name="TermsAccountSuspend" xml:space="preserve">
+    <value>يحق لإدارة التطبيق تعليق أو حذف الحساب في حال:</value>
+  </data>
+  <data name="TermsAbusiveUse" xml:space="preserve">
+    <value>• إساءة استخدام التطبيق</value>
+  </data>
+  <data name="TermsViolateTerms" xml:space="preserve">
+    <value>• انتهاك الشروط</value>
+  </data>
+  <data name="TermsBookings" xml:space="preserve">
+    <value>3. الحجوزات</value>
+  </data>
+  <data name="TermsBookingCommitment" xml:space="preserve">
+    <value>عند حجز موعد:</value>
+  </data>
+  <data name="TermsAttendOnTime" xml:space="preserve">
+    <value>• يجب الالتزام بوقت الموعد</value>
+  </data>
+  <data name="TermsLateCancel" xml:space="preserve">
+    <value>• في حال التأخر قد يتم إلغاء الحجز</value>
+  </data>
+  <data name="TermsPayment" xml:space="preserve">
+    <value>4. الدفع</value>
+  </data>
+  <data name="TermsNoOnlinePayment" xml:space="preserve">
+    <value>التطبيق لا يدعم الدفع الإلكتروني.</value>
+  </data>
+  <data name="TermsCashPayment" xml:space="preserve">
+    <value>جميع المدفوعات تتم نقداً مباشرة في موقع مزود الخدمة (الحلاق).</value>
+  </data>
+  <data name="TermsCancellation" xml:space="preserve">
+    <value>5. إلغاء الحجز</value>
+  </data>
+  <data name="TermsCancelBooking" xml:space="preserve">
+    <value>يمكن للمستخدم إلغاء الحجز قبل موعده عبر التطبيق.</value>
+  </data>
+  <data name="TermsServiceResponsibility" xml:space="preserve">
+    <value>6. مسؤولية الخدمة</value>
+  </data>
+  <data name="TermsPlatformOnly" xml:space="preserve">
+    <value>التطبيق يعمل كمنصة لحجز المواعيد فقط.</value>
+  </data>
+  <data name="TermsNotResponsible" xml:space="preserve">
+    <value>ولا يتحمل مسؤولية:</value>
+  </data>
+  <data name="TermsQualityOfService" xml:space="preserve">
+    <value>• جودة الخدمة المقدمة من مزود الخدمة</value>
+  </data>
+  <data name="TermsUserDispute" xml:space="preserve">
+    <value>• أي نزاع بين المستخدم ومزود الخدمة</value>
+  </data>
+  <data name="TermsAvailability" xml:space="preserve">
+    <value>7. توفر التطبيق</value>
+  </data>
+  <data name="TermsAvailabilityEffort" xml:space="preserve">
+    <value>نسعى لتوفير التطبيق بشكل دائم، ولكن لا نضمن:</value>
+  </data>
+  <data name="TermsNoTechnicalIssues" xml:space="preserve">
+    <value>• عدم حدوث أعطال تقنية</value>
+  </data>
+  <data name="TermsNoFullGuarantee" xml:space="preserve">
+    <value>• توفر الخدمة بنسبة 100%</value>
+  </data>
+  <data name="TermsAccountTermination" xml:space="preserve">
+    <value>8. إنهاء الحساب</value>
+  </data>
+  <data name="TermsUserCanDelete" xml:space="preserve">
+    <value>يمكن للمستخدم حذف حسابه في أي وقت.</value>
+  </data>
+  <data name="TermsAdminCanTerminate" xml:space="preserve">
+    <value>كما يحق لإدارة التطبيق إنهاء الحساب في حال مخالفة الشروط.</value>
+  </data>
+  <data name="TermsModifications" xml:space="preserve">
+    <value>9. التعديلات</value>
+  </data>
+  <data name="TermsCanModify" xml:space="preserve">
+    <value>يحق لإدارة التطبيق تعديل هذه الشروط في أي وقت.</value>
+  </data>
+  <data name="TermsLastUpdateTerms" xml:space="preserve">
+    <value>آخر تحديث: مارس 2026</value>
+  </data>
 </root>

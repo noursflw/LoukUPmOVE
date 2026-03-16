@@ -3,6 +3,7 @@ using Firebase.Auth;
 using loukupm.Model;
 using Firebase.Auth.Providers;
 using loukupm.services;
+using loukupm.Services;
 using loukupm.View.MassgingApp;
 using Microsoft.Extensions.Logging;
 using System.Text;
@@ -36,7 +37,7 @@ public partial class LoginPage : ContentPage
     }
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new SinginPage());
+        await Navigation.PushAsync(new TermsAndConditions());
     }
 
     private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
@@ -46,9 +47,8 @@ public partial class LoginPage : ContentPage
 
     protected override bool OnBackButtonPressed()
     {
-        Shell.Current.GoToAsync("//MainPage");
-        fg.IsVisible = false;
-        return true;
+        // على صفحة تسجيل الدخول، لا تسمح بالخروج من التطبيق
+        return true; // منع الضغط على الزر الخلفي
     }
 
 
@@ -131,7 +131,9 @@ public partial class LoginPage : ContentPage
                     await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
                 var popup = new CompletedLogin();
                 await this.ShowPopupAsync(popup);
-                await Shell.Current.GoToAsync("//HomePage");
+                
+                // Clear the navigation stack and navigate to HomePage using the navigation manager
+                await ShellNavigationManager.NavigateToHomeAndClear();
 
                 // ⭐ هنا تعريف اليوزر ل OneSignal
                 if (loginResponse?.User != null)
@@ -396,6 +398,11 @@ public partial class LoginPage : ContentPage
         }
     }
 
-        // ... other methods unchanged ... End Section Log IN and Google Login WITH Firebase
+    private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushAsync(new SinginPage());
     }
+
+    // ... other methods unchanged ... End Section Log IN and Google Login WITH Firebase
+}
 

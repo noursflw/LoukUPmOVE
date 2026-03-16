@@ -35,8 +35,7 @@ public partial class ServicesPage : ContentPage
             AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
             await Toast.Make(Langue.AppResource.theserviewasdone).Show();
         }
-        //var popup = new CompletedAddSerives();
-        //await this.ShowPopupAsync(popup);
+        
 
 
     }

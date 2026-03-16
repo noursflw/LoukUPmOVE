@@ -75,7 +75,7 @@
                             CornerRadius="10"
         HeightRequest="40" 
         WidthRequest="40" 
-        Clicked="Button_Clicked_1" 
+        Clicked="ImageButton_Clicked" 
         BackgroundColor="#444444" 
         Source="info.png"
         Padding="10"/>
@@ -86,7 +86,17 @@
 
 
 
-                <material:TextField FlowDirection="LeftToRight" Margin="25,35,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="search.svg" Title="search" HeightRequest="56" />
+
+
+                <material:TextField FlowDirection="LeftToRight" 
+                                   Margin="25,35,25,0" 
+                                   InputBackgroundColor="#444444" 
+                                   CornerRadius="16" 
+                                   Icon="search.svg" 
+                                   Title="search" 
+                                   HeightRequest="56"
+                                   Text="{Binding SearchServiceTerm}" />
+               
                
                 <StackLayout Margin="24,20,0,0">
                 

@@ -10,6 +10,11 @@ namespace loukupm
 {
     public partial class App : Application
     {
+        // Flag to track if authentication has been checked
+        private static bool _authenticationChecked = false;
+        // Flag to track if app is freshly started
+        private static bool _appJustStarted = true;
+
         public App()
         {
             InitializeComponent();
@@ -53,11 +58,31 @@ namespace loukupm
             MainPage.Loaded += async (s, e) => await CheckAuthentication();
         }
 
+        /// <summary>
+        /// Reset the authentication check flag when user logs out
+        /// </summary>
+        public static void ResetAuthenticationCheck()
+        {
+            _authenticationChecked = false;
+            _appJustStarted = true;
+            Console.WriteLine("🔄 Authentication check reset");
+        }
+
+        
         
         private async Task CheckAuthentication()
         {
             try
             {
+                // Only run authentication check on app startup, not after manual navigation
+                if (!_appJustStarted)
+                {
+                    Console.WriteLine("⏭️ Skipping auth check - app already initialized");
+                    return;
+                }
+
+                _appJustStarted = false;
+
                 await Task.Delay(600); // تأخير بسيط لضمان تحميل الواجهة
 
                 string token = string.Empty;
@@ -73,11 +98,15 @@ namespace loukupm
                 if (string.IsNullOrEmpty(token))
                 {
                     Console.WriteLine("🔐 No token found → LoginPage");
+                    // Use relative routing for LoginPage (global route)
                     await Shell.Current.GoToAsync("LoginPage");
                 }
                 else
                 {
                     Console.WriteLine("✅ Token found → HomePage");
+                    // Mark authentication as checked
+                    _authenticationChecked = true;
+                    // Use absolute routing for HomePage (inside TabBar)
                     await Shell.Current.GoToAsync("//HomePage");
                 }
             }

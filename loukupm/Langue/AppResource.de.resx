@@ -426,4 +426,379 @@
   <data name="YouHaveAcount" xml:space="preserve">
     <value>Haben Sie schon ein Konto?</value>
   </data>
+  <!-- Privacy Policy Keys - German -->
+  <data name="PolicyIntroduction" xml:space="preserve">
+    <value>Einführung</value>
+  </data>
+  <data name="PolicyIntroductionText" xml:space="preserve">
+    <value>Wir in der Friseurtermin-Buchungs-App respektieren die Privatsphäre der Benutzer und sind verpflichtet, ihre persönlichen Daten zu schützen. Diese Datenschutzrichtlinie erläutert, wie wir Informationen erfassen, verwenden und schützen, wenn Sie die App nutzen.
+
+Durch die Nutzung der App stimmen Sie den in dieser Richtlinie beschriebenen Praktiken zu.</value>
+  </data>
+  <data name="PolicyDataCollection" xml:space="preserve">
+    <value>1. Erfassung von Informationen</value>
+  </data>
+  <data name="PolicyAccountInfo" xml:space="preserve">
+    <value>Kontoinformationen</value>
+  </data>
+  <data name="PolicyAccountInfoDesc" xml:space="preserve">
+    <value>Beim Erstellen eines Kontos in der App können wir Folgendes erfassen:</value>
+  </data>
+  <data name="PolicyName" xml:space="preserve">
+    <value>• Name</value>
+  </data>
+  <data name="PolicyLastName" xml:space="preserve">
+    <value>• Nachname</value>
+  </data>
+  <data name="PolicyEmail" xml:space="preserve">
+    <value>• E-Mail-Adresse</value>
+  </data>
+  <data name="PolicyPassword" xml:space="preserve">
+    <value>• Passwort (wird verschlüsselt gespeichert)</value>
+  </data>
+  <data name="PolicyGoogleLogin" xml:space="preserve">
+    <value>Google-Anmeldung</value>
+  </data>
+  <data name="PolicyGoogleLoginDesc" xml:space="preserve">
+    <value>Wenn Sie sich mit einem Google-Konto anmelden, können wir Folgendes erhalten:</value>
+  </data>
+  <data name="PolicyGoogleInfo" xml:space="preserve">
+    <value>Wir verwenden diese Informationen nur zum Erstellen des Benutzerkontos in der App.</value>
+  </data>
+  <data name="PolicyBookingInfo" xml:space="preserve">
+    <value>Buchungsinformationen</value>
+  </data>
+  <data name="PolicyBookingInfoDesc" xml:space="preserve">
+    <value>Bei der Nutzung des Buchungsdienstes werden die folgenden Informationen gespeichert:</value>
+  </data>
+  <data name="PolicyServiceType" xml:space="preserve">
+    <value>• Art der angeforderten Dienstleistung</value>
+  </data>
+  <data name="PolicyServiceProvider" xml:space="preserve">
+    <value>• Dienstleistungsanbieter (Friseur)</value>
+  </data>
+  <data name="PolicyBookingDate" xml:space="preserve">
+    <value>• Buchungsdatum</value>
+  </data>
+  <data name="PolicyBookingTime" xml:space="preserve">
+    <value>• Buchungszeit</value>
+  </data>
+  <data name="PolicyBookingInfoUsage" xml:space="preserve">
+    <value>Diese Informationen werden nur zur Verwaltung von Terminen verwendet.</value>
+  </data>
+  <data name="PolicyDeviceInfo" xml:space="preserve">
+    <value>Geräteinformationen</value>
+  </data>
+  <data name="PolicyDeviceInfoDesc" xml:space="preserve">
+    <value>Automatisch können technische Informationen wie folgt erfasst werden:</value>
+  </data>
+  <data name="PolicyDeviceType" xml:space="preserve">
+    <value>• Gerätetyp</value>
+  </data>
+  <data name="PolicyOperatingSystem" xml:space="preserve">
+    <value>• Betriebssystem</value>
+  </data>
+  <data name="PolicyIPAddress" xml:space="preserve">
+    <value>• IP-Adresse</value>
+  </data>
+  <data name="PolicyCrashLogs" xml:space="preserve">
+    <value>• Absturzprotokolle</value>
+  </data>
+  <data name="PolicyDeviceInfoUsage" xml:space="preserve">
+    <value>Diese Informationen werden zur Verbesserung der App-Leistung verwendet.</value>
+  </data>
+  <data name="PolicyUsage" xml:space="preserve">
+    <value>2. Wie wir Informationen verwenden</value>
+  </data>
+  <data name="PolicyUsageDesc" xml:space="preserve">
+    <value>Wir verwenden die Informationen für die folgenden Zwecke:</value>
+  </data>
+  <data name="PolicyUsageCreateAccount" xml:space="preserve">
+    <value>• Erstellen des Benutzerkontos</value>
+  </data>
+  <data name="PolicyUsageManageAccount" xml:space="preserve">
+    <value>• Anmeldung und Kontoverwaltung</value>
+  </data>
+  <data name="PolicyUsageManageBooking" xml:space="preserve">
+    <value>• Buchungsverwaltung</value>
+  </data>
+  <data name="PolicyUsageSendNotifications" xml:space="preserve">
+    <value>• Senden von buchungsbezogenen Benachrichtigungen</value>
+  </data>
+  <data name="PolicyUsageImproveApp" xml:space="preserve">
+    <value>• App-Leistung verbesern</value>
+  </data>
+  <data name="PolicyUsagePreventFraud" xml:space="preserve">
+    <value>• Betrugsprävention oder Missbrauch verhindern</value>
+  </data>
+  <data name="PolicyUsageSupport" xml:space="preserve">
+    <value>• Benutzerunterstützung</value>
+  </data>
+  <data name="PolicyUsageDisclaimer" xml:space="preserve">
+    <value>Die Informationen werden nicht ohne Benutzereinwilligung für andere Zwecke verwendet.</value>
+  </data>
+  <data name="PolicyNotifications" xml:space="preserve">
+    <value>3. Benachrichtigungen</value>
+  </data>
+  <data name="PolicyNotificationsDesc" xml:space="preserve">
+    <value>Die App kann Benachrichtigungen an Benutzer senden wie:</value>
+  </data>
+  <data name="PolicyNotificationBookingConfirm" xml:space="preserve">
+    <value>• Buchungsbestätigung</value>
+  </data>
+  <data name="PolicyNotificationReminder" xml:space="preserve">
+    <value>• Erinnerung an Buchungstermin</value>
+  </data>
+  <data name="PolicyNotificationUpdates" xml:space="preserve">
+    <value>• Servicebezogene Updates</value>
+  </data>
+  <data name="PolicyNotificationsDisable" xml:space="preserve">
+    <value>Der Benutzer kann Benachrichtigungen jederzeit über die Geräteeinstellungen deaktivieren.</value>
+  </data>
+  <data name="PolicyDataSharing" xml:space="preserve">
+    <value>4. Datenweitergabe</value>
+  </data>
+  <data name="PolicyDataSharingNo" xml:space="preserve">
+    <value>Wir verkaufen oder mieten Benutzerdaten nicht an Dritte.</value>
+  </data>
+  <data name="PolicyDataSharingOnlyWhen" xml:space="preserve">
+    <value>Informationen können nur in folgenden Fällen weitergegeben werden:</value>
+  </data>
+  <data name="PolicyDataSharingCompliance" xml:space="preserve">
+    <value>• Einhaltung von Gesetzen oder Rechtsverfügungen</value>
+  </data>
+  <data name="PolicyDataSharingProtect" xml:space="preserve">
+    <value>• Schutz von App-Rechten</value>
+  </data>
+  <data name="PolicyDataSharingInfrastructure" xml:space="preserve">
+    <value>• Betrieb von technischen Infrastrukturdiensten (wie Server)</value>
+  </data>
+  <data name="PolicyDataProtection" xml:space="preserve">
+    <value>5. Datenschutz</value>
+  </data>
+  <data name="PolicyDataProtectionDesc" xml:space="preserve">
+    <value>Wir ergreifen angemessene Sicherheitsmaßnahmen zum Schutz von Daten, wie:</value>
+  </data>
+  <data name="PolicyDataProtectionHTTPS" xml:space="preserve">
+    <value>• Verwendung von verschlüsselter Kommunikation HTTPS</value>
+  </data>
+  <data name="PolicyDataProtectionPassword" xml:space="preserve">
+    <value>• Verschlüsselung von Passwörtern</value>
+  </data>
+  <data name="PolicyDataProtectionDatabase" xml:space="preserve">
+    <value>• Schutz von Datenbanken</value>
+  </data>
+  <data name="PolicyDataProtectionDisclaimer" xml:space="preserve">
+    <value>Es kann jedoch nicht garantiert werden, dass Daten im Internet vollständig sicher sind.</value>
+  </data>
+  <data name="PolicyDataRetention" xml:space="preserve">
+    <value>6. Datenspeicherung</value>
+  </data>
+  <data name="PolicyDataRetentionDesc" xml:space="preserve">
+    <value>Wir speichern Benutzerdaten nur, solange das Konto aktiv ist oder der Dienst erbracht werden muss.
+
+Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technischen Zwecken gespeichert werden.</value>
+  </data>
+  <data name="PolicyAccountDeletion" xml:space="preserve">
+    <value>7. Kontolöschung</value>
+  </data>
+  <data name="PolicyAccountDeletionDesc" xml:space="preserve">
+    <value>Der Benutzer kann sein Konto jederzeit innerhalb der App löschen über:</value>
+  </data>
+  <data name="PolicyAccountDeletionPath" xml:space="preserve">
+    <value>Profil → Konto löschen</value>
+  </data>
+  <data name="PolicyAccountDeletionWhenDelete" xml:space="preserve">
+    <value>Bei Kontolöschung:</value>
+  </data>
+  <data name="PolicyAccountDeletionInfo" xml:space="preserve">
+    <value>• Kontoinformationen werden gelöscht</value>
+  </data>
+  <data name="PolicyAccountDeletionData" xml:space="preserve">
+    <value>• Benutzerdaten werden gelöscht</value>
+  </data>
+  <data name="PolicyAccountDeletionLegal" xml:space="preserve">
+    <value>• Einige Daten können aus rechtlichen Gründen für einen begrenzten Zeitraum beibehalten werden</value>
+  </data>
+  <data name="PolicyAccountRecovery" xml:space="preserve">
+    <value>8. Kontowiederherstellung</value>
+  </data>
+  <data name="PolicyAccountRecoveryDesc" xml:space="preserve">
+    <value>Der Benutzer kann Zugriff auf sein Konto mit Hilfe von:</value>
+  </data>
+  <data name="PolicyAccountRecoveryOTP" xml:space="preserve">
+    <value>OTP-Verifikationscode per E-Mail</value>
+  </data>
+  <data name="PolicyUserRights" xml:space="preserve">
+    <value>9. Benutzerrechte</value>
+  </data>
+  <data name="PolicyUserRightsDesc" xml:space="preserve">
+    <value>Der Benutzer hat das Recht:</value>
+  </data>
+  <data name="PolicyUserRightsAccess" xml:space="preserve">
+    <value>• Auf seine Daten zugreifen</value>
+  </data>
+  <data name="PolicyUserRightsModify" xml:space="preserve">
+    <value>• Seine Daten ändern</value>
+  </data>
+  <data name="PolicyUserRightsDelete" xml:space="preserve">
+    <value>• Sein Konto löschen</value>
+  </data>
+  <data name="PolicyUserRightsRequest" xml:space="preserve">
+    <value>• Löschung seiner Daten anfordern</value>
+  </data>
+  <data name="PolicyChildren" xml:space="preserve">
+    <value>10. Kinder</value>
+  </data>
+  <data name="PolicyChildrenDesc" xml:space="preserve">
+    <value>Diese App ist nicht für Kinder unter 13 Jahren bestimmt und wir erfassen absichtlich keine Kindererdaten.</value>
+  </data>
+  <data name="PolicyThirdParty" xml:space="preserve">
+    <value>11. Drittanbieter-Services</value>
+  </data>
+  <data name="PolicyThirdPartyDesc" xml:space="preserve">
+    <value>Die App kann externe Services wie:</value>
+  </data>
+  <data name="PolicyThirdPartyGoogle" xml:space="preserve">
+    <value>• Google-Anmeldung</value>
+  </data>
+  <data name="PolicyThirdPartyNotifications" xml:space="preserve">
+    <value>• Benachrichtigungsdienste</value>
+  </data>
+  <data name="PolicyThirdPartyDisclaimer" xml:space="preserve">
+    <value>Diese Services unterliegen möglicherweise ihren eigenen Datenschutzrichtlinien.</value>
+  </data>
+  <data name="PolicyPolicyChanges" xml:space="preserve">
+    <value>12. Änderungen der Datenschutzrichtlinie</value>
+  </data>
+  <data name="PolicyPolicyChangesDesc" xml:space="preserve">
+    <value>Wir können diese Richtlinie von Zeit zu Zeit aktualisieren. Benutzer werden über die App über Änderungen informiert.</value>
+  </data>
+  <data name="PolicyContactUs" xml:space="preserve">
+    <value>13. Kontaktieren Sie uns</value>
+  </data>
+  <data name="PolicyContactUsDesc" xml:space="preserve">
+    <value>Bei Fragen zur Datenschutzrichtlinie können Sie uns kontaktieren über:</value>
+  </data>
+  <data name="PolicyContactEmail" xml:space="preserve">
+    <value>E-Mail: support@example.com</value>
+  </data>
+  <data name="PolicyLastUpdate" xml:space="preserve">
+    <value>Letzte Aktualisierung: Dezember 2024</value>
+  </data>
+  <!-- Terms and Conditions Keys - German -->
+  <data name="TermsIntroduction" xml:space="preserve">
+    <value>Durch die Nutzung der Friseurtermin-Buchungs-App stimmen Sie den folgenden Bedingungen zu.</value>
+  </data>
+  <data name="TermsAppUsage" xml:space="preserve">
+    <value>1. Verwendung der Anwendung</value>
+  </data>
+  <data name="TermsAppUsageDesc" xml:space="preserve">
+    <value>Die App ist zur Buchung von Friseurterminen bestimmt.</value>
+  </data>
+  <data name="TermsAppUsageAgreement" xml:space="preserve">
+    <value>Der Benutzer erklärt sich bereit:</value>
+  </data>
+  <data name="TermsProvideCorrectInfo" xml:space="preserve">
+    <value>• Korrekte Informationen bei der Registrierung zu bewahren</value>
+  </data>
+  <data name="TermsUseLegalWay" xml:space="preserve">
+    <value>• Die App auf legale Weise zu nutzen</value>
+  </data>
+  <data name="TermsNoHacking" xml:space="preserve">
+    <value>• Keine Versuche zu unternehmen, in das System einzudringen oder es zu stören</value>
+  </data>
+  <data name="TermsAccounts" xml:space="preserve">
+    <value>2. Konten</value>
+  </data>
+  <data name="TermsAccountResponsibility" xml:space="preserve">
+    <value>Der Benutzer ist verantwortlich für:</value>
+  </data>
+  <data name="TermsKeepPassword" xml:space="preserve">
+    <value>• Geheimhaltung des Passworts</value>
+  </data>
+  <data name="TermsAccountActivities" xml:space="preserve">
+    <value>• Alle Aktivitäten, die über sein Konto durchgeführt werden</value>
+  </data>
+  <data name="TermsAccountSuspend" xml:space="preserve">
+    <value>Die App-Verwaltung kann das Konto sperren oder löschen, falls:</value>
+  </data>
+  <data name="TermsAbusiveUse" xml:space="preserve">
+    <value>• Missbrauch der Anwendung</value>
+  </data>
+  <data name="TermsViolateTerms" xml:space="preserve">
+    <value>• Verstoß gegen die Bedingungen</value>
+  </data>
+  <data name="TermsBookings" xml:space="preserve">
+    <value>3. Buchungen</value>
+  </data>
+  <data name="TermsBookingCommitment" xml:space="preserve">
+    <value>Bei der Buchung eines Termins:</value>
+  </data>
+  <data name="TermsAttendOnTime" xml:space="preserve">
+    <value>• Müssen Sie sich an die vereinbarte Zeit halten</value>
+  </data>
+  <data name="TermsLateCancel" xml:space="preserve">
+    <value>• Bei Verspätung kann die Buchung storniert werden</value>
+  </data>
+  <data name="TermsPayment" xml:space="preserve">
+    <value>4. Zahlung</value>
+  </data>
+  <data name="TermsNoOnlinePayment" xml:space="preserve">
+    <value>Die App unterstützt keine Online-Zahlungen.</value>
+  </data>
+  <data name="TermsCashPayment" xml:space="preserve">
+    <value>Alle Zahlungen erfolgen direkt in bar am Standort des Dienstleisters (Friseur).</value>
+  </data>
+  <data name="TermsCancellation" xml:space="preserve">
+    <value>5. Stornierung</value>
+  </data>
+  <data name="TermsCancelBooking" xml:space="preserve">
+    <value>Der Benutzer kann einen Termin über die App vor dem vereinbarten Termin stornieren.</value>
+  </data>
+  <data name="TermsServiceResponsibility" xml:space="preserve">
+    <value>6. Service-Verantwortung</value>
+  </data>
+  <data name="TermsPlatformOnly" xml:space="preserve">
+    <value>Die App funktioniert nur als Terminbuchungsplattform.</value>
+  </data>
+  <data name="TermsNotResponsible" xml:space="preserve">
+    <value>Sie trägt keine Verantwortung für:</value>
+  </data>
+  <data name="TermsQualityOfService" xml:space="preserve">
+    <value>• Qualität der vom Dienstleister erbrachten Leistungen</value>
+  </data>
+  <data name="TermsUserDispute" xml:space="preserve">
+    <value>• Alle Streitigkeiten zwischen dem Benutzer und dem Dienstleister</value>
+  </data>
+  <data name="TermsAvailability" xml:space="preserve">
+    <value>7. Verfügbarkeit der App</value>
+  </data>
+  <data name="TermsAvailabilityEffort" xml:space="preserve">
+    <value>Wir bemühen uns, die App ständig verfügbar zu halten, können aber nicht garantieren:</value>
+  </data>
+  <data name="TermsNoTechnicalIssues" xml:space="preserve">
+    <value>• Keine technischen Probleme</value>
+  </data>
+  <data name="TermsNoFullGuarantee" xml:space="preserve">
+    <value>• 100%ige Servicegarantie</value>
+  </data>
+  <data name="TermsAccountTermination" xml:space="preserve">
+    <value>8. Kündigung des Kontos</value>
+  </data>
+  <data name="TermsUserCanDelete" xml:space="preserve">
+    <value>Der Benutzer kann sein Konto jederzeit löschen.</value>
+  </data>
+  <data name="TermsAdminCanTerminate" xml:space="preserve">
+    <value>Die App-Verwaltung kann das Konto auch kündigen, wenn gegen die Bedingungen verstoßen wird.</value>
+  </data>
+  <data name="TermsModifications" xml:space="preserve">
+    <value>9. Änderungen</value>
+  </data>
+  <data name="TermsCanModify" xml:space="preserve">
+    <value>Die App-Verwaltung kann diese Bedingungen jederzeit ändern.</value>
+  </data>
+  <data name="TermsLastUpdateTerms" xml:space="preserve">
+    <value>Letzte Aktualisierung: März 2026</value>
+  </data>
 </root>

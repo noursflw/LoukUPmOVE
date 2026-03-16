@@ -34,7 +34,7 @@ public partial class SinginPage : ContentPage
 
     protected override bool OnBackButtonPressed()
     {
-        Shell.Current.GoToAsync("LoginPage");
+        _ = NavigationService.HandleBackButton("SinginPage");
         return true;
     }
 

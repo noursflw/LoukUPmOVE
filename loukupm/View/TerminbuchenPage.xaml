@@ -14,6 +14,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:BoolToBackgroundColorConverter x:Key="BoolToBackgroundColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
    
@@ -81,7 +83,7 @@
          BorderColor="#444444" />
 
 
-                <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" Margin="10,15,170,0" />
+                <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" VerticalOptions="End" Margin="10" />
             </VerticalStackLayout>
             <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,15" />
             <ScrollView Orientation="Horizontal">
@@ -216,61 +218,94 @@ HasShadow="False">
                 </HorizontalStackLayout>
                 <Label Text="{Loc:Translate Name=datebooking}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
                 <Label Text="{Loc:Translate Name=descrtiondate}" FontSize="14" TextColor="#999999" FontFamily="Oswald" Margin="22,10,0,0" />
-                <CollectionView ItemsSource="{Binding WorkTime}" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}" >
+                
+                <!-- الأوقات المتاحة -->
+                <CollectionView x:Name="AvailableSlotsCollectionView"
+                                ItemsSource="{Binding AvailableSlots}" 
+                                IsVisible="{Binding Isloadday, Converter={StaticResource InverseBoolConverter}}"
+                                ItemsLayout="HorizontalList"
+                                SelectionMode="None"
+                                Margin="10">
                     <CollectionView.ItemTemplate >
                         <DataTemplate>
-                            <HorizontalStackLayout  Margin="20,10,0,0" >
-                                <Frame WidthRequest="92" HeightRequest="56" BorderColor="#444444" BackgroundColor="#444444" >
-                                    <Label Text="{Binding TimeWork}" Padding="0" Margin="6,-3,0,0" TextColor="White" />
+                            <VerticalStackLayout Margin="6" HorizontalOptions="Start">
+                                <Frame WidthRequest="110" 
+                                       HeightRequest="60"
+                                       BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToBackgroundColorConverter}}"
+                                       BorderColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"
+                                       CornerRadius="16"
+                                       Padding="0">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={x:Reference AvailableSlotsCollectionView}, Path=BindingContext.SelectSlotCommand}" 
+                                            CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+                                    
+                                    <Label Text="{Binding DisplayTime}" 
+                                           Padding="0" 
+                                           Margin="6,-5,0,0"  
+                                           TextColor="White" 
+                                           FontFamily="Oswald" 
+                                           HorizontalTextAlignment="Center" 
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Center" />
                                 </Frame>
-                            </HorizontalStackLayout>
+                            </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <HorizontalStackLayout>
-                    <Frame HeightRequest="56" Margin="20,10,10,0"
-                   WidthRequest="92"
-                   CornerRadius="16" 
-                  BackgroundColor="#444444"
-                  sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" 
-                  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                 BorderColor="#444444" />
-                    <Frame HeightRequest="56" Margin="20,10,10,0"
-                       WidthRequest="92"
-                       CornerRadius="16" 
-                       BackgroundColor="#444444"
-                       sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" 
-                       sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                       BorderColor="#444444" />
+
+                <!-- رسالة عدم توفر أوقات (عندما تكون قائمة الأوقات فارغة أو حدث خطأ) -->
+                <Label Text="لا توجد أوقات متاحة" 
+                        FontSize="16" 
+                        TextColor="#999999" 
+                        FontFamily="Oswald" 
+                        Margin="22,17,0,6"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding HasAvailabilityError}" />
+
+                <!-- مؤشر التحميل (Skeleton Loading) للأوقات -->
+                <HorizontalStackLayout Margin="10,0,10,0" IsVisible="{Binding Isloadday}">
+                    <Frame HeightRequest="56" Margin="6,0,0,0"
+                           WidthRequest="110"
+                           CornerRadius="16" 
+                           BackgroundColor="#444444"
+                           sk:Skeleton.IsBusy="True" 
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                           BorderColor="#444444" />
+                    <Frame HeightRequest="56" Margin="6,0,0,0"
+                           WidthRequest="110"
+                           CornerRadius="16" 
+                           BackgroundColor="#444444"
+                           sk:Skeleton.IsBusy="True" 
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                           BorderColor="#444444" />
+                    <Frame HeightRequest="56" Margin="6,0,0,0"
+                           WidthRequest="110"
+                           CornerRadius="16" 
+                           BackgroundColor="#444444"
+                           sk:Skeleton.IsBusy="True" 
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                           BorderColor="#444444" />
                 </HorizontalStackLayout>
+               
             </VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60">
                 <!-- العنوان على اليسار -->
-                <VerticalStackLayout Margin="40,0,0,0" >
+                <VerticalStackLayout Margin="40,0,0,0" VerticalOptions="Center">
                     <Label Text="{Loc:Translate Name=invoic}"
                      TextColor="#D3D3D3"
                     Margin="20,0,0,0"
                     FontSize="18"
                    WidthRequest="200"
                    VerticalOptions="Center" />
-                    <CollectionView ItemsSource="{Binding InvoiceLoad}" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}" >
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Label Text="{Binding TotelInvice}"
-                                    TextColor="#D3D3D3"
-                                    Margin="24,0,0,0"
-                                    FontSize="18" 
-                                   VerticalOptions="Center" />
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                    <Frame HeightRequest="20" Margin="-80,8,0,0"
-                        WidthRequest="92"
-                        CornerRadius="3" 
-                        BackgroundColor="#444444"
-                        sk:Skeleton.IsBusy="{Binding InvoiceLoad}" 
-                        sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                        BorderColor="#444444" />
+                    <!-- عرض إجمالي السعر المحسوب من الخدمات المختارة - يعرض دائماً -->
+                    <Label Text="{Binding TotalPrice, StringFormat='{0:F2} EUR'}"
+                           TextColor="#FFD700"
+                           Margin="0,0,10,20"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
                 </VerticalStackLayout>
                 <!-- الزر على اليمين -->
                 <Button Grid.Column="1"

@@ -98,18 +98,28 @@ public partial class ProfilePage : ContentPage
         SecureStorage.Remove("auth_token");
         SecureStorage.Remove("refresh_token");
         
+        // مسح خريطة التنقل
+        NavigationService.ClearPageSourceMap();
+        
+        // Reset authentication check flag to allow re-authentication
+        App.ResetAuthenticationCheck();
+        
         var popup = new MassegBoxLogout();
         await this.ShowPopupAsync(popup);  
     }
 
     private async void Button_Clicked_9(object sender, EventArgs e)
     {
-
         var popup = new RemoveUserPopup();
-         OneSignalService.Logout();
+        OneSignalService.Logout();
+        
+        // مسح خريطة التنقل قبل حذف الحساب
+        NavigationService.ClearPageSourceMap();
+        
+        // Reset authentication check flag
+        App.ResetAuthenticationCheck();
 
         await this.ShowPopupAsync(popup);
-
     }
 
     private async void TapGestureRecognizer_Tapped_6(object sender, TappedEventArgs e)
