@@ -19,76 +19,76 @@ public partial class ProfilePage : ContentPage
 
     private void Button_Clicked(object sender, EventArgs e)
     {
-		Shell.Current.GoToAsync("//HomePage");
+        NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new EditeUserPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
     }
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new EditeUserPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
     }
 
     private async void Button_Clicked_2(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new EditePasswordPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
     }
 
     private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new EditePasswordPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
     }
 
     private async void Button_Clicked_3(object sender, EventArgs e)
     {
-        await Navigation.PushAsync (new BookingPage());   
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);   
     }
 
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new BookingPage());
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
     }
 
     private async void Button_Clicked_4(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new NotifictionPage());    
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);    
     }
 
     private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new NotifictionPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
     }
 
     private async void Button_Clicked_5(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new SettingPage());    
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);    
     }
 
     private async void TapGestureRecognizer_Tapped_4(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new SettingPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);
     }
 
     private async void Button_Clicked_6(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AboutUS());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
     }
 
     private async void TapGestureRecognizer_Tapped_5(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new AboutUS());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
     }
 
     private async void Button_Clicked_7(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new EditeUserPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
     }
     protected override bool OnBackButtonPressed()
     {
-        Shell.Current.GoToAsync("//ProfilePage");
+        NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_PROFILE);
         return true;
     }
 

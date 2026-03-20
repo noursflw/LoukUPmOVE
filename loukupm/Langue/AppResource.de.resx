@@ -426,7 +426,6 @@
   <data name="YouHaveAcount" xml:space="preserve">
     <value>Haben Sie schon ein Konto?</value>
   </data>
-  <!-- Privacy Policy Keys - German -->
   <data name="PolicyIntroduction" xml:space="preserve">
     <value>Einführung</value>
   </data>
@@ -684,9 +683,17 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
     <value>E-Mail: support@example.com</value>
   </data>
   <data name="PolicyLastUpdate" xml:space="preserve">
-    <value>Letzte Aktualisierung: Dezember 2024</value>
+    <value>Letzte Aktualisierung: Dezember 2026</value>
   </data>
-  <!-- Terms and Conditions Keys - German -->
+  <data name="notfoundtime" xml:space="preserve">
+    <value>Keine verfügbaren Zeiten</value>
+  </data>
+  <data name="notfoundapement" xml:space="preserve">
+    <value>Keine Buchungen vorhanden</value>
+  </data>
+  <data name="younotapement" xml:space="preserve">
+    <value>Sie haben bisher noch keinen Termin gebucht</value>
+  </data>
   <data name="TermsIntroduction" xml:space="preserve">
     <value>Durch die Nutzung der Friseurtermin-Buchungs-App stimmen Sie den folgenden Bedingungen zu.</value>
   </data>

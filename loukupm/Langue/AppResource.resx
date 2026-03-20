@@ -430,7 +430,6 @@
   <data name="YouHaveAcount" xml:space="preserve">
     <value>Haben Sie schon ein Konto?</value>
   </data>
-  <!-- Privacy Policy Keys -->
   <data name="PolicyIntroduction" xml:space="preserve">
     <value>Einführung</value>
   </data>
@@ -688,6 +687,129 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
     <value>E-Mail: support@example.com</value>
   </data>
   <data name="PolicyLastUpdate" xml:space="preserve">
-    <value>Letzte Aktualisierung: Dezember 2024</value>
+    <value>Letzte Aktualisierung: Dezember 2026</value>
+  </data>
+  <data name="notfoundtime" xml:space="preserve">
+    <value>Keine verfügbaren Zeiten</value>
+  </data>
+  <data name="notfoundapement" xml:space="preserve">
+    <value>Keine Buchungen vorhanden</value>
+  </data>
+  <data name="younotapement" xml:space="preserve">
+    <value>Sie haben bisher noch keinen Termin gebucht</value>
+  </data>
+  <data name="TermsIntroduction" xml:space="preserve">
+    <value>Durch die Nutzung der Friseurtermin-Buchungs-App stimmen Sie den folgenden Bedingungen zu.</value>
+  </data>
+  <data name="TermsAppUsage" xml:space="preserve">
+    <value>1. Verwendung der Anwendung</value>
+  </data>
+  <data name="TermsAppUsageDesc" xml:space="preserve">
+    <value>Die App ist zur Buchung von Friseurterminen bestimmt.</value>
+  </data>
+  <data name="TermsAppUsageAgreement" xml:space="preserve">
+    <value>Der Benutzer erklärt sich bereit:</value>
+  </data>
+  <data name="TermsProvideCorrectInfo" xml:space="preserve">
+    <value>• Korrekte Informationen bei der Registrierung zu bewahren</value>
+  </data>
+  <data name="TermsUseLegalWay" xml:space="preserve">
+    <value>• Die App auf legale Weise zu nutzen</value>
+  </data>
+  <data name="TermsNoHacking" xml:space="preserve">
+    <value>• Keine Versuche zu unternehmen, in das System einzudringen oder es zu stören</value>
+  </data>
+  <data name="TermsAccounts" xml:space="preserve">
+    <value>2. Konten</value>
+  </data>
+  <data name="TermsAccountResponsibility" xml:space="preserve">
+    <value>• Alle Aktivitäten, die über sein Konto durchgeführt werden</value>
+  </data>
+  <data name="TermsKeepPassword" xml:space="preserve">
+    <value>• Geheimhaltung des Passworts</value>
+  </data>
+  <data name="TermsAccountActivities" xml:space="preserve">
+    <value>• Missbrauch der Anwendung</value>
+  </data>
+  <data name="TermsAccountSuspend" xml:space="preserve">
+    <value>Die App-Verwaltung kann das Konto sperren oder löschen, falls:</value>
+  </data>
+  <data name="TermsAbusiveUse" xml:space="preserve">
+    <value>Nasradin Albarho</value>
+  </data>
+  <data name="TermsViolateTerms" xml:space="preserve">
+    <value>• Verstoß gegen die Bedingungen</value>
+  </data>
+  <data name="TermsBookings" xml:space="preserve">
+    <value>3. Buchungen</value>
+  </data>
+  <data name="TermsBookingCommitment" xml:space="preserve">
+    <value>Bei der Buchung eines Termins:</value>
+  </data>
+  <data name="TermsAttendOnTime" xml:space="preserve">
+    <value>• Müssen Sie sich an die vereinbarte Zeit halten</value>
+  </data>
+  <data name="TermsLateCancel" xml:space="preserve">
+    <value>• Bei Verspätung kann die Buchung storniert werden</value>
+  </data>
+  <data name="TermsPayment" xml:space="preserve">
+    <value>4. Zahlung</value>
+  </data>
+  <data name="TermsNoOnlinePayment" xml:space="preserve">
+    <value>Die App unterstützt keine Online-Zahlungen.</value>
+  </data>
+  <data name="TermsCashPayment" xml:space="preserve">
+    <value>Alle Zahlungen erfolgen direkt in bar am Standort des Dienstleisters (Friseur).</value>
+  </data>
+  <data name="TermsCancellation" xml:space="preserve">
+    <value>5. Stornierung</value>
+  </data>
+  <data name="TermsCancelBooking" xml:space="preserve">
+    <value>Der Benutzer kann einen Termin über die App vor dem vereinbarten Termin stornieren.</value>
+  </data>
+  <data name="TermsServiceResponsibility" xml:space="preserve">
+    <value>6. Service-Verantwortung</value>
+  </data>
+  <data name="TermsPlatformOnly" xml:space="preserve">
+    <value>Die App funktioniert nur als Terminbuchungsplattform.</value>
+  </data>
+  <data name="TermsNotResponsible" xml:space="preserve">
+    <value>Sie trägt keine Verantwortung für:</value>
+  </data>
+  <data name="TermsQualityOfService" xml:space="preserve">
+    <value>• Qualität der vom Dienstleister erbrachten Leistungen</value>
+  </data>
+  <data name="TermsUserDispute" xml:space="preserve">
+    <value>Der Benutzer kann sein Konto jederzeit löschen.</value>
+  </data>
+  <data name="TermsAvailability" xml:space="preserve">
+    <value>7. Verfügbarkeit der App</value>
+  </data>
+  <data name="TermsAvailabilityEffort" xml:space="preserve">
+    <value>Wir bemühen uns, die App ständig verfügbar zu halten, können aber nicht garantieren:</value>
+  </data>
+  <data name="TermsNoTechnicalIssues" xml:space="preserve">
+    <value>• Keine technischen Probleme</value>
+  </data>
+  <data name="TermsNoFullGuarantee" xml:space="preserve">
+    <value>• 100%ige Servicegarantie</value>
+  </data>
+  <data name="TermsAccountTermination" xml:space="preserve">
+    <value>8. Kündigung des Kontos</value>
+  </data>
+  <data name="TermsUserCanDelete" xml:space="preserve">
+    <value>• Die App auf legale Weise zu nutzen</value>
+  </data>
+  <data name="TermsAdminCanTerminate" xml:space="preserve">
+    <value>Die App-Verwaltung kann das Konto auch kündigen, wenn gegen die Bedingungen verstoßen wird.</value>
+  </data>
+  <data name="TermsModifications" xml:space="preserve">
+    <value>9. Änderungen</value>
+  </data>
+  <data name="TermsCanModify" xml:space="preserve">
+    <value>Die App-Verwaltung kann diese Bedingungen jederzeit ändern.</value>
+  </data>
+  <data name="TermsLastUpdateTerms" xml:space="preserve">
+    <value>Letzte Aktualisierung: März 2026</value>
   </data>
 </root>

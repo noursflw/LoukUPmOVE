@@ -4,7 +4,9 @@ using CommunityToolkit.Maui.Core;
 using FFImageLoading.Maui;
 using loukupm.Model;
 using loukupm.ViewModel;
+using loukupm.Services;
 using System.Globalization;
+using System.Windows.Input;
 
 /// <summary>
 /// «·’›Õ… «·—∆Ì”Ì…
@@ -23,31 +25,28 @@ public partial class HomePage : ContentPage
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-		await Navigation.PushAsync(new ServicesPage());   
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_SERVICES);   
     }
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new NotifictionPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
     }
 
-    private async void Button_Clicked_1(object sender, EventArgs e)
+    /// <summary>
+    /// Service selection handler - delegates to ViewModel command for unified logic
+    /// This ensures HomePage uses the exact same selection behavior as ServicesPage
+    /// </summary>
+    private void Button_Clicked_1(object sender, EventArgs e)
     {
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
 
-        if (AppViewModel.Instance.CurrentBooking.SelectedServices == null)
-            AppViewModel.Instance.CurrentBooking.SelectedServices = new List<Servies>();
-
-        if (!AppViewModel.Instance.CurrentBooking.SelectedServices.Contains(service))
+        // Delegate to the ViewModel's SelectServiceButtonCommand for unified logic
+        var vm = BindingContext as AppViewModel;
+        if (vm?.SelectServiceButtonCommand is ICommand command && command.CanExecute(service))
         {
-            AppViewModel.Instance.CurrentBooking.SelectedServices.Add(service);
-            await Toast.Make(Langue.AppResource.CompletedAddServies).Show();
-        }
-        else
-        {
-            AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
-            await Toast.Make(Langue.AppResource.theserviewasdone).Show();
+            command.Execute(service);
         }
     }
 
@@ -135,6 +134,6 @@ public partial class HomePage : ContentPage
 
     private async void ImageButton_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AboutUS());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
     }
 }

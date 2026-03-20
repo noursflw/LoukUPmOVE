@@ -4,7 +4,7 @@
              x:Class="loukupm.View.ProfilePage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
-              xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
              Title="ProfilePage">
     <Grid>
         <ScrollView Margin="0,0,0,30">

@@ -29,12 +29,12 @@ public partial class SinginPage : ContentPage
     }
     private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("LoginPage");
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
     }
 
     protected override bool OnBackButtonPressed()
     {
-        _ = NavigationService.HandleBackButton("SinginPage");
+        _ = NavigationService.HandleBackButton(NavigationService.ROUTE_SIGNIN);
         return true;
     }
 
@@ -137,7 +137,7 @@ public partial class SinginPage : ContentPage
                 }
 
                 await this.ShowPopupAsync(new CompletedLogin());
-                await Shell.Current.GoToAsync("//HomePage");
+                await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
@@ -309,7 +309,7 @@ public partial class SinginPage : ContentPage
     }
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new PolicyandPrivacyPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
     }
     private void CheckBox_CheckChanged(object sender, EventArgs e)
     {

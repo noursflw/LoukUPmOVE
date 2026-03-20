@@ -102,7 +102,7 @@ namespace loukupm.ViewModel
             UpdateUserCommand = new Command(async () => await UpdateUserInfo());
             ChangePasswordUserCommand = new Command(async () => await ChangeUserPasswordAsync());
 
-            SelectServiceButtonCommand = new Command<Servies>(service =>
+            SelectServiceButtonCommand = new Command<Servies>(async service =>
             {
                 if (service == null) return;
 
@@ -116,13 +116,15 @@ namespace loukupm.ViewModel
                     SelectedServices.Add(service);  // ✨ إضافة للـ Collection
                     CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
                     Console.WriteLine($"✅ Service added: {service.NameServies}, Price: {service.PriceServies}");
+                    
+                    // ✨ Toast notification for adding service
+                    await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
                 }
                 else
                 {
-                    var serviceToRemove = SelectedServices.First(s => s.Id == service.Id);
-                    SelectedServices.Remove(serviceToRemove);  // ✨ حذف من Collection
-                    CurrentBooking.SelectedServices.Remove(serviceToRemove);  // حذف من List
-                    Console.WriteLine($"❌ Service removed: {service.NameServies}");
+                    // ✨ Service is already selected - show special notification
+                    Console.WriteLine($"⚠️ Service already selected: {service.NameServies}");
+                    await Toast.Make(AppResource.theserviewasdone, ToastDuration.Short).Show();
                 }
 
                 // تحديث إجمالي السعر
@@ -360,7 +362,7 @@ namespace loukupm.ViewModel
 
                 FilteredWorkTeams = new ObservableCollection<WorkTeam>(WorkTeams);
 
-
+                IsWorkTeamLoad = false;
 
                 Console.WriteLine($"✅ Loaded {WorkTeams.Count} work team members");
             }

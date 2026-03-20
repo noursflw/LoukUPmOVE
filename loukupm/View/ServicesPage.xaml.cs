@@ -4,6 +4,7 @@ using CommunityToolkit.Maui.Views;
 using loukupm.Langue;
 using loukupm.Model;
 using loukupm.ViewModel;
+using System.Windows.Input;
 
 namespace loukupm.View;
 
@@ -15,29 +16,21 @@ public partial class ServicesPage : ContentPage
         this.BindingContext = AppViewModel.Instance;
     }
 
-    private async void Button_Clicked_1(object sender, EventArgs e)
+    /// <summary>
+    /// Service selection handler - delegates to ViewModel command for unified logic
+    /// This ensures ServicesPage uses the same selection behavior as HomePage
+    /// </summary>
+    private void Button_Clicked_1(object sender, EventArgs e)
     {
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
 
-        if (AppViewModel.Instance.CurrentBooking.SelectedServices == null)
-            AppViewModel.Instance.CurrentBooking.SelectedServices = new List<Servies>();
-
-
-        if (!AppViewModel.Instance.CurrentBooking.SelectedServices.Contains(service))
+        // Delegate to the ViewModel's SelectServiceButtonCommand for unified logic
+        var vm = BindingContext as AppViewModel;
+        if (vm?.SelectServiceButtonCommand is ICommand command && command.CanExecute(service))
         {
-            AppViewModel.Instance.CurrentBooking.SelectedServices.Add(service);
-            await Toast.Make(Langue.AppResource.CompletedAddServies).Show();
+            command.Execute(service);
         }
-
-        else
-        {
-            AppViewModel.Instance.CurrentBooking.SelectedServices.Remove(service);
-            await Toast.Make(Langue.AppResource.theserviewasdone).Show();
-        }
-        
-
-
     }
 
 
@@ -96,8 +89,8 @@ public partial class ServicesPage : ContentPage
         await Navigation.PushAsync(new TerminbuchenPage());
     }
 
-    private async void Button_Clicked_3(object sender, EventArgs e)
-    {
-        await Toast.Make(Langue.AppResource.celectedserviesiddone).Show();
-    }
+    /// <summary>
+    /// Toast notifications for service selection are now handled in the ViewModel command
+    /// This method is no longer needed as the notification is centralized
+    /// </summary>
 }

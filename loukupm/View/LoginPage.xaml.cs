@@ -37,12 +37,12 @@ public partial class LoginPage : ContentPage
     }
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new TermsAndConditions());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_TERMS_CONDITIONS);
     }
 
     private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new RestPassword());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_REST_PASSWORD);
     }
 
     protected override bool OnBackButtonPressed()
@@ -118,37 +118,37 @@ public partial class LoginPage : ContentPage
             var result = await response.Content.ReadAsStringAsync();
 
           
-            if (response.IsSuccessStatusCode)
-            {
-                var loginResponse = JsonSerializer.Deserialize<LoginResponse>(result,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                // حفظ التوكن
-                if (!string.IsNullOrEmpty(loginResponse?.Token))
-                    await SecureStorage.SetAsync("auth_token", loginResponse.Token);
-
-                if (!string.IsNullOrEmpty(loginResponse?.Refresh_Token))
-                    await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
-                var popup = new CompletedLogin();
-                await this.ShowPopupAsync(popup);
-                
-                // Clear the navigation stack and navigate to HomePage using the navigation manager
-                await ShellNavigationManager.NavigateToHomeAndClear();
-
-                // ⭐ هنا تعريف اليوزر ل OneSignal
-                if (loginResponse?.User != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    var userId = loginResponse.User.Id.ToString();
+                    var loginResponse = JsonSerializer.Deserialize<LoginResponse>(result,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // ربط الجهاز بالمستخدم
-                    OneSignal.Login(userId);
+                    // حفظ التوكن
+                    if (!string.IsNullOrEmpty(loginResponse?.Token))
+                        await SecureStorage.SetAsync("auth_token", loginResponse.Token);
 
-                    // إضافة Tag (حتى تقدر تعمل Filter من Dashboard)
-                    OneSignal.User.AddTag("user_no", userId);
+                    if (!string.IsNullOrEmpty(loginResponse?.Refresh_Token))
+                        await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
+                    var popup = new CompletedLogin();
+                    await this.ShowPopupAsync(popup);
+                    
+                    // Clear the navigation stack and navigate to HomePage using the navigation service
+                    await ShellNavigationManager.NavigateToHomeAndClear();
+
+                    // ⭐ هنا تعريف اليوزر ل OneSignal
+                    if (loginResponse?.User != null)
+                    {
+                        var userId = loginResponse.User.Id.ToString();
+
+                        // ربط الجهاز بالمستخدم
+                        OneSignal.Login(userId);
+
+                        // إضافة Tag (حتى تقدر تعمل Filter من Dashboard)
+                        OneSignal.User.AddTag("user_no", userId);
+                    }
+
+                  
                 }
-
-              
-            }
 
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
@@ -373,7 +373,7 @@ public partial class LoginPage : ContentPage
 
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new PolicyandPrivacyPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
     }
 
     private  void CheckBox_CheckChanged(object sender, EventArgs e)
@@ -400,7 +400,7 @@ public partial class LoginPage : ContentPage
 
     private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
     {
-        await Navigation.PushAsync(new SinginPage());
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_SIGNIN);
     }
 
     // ... other methods unchanged ... End Section Log IN and Google Login WITH Firebase

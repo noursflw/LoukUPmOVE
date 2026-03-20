@@ -426,7 +426,6 @@
   <data name="YouHaveAcount" xml:space="preserve">
     <value>هل لديك حساب بالفعل؟</value>
   </data>
-  <!-- Privacy Policy Keys - Arabic -->
   <data name="PolicyIntroduction" xml:space="preserve">
     <value>مقدمة</value>
   </data>
@@ -684,9 +683,8 @@
     <value>البريد الإلكتروني: support@example.com</value>
   </data>
   <data name="PolicyLastUpdate" xml:space="preserve">
-    <value>آخر تحديث: ديسمبر 2024</value>
+    <value>آخر تحديث: ديسمبر 2026</value>
   </data>
-  <!-- Terms and Conditions Keys - Arabic -->
   <data name="TermsIntroduction" xml:space="preserve">
     <value>باستخدام تطبيق حجز مواعيد الحلاق فإنك توافق على الشروط التالية.</value>
   </data>
@@ -800,5 +798,14 @@
   </data>
   <data name="TermsLastUpdateTerms" xml:space="preserve">
     <value>آخر تحديث: مارس 2026</value>
+  </data>
+  <data name="notfoundtime" xml:space="preserve">
+    <value>لا توجد أوقات متاحة</value>
+  </data>
+  <data name="notfoundapement" xml:space="preserve">
+    <value>لا توجد حجوزات</value>
+  </data>
+  <data name="younotapement" xml:space="preserve">
+    <value>لم تقم بحجز أي موعد حتى الآن</value>
   </data>
 </root>

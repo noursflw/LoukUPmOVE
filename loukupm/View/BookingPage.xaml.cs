@@ -1,4 +1,5 @@
 using loukupm.Model;
+using loukupm.Services;
 using loukupm.ViewModel;
 using System.Threading.Tasks;
 
@@ -26,5 +27,10 @@ public partial class BookingPage : ContentPage
         Shell.Current.GoToAsync("//HomePage");
          return true;
 
+    }
+
+    private async void Button_Clicked_2(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_SERVICES);
     }
 }

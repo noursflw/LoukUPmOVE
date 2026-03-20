@@ -58,13 +58,13 @@
                            HeightRequest="150"
                            Margin="0,20,0,0"
                            HorizontalOptions="Center" />
-                    <Label Text="لا توجد حجوزات"
+                    <Label Text="{Loc:Translate Name=notfoundapement}"
                            TextColor="#D3D3D3"
                            FontSize="20"
                            FontFamily="georgia-bold"
                            HorizontalTextAlignment="Center"
                            Margin="0,20,0,10" />
-                    <Label Text="لم تقم بحجز أي موعد حتى الآن"
+                    <Label Text="{Loc:Translate Name=younotapement}"
                            TextColor="#888888"
                            FontSize="14"
                            HorizontalTextAlignment="Center"
@@ -144,6 +144,8 @@
 
             </VerticalStackLayout>
         </ScrollView>
+        <Button  VerticalOptions="End" 
+          HorizontalOptions="Fill" Text="{Loc:Translate Name=bookinNowAbotus}" CornerRadius="16" FontSize="16" Clicked="Button_Clicked_2"  FontFamily="georgia-bold" TextColor="Black"  Margin="35" />
         <Border Margin="0,0,0,0"
       BackgroundColor="#444444"
       HeightRequest="20"

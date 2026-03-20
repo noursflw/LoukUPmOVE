@@ -99,21 +99,21 @@ namespace loukupm
                 {
                     Console.WriteLine("🔐 No token found → LoginPage");
                     // Use relative routing for LoginPage (global route)
-                    await Shell.Current.GoToAsync("LoginPage");
+                    await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
                 }
                 else
                 {
                     Console.WriteLine("✅ Token found → HomePage");
                     // Mark authentication as checked
                     _authenticationChecked = true;
-                    // Use absolute routing for HomePage (inside TabBar)
-                    await Shell.Current.GoToAsync("//HomePage");
+                    // Use TabBar routing for HomePage (inside TabBar)
+                    await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[App CheckAuthentication ERROR]: {ex.Message}");
-                await Shell.Current.GoToAsync("LoginPage");
+                await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
             }
         }
     }

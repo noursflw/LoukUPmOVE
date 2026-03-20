@@ -258,9 +258,7 @@
                                                         CornerRadius="16"  
                                                         HeightRequest="48" 
                                                         Margin="10,-30,0,0"
-                                                        Clicked="Button_Clicked_1"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
-                                                        CommandParameter="{Binding .}" />
+                                                        Clicked="Button_Clicked_1" />
                                                 </Grid>
                                             </Frame>
                                         </VerticalStackLayout>

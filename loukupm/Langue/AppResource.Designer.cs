@@ -691,6 +691,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keine Buchungen vorhanden.
+        /// </summary>
+        internal static string notfoundapement {
+            get {
+                return ResourceManager.GetString("notfoundapement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keine verfügbaren Zeiten.
+        /// </summary>
+        internal static string notfoundtime {
+            get {
+                return ResourceManager.GetString("notfoundtime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passwort vergessen?.
         /// </summary>
         internal static string NPasswordOnLogin {
@@ -790,11 +808,780 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 7. Kontolöschung.
+        /// </summary>
+        internal static string PolicyAccountDeletion {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Benutzerdaten werden gelöscht.
+        /// </summary>
+        internal static string PolicyAccountDeletionData {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletionData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer kann sein Konto jederzeit innerhalb der App löschen über:.
+        /// </summary>
+        internal static string PolicyAccountDeletionDesc {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletionDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Kontoinformationen werden gelöscht.
+        /// </summary>
+        internal static string PolicyAccountDeletionInfo {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletionInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Einige Daten können aus rechtlichen Gründen für einen begrenzten Zeitraum beibehalten werden.
+        /// </summary>
+        internal static string PolicyAccountDeletionLegal {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletionLegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profil → Konto löschen.
+        /// </summary>
+        internal static string PolicyAccountDeletionPath {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletionPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bei Kontolöschung:.
+        /// </summary>
+        internal static string PolicyAccountDeletionWhenDelete {
+            get {
+                return ResourceManager.GetString("PolicyAccountDeletionWhenDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kontoinformationen.
+        /// </summary>
+        internal static string PolicyAccountInfo {
+            get {
+                return ResourceManager.GetString("PolicyAccountInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beim Erstellen eines Kontos in der App können wir Folgendes erfassen:.
+        /// </summary>
+        internal static string PolicyAccountInfoDesc {
+            get {
+                return ResourceManager.GetString("PolicyAccountInfoDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8. Kontowiederherstellung.
+        /// </summary>
+        internal static string PolicyAccountRecovery {
+            get {
+                return ResourceManager.GetString("PolicyAccountRecovery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer kann Zugriff auf sein Konto mit Hilfe von:.
+        /// </summary>
+        internal static string PolicyAccountRecoveryDesc {
+            get {
+                return ResourceManager.GetString("PolicyAccountRecoveryDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OTP-Verifikationscode per E-Mail.
+        /// </summary>
+        internal static string PolicyAccountRecoveryOTP {
+            get {
+                return ResourceManager.GetString("PolicyAccountRecoveryOTP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Datenschutzrichtlinie.
         /// </summary>
         internal static string PolicyandPrivacy {
             get {
                 return ResourceManager.GetString("PolicyandPrivacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Buchungsdatum.
+        /// </summary>
+        internal static string PolicyBookingDate {
+            get {
+                return ResourceManager.GetString("PolicyBookingDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Buchungsinformationen.
+        /// </summary>
+        internal static string PolicyBookingInfo {
+            get {
+                return ResourceManager.GetString("PolicyBookingInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bei der Nutzung des Buchungsdienstes werden die folgenden Informationen gespeichert:.
+        /// </summary>
+        internal static string PolicyBookingInfoDesc {
+            get {
+                return ResourceManager.GetString("PolicyBookingInfoDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diese Informationen werden nur zur Verwaltung von Terminen verwendet..
+        /// </summary>
+        internal static string PolicyBookingInfoUsage {
+            get {
+                return ResourceManager.GetString("PolicyBookingInfoUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Buchungszeit.
+        /// </summary>
+        internal static string PolicyBookingTime {
+            get {
+                return ResourceManager.GetString("PolicyBookingTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10. Kinder.
+        /// </summary>
+        internal static string PolicyChildren {
+            get {
+                return ResourceManager.GetString("PolicyChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diese App ist nicht für Kinder unter 13 Jahren bestimmt und wir erfassen absichtlich keine Kindererdaten..
+        /// </summary>
+        internal static string PolicyChildrenDesc {
+            get {
+                return ResourceManager.GetString("PolicyChildrenDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-Mail: support@example.com.
+        /// </summary>
+        internal static string PolicyContactEmail {
+            get {
+                return ResourceManager.GetString("PolicyContactEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 13. Kontaktieren Sie uns.
+        /// </summary>
+        internal static string PolicyContactUs {
+            get {
+                return ResourceManager.GetString("PolicyContactUs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bei Fragen zur Datenschutzrichtlinie können Sie uns kontaktieren über:.
+        /// </summary>
+        internal static string PolicyContactUsDesc {
+            get {
+                return ResourceManager.GetString("PolicyContactUsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Absturzprotokolle.
+        /// </summary>
+        internal static string PolicyCrashLogs {
+            get {
+                return ResourceManager.GetString("PolicyCrashLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Erfassung von Informationen.
+        /// </summary>
+        internal static string PolicyDataCollection {
+            get {
+                return ResourceManager.GetString("PolicyDataCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5. Datenschutz.
+        /// </summary>
+        internal static string PolicyDataProtection {
+            get {
+                return ResourceManager.GetString("PolicyDataProtection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Schutz von Datenbanken.
+        /// </summary>
+        internal static string PolicyDataProtectionDatabase {
+            get {
+                return ResourceManager.GetString("PolicyDataProtectionDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir ergreifen angemessene Sicherheitsmaßnahmen zum Schutz von Daten, wie:.
+        /// </summary>
+        internal static string PolicyDataProtectionDesc {
+            get {
+                return ResourceManager.GetString("PolicyDataProtectionDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Es kann jedoch nicht garantiert werden, dass Daten im Internet vollständig sicher sind..
+        /// </summary>
+        internal static string PolicyDataProtectionDisclaimer {
+            get {
+                return ResourceManager.GetString("PolicyDataProtectionDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Verwendung von verschlüsselter Kommunikation HTTPS.
+        /// </summary>
+        internal static string PolicyDataProtectionHTTPS {
+            get {
+                return ResourceManager.GetString("PolicyDataProtectionHTTPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Verschlüsselung von Passwörtern.
+        /// </summary>
+        internal static string PolicyDataProtectionPassword {
+            get {
+                return ResourceManager.GetString("PolicyDataProtectionPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6. Datenspeicherung.
+        /// </summary>
+        internal static string PolicyDataRetention {
+            get {
+                return ResourceManager.GetString("PolicyDataRetention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir speichern Benutzerdaten nur, solange das Konto aktiv ist oder der Dienst erbracht werden muss.
+        ///
+        ///Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technischen Zwecken gespeichert werden..
+        /// </summary>
+        internal static string PolicyDataRetentionDesc {
+            get {
+                return ResourceManager.GetString("PolicyDataRetentionDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4. Datenweitergabe.
+        /// </summary>
+        internal static string PolicyDataSharing {
+            get {
+                return ResourceManager.GetString("PolicyDataSharing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Einhaltung von Gesetzen oder Rechtsverfügungen.
+        /// </summary>
+        internal static string PolicyDataSharingCompliance {
+            get {
+                return ResourceManager.GetString("PolicyDataSharingCompliance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Betrieb von technischen Infrastrukturdiensten (wie Server).
+        /// </summary>
+        internal static string PolicyDataSharingInfrastructure {
+            get {
+                return ResourceManager.GetString("PolicyDataSharingInfrastructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir verkaufen oder mieten Benutzerdaten nicht an Dritte..
+        /// </summary>
+        internal static string PolicyDataSharingNo {
+            get {
+                return ResourceManager.GetString("PolicyDataSharingNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Informationen können nur in folgenden Fällen weitergegeben werden:.
+        /// </summary>
+        internal static string PolicyDataSharingOnlyWhen {
+            get {
+                return ResourceManager.GetString("PolicyDataSharingOnlyWhen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Schutz von App-Rechten.
+        /// </summary>
+        internal static string PolicyDataSharingProtect {
+            get {
+                return ResourceManager.GetString("PolicyDataSharingProtect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Geräteinformationen.
+        /// </summary>
+        internal static string PolicyDeviceInfo {
+            get {
+                return ResourceManager.GetString("PolicyDeviceInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatisch können technische Informationen wie folgt erfasst werden:.
+        /// </summary>
+        internal static string PolicyDeviceInfoDesc {
+            get {
+                return ResourceManager.GetString("PolicyDeviceInfoDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diese Informationen werden zur Verbesserung der App-Leistung verwendet..
+        /// </summary>
+        internal static string PolicyDeviceInfoUsage {
+            get {
+                return ResourceManager.GetString("PolicyDeviceInfoUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Gerätetyp.
+        /// </summary>
+        internal static string PolicyDeviceType {
+            get {
+                return ResourceManager.GetString("PolicyDeviceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • E-Mail-Adresse.
+        /// </summary>
+        internal static string PolicyEmail {
+            get {
+                return ResourceManager.GetString("PolicyEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir verwenden diese Informationen nur zum Erstellen des Benutzerkontos in der App..
+        /// </summary>
+        internal static string PolicyGoogleInfo {
+            get {
+                return ResourceManager.GetString("PolicyGoogleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google-Anmeldung.
+        /// </summary>
+        internal static string PolicyGoogleLogin {
+            get {
+                return ResourceManager.GetString("PolicyGoogleLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wenn Sie sich mit einem Google-Konto anmelden, können wir Folgendes erhalten:.
+        /// </summary>
+        internal static string PolicyGoogleLoginDesc {
+            get {
+                return ResourceManager.GetString("PolicyGoogleLoginDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Einführung.
+        /// </summary>
+        internal static string PolicyIntroduction {
+            get {
+                return ResourceManager.GetString("PolicyIntroduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir in der Friseurtermin-Buchungs-App respektieren die Privatsphäre der Benutzer und sind verpflichtet, ihre persönlichen Daten zu schützen. Diese Datenschutzrichtlinie erläutert, wie wir Informationen erfassen, verwenden und schützen, wenn Sie die App nutzen.
+        ///
+        ///Durch die Nutzung der App stimmen Sie den in dieser Richtlinie beschriebenen Praktiken zu..
+        /// </summary>
+        internal static string PolicyIntroductionText {
+            get {
+                return ResourceManager.GetString("PolicyIntroductionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • IP-Adresse.
+        /// </summary>
+        internal static string PolicyIPAddress {
+            get {
+                return ResourceManager.GetString("PolicyIPAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Nachname.
+        /// </summary>
+        internal static string PolicyLastName {
+            get {
+                return ResourceManager.GetString("PolicyLastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Letzte Aktualisierung: Dezember 2026.
+        /// </summary>
+        internal static string PolicyLastUpdate {
+            get {
+                return ResourceManager.GetString("PolicyLastUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Name.
+        /// </summary>
+        internal static string PolicyName {
+            get {
+                return ResourceManager.GetString("PolicyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Buchungsbestätigung.
+        /// </summary>
+        internal static string PolicyNotificationBookingConfirm {
+            get {
+                return ResourceManager.GetString("PolicyNotificationBookingConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Erinnerung an Buchungstermin.
+        /// </summary>
+        internal static string PolicyNotificationReminder {
+            get {
+                return ResourceManager.GetString("PolicyNotificationReminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Benachrichtigungen.
+        /// </summary>
+        internal static string PolicyNotifications {
+            get {
+                return ResourceManager.GetString("PolicyNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App kann Benachrichtigungen an Benutzer senden wie:.
+        /// </summary>
+        internal static string PolicyNotificationsDesc {
+            get {
+                return ResourceManager.GetString("PolicyNotificationsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer kann Benachrichtigungen jederzeit über die Geräteeinstellungen deaktivieren..
+        /// </summary>
+        internal static string PolicyNotificationsDisable {
+            get {
+                return ResourceManager.GetString("PolicyNotificationsDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Servicebezogene Updates.
+        /// </summary>
+        internal static string PolicyNotificationUpdates {
+            get {
+                return ResourceManager.GetString("PolicyNotificationUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Betriebssystem.
+        /// </summary>
+        internal static string PolicyOperatingSystem {
+            get {
+                return ResourceManager.GetString("PolicyOperatingSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Passwort (wird verschlüsselt gespeichert).
+        /// </summary>
+        internal static string PolicyPassword {
+            get {
+                return ResourceManager.GetString("PolicyPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 12. Änderungen der Datenschutzrichtlinie.
+        /// </summary>
+        internal static string PolicyPolicyChanges {
+            get {
+                return ResourceManager.GetString("PolicyPolicyChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir können diese Richtlinie von Zeit zu Zeit aktualisieren. Benutzer werden über die App über Änderungen informiert..
+        /// </summary>
+        internal static string PolicyPolicyChangesDesc {
+            get {
+                return ResourceManager.GetString("PolicyPolicyChangesDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Dienstleistungsanbieter (Friseur).
+        /// </summary>
+        internal static string PolicyServiceProvider {
+            get {
+                return ResourceManager.GetString("PolicyServiceProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Art der angeforderten Dienstleistung.
+        /// </summary>
+        internal static string PolicyServiceType {
+            get {
+                return ResourceManager.GetString("PolicyServiceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 11. Drittanbieter-Services.
+        /// </summary>
+        internal static string PolicyThirdParty {
+            get {
+                return ResourceManager.GetString("PolicyThirdParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App kann externe Services wie:.
+        /// </summary>
+        internal static string PolicyThirdPartyDesc {
+            get {
+                return ResourceManager.GetString("PolicyThirdPartyDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diese Services unterliegen möglicherweise ihren eigenen Datenschutzrichtlinien..
+        /// </summary>
+        internal static string PolicyThirdPartyDisclaimer {
+            get {
+                return ResourceManager.GetString("PolicyThirdPartyDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Google-Anmeldung.
+        /// </summary>
+        internal static string PolicyThirdPartyGoogle {
+            get {
+                return ResourceManager.GetString("PolicyThirdPartyGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Benachrichtigungsdienste.
+        /// </summary>
+        internal static string PolicyThirdPartyNotifications {
+            get {
+                return ResourceManager.GetString("PolicyThirdPartyNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Wie wir Informationen verwenden.
+        /// </summary>
+        internal static string PolicyUsage {
+            get {
+                return ResourceManager.GetString("PolicyUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Erstellen des Benutzerkontos.
+        /// </summary>
+        internal static string PolicyUsageCreateAccount {
+            get {
+                return ResourceManager.GetString("PolicyUsageCreateAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir verwenden die Informationen für die folgenden Zwecke:.
+        /// </summary>
+        internal static string PolicyUsageDesc {
+            get {
+                return ResourceManager.GetString("PolicyUsageDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die Informationen werden nicht ohne Benutzereinwilligung für andere Zwecke verwendet..
+        /// </summary>
+        internal static string PolicyUsageDisclaimer {
+            get {
+                return ResourceManager.GetString("PolicyUsageDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • App-Leistung verbessern.
+        /// </summary>
+        internal static string PolicyUsageImproveApp {
+            get {
+                return ResourceManager.GetString("PolicyUsageImproveApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Anmeldung und Kontoverwaltung.
+        /// </summary>
+        internal static string PolicyUsageManageAccount {
+            get {
+                return ResourceManager.GetString("PolicyUsageManageAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Buchungsverwaltung.
+        /// </summary>
+        internal static string PolicyUsageManageBooking {
+            get {
+                return ResourceManager.GetString("PolicyUsageManageBooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Betrugsprävention oder Missbrauch verhindern.
+        /// </summary>
+        internal static string PolicyUsagePreventFraud {
+            get {
+                return ResourceManager.GetString("PolicyUsagePreventFraud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Senden von buchungsbezogenen Benachrichtigungen.
+        /// </summary>
+        internal static string PolicyUsageSendNotifications {
+            get {
+                return ResourceManager.GetString("PolicyUsageSendNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Benutzerunterstützung.
+        /// </summary>
+        internal static string PolicyUsageSupport {
+            get {
+                return ResourceManager.GetString("PolicyUsageSupport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 9. Benutzerrechte.
+        /// </summary>
+        internal static string PolicyUserRights {
+            get {
+                return ResourceManager.GetString("PolicyUserRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Auf seine Daten zugreifen.
+        /// </summary>
+        internal static string PolicyUserRightsAccess {
+            get {
+                return ResourceManager.GetString("PolicyUserRightsAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Sein Konto löschen.
+        /// </summary>
+        internal static string PolicyUserRightsDelete {
+            get {
+                return ResourceManager.GetString("PolicyUserRightsDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer hat das Recht:.
+        /// </summary>
+        internal static string PolicyUserRightsDesc {
+            get {
+                return ResourceManager.GetString("PolicyUserRightsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Seine Daten ändern.
+        /// </summary>
+        internal static string PolicyUserRightsModify {
+            get {
+                return ResourceManager.GetString("PolicyUserRightsModify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Löschung seiner Daten anfordern.
+        /// </summary>
+        internal static string PolicyUserRightsRequest {
+            get {
+                return ResourceManager.GetString("PolicyUserRightsRequest", resourceCulture);
             }
         }
         
@@ -889,11 +1676,353 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nasradin Albarho.
+        /// </summary>
+        internal static string TermsAbusiveUse {
+            get {
+                return ResourceManager.GetString("TermsAbusiveUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Missbrauch der Anwendung.
+        /// </summary>
+        internal static string TermsAccountActivities {
+            get {
+                return ResourceManager.GetString("TermsAccountActivities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Alle Aktivitäten, die über sein Konto durchgeführt werden.
+        /// </summary>
+        internal static string TermsAccountResponsibility {
+            get {
+                return ResourceManager.GetString("TermsAccountResponsibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Konten.
+        /// </summary>
+        internal static string TermsAccounts {
+            get {
+                return ResourceManager.GetString("TermsAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App-Verwaltung kann das Konto sperren oder löschen, falls:.
+        /// </summary>
+        internal static string TermsAccountSuspend {
+            get {
+                return ResourceManager.GetString("TermsAccountSuspend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8. Kündigung des Kontos.
+        /// </summary>
+        internal static string TermsAccountTermination {
+            get {
+                return ResourceManager.GetString("TermsAccountTermination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App-Verwaltung kann das Konto auch kündigen, wenn gegen die Bedingungen verstoßen wird..
+        /// </summary>
+        internal static string TermsAdminCanTerminate {
+            get {
+                return ResourceManager.GetString("TermsAdminCanTerminate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nutzungsbedingungen.
         /// </summary>
         internal static string TermsandConditions {
             get {
                 return ResourceManager.GetString("TermsandConditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Verwendung der Anwendung.
+        /// </summary>
+        internal static string TermsAppUsage {
+            get {
+                return ResourceManager.GetString("TermsAppUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer erklärt sich bereit:.
+        /// </summary>
+        internal static string TermsAppUsageAgreement {
+            get {
+                return ResourceManager.GetString("TermsAppUsageAgreement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App ist zur Buchung von Friseurterminen bestimmt..
+        /// </summary>
+        internal static string TermsAppUsageDesc {
+            get {
+                return ResourceManager.GetString("TermsAppUsageDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Müssen Sie sich an die vereinbarte Zeit halten.
+        /// </summary>
+        internal static string TermsAttendOnTime {
+            get {
+                return ResourceManager.GetString("TermsAttendOnTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7. Verfügbarkeit der App.
+        /// </summary>
+        internal static string TermsAvailability {
+            get {
+                return ResourceManager.GetString("TermsAvailability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wir bemühen uns, die App ständig verfügbar zu halten, können aber nicht garantieren:.
+        /// </summary>
+        internal static string TermsAvailabilityEffort {
+            get {
+                return ResourceManager.GetString("TermsAvailabilityEffort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bei der Buchung eines Termins:.
+        /// </summary>
+        internal static string TermsBookingCommitment {
+            get {
+                return ResourceManager.GetString("TermsBookingCommitment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Buchungen.
+        /// </summary>
+        internal static string TermsBookings {
+            get {
+                return ResourceManager.GetString("TermsBookings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer kann einen Termin über die App vor dem vereinbarten Termin stornieren..
+        /// </summary>
+        internal static string TermsCancelBooking {
+            get {
+                return ResourceManager.GetString("TermsCancelBooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5. Stornierung.
+        /// </summary>
+        internal static string TermsCancellation {
+            get {
+                return ResourceManager.GetString("TermsCancellation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App-Verwaltung kann diese Bedingungen jederzeit ändern..
+        /// </summary>
+        internal static string TermsCanModify {
+            get {
+                return ResourceManager.GetString("TermsCanModify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alle Zahlungen erfolgen direkt in bar am Standort des Dienstleisters (Friseur)..
+        /// </summary>
+        internal static string TermsCashPayment {
+            get {
+                return ResourceManager.GetString("TermsCashPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Durch die Nutzung der Friseurtermin-Buchungs-App stimmen Sie den folgenden Bedingungen zu..
+        /// </summary>
+        internal static string TermsIntroduction {
+            get {
+                return ResourceManager.GetString("TermsIntroduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Geheimhaltung des Passworts.
+        /// </summary>
+        internal static string TermsKeepPassword {
+            get {
+                return ResourceManager.GetString("TermsKeepPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Letzte Aktualisierung: März 2026.
+        /// </summary>
+        internal static string TermsLastUpdateTerms {
+            get {
+                return ResourceManager.GetString("TermsLastUpdateTerms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Bei Verspätung kann die Buchung storniert werden.
+        /// </summary>
+        internal static string TermsLateCancel {
+            get {
+                return ResourceManager.GetString("TermsLateCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 9. Änderungen.
+        /// </summary>
+        internal static string TermsModifications {
+            get {
+                return ResourceManager.GetString("TermsModifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • 100%ige Servicegarantie.
+        /// </summary>
+        internal static string TermsNoFullGuarantee {
+            get {
+                return ResourceManager.GetString("TermsNoFullGuarantee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Keine Versuche zu unternehmen, in das System einzudringen oder es zu stören.
+        /// </summary>
+        internal static string TermsNoHacking {
+            get {
+                return ResourceManager.GetString("TermsNoHacking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App unterstützt keine Online-Zahlungen..
+        /// </summary>
+        internal static string TermsNoOnlinePayment {
+            get {
+                return ResourceManager.GetString("TermsNoOnlinePayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Keine technischen Probleme.
+        /// </summary>
+        internal static string TermsNoTechnicalIssues {
+            get {
+                return ResourceManager.GetString("TermsNoTechnicalIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sie trägt keine Verantwortung für:.
+        /// </summary>
+        internal static string TermsNotResponsible {
+            get {
+                return ResourceManager.GetString("TermsNotResponsible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4. Zahlung.
+        /// </summary>
+        internal static string TermsPayment {
+            get {
+                return ResourceManager.GetString("TermsPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die App funktioniert nur als Terminbuchungsplattform..
+        /// </summary>
+        internal static string TermsPlatformOnly {
+            get {
+                return ResourceManager.GetString("TermsPlatformOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Korrekte Informationen bei der Registrierung zu bewahren.
+        /// </summary>
+        internal static string TermsProvideCorrectInfo {
+            get {
+                return ResourceManager.GetString("TermsProvideCorrectInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Qualität der vom Dienstleister erbrachten Leistungen.
+        /// </summary>
+        internal static string TermsQualityOfService {
+            get {
+                return ResourceManager.GetString("TermsQualityOfService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6. Service-Verantwortung.
+        /// </summary>
+        internal static string TermsServiceResponsibility {
+            get {
+                return ResourceManager.GetString("TermsServiceResponsibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Die App auf legale Weise zu nutzen.
+        /// </summary>
+        internal static string TermsUseLegalWay {
+            get {
+                return ResourceManager.GetString("TermsUseLegalWay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Die App auf legale Weise zu nutzen.
+        /// </summary>
+        internal static string TermsUserCanDelete {
+            get {
+                return ResourceManager.GetString("TermsUserCanDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Benutzer kann sein Konto jederzeit löschen..
+        /// </summary>
+        internal static string TermsUserDispute {
+            get {
+                return ResourceManager.GetString("TermsUserDispute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Verstoß gegen die Bedingungen.
+        /// </summary>
+        internal static string TermsViolateTerms {
+            get {
+                return ResourceManager.GetString("TermsViolateTerms", resourceCulture);
             }
         }
         
@@ -984,6 +2113,15 @@ namespace loukupm.Langue {
         internal static string YouHaveAcount {
             get {
                 return ResourceManager.GetString("YouHaveAcount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sie haben bisher noch keinen Termin gebucht.
+        /// </summary>
+        internal static string younotapement {
+            get {
+                return ResourceManager.GetString("younotapement", resourceCulture);
             }
         }
     }

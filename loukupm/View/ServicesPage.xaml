@@ -144,7 +144,6 @@
         FontSize="16"
         CornerRadius="10"
         HorizontalOptions="End"
-        Clicked="Button_Clicked_3"                                                
         VerticalOptions="Start"
         Margin="0,5,5,0"
         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
