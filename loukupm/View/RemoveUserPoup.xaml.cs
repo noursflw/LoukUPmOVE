@@ -21,7 +21,7 @@ public partial class RemoveUserPopup : Popup
         Preferences.Clear();
 
         // „”Õ Œ—Ìÿ… «· ‰ﬁ·
-        NavigationService.ClearPageSourceMap();
+     //   NavigationService.ClearPageSourceMap();
 
         // Reset authentication check flag
         App.ResetAuthenticationCheck();

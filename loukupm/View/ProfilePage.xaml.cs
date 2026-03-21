@@ -99,7 +99,7 @@ public partial class ProfilePage : ContentPage
         SecureStorage.Remove("refresh_token");
         
         // مسح خريطة التنقل
-        NavigationService.ClearPageSourceMap();
+        //NavigationService.ClearPageSourceMap();
         
         // Reset authentication check flag to allow re-authentication
         App.ResetAuthenticationCheck();
@@ -114,7 +114,7 @@ public partial class ProfilePage : ContentPage
         OneSignalService.Logout();
         
         // مسح خريطة التنقل قبل حذف الحساب
-        NavigationService.ClearPageSourceMap();
+       // NavigationService.ClearPageSourceMap();
         
         // Reset authentication check flag
         App.ResetAuthenticationCheck();

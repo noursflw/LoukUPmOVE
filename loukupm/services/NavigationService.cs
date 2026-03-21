@@ -1,38 +1,37 @@
 namespace loukupm.Services;
 
 /// <summary>
-/// Safe Shell Navigation Service - Release mode compatible
-/// Replaces unsafe string-based navigation with type-safe routing
-/// 
-/// KEY DIFFERENCES FROM OLD VERSION:
-/// - Uses constants instead of string literals
-/// - Validates routes at startup
-/// - Works reliably in Release mode
-/// - Includes comprehensive error handling
-/// - Supports both TabBar and hidden pages
+/// Navigation Service — enforces two navigation rules:
+///
+///   RULE 1 — Tab Bar pages:
+///     Back button always navigates to HomePage (absolute route //HomePage).
+///     Switching between tabs never touches the back stack.
+///     Exception: pressing Back while already on HomePage exits the app (returns false).
+///
+///   RULE 2 — Subpages (pages outside the TabBar):
+///     Back button pops exactly one entry off the navigation stack ("..")
+///     regardless of which tab was the origin.
 /// </summary>
 public static class NavigationService
 {
-    // ============================================
-    // ROUTE CONSTANTS (Type-safe, not reflection)
-    // ============================================
-    
-    // Auth Pages (Hidden, outside TabBar)
+    // ?????????????????????????????????????????????
+    // ROUTE CONSTANTS
+    // ?????????????????????????????????????????????
+
+    // Auth pages (hidden, outside TabBar)
     public const string ROUTE_MAIN_PAGE = "MainPage";
     public const string ROUTE_LOGIN = "LoginPage";
     public const string ROUTE_SIGNIN = "SinginPage";
-    
-    // TabBar Pages (Inside TabBar)
+
+    // TabBar pages
     public const string ROUTE_HOME = "HomePage";
     public const string ROUTE_SERVICES = "ServicesPage";
     public const string ROUTE_BOOKING = "BookingPage";
     public const string ROUTE_PROFILE = "ProfilePage";
-    
-    // Hidden Pages (Outside TabBar)
+
+    // Subpages (outside TabBar — push onto the stack)
     public const string ROUTE_TERM_BOOKING = "TerminbuchenPage";
     public const string ROUTE_PAYMENT = "Paymentgetway";
-    
-    // Terms & Policy (Hidden, outside TabBar)
     public const string ROUTE_POLICY_PRIVACY = "PolicyandPrivacyPage";
     public const string ROUTE_REST_PASSWORD = "RestPassword";
     public const string ROUTE_TERMS_CONDITIONS = "TermsAndConditions";
@@ -41,8 +40,12 @@ public static class NavigationService
     public const string ROUTE_ABOUT_US = "AboutUS";
     public const string ROUTE_NOTIFICATION = "NotifictionPage";
     public const string ROUTE_SETTING = "SettingPage";
-    
-    // TabBar Internal Routes (not navigated directly)
+
+    // ?????????????????????????????????????????????
+    // SETS
+    // ?????????????????????????????????????????????
+
+    /// <summary>All four TabBar pages.</summary>
     private static readonly HashSet<string> TabBarPages = new()
     {
         ROUTE_HOME,
@@ -50,248 +53,147 @@ public static class NavigationService
         ROUTE_BOOKING,
         ROUTE_PROFILE
     };
-    
-    // All valid routes for validation
+
     private static readonly HashSet<string> AllValidRoutes = new()
     {
-        ROUTE_MAIN_PAGE,
-        ROUTE_LOGIN,
-        ROUTE_SIGNIN,
-        ROUTE_HOME,
-        ROUTE_SERVICES,
-        ROUTE_BOOKING,
-        ROUTE_PROFILE,
-        ROUTE_TERM_BOOKING,
-        ROUTE_PAYMENT,
-        ROUTE_POLICY_PRIVACY,
-        ROUTE_REST_PASSWORD,
-        ROUTE_TERMS_CONDITIONS,
-        ROUTE_EDIT_USER,
-        ROUTE_EDIT_PASSWORD,
-        ROUTE_ABOUT_US,
-        ROUTE_NOTIFICATION,
-        ROUTE_SETTING
+        ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN,
+        ROUTE_HOME, ROUTE_SERVICES, ROUTE_BOOKING, ROUTE_PROFILE,
+        ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
+        ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
+        ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD,
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION, ROUTE_SETTING
     };
 
-    /// <summary>
-    /// Back navigation mapping - which page to go back to from each page
-    /// </summary>
-    private static readonly Dictionary<string, string> BackNavigationMap = new()
-    {
-        // Auth flow
-        [ROUTE_SIGNIN] = ROUTE_LOGIN,
-        [ROUTE_POLICY_PRIVACY] = ROUTE_LOGIN,
-        [ROUTE_REST_PASSWORD] = ROUTE_LOGIN,
-        [ROUTE_TERMS_CONDITIONS] = ROUTE_LOGIN,
-        
-        // Main app flow
-        [ROUTE_SERVICES] = ROUTE_HOME,
-        [ROUTE_BOOKING] = ROUTE_HOME,
-        [ROUTE_ABOUT_US] = ROUTE_HOME,
-        [ROUTE_NOTIFICATION] = ROUTE_HOME,
-        
-        // Profile flow
-        [ROUTE_EDIT_USER] = ROUTE_PROFILE,
-        [ROUTE_EDIT_PASSWORD] = ROUTE_PROFILE,
-        [ROUTE_SETTING] = ROUTE_PROFILE,
-    };
+    // ?????????????????????????????????????????????
+    // PUBLIC HELPERS
+    // ?????????????????????????????????????????????
+
+    /// <summary>Returns true if <paramref name="route"/> is one of the four TabBar pages.</summary>
+    public static bool IsTabBarPage(string route) => TabBarPages.Contains(route);
+
+    // ?????????????????????????????????????????????
+    // NAVIGATION
+    // ?????????????????????????????????????????????
 
     /// <summary>
-    /// Track navigation source for dynamic back navigation
-    /// Useful when a page can be accessed from multiple sources
-    /// </summary>
-    private static readonly Dictionary<string, string> PageSourceMap = new();
-
-    /// <summary>
-    /// Validate that all routes are properly registered (call at app startup)
-    /// </summary>
-    public static bool ValidateRoutes()
-    {
-        try
-        {
-            // Check if Shell.Current is available
-            if (Shell.Current == null)
-            {
-                Console.WriteLine("?? [Navigation] Shell.Current is null - validation skipped");
-                return false;
-            }
-
-            Console.WriteLine("? [Navigation] Route validation enabled (Release mode safe)");
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"?? [Navigation] Validation warning: {ex.Message}");
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Navigate to a TabBar page (absolute routing with //)
-    /// Use for: HomePage, ServicesPage, BookingPage, ProfilePage
+    /// Navigate to a TabBar page using an absolute route (//Page).
+    /// Replaces the navigation stack root — tab switching never adds stack entries.
     /// </summary>
     public static async Task NavigateToTabBarPage(string route)
     {
-        if (!ValidateRoute(route))
+        if (!ValidateRoute(route) || !TabBarPages.Contains(route))
             return;
 
         try
         {
-            if (!TabBarPages.Contains(route))
-            {
-                Console.WriteLine($"?? [Navigation] {route} is not a TabBar page. Use NavigateToPage() instead.");
-                return;
-            }
-
-            Console.WriteLine($"?? [Navigation] Navigating to TabBar page: {route}");
             await Shell.Current.GoToAsync($"//{route}", animate: true);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"? [Navigation] Error navigating to {route}: {ex.Message}");
+            Console.WriteLine($"[Navigation] Error navigating to tab {route}: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Navigate to a hidden page (relative routing)
-    /// Use for: PolicyandPrivacyPage, TermsAndConditions, RestPassword, etc.
+    /// Navigate to a subpage using a relative route (pushes onto the stack).
     /// </summary>
     public static async Task NavigateToPage(string route)
     {
-        if (!ValidateRoute(route))
+        if (!ValidateRoute(route) || TabBarPages.Contains(route))
             return;
 
         try
         {
-            if (TabBarPages.Contains(route))
-            {
-                Console.WriteLine($"?? [Navigation] {route} is a TabBar page. Use NavigateToTabBarPage() instead.");
-                return;
-            }
-
-            Console.WriteLine($"?? [Navigation] Navigating to page: {route}");
             await Shell.Current.GoToAsync(route, animate: true);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"? [Navigation] Error navigating to {route}: {ex.Message}");
+            Console.WriteLine($"[Navigation] Error navigating to {route}: {ex.Message}");
         }
     }
 
-    /// <summary>
-    /// Register the source page for a target page (for dynamic back navigation)
-    /// Use when a page can be accessed from multiple sources
-    /// </summary>
-    public static void RegisterPageSource(string targetPage, string sourcePage)
-    {
-        if (!ValidateRoute(targetPage) || !ValidateRoute(sourcePage))
-            return;
-
-        PageSourceMap[targetPage] = sourcePage;
-        Console.WriteLine($"?? [Navigation] Registered: {targetPage} came from {sourcePage}");
-    }
+    // ?????????????????????????????????????????????
+    // BACK BUTTON
+    // ?????????????????????????????????????????????
 
     /// <summary>
-    /// Navigate to a page and register its source
-    /// Useful for pages that need intelligent back navigation
+    /// Central back-button handler.  Call from both the system back button override
+    /// (AppShell.OnBackButtonPressed) and any in-app back button/gesture.
+    ///
+    ///   • TabBar page + not Home  ?  navigate to //HomePage
+    ///   • TabBar page + Home      ?  return false  (let system exit the app)
+    ///   • Subpage                 ?  pop one level (..)
     /// </summary>
-    public static async Task NavigateToWithSource(string targetPage, string sourcePage)
-    {
-        RegisterPageSource(targetPage, sourcePage);
-        
-        if (TabBarPages.Contains(targetPage))
-            await NavigateToTabBarPage(targetPage);
-        else
-            await NavigateToPage(targetPage);
-    }
-
-    /// <summary>
-    /// Get the appropriate back navigation route from current page
-    /// First checks dynamic mapping, then falls back to default map
-    /// </summary>
-    public static string GetBackNavigationRoute(string currentPage)
-    {
-        // Check if there's a recorded source
-        if (PageSourceMap.TryGetValue(currentPage, out var source))
-        {
-            PageSourceMap.Remove(currentPage); // Use once, then remove
-            
-            if (TabBarPages.Contains(source))
-                return $"//{source}";
-            return source;
-        }
-
-        // Fall back to default mapping
-        if (BackNavigationMap.TryGetValue(currentPage, out var defaultBack))
-        {
-            if (TabBarPages.Contains(defaultBack))
-                return $"//{defaultBack}";
-            return defaultBack;
-        }
-
-        // Last resort: go to ProfilePage (default for authenticated state)
-        Console.WriteLine($"?? [Navigation] No back route found for {currentPage}, using default");
-        return $"//{ROUTE_PROFILE}";
-    }
-
-    /// <summary>
-    /// Handle back button press - returns true if handled, false to use default
-    /// </summary>
+    /// <param name="currentPage">The simple route name of the visible page (e.g. "ServicesPage").</param>
+    /// <returns>true if the event was handled; false to let the OS handle it (exit).</returns>
     public static async Task<bool> HandleBackButton(string currentPage)
     {
+        if (string.IsNullOrWhiteSpace(currentPage))
+            return false;
+
         try
         {
-            if (string.IsNullOrWhiteSpace(currentPage))
+            if (TabBarPages.Contains(currentPage))
             {
-                Console.WriteLine($"?? [Navigation] Back button: current page is null/empty");
-                return false;
+                // Already on Home — do nothing, let the OS exit the app
+                if (currentPage == ROUTE_HOME)
+                    return false;
+
+                // Any other tab ? go to Home
+                await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: true);
+                return true;
             }
 
-            var backRoute = GetBackNavigationRoute(currentPage);
-            Console.WriteLine($"?? [Navigation] Back from {currentPage} to {backRoute}");
-            
-            await Shell.Current.GoToAsync(backRoute, animate: true);
+            // Subpage — pop one entry off the stack
+            await Shell.Current.GoToAsync("..", animate: true);
             return true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"? [Navigation] Back button failed: {ex.Message}");
+            Console.WriteLine($"[Navigation] Back button error from {currentPage}: {ex.Message}");
             return false;
         }
     }
 
-    /// <summary>
-    /// Clear navigation source map (call on logout)
-    /// </summary>
-    public static void ClearPageSourceMap()
+    // ?????????????????????????????????????????????
+    // AUTH FLOWS
+    // ?????????????????????????????????????????????
+
+    /// <summary>Navigate to LoginPage and clear the entire stack (logout).</summary>
+    public static async Task NavigateToLoginAndClear()
     {
-        PageSourceMap.Clear();
-        Console.WriteLine("???  [Navigation] Page source map cleared");
+        try
+        {
+            await Shell.Current.GoToAsync("LoginPage", animate: false);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Logout navigation error: {ex.Message}");
+            throw;
+        }
     }
 
-    /// <summary>
-    /// Validate a route exists in the allowed routes set
-    /// </summary>
-    private static bool ValidateRoute(string route)
+    /// <summary>Navigate to HomePage (TabBar) and clear the entire stack (after login).</summary>
+    public static async Task NavigateToHomeAndClear()
     {
-        if (string.IsNullOrWhiteSpace(route))
+        try
         {
-            Console.WriteLine("? [Navigation] Route is null or empty");
-            return false;
+            await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: false);
         }
-
-        if (!AllValidRoutes.Contains(route))
+        catch (Exception ex)
         {
-            Console.WriteLine($"? [Navigation] INVALID ROUTE: '{route}' - Not registered in AppShell.xaml");
-            Console.WriteLine($"   Valid routes: {string.Join(", ", AllValidRoutes)}");
-            return false;
+            Console.WriteLine($"[Navigation] Login navigation error: {ex.Message}");
+            throw;
         }
-
-        return true;
     }
 
+    // ?????????????????????????????????????????????
+    // DIAGNOSTICS
+    // ?????????????????????????????????????????????
+
     /// <summary>
-    /// Get current navigation state (for debugging)
+    /// Returns the raw Shell location string (e.g. "//HomePage/NotifictionPage").
+    /// Use <see cref="GetCurrentPageName"/> to get just the last segment.
     /// </summary>
     public static string GetCurrentRoute()
     {
@@ -301,15 +203,46 @@ public static class NavigationService
         }
         catch
         {
-            return "Error retrieving route";
+            return "Unknown";
         }
     }
 
     /// <summary>
-    /// Log current navigation state
+    /// Extracts just the last path segment from the current route.
+    /// e.g. "//HomePage/NotifictionPage" ? "NotifictionPage"
     /// </summary>
-    public static void LogNavigationState()
+    public static string GetCurrentPageName()
     {
-        Console.WriteLine($"?? [Navigation] Current Route: {GetCurrentRoute()}");
+        var route = GetCurrentRoute();
+        var segments = route.TrimStart('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+        return segments.LastOrDefault() ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Validates all routes are registered (call at app startup).
+    /// </summary>
+    public static bool ValidateRoutes()
+    {
+        if (Shell.Current == null)
+        {
+            Console.WriteLine("[Navigation] Shell.Current is null — validation skipped");
+            return false;
+        }
+        Console.WriteLine("[Navigation] Route validation OK");
+        return true;
+    }
+
+    // ?????????????????????????????????????????????
+    // PRIVATE
+    // ?????????????????????????????????????????????
+
+    private static bool ValidateRoute(string route)
+    {
+        if (string.IsNullOrWhiteSpace(route) || !AllValidRoutes.Contains(route))
+        {
+            Console.WriteLine($"[Navigation] Invalid route: '{route}'");
+            return false;
+        }
+        return true;
     }
 }
