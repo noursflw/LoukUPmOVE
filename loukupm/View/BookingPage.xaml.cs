@@ -10,7 +10,7 @@ public partial class BookingPage : ContentPage
 	public BookingPage()
 	{
 		InitializeComponent();
-        this.BindingContext = new AppViewModel();
+		this.BindingContext = AppViewModel.Instance;
 	}
 
     private void Button_Clicked(object sender, EventArgs e)

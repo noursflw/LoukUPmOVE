@@ -1,0 +1,80 @@
+// 🖼️ CHECKLIST: Image Loading في .NET MAUI
+
+/*
+ ✅ CHECKLIST لحل مشاكل الصور
+ ================================
+
+ [ ] 1. إضافة ImageUriConverter
+    - تم إنشاء: loukupm/Converter/ImageUriConverter.cs
+    - يعالج: null, URL encoding, fallback images
+
+ [ ] 2. تحديث ApiServices
+    - تم إضافة: HttpClientHandler محسّن
+    - تم إضافة: SSL validation callback
+    - تم إضافة: Timeout (30 ثانية)
+    - تم إضافة: User-Agent header
+
+ [ ] 3. إنشاء ImageLoaderService
+    - تم إنشاء: loukupm/services/ImageLoaderService.cs
+    - يوفر: ValidateImageUrlAsync, ProcessImageUrl
+
+ [ ] 4. تحديث Appointment.cs
+    - تم إضافة: معالجة null في ImgePerson property
+    - تم إضافة: URL encoding للحروف الخاصة
+
+ [ ] 5. تحديث BookingPage.xaml
+    - تم إضافة: ImageUriConverter resource
+    - تم تطبيق: Converter على Image Source
+    - تم إضافة: IsOpaque="True"
+
+ [ ] 6. تحديث ViewModel Logging
+    - تم إضافة: Logging في LoadWorkTeamsAsync
+    - تم إضافة: معلومات الـ Image URLs
+
+ [ ] 7. إضافة Fallback Images
+    - تأكد من وجود: profile_placeholder.png في Resources/Images
+
+ [ ] 8. التحقق من البناء
+    - Build successful ✅
+
+ ================================
+
+ 🧪 اختبار التطبيق:
+
+ [ ] قم بتشغيل التطبيق
+ [ ] تحقق من Console Output للـ Image URLs
+ [ ] تأكد من ظهور الصور
+ [ ] تأكد من ظهور fallback عند الحاجة
+ [ ] جرّب إيقاف الشبكة والتحقق من السلوك
+
+ ================================
+
+ 🔍 معلومات التصحيح:
+
+ - Console.WriteLine يظهر معلومات التحميل
+ - ابحث عن: "✅", "❌", "🖼️", "📷"
+ - تحقق من الـ URLs الفعلية المُرسلة
+
+ ================================
+*/
+
+// مثال على الـ Debug Output المتوقع:
+/*
+📡 Loading work teams...
+👤 Member: Jasmine Lee
+   📷 Image URL: https://test.center-yazan.com/storage/avatars/6.jpg
+   📷 ImageSafe: https://test.center-yazan.com/storage/avatars/6.jpg
+✅ Loaded 1 work team members
+
+// عند عرض الحجوزات:
+🔄 LoadBookingsAsync started. currentUser: 1
+📡 Fetching appointments for user 1...
+📦 Received 1 appointments from API
+✅ Added appointment: Mar 28, 2026 - Jasmine Lee
+✅ Loaded 1 appointments. HasNoAppointments: False
+
+// عند تحميل الصورة:
+✅ Image URL converted: https://test.center-yazan.com/storage/avatars/6.jpg
+// أو في حالة الحروف الخاصة:
+✅ URL encoded: https://test.center-yazan.com/storage/services/images/1/Men%27s_Haircut_1.png
+*/

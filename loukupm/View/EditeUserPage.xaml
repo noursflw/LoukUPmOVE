@@ -7,8 +7,14 @@
              FlowDirection="LeftToRight"
                 xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:converters="clr-namespace:loukupm.Converter"
              BackgroundColor="#252525"
              Title="EditeUserPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <VerticalStackLayout>
         <Grid ColumnDefinitions="*,Auto" HeightRequest="180" BackgroundColor="#202020">
 
@@ -83,8 +89,11 @@
                             FontFamily="georgia-bold"
                             HorizontalOptions="Start"
                             Clicked="Button_Clicked_1"
+                            IsEnabled="{Binding IsLoadUser, Converter={StaticResource InverseBoolConverter}}"
                             VerticalOptions="Center"/>
-                    <Button Command="{Binding UpdateUserCommand}"  Text="{Loc:Translate Name= SaveChangFoeMyAccount}" FontSize="22" HeightRequest="50" FontFamily="georgia-bold" Margin="25" TextColor="Black" />
+                    <Button Command="{Binding UpdateUserCommand}" 
+                            IsEnabled="{Binding IsLoadUser, Converter={StaticResource InverseBoolConverter}}"
+                            Text="{Loc:Translate Name= SaveChangFoeMyAccount}" FontSize="22" HeightRequest="50" FontFamily="georgia-bold" Margin="25" TextColor="Black" />
                     
                     <!-- زر بنفس الثيم -->
                   

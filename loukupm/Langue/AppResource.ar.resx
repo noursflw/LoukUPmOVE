@@ -808,4 +808,7 @@
   <data name="younotapement" xml:space="preserve">
     <value>لم تقم بحجز أي موعد حتى الآن</value>
   </data>
+  <data name="CancelBooking" xml:space="preserve">
+    <value>إلغاء الحجز</value>
+  </data>
 </root>

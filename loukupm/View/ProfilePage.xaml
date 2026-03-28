@@ -42,7 +42,7 @@
                             Padding="0"
                             HorizontalOptions="Center"
                             VerticalOptions="Center">
-                            <Image Source="adienst.png"
+                            <Image Source="{Binding Avatar}"
                           HeightRequest="125"
                            WidthRequest="125"
                            Aspect="AspectFill">

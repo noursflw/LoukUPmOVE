@@ -7,8 +7,7 @@
                FlowDirection="LeftToRight"
               xmlns:loc="clr-namespace:loukupm.Langue"
                BackgroundColor="#202020"
-              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-          
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
               BackgroundImageSource="baackgroundpage.png"
              Title="LoginPage">
     <ScrollView>

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,33 +15,50 @@ namespace loukupm.services
 {
     public class ApiServices
     {
-
         private readonly HttpClient _httpClient;
+
         public ApiServices()
         {
-            _httpClient = new HttpClient();
+            // ✅ إنشاء HttpClientHandler محسّن مع معالجة SSL
+            var handler = new HttpClientHandler();
 
+            #if DEBUG
+            // في بيئة التطوير: قبول جميع الشهادات (غير آمن - للاختبار فقط)
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+            {
+                Console.WriteLine($"🔒 Certificate validation: {errors}");
+                return true; // قبول الشهادة حتى لو كانت غير موثوقة
+            };
+            #else
+            // في الإنتاج: استخدام التحقق الطبيعي
+            handler.ServerCertificateCustomValidationCallback = null;
+            #endif
 
+            // تعطيل الضغط لتجنب مشاكل التوافق
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            _httpClient = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(30) // ✅ إضافة timeout
+            };
+
+            // ✅ إضافة User-Agent
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "MAUI-App/1.0");
         }
 
         private async Task SetAuthorizationHeaderAsync()
         {
-          
             string? token = await SecureStorage.GetAsync("auth_token");
-           
+
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
-
             }
             else
             {
-               
                 _httpClient.DefaultRequestHeaders.Authorization = null;
             }
-            
-
         }
 
 
@@ -95,19 +112,57 @@ namespace loukupm.services
         }
 
 
-        public async Task<List<Notifiction>> GetNotifictionsAsync()
+        public async Task<(List<Notification> Notifications, int UnreadCount, bool HasMore)> GetNotificationsAsync(string cursor = null, int perPage = 15)
         {
-            await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.GetAsync("https://api.example.com/notifications");
-            if (response.IsSuccessStatusCode)
+            try
             {
+                await SetAuthorizationHeaderAsync();
+
+                // Build URL with pagination support
+                string url = $"https://test.center-yazan.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all";
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Notifications API error: {response.StatusCode}");
+                    return (new List<Notification>(), 0, false);
+                }
+
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Notifiction>>(json);
+                Console.WriteLine($"📬 Notifications JSON response: {json.Substring(0, Math.Min(200, json.Length))}...");
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var apiResponse = JsonSerializer.Deserialize<Model.ApiResponses.NotificationApiResponse>(json, options);
+
+                if (apiResponse?.Data == null)
+                {
+                    Console.WriteLine("⚠️ No notification data in response");
+                    return (new List<Notification>(), 0, false);
+                }
+
+                Console.WriteLine($"✅ Loaded {apiResponse.Data.Count} notifications, Unread: {apiResponse.UnreadCount}, HasMore: {apiResponse.Pagination?.HasMorePages}");
+
+                return (apiResponse.Data, apiResponse.UnreadCount, apiResponse.Pagination?.HasMorePages ?? false);
             }
-            return new List<Notifiction>();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception loading notifications: {ex.Message}");
+                return (new List<Notification>(), 0, false);
+            }
+        }
+
+        /// <summary>
+        /// Legacy method for backward compatibility - returns only notification list
+        /// </summary>
+        [Obsolete("Use GetNotificationsAsync instead for pagination support")]
+        public async Task<List<Notification>> GetNotificationsLegacyAsync()
+        {
+            var (notifications, _, _) = await GetNotificationsAsync();
+            return notifications;
         }
         
-        public async Task<List<Appointment>> GetUserAppointmentsAsync(User user, string status = "ALL")
+        public async Task<List<Appointment>> GetUserAppointmentsAsync(User user, string status = "PENDING")
         {
             await SetAuthorizationHeaderAsync();
 
@@ -117,21 +172,42 @@ namespace loukupm.services
             // رابط الطلب مع user_id و status فقط
             string url = $"https://test.center-yazan.com/api/appointments?user_id={user.Id}&status={status}";
 
-            var response = await _httpClient.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.GetAsync(url);
 
-                var result = JsonSerializer.Deserialize<AppointmentResponse>(json, new JsonSerializerOptions
+                if (response.IsSuccessStatusCode)
                 {
-                    PropertyNameCaseInsensitive = true
-                });
+                    var json = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"📋 Appointments JSON: {json}");
 
-                return result?.Data?.Data ?? new List<Appointment>();
+                    var result = JsonSerializer.Deserialize<AppointmentResponse>(json, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    var appointments = result?.Data?.Data ?? new List<Appointment>();
+                    Console.WriteLine($"✅ Loaded {appointments.Count} appointments");
+
+                    foreach (var apt in appointments)
+                    {
+                        Console.WriteLine($"  - ID: {apt.Id}, Date: {apt.FormattedDate}, Provider: {apt.Provider?.FullName}");
+                    }
+
+                    return appointments;
+                }
+                else
+                {
+                    Console.WriteLine($"❌ API error: {response.StatusCode}");
+                    return new List<Appointment>();
+                }
             }
-
-            return new List<Appointment>();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception loading appointments: {ex.Message}");
+                Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                return new List<Appointment>();
+            }
         }
         public async Task<User?> GetUserAsync()
         {
@@ -471,41 +547,222 @@ namespace loukupm.services
         {
             public string Url { get; set; } = string.Empty;
         }
-      
-        /// عدل هون منشان تزبط 
-        public async Task<bool> UpdateUserAsync(string name, string avatarBase64 = null)
+
+        /// <summary>
+        /// Update user profile: first_name and avatar via MultipartFormDataContent
+        /// Returns response object with success status, message, and profile data
+        /// </summary>
+        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath)
         {
-            await SetAuthorizationHeaderAsync();
+            var response = new ProfileUpdateApiResponse();
 
             try
             {
-                var userData = new Dictionary<string, string>();
+                // ✅ Set authorization header
+                await SetAuthorizationHeaderAsync();
 
-                if (!string.IsNullOrWhiteSpace(name))
-                    userData.Add("name", name);
+                // Validate token
+                string? token = await SecureStorage.GetAsync("auth_token");
+                if (string.IsNullOrEmpty(token))
+                {
+                    Console.WriteLine("❌ Authorization: No token found");
+                    response.Success = false;
+                    response.Message = "خطأ في المصادقة - لم يتم العثور على token";
+                    return response;
+                }
+                Console.WriteLine($"✅ Authorization: Bearer token present (length: {token.Length})");
 
-                
+                // ✅ Build MultipartFormDataContent
+                using (var form = new MultipartFormDataContent())
+                {
+                    // Add first_name field (only if provided)
+                    if (!string.IsNullOrWhiteSpace(firstName))
+                    {
+                        form.Add(new StringContent(firstName.Trim()), "first_name");
+                        Console.WriteLine($"📋 Field added: first_name = '{firstName.Trim()}'");
+                    }
 
-                if (!string.IsNullOrWhiteSpace(avatarBase64))
-                    userData.Add("avatar", avatarBase64);
+                    // Add avatar file (only if image path is valid)
+                    if (!string.IsNullOrWhiteSpace(avatarImagePath) && File.Exists(avatarImagePath))
+                    {
+                        try
+                        {
+                            // ✅ Read file as byte array (solves stream disposal issue)
+                            byte[] fileBytes = await File.ReadAllBytesAsync(avatarImagePath);
+                            var fileName = Path.GetFileName(avatarImagePath);
 
-                var content = new FormUrlEncodedContent(userData);
+                            // Create ByteArrayContent from bytes (won't dispose while sending)
+                            var fileContent = new ByteArrayContent(fileBytes);
 
-                var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/profile",
-                    content
-                );
+                            // Detect MIME type based on file extension
+                            string mimeType = GetMimeType(avatarImagePath);
+                            fileContent.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
 
-                return response.IsSuccessStatusCode;
+                            form.Add(fileContent, "Avatar", fileName);
+                            Console.WriteLine($"📋 Field added: Avatar = file '{fileName}' (size: {fileBytes.Length} bytes, content-type: {mimeType})");
+                        }
+                        catch (Exception fileEx)
+                        {
+                            Console.WriteLine($"❌ Error reading avatar file: {fileEx.Message}");
+                            response.Success = false;
+                            response.Message = $"خطأ في قراءة الصورة: {fileEx.Message}";
+                            return response;
+                        }
+                    }
+                    else if (!string.IsNullOrWhiteSpace(avatarImagePath))
+                    {
+                        Console.WriteLine($"⚠️ Avatar file not found at path: {avatarImagePath}");
+                    }
+
+                    // ✅ Log request details
+                    Console.WriteLine("📤 Sending update request to API:");
+                    Console.WriteLine($"   URL: https://test.center-yazan.com/api/profile");
+                    Console.WriteLine($"   Method: POST");
+                    Console.WriteLine($"   Content-Type: multipart/form-data");
+                    Console.WriteLine($"   Authorization: Bearer [token]");
+                    Console.WriteLine($"   Fields being sent: {(string.IsNullOrWhiteSpace(firstName) ? "" : "first_name ")}{(string.IsNullOrWhiteSpace(avatarImagePath) ? "" : "Avatar")}");
+
+                    // ✅ Send request
+                    var httpResponse = await _httpClient.PostAsync(
+                        "https://test.center-yazan.com/api/profile",
+                        form
+                    );
+
+                    // ✅ Log response
+                    Console.WriteLine($"📊 Response Status: {httpResponse.StatusCode}");
+                    string responseBody = await httpResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"📄 Response Body: {responseBody}");
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        // ✅ Try to deserialize JSON response
+                        try
+                        {
+                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                            var parsedResponse = JsonSerializer.Deserialize<ProfileUpdateApiResponse>(responseBody, options);
+
+                            if (parsedResponse != null)
+                            {
+                                response = parsedResponse;
+                                response.Success = parsedResponse.Success ?? true; // Assume success if not explicitly set
+                                Console.WriteLine($"✅ Response parsed successfully");
+                                return response;
+                            }
+                            else
+                            {
+                                // Parsed but result is null
+                                Console.WriteLine($"⚠️ Response parsed as null");
+                                response.Success = true;
+                                response.Message = "تم التحديث (استجابة فارغة)";
+                                return response;
+                            }
+                        }
+                        catch (JsonException jsonEx)
+                        {
+                            // JSON parsing failed but HTTP was successful
+                            Console.WriteLine($"⚠️ JSON parsing failed: {jsonEx.Message}");
+                            response.Success = true;
+                            response.Message = "تم التحديث (لم نتمكن من قراءة الاستجابة)";
+                            return response;
+                        }
+                    }
+                    else if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        // 401: Unauthorized
+                        Console.WriteLine("❌ Unauthorized (401) - Token invalid or expired");
+                        response.Success = false;
+                        response.Message = "جلسة المستخدم انتهت، يرجى تسجيل الدخول مجدداً";
+                        return response;
+                    }
+                    else if (httpResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        // 400: Bad Request
+                        Console.WriteLine($"❌ Bad Request (400): {responseBody}");
+                        response.Success = false;
+                        response.Message = "البيانات المدخلة غير صحيحة";
+                        return response;
+                    }
+                    else if (httpResponse.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+                    {
+                        // 422: Unprocessable Entity
+                        Console.WriteLine($"❌ Unprocessable Entity (422): {responseBody}");
+                        response.Success = false;
+                        response.Message = "فشل التحقق من البيانات";
+                        return response;
+                    }
+                    else
+                    {
+                        // Other HTTP errors
+                        Console.WriteLine($"❌ API Error: {httpResponse.StatusCode} - {responseBody}");
+                        response.Success = false;
+                        response.Message = $"خطأ: {(int)httpResponse.StatusCode}";
+                        return response;
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                Console.WriteLine($"❌ Exception: {ex.Message}");
+                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                response.Success = false;
+                response.Message = $"خطأ: {ex.Message}";
+                return response;
             }
         }
 
+        /// <summary>
+        /// Detect MIME type based on file extension
+        /// </summary>
+        private string GetMimeType(string filePath)
+        {
+            var extension = Path.GetExtension(filePath).ToLower();
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".bmp" => "image/bmp",
+                ".webp" => "image/webp",
+                _ => "application/octet-stream"
+            };
+        }
 
-    }
+            /// <summary>
+            /// Cancel a booking/appointment by ID
+            /// </summary>
+            public async Task<bool> CancelBookingAsync(int bookingId)
+            {
+                await SetAuthorizationHeaderAsync();
+
+                try
+                {
+                    string url = $"https://test.center-yazan.com/api/bookings/{bookingId}/cancel";
+
+                    // POST request without body (some APIs require this for cancel operations)
+                    var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+                    var response = await _httpClient.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"✅ Booking {bookingId} cancelled successfully");
+                        return true;
+                    }
+                    else
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine($"❌ Cancel booking failed: {response.StatusCode} - {errorContent}");
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Exception while cancelling booking {bookingId}: {ex.Message}");
+                    Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                    return false;
+                }
+            }
+
+        }
 
 
 
@@ -517,20 +774,33 @@ namespace loukupm.services
         public string CancelUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }
+
     public class ServiesResponse
     {
         public List<Servies> Data { get; set; }
         public List<Servies> Servies { get; set; }
     }
+
     public class CategoriesResponse
     {
         public List<string> Categories { get; set; }
         public string Message { get; set; } = string.Empty;
         public bool Success { get; set; }
     }
+
     public class CreatePaymentIntentResponse
     {
         public string ClientSecret { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Response model for profile update API
+    /// </summary>
+    public class ProfileUpdateApiResponse
+    {
+        public bool? Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public object Data { get; set; }
     }
 }
 

@@ -24,6 +24,10 @@
                   ContentTemplate="{DataTemplate view:SinginPage}"
                   IsVisible="False" />
 
+    <ShellContent Route="NotifictionPage"
+                  ContentTemplate="{DataTemplate view:NotifictionPage}"
+                  IsVisible="False" />
+
     <!-- التاب بار الرئيسي -->
     <TabBar>
         <ShellContent

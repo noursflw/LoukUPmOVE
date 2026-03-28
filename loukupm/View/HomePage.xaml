@@ -150,27 +150,30 @@
 
                 </HorizontalStackLayout>
 
-                <CollectionView ItemsSource="{Binding WorkTeams}" ItemsLayout="HorizontalList" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
 
+                <CollectionView ItemsSource="{Binding FilteredServices}" ItemsLayout="HorizontalList" Margin="0,10,0,0">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame   BackgroundColor="#202020" BorderColor="#202020" Margin="6">
-                                <VerticalStackLayout  Margin="12">
-
-                                    <ff:CachedImage
-                        WidthRequest="70"
-                        HeightRequest="70"
-                        Aspect="AspectFill"
-                        Margin="0,0,0,20"                
-                        FadeAnimationEnabled="True"
-                        DownsampleToViewSize="True"
-                        LoadingPlaceholder="placeholder.png"
-                        ErrorPlaceholder="placeholder.png"
-                        Source="{Binding ImageSafe}" />
-                                    <!-- ملاحظة هنا -->
-
-
-                                    <Label Text="{Binding Name}" TextColor="#999999" />
+                            <Frame BackgroundColor="#202020" BorderColor="#202020"  Margin="6">
+                                <VerticalStackLayout Margin="12" Spacing="8">
+                                    <Frame BackgroundColor="#333333" 
+                                           WidthRequest="100" 
+                                           HeightRequest="100" 
+                                           CornerRadius="50"
+                                           Padding="0"
+                                           BorderColor="#333333"
+                                           HasShadow="False">
+                                        <ff:CachedImage
+                                            WidthRequest="100"
+                                            HeightRequest="100"
+                                            Aspect="AspectFill"
+                                            FadeAnimationEnabled="True"
+                                            DownsampleToViewSize="True"
+                                            BackgroundColor="#333333"
+                                            IsOpaque="False"
+                                            Source="{Binding ImageSafe}" />
+                                    </Frame>
+                                    <Label Text="{Binding NameServies}" TextColor="#999999" HorizontalOptions="Center" FontSize="12" LineBreakMode="TailTruncation" />
                                 </VerticalStackLayout>
                             </Frame>
                         </DataTemplate>

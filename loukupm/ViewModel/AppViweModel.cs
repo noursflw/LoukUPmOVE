@@ -53,7 +53,10 @@ namespace loukupm.ViewModel
 
         [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
         [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
-        [ObservableProperty] private ObservableCollection<Notifiction> notifications;
+        [ObservableProperty] private ObservableCollection<Notification> notifications = new();
+        [ObservableProperty] private int unreadNotificationCount = 0;
+        [ObservableProperty] private bool hasMoreNotifications = false;
+        [ObservableProperty] private string nextNotificationCursor = null;
         [ObservableProperty] private ObservableCollection<Booking> viewSrves;
         [ObservableProperty] private ObservableCollection<PolicyandPrivacyS> listpolicyandPrivacy = new();
 
@@ -78,6 +81,30 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private string searchTeamTerm = string.Empty;
 
+        /// <summary>
+        /// Reminder timer - minutes before appointment
+        /// </summary>
+        [ObservableProperty]
+        private string reminderMinutes = "60";
+
+        /// <summary>
+        /// Reminder time picker
+        /// </summary>
+        [ObservableProperty]
+        private TimeSpan reminderTime = new TimeSpan(1, 0, 0);
+
+        /// <summary>
+        /// Selected image path for user profile update
+        /// </summary>
+        [ObservableProperty]
+        private string selectedImagePath = string.Empty;
+
+        /// <summary>
+        /// Flag to track if a booking is being canceled
+        /// </summary>
+        [ObservableProperty]
+        private bool isCancelingBooking = false;
+
         private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel());
         public static AppViewModel Instance => _instance.Value;
 
@@ -86,6 +113,8 @@ namespace loukupm.ViewModel
         private string _token;
         public ICommand SelectServiceButtonCommand { get; }
         private readonly HttpClient _httpClient;
+        public IAsyncRelayCommand EnableReminderTimerCommand { get; private set; }
+        public IAsyncRelayCommand<int> CancelBookingCommand { get; private set; }
         public AppViewModel()
         {
             LoadData();
@@ -101,6 +130,8 @@ namespace loukupm.ViewModel
             PostBookingCommand = new AsyncRelayCommand(PostBookingAsync);
             UpdateUserCommand = new Command(async () => await UpdateUserInfo());
             ChangePasswordUserCommand = new Command(async () => await ChangeUserPasswordAsync());
+            EnableReminderTimerCommand = new AsyncRelayCommand(EnableReminderTimerAsync);
+            CancelBookingCommand = new AsyncRelayCommand<int>(CancelBookingAsync);
 
             SelectServiceButtonCommand = new Command<Servies>(async service =>
             {
@@ -327,16 +358,67 @@ namespace loukupm.ViewModel
         {
             try
             {
-                var data = await _apiServices.GetNotifictionsAsync();
-                Notifications = new ObservableCollection<Notifiction>(data);
+                IsLoadNotifiction = true;
+
+                // Load first page of notifications
+                var (notificationList, unreadCount, hasMore) = await _apiServices.GetNotificationsAsync(cursor: null, perPage: 15);
+
+                Notifications.Clear();
+
+                if (notificationList != null && notificationList.Count > 0)
+                {
+                    foreach (var notification in notificationList)
+                    {
+                        Notifications.Add(notification);
+                    }
+                }
+
+                UnreadNotificationCount = unreadCount;
+                HasMoreNotifications = hasMore;
+                NextNotificationCursor = null; // Reset cursor for first load
+
+                Console.WriteLine($"✅ Notifications loaded: {Notifications.Count} items, {UnreadNotificationCount} unread");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading notifications: {ex.Message}");
+                Console.WriteLine($"❌ Error loading notifications: {ex.Message}");
+                Notifications.Clear();
             }
             finally
             {
                 IsLoadNotifiction = false;
+            }
+        }
+
+        /// <summary>
+        /// Load next page of notifications for pagination
+        /// </summary>
+        public async Task LoadMoreNotificationsAsync()
+        {
+            if (!HasMoreNotifications || string.IsNullOrEmpty(NextNotificationCursor))
+            {
+                Console.WriteLine("⚠️ No more notifications to load");
+                return;
+            }
+
+            try
+            {
+                var (notificationList, _, hasMore) = await _apiServices.GetNotificationsAsync(cursor: NextNotificationCursor, perPage: 15);
+
+                if (notificationList != null && notificationList.Count > 0)
+                {
+                    foreach (var notification in notificationList)
+                    {
+                        Notifications.Add(notification);
+                    }
+                }
+
+                HasMoreNotifications = hasMore;
+                Console.WriteLine($"✅ Loaded {notificationList.Count} more notifications");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error loading more notifications: {ex.Message}");
             }
         }
 
@@ -776,7 +858,7 @@ namespace loukupm.ViewModel
                     ClearBookingData();
 
                     // ✅ الانتقال للصفحة التالية (الدفع)
-                    await Shell.Current.GoToAsync(nameof(Paymentgetway));
+                    await Shell.Current.GoToAsync(nameof(BookingPage));
                 }
                 else
                 {
@@ -846,6 +928,12 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string? imageUser;
         [ObservableProperty] private string email;
         [ObservableProperty] private string fullName;
+
+        /// <summary>
+        /// User's first name for profile update
+        /// </summary>
+        [ObservableProperty] private string userFirstName = string.Empty;
+
         public ICommand UpDateUserCommand { get; }
         
         /// <summary>
@@ -884,33 +972,94 @@ namespace loukupm.ViewModel
 
 
 
-        //رتجع هون
+        /// <summary>
+        /// Update only first name and avatar via ApiServices (MultipartFormDataContent)
+        /// </summary>
         private async Task UpdateUserInfo()
         {
             try
             {
-                bool updated = await _apiServices.UpdateUserAsync(UserName,ImageUser);
-
-                if (updated)
+                // ✅ STEP 1: Validate input data
+                if (string.IsNullOrWhiteSpace(UserFirstName) && string.IsNullOrWhiteSpace(SelectedImagePath))
                 {
+                    await Toast.Make("يرجى إدخال الاسم الأول أو اختيار صورة", ToastDuration.Short).Show();
+                    return;
+                }
+
+                // ✅ STEP 2: Call ApiServices to send update request
+                Console.WriteLine("📞 Calling ApiServices.UpdateUserProfileAsync...");
+                var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath);
+
+                // ✅ STEP 3: Handle response
+                if (apiResponse?.Success == true)
+                {
+                    // ✅ Success: Update ViewModel properties immediately (no page reload)
+                    if (!string.IsNullOrWhiteSpace(UserFirstName))
+                    {
+                        UserFirstName = UserFirstName.Trim();
+                        Console.WriteLine($"✅ Property updated: UserFirstName = '{UserFirstName}'");
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(SelectedImagePath))
+                    {
+                        Avatar = SelectedImagePath;
+                        Console.WriteLine($"✅ Property updated: Avatar = '{SelectedImagePath}'");
+                    }
+
+                    // ✅ Show success popup
+                    var popup = new ConfermChange();
+                    await Application.Current.MainPage.ShowPopupAsync(popup);
+                    Console.WriteLine("✅ Update successful - showing confirmation popup");
+                }
+                else if (apiResponse?.Success == false)
+                {
+                    // ❌ API returned success: false - show error message
+                    string errorMessage = apiResponse?.Message ?? "فشل في تحديث البيانات";
+                    Console.WriteLine($"❌ API returned success: false - {errorMessage}");
+                    await Toast.Make(errorMessage, ToastDuration.Short).Show();
+
+                    var popup = new NoConfermChange();
+                    await Application.Current.MainPage.ShowPopupAsync(popup);
+                }
+                else if (apiResponse?.Success == null)
+                {
+                    // ⚠️ Success might be implicit (JSON parsing failed but HTTP was 200)
+                    Console.WriteLine($"⚠️ Response success was null - treating as success");
+
+                    if (!string.IsNullOrWhiteSpace(UserFirstName))
+                    {
+                        UserFirstName = UserFirstName.Trim();
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(SelectedImagePath))
+                    {
+                        Avatar = SelectedImagePath;
+                    }
 
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
                 }
                 else
                 {
+                    // Fallback for unexpected response
+                    Console.WriteLine($"⚠️ Unexpected response state");
+                    await Toast.Make("حدث خطأ غير متوقع", ToastDuration.Short).Show();
 
                     var popup = new NoConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"❌ Exception in UpdateUserInfo: {ex.Message}");
+                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
 
                 var popup = new NoConfermChange();
                 await Application.Current.MainPage.ShowPopupAsync(popup);
             }
         }
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -1151,26 +1300,50 @@ namespace loukupm.ViewModel
         {
             if (slot == null) return;
 
-            // ✅ امسح الاختيار السابق
-            foreach (var s in AvailableSlots)
-                s.IsSelected = false;
+            try
+            {
+                // ✅ امسح الاختيار السابق
+                foreach (var s in AvailableSlots)
+                    s.IsSelected = false;
 
-            // ✅ اختر الوقت الجديد
-            slot.IsSelected = true;
-            SelectedSlot = slot;
+                // ✅ اختر الوقت الجديد
+                slot.IsSelected = true;
+                SelectedSlot = slot;
 
-            // ✅ خزّن الوقت والتاريخ والبروفايدر
-            SelectedTime = TimeSpan.Parse(slot.StartTime);
-            CurrentBooking.Time = SelectedTime;
-            CurrentBooking.Date = SelectedDate;
-            
-            if (SelectedProvider != null)
-                CurrentBooking.ProviderId = SelectedProvider.Id.ToString();
+                // ✅ خزّن الوقت والتاريخ والبروفايدر
+                if (TimeSpan.TryParse(slot.StartTime, out var parsedTime))
+                {
+                    SelectedTime = parsedTime;
+                    CurrentBooking.Time = SelectedTime;
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ Failed to parse time: {slot.StartTime}");
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Toast.Make($"خطأ في قراءة الوقت: {slot.StartTime}", ToastDuration.Short).Show();
+                    });
+                    return;
+                }
 
-            Console.WriteLine($"✅ Slot selected: {slot.DisplayTime}");
-            Console.WriteLine($"   Provider: {SelectedProvider?.Name}");
-            Console.WriteLine($"   Date: {SelectedDate:yyyy-MM-dd}");
-            Console.WriteLine($"   Time: {slot.StartTime}");
+                CurrentBooking.Date = SelectedDate;
+
+                if (SelectedProvider != null)
+                    CurrentBooking.ProviderId = SelectedProvider.Id.ToString();
+
+                Console.WriteLine($"✅ Slot selected: {slot.DisplayTime}");
+                Console.WriteLine($"   Provider: {SelectedProvider?.Name}");
+                Console.WriteLine($"   Date: {SelectedDate:yyyy-MM-dd}");
+                Console.WriteLine($"   Time: {slot.StartTime}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in OnSelectSlot: {ex.Message}");
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
+                });
+            }
         }
 
         [ObservableProperty]
@@ -1355,6 +1528,54 @@ namespace loukupm.ViewModel
             }
         }
 
+        /// <summary>
+        /// Cancel a booking by ID
+        /// </summary>
+        private async Task CancelBookingAsync(int bookingId)
+        {
+            try
+            {
+                bool confirmed = await App.Current.MainPage.DisplayAlert(
+                    "تأكيد الإلغاء",
+                    "هل تريد بالفعل إلغاء هذا الحجز؟",
+                    "نعم",
+                    "لا"
+                );
+
+                if (!confirmed)
+                {
+                    Console.WriteLine("❌ Booking cancellation cancelled by user");
+                    return;
+                }
+
+                IsCancelingBooking = true;
+
+                bool success = await _apiServices.CancelBookingAsync(bookingId);
+
+                if (success)
+                {
+                    Console.WriteLine($"✅ Booking {bookingId} cancelled successfully");
+                    await Toast.Make("تم إلغاء الحجز بنجاح", ToastDuration.Short).Show();
+
+                    await LoadBookingsAsync();
+                }
+                else
+                {
+                    Console.WriteLine($"❌ Failed to cancel booking {bookingId}");
+                    await Toast.Make("فشل في إلغاء الحجز", ToastDuration.Short).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception cancelling booking: {ex.Message}");
+                await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
+            }
+            finally
+            {
+                IsCancelingBooking = false;
+            }
+        }
+
 
         [RelayCommand]
         public void ClearSelectedServices()
@@ -1416,6 +1637,7 @@ namespace loukupm.ViewModel
         {
             return SelectedServices.Sum(s => s.TimeServies);
         }
+
         ///section PolicyandPrivacy   سياسة الخصوصية يبا 
         public async Task LoadPolicyandPrivacyAsync()
         {
@@ -1426,16 +1648,150 @@ namespace loukupm.ViewModel
                 ListpolicyandPrivacy.Clear();
                 foreach (var item in data)
                     ListpolicyandPrivacy.Add(item);
-
-              
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading Policy and Privacy: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Enable reminder - send reminder time to API
+        /// </summary>
+        private async Task EnableReminderTimerAsync()
+        {
+            try
+            {
+                // Get the selected time from TimePicker
+                var reminderTime = ReminderTime;
+
+                Console.WriteLine($"⏰ Selected reminder time: {reminderTime:hh\\:mm\\:ss}");
+
+                // Check if there's an upcoming appointment
+                var now = DateTime.Now;
+                var upcomingAppointment = Appointments
+                    .FirstOrDefault(a => 
+                    {
+                        if (DateTime.TryParse(a.AppointmentDate, out var appointmentDate))
+                            return appointmentDate > now;
+                        return false;
+                    });
+
+                if (upcomingAppointment == null)
+                {
+                    await Toast.Make("لا توجد مواعيد قادمة", ToastDuration.Short).Show();
+                    Console.WriteLine("❌ No upcoming appointments found");
+                    return;
+                }
+
+                // Parse appointment date
+                if (!DateTime.TryParse(upcomingAppointment.AppointmentDate, out var appointmentDateTime))
+                {
+                    await Toast.Make("خطأ في قراءة موعد الحجز", ToastDuration.Short).Show();
+                    return;
+                }
+
+                // CRITICAL FIX: Construct full DateTime objects for comparison
+                // This handles midnight edge cases correctly
+
+                // Step 1: Create reminderDateTime based on appointment DATE + selected TIME
+                // If the constructed time is >= appointment time, it means reminder is on the same day but after appointment
+                // In that case, move reminder to the previous day
+                var reminderDateTimeOnAppointmentDay = appointmentDateTime.Date.Add(reminderTime);
+
+                // Step 2: If reminder time is after appointment time on the same day, move reminder to previous day
+                var reminderDateTime = reminderDateTimeOnAppointmentDay >= appointmentDateTime
+                    ? reminderDateTimeOnAppointmentDay.AddDays(-1)  // Move to previous day
+                    : reminderDateTimeOnAppointmentDay;              // Keep on same day
+
+                Console.WriteLine($"📅 Appointment details:");
+                Console.WriteLine($"   Appointment date/time: {appointmentDateTime:yyyy-MM-dd HH:mm:ss}");
+                Console.WriteLine($"   Selected reminder time: {reminderTime:hh\\:mm\\:ss}");
+                Console.WriteLine($"   Constructed reminder date/time: {reminderDateTime:yyyy-MM-dd HH:mm:ss}");
+
+                // ✅ CORRECT: Compare full DateTime objects, not just TimeSpan
+                // This handles midnight edge cases properly
+                if (reminderDateTime >= appointmentDateTime)
+                {
+                    Console.WriteLine($"❌ Reminder time {reminderDateTime:yyyy-MM-dd HH:mm:ss} is NOT before appointment time {appointmentDateTime:yyyy-MM-dd HH:mm:ss}");
+                    await Toast.Make("⚠️ وقت التذكير يجب أن يكون قبل موعد الحجز", ToastDuration.Short).Show();
+                    return;
+                }
+
+                Console.WriteLine($"✅ Reminder time {reminderDateTime:yyyy-MM-dd HH:mm:ss} is BEFORE appointment time {appointmentDateTime:yyyy-MM-dd HH:mm:ss}");
+
+                var remindAtDateTime = reminderDateTime;
+
+                Console.WriteLine($"📤 Sending reminder to API:");
+                Console.WriteLine($"   Appointment ID: {upcomingAppointment.Id}");
+                Console.WriteLine($"   Remind at: {remindAtDateTime:yyyy-MM-ddTHH:mm:ss}");
+
+                // Send to API
+                await SendAppointmentReminder(upcomingAppointment, remindAtDateTime);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error: {ex.Message}");
+                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
+            }
+        }
+
+        /// <summary>
+        /// Send appointment reminder to API
+        /// </summary>
+        private async Task SendAppointmentReminder(Appointment appointment, DateTime remindAtDateTime)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                // Create reminder data with just appointment_id and remind_at
+                var reminderData = new
+                {
+                    appointment_id = appointment.Id,
+                    remind_at = remindAtDateTime.ToString("yyyy-MM-ddTHH:mm:ss")
+                };
+
+                var json = JsonSerializer.Serialize(reminderData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                Console.WriteLine($"📤 Sending reminder:");
+                Console.WriteLine($"   Payload: {json}");
+
+                var response = await _httpClient.PostAsync(
+                    "https://test.center-yazan.com/api/appointments/reminders",
+                    content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"✅ Reminder sent successfully!");
+                    Console.WriteLine($"   Response: {responseBody}");
+                    await Toast.Make($"✅ تم إرسال التذكير بنجاح", ToastDuration.Short).Show();
+                }
+                else
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"❌ Failed: {response.StatusCode}");
+                    Console.WriteLine($"   Error: {errorBody}");
+                    await Toast.Make($"❌ فشل الإرسال: {response.StatusCode}", ToastDuration.Short).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception: {ex.Message}");
+                await Toast.Make($"❌ خطأ: {ex.Message}", ToastDuration.Short).Show();
+            }
+        }
+
+        /// <summary>
+        /// Stop the reminder timer (not needed in this implementation)
+        /// </summary>
+        public void StopReminderTimer()
+        {
+            Console.WriteLine("ℹ️ Reminders are sent directly to API, nothing to stop");
+        }
     }
 }
-
 

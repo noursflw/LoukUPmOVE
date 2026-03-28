@@ -3,36 +3,40 @@ using Microsoft.Maui.Storage;
 using OneSignalSDK.DotNet;
 using OneSignalSDK.DotNet.Core.Debug;
 using System.Globalization;
-
+using Microsoft.Extensions.Configuration; 
 using loukupm.Services;
 
 namespace loukupm
 {
     public partial class App : Application
     {
-        // Flag to track if authentication has been checked
+       
         private static bool _authenticationChecked = false;
-        // Flag to track if app is freshly started
+       
         private static bool _appJustStarted = true;
 
         public App()
         {
             InitializeComponent();
-           
-            try
 
+            try
             {
                 OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
-                OneSignal.Initialize("68c49ad8-113c-4160-91cc-5eb9d2c908d5");
+
+
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .Build();
+                var oneSignalAppId = config.GetSection("OneSignal")["AppId"];
+
+                OneSignal.Initialize(oneSignalAppId);
                 OneSignal.Notifications.RequestPermissionAsync(true);
 
                 //_ = OneSignalService.Init();
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ OneSignal init failed: {ex.Message}");
-               
             }
 
             var savedLang = Preferences.Get("AppLanguage", string.Empty);
@@ -48,19 +52,34 @@ namespace loukupm
                     : Microsoft.Maui.FlowDirection.LeftToRight;
             }
 
-           
             MainPage = new AppShell
             {
                 FlowDirection = direction
             };
 
-          
             MainPage.Loaded += async (s, e) => await CheckAuthentication();
         }
 
-        /// <summary>
-        /// Reset the authentication check flag when user logs out
-        /// </summary>
+        // ─────────────────────────────────────────────────────────
+        // APP LIFECYCLE - Handle notifications on app resume
+        // ─────────────────────────────────────────────────────────
+        protected override void OnStart()
+        {
+            base.OnStart();
+            Console.WriteLine("📱 [App] OnStart - app started or resumed from background");
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            Console.WriteLine("📱 [App] OnResume - app resumed from background");
+
+            // Check if app was opened via notification tap
+            // Platform-specific handlers in MainActivity.cs and AppDelegate.cs
+            // will call OneSignalService.HandleNotificationTapped() if needed
+        }
+
+
         public static void ResetAuthenticationCheck()
         {
             _authenticationChecked = false;
@@ -68,13 +87,10 @@ namespace loukupm
             Console.WriteLine("🔄 Authentication check reset");
         }
 
-        
-        
         private async Task CheckAuthentication()
         {
             try
             {
-                // Only run authentication check on app startup, not after manual navigation
                 if (!_appJustStarted)
                 {
                     Console.WriteLine("⏭️ Skipping auth check - app already initialized");
@@ -82,7 +98,6 @@ namespace loukupm
                 }
 
                 _appJustStarted = false;
-
                 await Task.Delay(600); // تأخير بسيط لضمان تحميل الواجهة
 
                 string token = string.Empty;
@@ -98,15 +113,12 @@ namespace loukupm
                 if (string.IsNullOrEmpty(token))
                 {
                     Console.WriteLine("🔐 No token found → LoginPage");
-                    // Use relative routing for LoginPage (global route)
                     await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
                 }
                 else
                 {
                     Console.WriteLine("✅ Token found → HomePage");
-                    // Mark authentication as checked
                     _authenticationChecked = true;
-                    // Use TabBar routing for HomePage (inside TabBar)
                     await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
                 }
             }

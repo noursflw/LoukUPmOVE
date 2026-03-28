@@ -5,6 +5,7 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
              xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
@@ -86,64 +87,47 @@
                 <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" VerticalOptions="End" Margin="10" />
             </VerticalStackLayout>
             <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,15" />
-            <ScrollView Orientation="Horizontal">
-                <HorizontalStackLayout>
-                    <CollectionView 
-    ItemsSource="{Binding WorkTeams}" 
-    x:Name="WorkTeamsCollectionView"
-    ItemsLayout="HorizontalList"
-    SelectionMode="None"
-    HeightRequest="170">
+            <ScrollView Orientation="Horizontal" Margin="10,0,10,0">
+                <CollectionView 
+        ItemsSource="{Binding WorkTeams}" 
+        x:Name="WorkTeamsCollectionView"
+        ItemsLayout="HorizontalList"
+        SelectionMode="None">
 
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame   
-                BackgroundColor="#202020" 
-                BorderColor="{Binding BorderColor}" 
-                Margin="6" 
-                 HeightRequest="170"
-                CornerRadius="16">
-
-                                    <VerticalStackLayout Margin="12">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#202020" CornerRadius="30" BorderColor="{Binding BorderColor}" Margin="6">
+                                <VerticalStackLayout Margin="12" Spacing="8">
+                                    <Frame BackgroundColor="#333333" 
+                                           WidthRequest="100" 
+                                           HeightRequest="100" 
+                                           CornerRadius="50"
+                                           Padding="0"
+                                           BorderColor="#333333"
+                                           HasShadow="False">
                                         <ff:CachedImage
-                        WidthRequest="70"
-                        HeightRequest="70"
-                        Aspect="AspectFill"
-                        FadeAnimationEnabled="True"
-                        DownsampleToViewSize="True"
-                        LoadingPlaceholder="placeholder.png"
-                        ErrorPlaceholder="placeholder.png"
-                        Source="{Binding ImageSafe}" />
+                                            WidthRequest="100"
+                                            HeightRequest="100"
+                                            Aspect="AspectFill"
+                                            FadeAnimationEnabled="True"
+                                            DownsampleToViewSize="True"
+                                            BackgroundColor="#333333"
+                                            IsOpaque="False"
+                                            Source="{Binding ImageSafe}" />
+                                    </Frame>
+                                    <Label Text="{Binding Name}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#999999" FontSize="12" LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
 
-                                        <Label Text="{Binding Name}" TextColor="#999999" />
-                                    </VerticalStackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                Command="{Binding Source={x:Reference WorkTeamsCollectionView}, Path=BindingContext.SelectWorkTeamCommand}" 
+                                CommandParameter="{Binding}" />
+                                </Frame.GestureRecognizers>
 
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer 
-                        Command="{Binding Source={x:Reference WorkTeamsCollectionView}, Path=BindingContext.SelectWorkTeamCommand}" 
-                        CommandParameter="{Binding}" />
-                                    </Frame.GestureRecognizers>
-
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-
-
-                    <Frame HeightRequest="150" Margin="20,10,40,0"
-                        WidthRequest="132"
-                        CornerRadius="16" 
-                        BackgroundColor="#444444"
-                        sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}"  IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
-                        BorderColor="#444444" />
-                    <Frame HeightRequest="150" Margin="0,10,40,0"
-                      WidthRequest="132"
-                      CornerRadius="16" 
-                      BackgroundColor="#444444"
-                      sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}"  IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                      BorderColor="#444444" />
- 
-                </HorizontalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </ScrollView>
             <Label Text="{Loc:Translate Name=historey}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
             <VerticalStackLayout  Padding="10">
@@ -247,31 +231,61 @@ HasShadow="False">
                         Margin="22,17,0,6"
                         HorizontalOptions="Center"
                         IsVisible="{Binding HasAvailabilityError}" />
-
-               
                 <HorizontalStackLayout Margin="10,0,10,0" IsVisible="{Binding Isloadday}">
                     <Frame HeightRequest="56" Margin="6,0,0,0"
-                           WidthRequest="110"
-                           CornerRadius="16" 
-                           BackgroundColor="#444444"
-                           sk:Skeleton.IsBusy="{Binding Isloadday}" 
-                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                           BorderColor="#444444" />
+             WidthRequest="110"
+             CornerRadius="16" 
+             BackgroundColor="#444444"
+             sk:Skeleton.IsBusy="{Binding Isloadday}" 
+             sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+             BorderColor="#444444" />
                     <Frame HeightRequest="56" Margin="6,0,0,0"
-                           WidthRequest="110"
-                           CornerRadius="16" 
-                           BackgroundColor="#444444"
-                           sk:Skeleton.IsBusy="{Binding Isloadday}" 
-                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                           BorderColor="#444444" />
+             WidthRequest="110"
+             CornerRadius="16" 
+             BackgroundColor="#444444"
+             sk:Skeleton.IsBusy="{Binding Isloadday}" 
+             sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+             BorderColor="#444444" />
                     <Frame HeightRequest="56" Margin="6,0,0,0"
-                           WidthRequest="110"
-                           CornerRadius="16" 
-                           BackgroundColor="#444444"
-                           sk:Skeleton.IsBusy="{Binding Isloadday}" 
-                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                           BorderColor="#444444" />
+             WidthRequest="110"
+             CornerRadius="16" 
+             BackgroundColor="#444444"
+             sk:Skeleton.IsBusy="{Binding Isloadday}" 
+             sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+             BorderColor="#444444" />
                 </HorizontalStackLayout>
+                <!-- Reminder Timer Section -->
+                <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" Margin="10" Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Appointment Reminder" 
+                               FontSize="16" 
+                               TextColor="White" 
+                               FontFamily="Oswald" 
+                               FontAttributes="Bold" />
+
+                        <Label Text="Select reminder time before appointment" 
+                               FontSize="12" 
+                               TextColor="#D3D3D3" 
+                               FontFamily="Oswald" />
+
+                        <TimePicker Time="{Binding ReminderTime}" 
+                                    TextColor="White"
+                                    FontFamily="Oswald"
+                                    FontSize="14" />
+
+                        <Button Text="Enable Reminder Timer" 
+                                TextColor="Black" 
+                                BackgroundColor="#FFD700"
+                                FontFamily="Oswald" 
+                                FontSize="14"
+                                CornerRadius="8"
+                                Padding="10,8"
+                                Command="{Binding EnableReminderTimerCommand}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+
+              
                
             </VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60">

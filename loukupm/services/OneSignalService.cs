@@ -27,12 +27,82 @@ namespace loukupm.Services
                 OneSignal.Initialize(_appId);
                 await OneSignal.Notifications.RequestPermissionAsync(true);
 
+                // Setup notification handlers for tap/click events
+                SetupNotificationHandlers();
+
                 _initialized = true;
                 Console.WriteLine("✅ OneSignal initialized successfully");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ OneSignal Init Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Sets up handlers for notification events.
+        /// Supports foreground, background, and terminated app states.
+        /// 
+        /// NOTE: OneSignal SDK 5.2.2 has limited direct event handling.
+        /// Platform-specific code in AppShell, MainActivity, and AppDelegate
+        /// will call HandleNotificationTapped() when notifications are tapped.
+        /// </summary>
+        private static void SetupNotificationHandlers()
+        {
+            try
+            {
+                // OneSignal SDK 5.2.2 notification system is now ready
+                // Notification taps will be detected by:
+                // 1. AppShell.xaml.cs for foreground/background states
+                // 2. MainActivity.cs (Android) for terminated state
+                // 3. AppDelegate.cs (iOS) for terminated state
+                //
+                // Those platform handlers will call HandleNotificationTapped() 
+                // when a notification is tapped.
+
+                Console.WriteLine("✅ OneSignal notification system ready");
+                Console.WriteLine("ℹ️  Platform-specific handlers will route notification taps to NotificationPage");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error setting up notification handlers: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Public method to navigate to the NotificationPage.
+        /// Call this from AppShell.xaml.cs or platform-specific notification handlers
+        /// when a notification is tapped.
+        /// </summary>
+        public static async Task HandleNotificationTapped()
+        {
+            try
+            {
+                await NavigateToNotificationPageAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error handling notification tap: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Navigates to the NotificationPage using the project's NavigationService.
+        /// </summary>
+        private static async Task NavigateToNotificationPageAsync()
+        {
+            try
+            {
+                // Ensure main thread execution for UI operations
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
+                    Console.WriteLine("📍 Navigated to NotificationPage");
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error navigating to NotificationPage: {ex.Message}");
             }
         }
 

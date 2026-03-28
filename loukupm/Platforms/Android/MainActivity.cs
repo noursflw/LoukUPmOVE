@@ -39,6 +39,80 @@ namespace loukupm
         }
 
         // ─────────────────────────────────────────────────────────────
+        // NOTIFICATION TAP HANDLER - Cold Start & Resume
+        // 
+        // Called when:
+        // 1. App is running and notification is tapped (OnNewIntent fires)
+        // 2. App is terminated and launched via notification tap
+        // 
+        // KEY: LaunchMode.SingleTop ensures this is called in both cases
+        // ─────────────────────────────────────────────────────────────
+        protected override void OnNewIntent(Android.Content.Intent intent)
+        {
+            base.OnNewIntent(intent);
+
+            try
+            {
+                // DEFENSIVE: Check if intent has extras (notification payload)
+                if (intent != null && intent.Extras != null)
+                {
+                    Console.WriteLine("🔔 [Android] Notification intent received");
+                    Console.WriteLine($"   Action: {intent.Action}");
+                    Console.WriteLine($"   Extras count: {intent.Extras.KeySet().Count}");
+
+                    // ─────────────────────────────────────────────────────
+                    // DEFERRED NAVIGATION
+                    // Schedule on main thread to ensure Shell is ready
+                    // ─────────────────────────────────────────────────────
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            // Small delay for Shell initialization
+                            await Task.Delay(500);
+
+                            // DEFENSIVE: Check Shell is ready before navigating
+                            if (Shell.Current != null)
+                            {
+                                await OneSignalService.HandleNotificationTapped();
+                                Console.WriteLine("✅ [Android] Notification navigation completed");
+                            }
+                            else
+                            {
+                                Console.WriteLine("⚠️ [Android] Shell.Current null, retrying after 1 second...");
+
+                                // Retry after longer delay
+                                await Task.Delay(1000);
+
+                                if (Shell.Current != null)
+                                {
+                                    await OneSignalService.HandleNotificationTapped();
+                                    Console.WriteLine("✅ [Android] Notification navigation completed (retry)");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("❌ [Android] Shell still null, unable to navigate");
+                                }
+                            }
+                        }
+                        catch (Exception navEx)
+                        {
+                            Console.WriteLine($"❌ [Android] Navigation error: {navEx.Message}");
+                        }
+                    });
+                }
+                else
+                {
+                    Console.WriteLine("ℹ️ [Android] OnNewIntent called without notification extras");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ [Android] Error in OnNewIntent: {ex.Message}");
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
         // Back navigation callback — implements the two navigation rules:
         //
         //   Tab page (not Home) → navigate to //HomePage

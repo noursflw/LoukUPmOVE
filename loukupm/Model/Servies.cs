@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace loukupm.Model
@@ -26,8 +27,45 @@ namespace loukupm.Model
         [JsonPropertyName("duration_minutes")]
         public int TimeServies { get; set; }
 
+        [JsonPropertyName("image_url")]
+        public string? Image { get; set; }
+
         [JsonPropertyName("category")]
         public Category Category { get; set; }  // تصنيف الخدمة
+
+        public DateTime StartTime { get; set; }
+
+        public DateTime EndTime { get; set; }
+
+        public string ImageSafe
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Image))
+                {
+                    return "imagesafe.png";
+                }
+
+                string processedUrl = Image;
+
+                if (processedUrl.Contains("'"))
+                {
+                    processedUrl = processedUrl.Replace("'", "%27");
+                }
+
+                if (processedUrl.Contains("\""))
+                {
+                    processedUrl = processedUrl.Replace("\"", "%22");
+                }
+
+                if (processedUrl.Contains(" "))
+                {
+                    processedUrl = processedUrl.Replace(" ", "%20");
+                }
+
+                return processedUrl;
+            }
+        }
     }
 
     public class Category

@@ -8,48 +8,52 @@
              xmlns:converters="clr-namespace:loukupm.Converter"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              BackgroundColor="#252525"
+             Padding="0"
              Title="BookingPage">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:ImageUriConverter x:Key="ImageUriConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid>
-        <ScrollView Margin="0,0,0,40">
-            <VerticalStackLayout>
-                
-                <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
-                    <!-- العنوان على اليسار -->
-                    <Label Text="{Loc:Translate Name=Mybook}"
-                           TextColor="White"
-                           Margin="24,0,0,0"
-                             FontSize="24"
-                             FontFamily="georgia-bold"
-                             VerticalOptions="Center" />
+    <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020" Padding="0">
+            <!-- العنوان على اليسار -->
+            <Label Text="{Loc:Translate Name=Mybook}"
+                   TextColor="White"
+                   Margin="24,0,0,0"
+                   FontSize="24"
+                   FontFamily="georgia-bold"
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Start"/>
 
-                    <!-- الزر على اليمين -->
-                    <Button Grid.Column="1"
+            <!-- الزر على اليمين -->
+            <Button Grid.Column="1"
                     WidthRequest="40"
                     HeightRequest="40"
                     CornerRadius="12"
                     ImageSource="backbuttonpmg.png"
                     BackgroundColor="#202020"
                     BorderColor="#999999"
-                    Margin="0,0,10,0"            
+                    Margin="0,0,16,0"            
                     BorderWidth="1"
                     HorizontalOptions="End"
                     VerticalOptions="Center"
                     Clicked="Button_Clicked_1" />
-                </Grid>
+        </Grid>
+
+        <ScrollView Grid.Row="1" Margin="0" Padding="0">
+            <VerticalStackLayout Padding="0" Spacing="0">
+
                 <Frame HeightRequest="150" Margin="20,10,20,0"
-                     WidthRequest="350"
-                     CornerRadius="16" 
-                     BackgroundColor="#444444"
-                     IsVisible="{Binding IsloadBooking }"
-                     sk:Skeleton.IsBusy="{Binding    IsloadBooking}" 
-                     sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-                     BorderColor="#444444" />
-                
+                       CornerRadius="16" 
+                       BackgroundColor="#444444"
+                       IsVisible="{Binding IsloadBooking }"
+                       sk:Skeleton.IsBusy="{Binding IsloadBooking}" 
+                       sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                       BorderColor="#444444" 
+                       Padding="16" />
+
                 <!-- Empty State - عندما ما يكون في حجوزات -->
                 <StackLayout Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
                              IsVisible="{Binding HasNoAppointments}">
@@ -70,88 +74,187 @@
                            HorizontalTextAlignment="Center"
                            Margin="0,0,0,20" />
                 </StackLayout>
-                
-                <CollectionView  ItemsSource="{Binding  Appointments}" IsVisible="{Binding IsloadBooking, Converter={StaticResource InverseBoolConverter}}" >
+
+                <CollectionView ItemsSource="{Binding Appointments}" 
+                                IsVisible="{Binding IsloadBooking, Converter={StaticResource InverseBoolConverter}}"
+                                Margin="0"
+                                SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame Margin="25,20,25,0" BorderColor="#444444" BackgroundColor="#444444" >
-                                <VerticalStackLayout>
-                                    <Button Text="{Binding Stutes}" BackgroundColor="Black" TextColor="White" CornerRadius="16" WidthRequest="86" HorizontalOptions="Start" HeightRequest="40" FontSize="16" FontFamily="Oswald"  />
-                                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*">
-                                        <Label Text="Day" TextColor="#D3D3D3" FontFamily="Oswald"
-                                           Margin="0,10,0,0" Grid.Column="0"/>
+                            <Frame Margin="16,12,16,12" 
+                                   Padding="16" 
+                                   BorderColor="#444444" 
+                                   BackgroundColor="#444444"
+                                   CornerRadius="16"
+                                   HasShadow="True"
+                                   Shadow="{Shadow Offset='0,2', Radius='4', Opacity='0.3'}">
+                                <VerticalStackLayout Spacing="12">
 
-                                        <Label Text=" - " TextColor="#D3D3D3"
-                                               Margin="0,10,0,0" Grid.Column="1"/>
+                                    <!-- Status Button -->
+                                    <Button Text="{Binding Stutes}" 
+                                            BackgroundColor="Black" 
+                                            TextColor="White" 
+                                            CornerRadius="26" 
+                                           
+                                            FontSize="18" 
+                                            FontFamily="Oswald"
+                                            HorizontalOptions="Start" />
 
-                                        <Label Text="{Binding Date}" TextColor="#D3D3D3" FontFamily="Oswald"
-                                               Margin="0,10,0,0" Grid.Column="2"/>
+                                    <!-- Date and Time Info -->
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" RowSpacing="0">
+                                           
+                                            <Label Text="{Binding Date}" 
+                                                   TextColor="#D3D3D3" 
+                                                   FontFamily="Oswald"
+                                                   FontSize="13"
+                                                   Grid.Column="1"
+                                                   VerticalOptions="Center"/>
+                                            <Label Text="{Binding Time}" 
+                                                   TextColor="#999999" 
+                                                   FontFamily="Oswald"
+                                                   FontSize="12"
+                                                   Grid.Column="2"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center"/>
+                                            <Label Text="{Binding Total, StringFormat='{}{0} €'}"
+                                                   TextColor="#D3D3D3"
+                                                   FontFamily="Oswald"
+                                                   FontSize="13"
+                                                   FontAttributes="Bold"
+                                                   Grid.Column="3"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </VerticalStackLayout>
 
-                                        <Label Text="{Binding Time}" TextColor="#D3D3D3" FontFamily="Oswald"
-                                                Margin="0,10,0,0" Grid.Column="3"/>
+                                    <!-- Divider -->
+                                    <BoxView HeightRequest="1" BackgroundColor="#555555" Margin="0,4,0,4"/>
+
+                                    <!-- Services List -->
+                                    <VerticalStackLayout Spacing="6">
+                                        
+                                        <CollectionView ItemsSource="{Binding ServicesDetails}" 
+                                                        Margin="0"
+                                                        SelectionMode="None">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Frame BorderColor="#444444" 
+                                                           BackgroundColor="#444444" 
+                                                           CornerRadius="10" 
+                                                           Padding="10" 
+                                                           HasShadow="False"
+                                                           Margin="0,4,0,4">
+                                                        <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
+                                                            <!-- اسم الخدمة (تحت صورة الخدمة على اليسار) -->
+                                                            <Label Text="{Binding ServiceName}" 
+                                                                   TextColor="#D3D3D3" 
+                                                                   FontFamily="Oswald" 
+                                                                   FontSize="13"
+                                                                   Grid.Column="0"
+                                                                   Grid.Row="0"
+                                                                   FontAttributes="Bold" 
+                                                                   LineBreakMode="TailTruncation"
+                                                                   VerticalOptions="Center"/>
+
+                                                            <!-- المدة الزمنية بجانب السعر -->
+                                                            <Label Text="{Binding FormattedDuration}" 
+                                                                   TextColor="#999999" 
+                                                                   FontFamily="Oswald" 
+                                                                   FontSize="15"
+                                                                   Grid.Column="1"
+                                                                   Grid.Row="0"
+                                                                   HorizontalOptions="End"
+                                                                   VerticalOptions="Center"
+                                                                   Margin="8,0,0,0"/>
+
+                                                            <!-- السعر على اليمين -->
+                                                            <Label Text="{Binding FormattedPrice, StringFormat='{0} €'}" 
+                                                                   TextColor="#FFD700" 
+                                                                   FontFamily="Oswald" 
+                                                                   FontSize="12"
+                                                                   FontAttributes="Bold"
+                                                                   Grid.Column="2"
+                                                                   Grid.Row="0"
+                                                                   HorizontalOptions="End"
+                                                                   VerticalOptions="Center"
+                                                                   Margin="8,0,0,0"/>
+                                                        </Grid>
+                                                    </Frame>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </VerticalStackLayout>
+
+                                    <!-- Divider -->
+                                    <BoxView HeightRequest="1" BackgroundColor="#555555" Margin="0,4,0,4"/>
+
+                                    <!-- Provider Info -->
+                                    <VerticalStackLayout Spacing="8">
+                                       
+                                        <HorizontalStackLayout Spacing="12">
+                                            <Frame BorderColor="#333333" 
+                                                   HeightRequest="48" 
+                                                   WidthRequest="48"
+                                                   BackgroundColor="#333333"
+                                                   CornerRadius="24" 
+                                                   Margin="0"
+                                                   Padding="0"
+                                                   HasShadow="False">
+                                                <Image BackgroundColor="#333333" 
+                                                       Source="{Binding ImgePerson}"
+                                                       HeightRequest="48"
+                                                       WidthRequest="48"
+                                                       Aspect="AspectFill"
+                                                       IsOpaque="False"/>
+                                            </Frame>
+                                            <Label Text="{Binding UserName}" 
+                                                   TextColor="#D3D3D3" 
+                                                   FontFamily="Oswald"
+                                                   FontSize="13"
+                                                   VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+
+                                    <!-- Divider -->
+                                    <BoxView HeightRequest="1" BackgroundColor="#555555" Margin="0,4,0,4"/>
+
+                                    <!-- Cancel Button -->
+                                    <Button HorizontalOptions="Fill" 
+                                            FontFamily="OpenSansSemibold" 
+                                            BorderColor="#D3D3D3" 
+                                            BorderWidth="1" 
+                                            CornerRadius="10" 
+                                            FontSize="12" 
+                                            BackgroundColor="Transparent" 
+                                            TextColor="#D3D3D3"
+                                            Padding="12,8"
+                                            Text="{Loc:Translate Name=CancelBooking}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CancelBookingCommand}"
+                                            CommandParameter="{Binding Id}"
+                                            IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsCancelingBooking, Converter={StaticResource InverseBoolConverter}}"/>
 
 
-                                        <Label Text="{Binding PriceBooking}" TextColor="#D3D3D3" FontFamily="Oswald"
-                                               Margin="0,10,0,0" HorizontalOptions="End" VerticalOptions="End"
-                                               Grid.Column="4"/>
-                                    </Grid>
-                                    <Image WidthRequest="1000"  Margin="10,10,0,0" Source="split.png"/>
-                                    <Grid ColumnDefinitions="Auto,* ,Auto,Auto">
-
-                                        <Label Text="Day" TextColor="#D3D3D3" FontFamily="Oswald" 
-                                               Margin="0,10,0,0" Grid.Column="0" />
-
-                                        <Label Text="{Binding Total, StringFormat='{}{0} €'}"
-                                               TextColor="#D3D3D3"
-                                               FontFamily="Oswald"
-                                               Margin="0,10,0,0"
-                                               Grid.Column="2" />
-
-                                        <Label Text="{Binding  TimePrice }" TextColor="#D3D3D3" FontFamily="Oswald" 
-                                               Margin="10,10,0,0" Grid.Column="3" />
-                                    </Grid>
-                                    <Image WidthRequest="1000"  Margin="10,10,0,0" Source="split.png"/>
-                                    <HorizontalStackLayout>
-                                        <Frame BorderColor="Black" HeightRequest="52" BackgroundColor="Black"
-                                               WidthRequest="52" 
-                                               CornerRadius="25" 
-                                               Margin="0,10,0,0"
-                                               Padding="0"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center">
-
-                                            <Image BackgroundColor="Black" Source="{Binding ImgePerson}"
-                                                   HeightRequest="50"
-                                                   WidthRequest="50"
-                                                   Aspect="AspectFill">
-                                                <Image.Clip>
-                                                    <!-- دائرية بنفس الحجم -->
-                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25"/>
-                                                </Image.Clip>
-                                            </Image>
-
-                                        </Frame>
-                                        <Label Text="{Binding UserName}" TextColor="#D3D3D3" FontFamily="Oswald" 
-                                               Margin="10,25,0,0" Grid.Column="3" />
-                                    </HorizontalStackLayout>
-
-                                    <Button HorizontalOptions="End" BorderColor="White" BorderWidth="1" CornerRadius="16" BackgroundColor="#444444" Text=" Buchung stornieren"/>
                                 </VerticalStackLayout>
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
             </VerticalStackLayout>
         </ScrollView>
-        <Button  VerticalOptions="End" 
-          HorizontalOptions="Fill" Text="{Loc:Translate Name=bookinNowAbotus}" CornerRadius="16" FontSize="16" Clicked="Button_Clicked_2"  FontFamily="georgia-bold" TextColor="Black"  Margin="35" />
-        <Border Margin="0,0,0,0"
-      BackgroundColor="#444444"
-      HeightRequest="20"
-      VerticalOptions="End" 
-      HorizontalOptions="Fill" 
-      Stroke="#444444" 
-      StrokeShape="RoundRectangle 10,10,0,0" />
+
+        <!-- Bottom Button -->
+        <Button Grid.Row="2"
+                VerticalOptions="End" 
+                HorizontalOptions="Fill" 
+                Text="{Loc:Translate Name=bookinNowAbotus}" 
+                CornerRadius="14" 
+                FontSize="15" 
+                Clicked="Button_Clicked_2"  
+                FontFamily="georgia-bold" 
+                TextColor="Black"
+                
+                Margin="16,12,16,16" 
+                Padding="12,10"/>
     </Grid>
 </ContentPage>

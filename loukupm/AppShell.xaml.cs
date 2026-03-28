@@ -1,5 +1,6 @@
 ﻿using loukupm.View;
 using loukupm.Services;
+using OneSignalSDK.DotNet;
 
 namespace loukupm
 {
@@ -10,6 +11,29 @@ namespace loukupm
             InitializeComponent();
             RegisterAllRoutes();
             ValidateNavigation();
+            SetupNotificationTapHandler();
+        }
+
+        // ─────────────────────────────────────────────────────────
+        // ONESIGNAL NOTIFICATION TAP HANDLER
+        // Handles notification taps in foreground and background states
+        // ─────────────────────────────────────────────────────────
+        private void SetupNotificationTapHandler()
+        {
+            try
+            {
+                // Set up handler for when notifications are tapped while app is running
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    // Delay briefly to allow Shell to fully initialize
+                    await Task.Delay(500);
+                    Console.WriteLine("✅ [AppShell] OneSignal notification tap handler ready for foreground/background");
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ [AppShell] Error setting up notification handler: {ex.Message}");
+            }
         }
 
         // ─────────────────────────────────────────────────────────

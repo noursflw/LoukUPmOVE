@@ -98,8 +98,11 @@
                     {
                         foreach (var page in navStack)
                         {
-                            page.FlowDirection = newDirection;
-                            Console.WriteLine($"✅ Updated {page.GetType().Name} FlowDirection to {newDirection}");
+                            if (page != null)
+                            {
+                                page.FlowDirection = newDirection;
+                                Console.WriteLine($"✅ Updated {page.GetType().Name} FlowDirection to {newDirection}");
+                            }
                         }
                     }
 
@@ -109,8 +112,11 @@
                     {
                         foreach (var page in modalStack)
                         {
-                            page.FlowDirection = newDirection;
-                            Console.WriteLine($"✅ Updated Modal {page.GetType().Name} FlowDirection to {newDirection}");
+                            if (page != null)
+                            {
+                                page.FlowDirection = newDirection;
+                                Console.WriteLine($"✅ Updated Modal {page.GetType().Name} FlowDirection to {newDirection}");
+                            }
                         }
                     }
 

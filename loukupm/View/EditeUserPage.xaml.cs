@@ -11,7 +11,7 @@ public partial class EditeUserPage : ContentPage
     public EditeUserPage()
     {
         InitializeComponent();
-        this.BindingContext = new AppViewModel();
+        this.BindingContext = AppViewModel.Instance;
     }
 
     /// <summary>
@@ -85,9 +85,10 @@ public partial class EditeUserPage : ContentPage
     }
 
     /// <summary>
-    /// اختيار صورة من المعرض وتحديث الملف الشخصي
+    /// اختيار صورة من المعرج وتحديث الملف الشخصي
+    /// ✅ تخزين مسار الصورة المختارة
+    /// ✅ تحديث Avatar لعرضها مباشرة
     /// ✅ معالجة شاملة للأخطاء
-    /// ✅ رسائل واضحة للمستخدم
     /// </summary>
     private async Task PickAndSetPhotoAsync()
     {
@@ -103,8 +104,13 @@ public partial class EditeUserPage : ContentPage
                 var viewModel = BindingContext as AppViewModel;
                 if (viewModel != null)
                 {
-                    viewModel.ImageUser = result.FullPath;
+                    // 🔹 تخزين مسار الصورة المختارة مؤقتًا
+                    viewModel.SelectedImagePath = result.FullPath;
 
+                    // 🎨 تحديث Avatar لعرض الصورة مباشرة
+                    viewModel.Avatar = result.FullPath;
+
+                    Console.WriteLine($"📸 Image selected: {result.FullPath}");
                     await Toast.Make(
                         "تم تحميل الصورة بنجاح",
                         ToastDuration.Short
@@ -118,6 +124,7 @@ public partial class EditeUserPage : ContentPage
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"❌ Error selecting image: {ex.Message}");
             await DisplayAlert("خطأ", $"فشل تحميل الصورة: {ex.Message}", "حسناً");
         }
     }

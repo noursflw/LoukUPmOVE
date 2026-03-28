@@ -808,4 +808,7 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   <data name="TermsLastUpdateTerms" xml:space="preserve">
     <value>Letzte Aktualisierung: März 2026</value>
   </data>
+  <data name="CancelBooking" xml:space="preserve">
+    <value>Buchung stornieren</value>
+  </data>
 </root>

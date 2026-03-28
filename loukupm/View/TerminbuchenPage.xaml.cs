@@ -42,7 +42,7 @@ public partial class TerminbuchenPage : ContentPage
         vm.CurrentBooking.Date =vm.SelectedDate;
         vm.CurrentBooking.Time =vm.SelectedTime;
 
-        await Navigation.PushAsync(new Paymentgetway());
+        await Navigation.PushAsync(new BookingPage());
     }
 
     private async void Button_Clicked_2(object sender, EventArgs e)
