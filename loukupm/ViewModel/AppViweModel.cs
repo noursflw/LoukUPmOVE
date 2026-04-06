@@ -25,7 +25,7 @@ namespace loukupm.ViewModel
 {
     public partial class AppViewModel : ObservableObject
     {
-        // Flags (Skeleton Loading)
+        
         [ObservableProperty] private bool isCouselLoad;
         [ObservableProperty] private bool isWorkTeamLoad;
         [ObservableProperty] private bool isServicesLoad;
@@ -37,11 +37,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool isLoadNotifiction;
         [ObservableProperty] private bool isLoadUser;
 
-        /// <summary>
-        /// /loclazion
-        /// </summary>
-
-        // Collections
+       
 
         [ObservableProperty] private ObservableCollection<Servies> services = new();
         [ObservableProperty] private ObservableCollection<Servies> filteredServices = new();
@@ -63,45 +59,30 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private ObservableCollection<Servies> selectedServices = new();
         
-        /// <summary>
-        /// إجمالي سعر الخدمات المختارة
-        /// </summary>
+        
         [ObservableProperty]
         private decimal totalPrice = 0m;
 
-        /// <summary>
-        /// Search term for filtering services
-        /// </summary>
+       
         [ObservableProperty]
         private string searchServiceTerm = string.Empty;
 
-        /// <summary>
-        /// Search term for filtering work teams
-        /// </summary>
+        
         [ObservableProperty]
         private string searchTeamTerm = string.Empty;
 
-        /// <summary>
-        /// Reminder timer - minutes before appointment
-        /// </summary>
+       
         [ObservableProperty]
         private string reminderMinutes = "60";
 
-        /// <summary>
-        /// Reminder time picker
-        /// </summary>
         [ObservableProperty]
         private TimeSpan reminderTime = new TimeSpan(1, 0, 0);
 
-        /// <summary>
-        /// Selected image path for user profile update
-        /// </summary>
+       
         [ObservableProperty]
         private string selectedImagePath = string.Empty;
 
-        /// <summary>
-        /// Flag to track if a booking is being canceled
-        /// </summary>
+      
         [ObservableProperty]
         private bool isCancelingBooking = false;
 
@@ -120,7 +101,7 @@ namespace loukupm.ViewModel
             LoadData();
             _httpClient = new HttpClient();
 
-            // Initialize UI-related commands synchronously
+           
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
             ConfirmCommand = new Command(async () => await SendCodeAsync());
             ProviderDays = new ObservableCollection<DayItem>();
@@ -139,21 +120,21 @@ namespace loukupm.ViewModel
 
                 Console.WriteLine($"🔍 Service clicked: {service.NameServies}, Price: '{service.PriceServies}'");
 
-                // استخدام الـ Id للمقارنة بدلاً من المرجع
+               
                 var exists = SelectedServices.Any(s => s.Id == service.Id);
 
                 if (!exists)
                 {
-                    SelectedServices.Add(service);  // ✨ إضافة للـ Collection
+                    SelectedServices.Add(service);  
                     CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
                     Console.WriteLine($"✅ Service added: {service.NameServies}, Price: {service.PriceServies}");
                     
-                    // ✨ Toast notification for adding service
+                   
                     await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
                 }
                 else
                 {
-                    // ✨ Service is already selected - show special notification
+                    
                     Console.WriteLine($"⚠️ Service already selected: {service.NameServies}");
                     await Toast.Make(AppResource.theserviewasdone, ToastDuration.Short).Show();
                 }
@@ -205,25 +186,19 @@ namespace loukupm.ViewModel
 
         }
 
-        /// <summary>
-        /// Handle search term changes and filter services in real-time
-        /// </summary>
+      
         partial void OnSearchServiceTermChanged(string value)
         {
             PerformServiceSearch(value);
         }
 
-        /// <summary>
-        /// Handle work team search term changes and filter teams in real-time
-        /// </summary>
+        
         partial void OnSearchTeamTermChanged(string value)
         {
             PerformWorkTeamSearch(value);
         }
 
-        /// <summary>
-        /// Perform local search on services - filters by name, category, price
-        /// </summary>
+      
         private void PerformServiceSearch(string searchTerm)
         {
             try
@@ -267,9 +242,6 @@ namespace loukupm.ViewModel
             }
         }
 
-        /// <summary>
-        /// Perform local search on work teams - filters by name
-        /// </summary>
         private void PerformWorkTeamSearch(string searchTerm)
         {
             try
@@ -293,9 +265,6 @@ namespace loukupm.ViewModel
             }
         }
 
-        /// <summary>
-        /// Clear all search filters
-        /// </summary>
         [RelayCommand]
         public void ClearAllSearches()
         {
@@ -306,7 +275,7 @@ namespace loukupm.ViewModel
             Console.WriteLine("🗑️ All searches cleared");
         }
 
-        ///Section Load Data    
+        
         private void LoadData()
         {
             IsCouselLoad = true;
@@ -350,10 +319,6 @@ namespace loukupm.ViewModel
                 IsloadBooking = false;
             }
         }
-
-
-
-
         private async Task LoadNotificationsAsync()
         {
             try
@@ -390,9 +355,6 @@ namespace loukupm.ViewModel
             }
         }
 
-        /// <summary>
-        /// Load next page of notifications for pagination
-        /// </summary>
         public async Task LoadMoreNotificationsAsync()
         {
             if (!HasMoreNotifications || string.IsNullOrEmpty(NextNotificationCursor))
@@ -512,10 +474,6 @@ namespace loukupm.ViewModel
                 await LoadAvailableSlotsAsync();
         }
 
-        /// <summary>
-        /// جلب الخدمات الخاصة بالبروفايدر المختار وتحديث الـ FilteredServices
-        /// ملاحظة: إذا لم يكن هناك endpoint منفصل للبروفايدر، سيتم عرض جميع الخدمات المتاحة
-        /// </summary>
         private async Task LoadProviderServicesAsync(int providerId)
         {
             try
@@ -544,9 +502,6 @@ namespace loukupm.ViewModel
                 FilteredServices = new ObservableCollection<Servies>(Services);
             }
         }
-
-
-
 
         public ObservableCollection<Category> Categories { get; set; } = new();
 
@@ -614,8 +569,7 @@ namespace loukupm.ViewModel
                 PerformServiceSearch(SearchServiceTerm);
             }
         }
-        // FOR REMOVE
-
+     
         [RelayCommand]
         public async Task PostEmailAsync()
         {
@@ -651,9 +605,6 @@ namespace loukupm.ViewModel
 
 
 
-        //FOR REMOVE
-
-        //section OTP FORGET PASSWORD
         public string Digit1 { get; set; }
         public string Digit2 { get; set; }
         public string Digit3 { get; set; }
@@ -695,10 +646,8 @@ namespace loukupm.ViewModel
         private Servies selectedService;
 
 
-        //TO REMOVE
-        //Post for new password
         public string NewPassword { get; set; }
-        //public string ConfirmPassword { get; set; }
+       
 
         public ICommand ChangePasswordCommand { get; }
 
@@ -738,10 +687,6 @@ namespace loukupm.ViewModel
             }
         }
 
-        ////End Section OTP FORGET PASSWORD  
-
-        ///Section Booking 
-        ///Sectipn Post Booking
         [ObservableProperty] private WorkTeam selectedProvider;
         [ObservableProperty] private string selectedServiceName;
 
@@ -750,6 +695,8 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private SlotItem selectedSlot;
 
+        [ObservableProperty]
+        private string bookingNotes = string.Empty;
 
 
         public Booking CurrentBooking { get; set; } = new Booking { SelectedServices = new List<Servies>() };
@@ -757,171 +704,264 @@ namespace loukupm.ViewModel
 
         public ICommand PostBookingCommand { get; }
 
+       
         public async Task PostBookingAsync()
         {
-            // ✅ التحقق من البيانات المختارة
-            if (SelectedServices == null || SelectedServices.Count == 0)
+            try
             {
-                await Toast.Make("يرجى اختيار خدمة واحدة على الأقل").Show();
-                return;
+                
+                if (!ValidateBookingInputs())
+                    return;
+
+               
+                var (services, totalEndTime) = BuildServicesArray();
+                if (services == null || services.Count == 0)
+                {
+                    await Toast.Make("خطأ في بناء قائمة الخدمات").Show();
+                    return;
+                }
+
+               
+                decimal totalAmount = CalculateTotalPrice();
+
+                
+                string notes = string.IsNullOrWhiteSpace(BookingNotes) ? "ok" : BookingNotes;
+
+              
+                var bookingData = BuildBookingRequest(services, totalAmount, notes);
+
+              
+                await SendBookingRequest(bookingData, totalEndTime);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception in PostBookingAsync: {ex.Message}");
+                await Toast.Make($"خطأ: {ex.Message}").Show();
+            }
+        }
+
+        private bool ValidateBookingInputs()
+        {
+            if (SelectedServices?.Count == 0)
+            {
+                Toast.Make("يرجى اختيار خدمة واحدة على الأقل").Show();
+                return false;
             }
 
             if (SelectedProvider == null)
             {
-                await Toast.Make("يرجى اختيار مزود الخدمة").Show();
-                return;
+                Toast.Make("يرجى اختيار مزود الخدمة").Show();
+                return false;
             }
 
             if (SelectedDate == default)
             {
-                await Toast.Make("يرجى اختيار تاريخ").Show();
-                return;
+                Toast.Make("يرجى اختيار تاريخ").Show();
+                return false;
             }
 
             if (SelectedSlot == null)
             {
-                await Toast.Make("يرجى اختيار وقت").Show();
-                return;
+                Toast.Make("يرجى اختيار وقت").Show();
+                return false;
             }
+
+            // Verify all services are available from selected provider
+            var unavailableServices = SelectedServices
+                .Where(s => !FilteredServices.Any(fs => fs.Id == s.Id))
+                .ToList();
+
+            if (unavailableServices.Count > 0)
+            {
+                string serviceList = string.Join(", ", unavailableServices.Select(s => s.NameServies));
+                Toast.Make($"الخدمات غير متاحة من {SelectedProvider.Name}: {serviceList}", ToastDuration.Long).Show();
+                Console.WriteLine($"❌ Unavailable services: {serviceList}");
+                return false;
+            }
+
+            return true;
+        }
+
+        
+        private (List<object> services, TimeSpan totalEndTime) BuildServicesArray()
+        {
+            var services = new List<object>();
+            TimeSpan currentStartTime = ParseTimeString(SelectedSlot.StartTime);
+
+            foreach (var service in SelectedServices)
+            {
+                // Get duration with fallback to 30 minutes
+                int serviceDuration = GetServiceDuration(service);
+                if (serviceDuration <= 0)
+                    serviceDuration = 30;
+
+                TimeSpan endTime = currentStartTime.Add(TimeSpan.FromMinutes(serviceDuration));
+
+                // Add service with sequential timing
+                services.Add(new
+                {
+                    service_id = service.Id,
+                    provider_id = SelectedProvider.Id,
+                    start_time = currentStartTime.ToString(@"hh\:mm")
+                });
+
+                Console.WriteLine($"   ⏱️ {service.NameServies}: {currentStartTime:hh\\:mm} - {endTime:hh\\:mm} ({serviceDuration}m)");
+
+                // Update start time for next service
+                currentStartTime = endTime;
+            }
+
+            return (services, currentStartTime);
+        }
+
+        
+        private int GetServiceDuration(Servies service)
+        {
+            if (service == null)
+                return 30;
+
+            int duration = service.TimeServies;
+            if (duration <= 0)
+            {
+                Console.WriteLine($"⚠️ Invalid duration for {service.NameServies}: {duration}, using 30m");
+                return 30;
+            }
+
+            if (duration > 480) // 8 hours max per service
+            {
+                Console.WriteLine($"⚠️ Unrealistic duration for {service.NameServies}: {duration}m, capping at 480m");
+                return 480;
+            }
+
+            return duration;
+        }
+
+        
+        private decimal CalculateTotalPrice()
+        {
+            return SelectedServices.Sum(s =>
+            {
+                if (string.IsNullOrWhiteSpace(s?.PriceServies))
+                    return 0m;
+
+                string priceStr = s.PriceServies.Trim();
+                if (priceStr.Contains(','))
+                    priceStr = priceStr.Replace(',', '.');
+
+                if (decimal.TryParse(priceStr, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var price))
+                    return price;
+
+                Console.WriteLine($"⚠️ Failed to parse price '{s.PriceServies}' for {s.NameServies}");
+                return 0m;
+            });
+        }
+
+        private object BuildBookingRequest(List<object> services, decimal totalAmount, string notes)
+        {
+            var bookingData = new
+            {
+                date = SelectedDate.ToString("yyyy-MM-dd"),
+                payment_method = "cash",
+                notes = notes,
+                services = services
+            };
+
+           
+            return bookingData;
+        }
+
+        
+       
+        
+        private async Task SendBookingRequest(object bookingData, TimeSpan totalEndTime)
+        {
+            await SetAuthorizationHeaderAsync();
+
+            var json = JsonSerializer.Serialize(bookingData);
+            Console.WriteLine($"📋 JSON: {json}");
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
             {
-                // ✅ حساب إجمالي السعر
-                decimal totalAmount = SelectedServices.Sum(s =>
-                {
-                    if (string.IsNullOrWhiteSpace(s?.PriceServies))
-                        return 0m;
-                    
-                    string priceStr = s.PriceServies.Trim();
-                    if (priceStr.Contains(','))
-                        priceStr = priceStr.Replace(',', '.');
-                    
-                    if (decimal.TryParse(priceStr, System.Globalization.NumberStyles.Any, 
-                        System.Globalization.CultureInfo.InvariantCulture, out var price))
-                        return price;
-                    
-                    return 0m;
-                });
-
-                // ✅ تجميع البيانات بالصيغة الصحيحة للـ API
-                // تنسيق بيانات الخدمات حسب صيغة الـ API المتوقعة
-                var bookingData = new
-                {
-                    services = SelectedServices.Select(s => new
-                    {
-                        service_id = s.Id,
-                        provider_id = SelectedProvider.Id,
-                        start_time = SelectedSlot.StartTime
-                    }).ToList(),
-                    // معلومات إضافية للمرجع
-                    date = SelectedDate.ToString("yyyy-MM-dd"),
-                    end_time = SelectedSlot.EndTime,
-                    duration_minutes = SelectedSlot.DurationMinutes,
-                    branch_id = 1,
-                    payment_method = "cash",
-                    total_amount = totalAmount,
-                    status = "pending"
-                };
-
-                Console.WriteLine("📤 Sending booking data:");
-                Console.WriteLine($"   Provider: {SelectedProvider.Name} (ID: {SelectedProvider.Id})");
-                Console.WriteLine($"   Date: {SelectedDate:yyyy-MM-dd}");
-                Console.WriteLine($"   Start Time: {SelectedSlot.StartTime}");
-                Console.WriteLine($"   End Time: {SelectedSlot.EndTime}");
-                Console.WriteLine($"   Services: {string.Join(", ", SelectedServices.Select(s => $"{s.NameServies} (ID: {s.Id})"))}");
-                Console.WriteLine($"   Total Amount: {totalAmount:F2}");
-                Console.WriteLine($"   Payment Method: cash");
-
-                // ✅ إرسال البيانات للـ API
-                await SetAuthorizationHeaderAsync();
-                
-                var json = JsonSerializer.Serialize(bookingData);
-                Console.WriteLine($"📋 JSON Payload: {json}");
-                
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                 var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/bookings", 
+                    "https://test.center-yazan.com/api/bookings",
                     content);
-
-                Console.WriteLine($"📊 Response Status: {response.StatusCode}");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"✅ Response: {responseBody}");
-
-                    // ✅ نجح الحجز
+                    Console.WriteLine($"✅ Booking successful (HTTP {response.StatusCode})");
                     await Toast.Make("تم الحجز بنجاح! ✅").Show();
 
-                    // ✅ تنظيف البيانات بعد النجاح
                     ClearBookingData();
-
-                    // ✅ الانتقال للصفحة التالية (الدفع)
                     await Shell.Current.GoToAsync(nameof(BookingPage));
                 }
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ Error Response ({response.StatusCode}): {errorBody}");
-
-                    // معالجة الأخطاء
-                    try
-                    {
-                        var errorOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                        var errorResponse = JsonSerializer.Deserialize<dynamic>(errorBody, errorOptions);
-                        Console.WriteLine($"❌ Error Details: {errorBody}");
-                        await Toast.Make($"فشل الحجز: {response.StatusCode}").Show();
-                    }
-                    catch (Exception parseEx)
-                    {
-                        Console.WriteLine($"❌ Error parsing response: {parseEx.Message}");
-                        await Toast.Make($"فشل الحجز: خطأ {response.StatusCode}").Show();
-                    }
+                    Console.WriteLine($"❌ Booking failed ({response.StatusCode}): {errorBody}");
+                    await Toast.Make($"فشل الحجز: {response.StatusCode}").Show();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
-                await Toast.Make($"خطأ: {ex.Message}").Show();
+                Console.WriteLine($"❌ Request error: {ex.Message}");
+                await Toast.Make($"خطأ في الاتصال: {ex.Message}").Show();
             }
         }
 
-        /// <summary>
-        /// تنظيف بيانات الحجز بعد الإرسال الناجح
-        /// </summary>
+       
+        private TimeSpan ParseTimeString(string timeString)
+        {
+            if (string.IsNullOrWhiteSpace(timeString))
+                return TimeSpan.Zero;
+
+           
+            if (TimeSpan.TryParse(timeString, out var result))
+                return result;
+
+           
+            var parts = timeString.Split(':');
+            if (parts.Length >= 2 && int.TryParse(parts[0], out var hours) && int.TryParse(parts[1], out var minutes))
+            {
+                int seconds = parts.Length > 2 && int.TryParse(parts[2], out var sec) ? sec : 0;
+                return new TimeSpan(hours, minutes, seconds);
+            }
+
+            return TimeSpan.Zero;
+        }
+
+        
         private void ClearBookingData()
         {
-            // امسح الخدمات المختارة
+            
             SelectedServices.Clear();
             CurrentBooking.SelectedServices.Clear();
 
-            // امسح البروفايدر المختار
+            
             foreach (var p in WorkTeams)
                 p.BorderColor = "#202020";
             SelectedProvider = null;
 
-            // امسح التاريخ واليوم المختار
+          
             SelectedDate = default;
             foreach (var d in ProviderDays)
                 d.BorderColor = "#444444";
 
-            // امسح الوقت المختار
+         
             foreach (var slot in AvailableSlots)
                 slot.IsSelected = false;
             SelectedSlot = null;
 
-            // امسح قائمة الأوقات
+            
             AvailableSlots.Clear();
 
-            // امسح إجمالي السعر
+          
             UpdateTotalPrice();
-
-            Console.WriteLine("🗑️ Booking data cleared");
         }
 
-        ///Section Post User
+       
         [ObservableProperty] private string userName;
         [ObservableProperty] private string password;
         [ObservableProperty] private string confirmPassword;
@@ -929,16 +969,11 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string email;
         [ObservableProperty] private string fullName;
 
-        /// <summary>
-        /// User's first name for profile update
-        /// </summary>
         [ObservableProperty] private string userFirstName = string.Empty;
 
         public ICommand UpDateUserCommand { get; }
         
-        /// <summary>
-        /// Avatar property - alias لـ ImageUser للربط مع XAML
-        /// </summary>
+       
         public string Avatar 
         { 
             get => ImageUser; 
@@ -950,7 +985,7 @@ namespace loukupm.ViewModel
         private async Task LoadUser()
         {
             IsLoadUser = true;
-            currentUser = await _apiServices.GetUserAsync(); // تخزين المستخدم الحالي
+            currentUser = await _apiServices.GetUserAsync(); 
             if (currentUser != null)
             {
                 UserName = currentUser.UserName;
@@ -961,6 +996,33 @@ namespace loukupm.ViewModel
             IsLoadUser = false;
         }
 
+       
+        public async Task LoadUserDataAsync()
+        {
+            try
+            {
+                IsLoadUser = true;
+              
+
+              
+                currentUser = await _apiServices.GetUserAsync();
+                if (currentUser != null)
+                {
+                    UserName = currentUser.UserName;
+                    Email = currentUser.Email;
+                    FullName = currentUser.FullName;
+                    ImageUser = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                   
+                }
+
+                IsLoadUser = false;
+            }
+            catch (Exception ex)
+            {
+               
+                IsLoadUser = false;
+            }
+        }
 
         public ICommand LoadCurrentUserCommand { get; }
 
@@ -970,46 +1032,40 @@ namespace loukupm.ViewModel
 
         public ICommand UpdateUserCommand { get; }
 
-
-
-        /// <summary>
-        /// Update only first name and avatar via ApiServices (MultipartFormDataContent)
-        /// </summary>
         private async Task UpdateUserInfo()
         {
             try
             {
-                // ✅ STEP 1: Validate input data
+                
                 if (string.IsNullOrWhiteSpace(UserFirstName) && string.IsNullOrWhiteSpace(SelectedImagePath))
                 {
                     await Toast.Make("يرجى إدخال الاسم الأول أو اختيار صورة", ToastDuration.Short).Show();
                     return;
                 }
 
-                // ✅ STEP 2: Call ApiServices to send update request
-                Console.WriteLine("📞 Calling ApiServices.UpdateUserProfileAsync...");
+              
                 var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath);
 
-                // ✅ STEP 3: Handle response
+                
                 if (apiResponse?.Success == true)
                 {
-                    // ✅ Success: Update ViewModel properties immediately (no page reload)
+                    
                     if (!string.IsNullOrWhiteSpace(UserFirstName))
                     {
                         UserFirstName = UserFirstName.Trim();
-                        Console.WriteLine($"✅ Property updated: UserFirstName = '{UserFirstName}'");
+                       
                     }
 
                     if (!string.IsNullOrWhiteSpace(SelectedImagePath))
                     {
                         Avatar = SelectedImagePath;
-                        Console.WriteLine($"✅ Property updated: Avatar = '{SelectedImagePath}'");
+                      
                     }
 
-                    // ✅ Show success popup
+                   
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
-                    Console.WriteLine("✅ Update successful - showing confirmation popup");
+                   
                 }
                 else if (apiResponse?.Success == false)
                 {
@@ -1076,7 +1132,7 @@ namespace loukupm.ViewModel
         
         private async Task ChangeUserPasswordAsync()
         {
-            // ✅ التحقق من البيانات
+           
             if (string.IsNullOrWhiteSpace(CurrentPassword))
             {
                 await Toast.Make("يرجى إدخال كلمة المرور الحالية").Show();
@@ -1253,9 +1309,6 @@ namespace loukupm.ViewModel
 
         public ICommand SelectDayCommand { get; }
 
-        /// <summary>
-        /// Command لاختيار وقت معين
-        /// </summary>
         public IRelayCommand<SlotItem> SelectSlotCommand => new RelayCommand<SlotItem>(OnSelectSlot);
 
 
@@ -1265,7 +1318,7 @@ namespace loukupm.ViewModel
 
             var today = DateTime.Today;
 
-            // ✅ عرض اليوم الحالي و 6 أيام قادمة (بدون أيام ماضية)
+            
             for (int i = 0; i < 7; i++)
             {
                 var date = today.AddDays(i);
@@ -1290,27 +1343,25 @@ namespace loukupm.ViewModel
             SelectedDate = day.FullDate;
 
             if (SelectedProvider != null)
-                await LoadAvailableSlotsAsync(); // جلب الأوقات بعد اختيار اليوم
+                await LoadAvailableSlotsAsync(); 
         }
 
-        /// <summary>
-        /// معالج اختيار الوقت المتاح
-        /// </summary>
+       
         private void OnSelectSlot(SlotItem slot)
         {
             if (slot == null) return;
 
             try
             {
-                // ✅ امسح الاختيار السابق
+                
                 foreach (var s in AvailableSlots)
                     s.IsSelected = false;
 
-                // ✅ اختر الوقت الجديد
+               
                 slot.IsSelected = true;
                 SelectedSlot = slot;
 
-                // ✅ خزّن الوقت والتاريخ والبروفايدر
+                
                 if (TimeSpan.TryParse(slot.StartTime, out var parsedTime))
                 {
                     SelectedTime = parsedTime;
@@ -1331,14 +1382,11 @@ namespace loukupm.ViewModel
                 if (SelectedProvider != null)
                     CurrentBooking.ProviderId = SelectedProvider.Id.ToString();
 
-                Console.WriteLine($"✅ Slot selected: {slot.DisplayTime}");
-                Console.WriteLine($"   Provider: {SelectedProvider?.Name}");
-                Console.WriteLine($"   Date: {SelectedDate:yyyy-MM-dd}");
-                Console.WriteLine($"   Time: {slot.StartTime}");
+               
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error in OnSelectSlot: {ex.Message}");
+                
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
@@ -1352,14 +1400,10 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private AvailabilityData currentAvailability;
 
-        /// <summary>
-        /// property لتتبع إذا كانت قائمة الأوقات فارغة (لإظهار/إخفاء رسالة "لا توجد أوقات")
-        /// </summary>
+       
         public bool HasNoAvailableSlots => AvailableSlots?.Count == 0;
 
-        /// <summary>
-        /// property لتتبع إذا حدث خطأ في جلب الأوقات (Bad Request أو خطأ آخر)
-        /// </summary>
+       
         [ObservableProperty]
         private bool hasAvailabilityError = false;
 
@@ -1367,58 +1411,53 @@ namespace loukupm.ViewModel
         {
             if (SelectedProvider == null || SelectedDate == default)
             {
-                Console.WriteLine("❌ Missing required data:");
-                Console.WriteLine($"   SelectedProvider: {SelectedProvider?.Name ?? "NULL"}");
-                Console.WriteLine($"   SelectedDate: {SelectedDate:yyyy-MM-dd}");
+                
                 return;
             }
 
             try
             {
                 Isloadday = true;
-                HasAvailabilityError = false; // ✅ امسح الخطأ السابق
+                HasAvailabilityError = false; 
                 await SetAuthorizationHeaderAsync();
 
-                // إذا لم تكن هناك خدمة مختارة، استخدم أول خدمة من البروفايدر
+                
                 var selectedService = SelectedServices.FirstOrDefault();
                 
                 if (selectedService == null)
                 {
-                    // لو ما فيه خدمة مختارة، استخدم أول خدمة من الخدمات المعروضة
+                   
                     selectedService = FilteredServices.FirstOrDefault();
                     
                     if (selectedService == null)
                     {
-                        Console.WriteLine("⚠️ No services available for this provider");
+                       
                         await Toast.Make("يرجى اختيار خدمة").Show();
                         return;
                     }
                     
-                    Console.WriteLine($"⚠️ No service explicitly selected, using first available: {selectedService.NameServies}");
+                    
                 }
 
-                // التحقق من القيم
+                
                 int providerId = SelectedProvider.Id;
                 int serviceId = selectedService.Id;
                 string dateStr = SelectedDate.ToString("yyyy-MM-dd");
 
-                Console.WriteLine($"📡 Loading availability for:");
-                Console.WriteLine($"   Provider ID: {providerId}");
-                Console.WriteLine($"   Service ID: {serviceId}");
-                Console.WriteLine($"   Date: {dateStr}");
+               
 
-                // بناء رابط الطلب مع provider_id و service_id والتاريخ و branch_id
+              
                 string url = $"https://test.center-yazan.com/api/availability/provider" +
                     $"?provider_id={providerId}" +
                     $"&service_id={serviceId}" +
                     $"&date={dateStr}" +
                     $"&branch_id=1";
 
-                Console.WriteLine($"🔗 URL: {url}");
+              
 
                 var response = await _httpClient.GetAsync(url);
 
-                Console.WriteLine($"📊 Response Status: {response.StatusCode}");
+               
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -1446,12 +1485,12 @@ namespace loukupm.ViewModel
                             });
                         }
 
-                        Console.WriteLine($"✅ Loaded {AvailableSlots.Count} available slots");
+                    
                         await Toast.Make($"تم جلب {AvailableSlots.Count} وقت متاح").Show();
                     }
                     else
                     {
-                        Console.WriteLine($"⚠️ No slots available or invalid response: {availabilityResponse?.Message}");
+                       
                         AvailableSlots.Clear(); // ✅ امسح الأوقات السابقة
                         HasAvailabilityError = true; // ✅ علّم أنه فيه خطأ
                         await Toast.Make("لا توجد أوقات متاحة").Show();
@@ -1460,13 +1499,11 @@ namespace loukupm.ViewModel
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ API Error {response.StatusCode}: {errorBody}");
-                    
-                    // ✅ في حالة الخطأ (Bad Request، etc): امسح الأوقات وعلّم الخطأ
+                  
                     AvailableSlots.Clear();
                     HasAvailabilityError = true;
                     
-                    // محاولة استخراج رسالة خطأ من الـ JSON
+                   
                     try
                     {
                         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -1481,10 +1518,9 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+               
                 
-                // ✅ في حالة الاستثناء: امسح الأوقات وعلّم الخطأ
+                
                 AvailableSlots.Clear();
                 HasAvailabilityError = true;
                 
@@ -1509,7 +1545,7 @@ namespace loukupm.ViewModel
                 SelectedServices.Add(service);
                 CurrentBooking.SelectedServices.Add(service);
                 UpdateTotalPrice();
-                Console.WriteLine($"✅ Service added: {service.NameServies}");
+                
             }
         }
 
@@ -1524,13 +1560,10 @@ namespace loukupm.ViewModel
                 SelectedServices.Remove(serviceToRemove);
                 CurrentBooking.SelectedServices.Remove(serviceToRemove);
                 UpdateTotalPrice();
-                Console.WriteLine($"❌ Service removed: {service.NameServies}");
+                
             }
         }
 
-        /// <summary>
-        /// Cancel a booking by ID
-        /// </summary>
         private async Task CancelBookingAsync(int bookingId)
         {
             try
@@ -1544,7 +1577,7 @@ namespace loukupm.ViewModel
 
                 if (!confirmed)
                 {
-                    Console.WriteLine("❌ Booking cancellation cancelled by user");
+                   
                     return;
                 }
 
@@ -1554,20 +1587,20 @@ namespace loukupm.ViewModel
 
                 if (success)
                 {
-                    Console.WriteLine($"✅ Booking {bookingId} cancelled successfully");
+                   
                     await Toast.Make("تم إلغاء الحجز بنجاح", ToastDuration.Short).Show();
 
                     await LoadBookingsAsync();
                 }
                 else
                 {
-                    Console.WriteLine($"❌ Failed to cancel booking {bookingId}");
+                   
                     await Toast.Make("فشل في إلغاء الحجز", ToastDuration.Short).Show();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception cancelling booking: {ex.Message}");
+               
                 await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
             }
             finally
@@ -1583,7 +1616,7 @@ namespace loukupm.ViewModel
             SelectedServices.Clear();
             CurrentBooking.SelectedServices.Clear();
             UpdateTotalPrice();
-            Console.WriteLine("🗑️  All selected services cleared");
+           
         }
 
         public int GetSelectedServicesCount() => SelectedServices.Count;
@@ -1592,23 +1625,21 @@ namespace loukupm.ViewModel
         public bool HasSelectedServices() => SelectedServices.Count > 0;
 
 
-        /// <summary>
-        /// تحديث إجمالي السعر من الخدمات المختارة
-        /// </summary>
+        
         private void UpdateTotalPrice()
         {
             TotalPrice = SelectedServices.Sum(s =>
             {
                 if (string.IsNullOrWhiteSpace(s?.PriceServies))
                 {
-                    Console.WriteLine($"⚠️ Price is null/empty for service: {s?.NameServies}");
+                   
                     return 0m;
                 }
 
-                // جرب صيغ مختلفة للأرقام (comma و dot as decimal separator)
+              
                 string priceStr = s.PriceServies.Trim();
                 
-                // استبدل الفاصلة بالنقطة إذا لزم الأمر (لتوحيد الصيغة)
+               
                 if (priceStr.Contains(','))
                     priceStr = priceStr.Replace(',', '.');
 
@@ -1624,21 +1655,19 @@ namespace loukupm.ViewModel
             Console.WriteLine($"💰 Total Price Updated: {TotalPrice:F2} (Total items: {SelectedServices.Count})");
         }
 
-        /// <summary>
-        /// الحصول على إجمالي السعر
-        /// </summary>
+       
         public decimal GetTotalPrice()
         {
             return TotalPrice;
         }
 
-        /// مي مستعملة بس احتياطا 
+      
         public int GetTotalDuration()
         {
             return SelectedServices.Sum(s => s.TimeServies);
         }
 
-        ///section PolicyandPrivacy   سياسة الخصوصية يبا 
+        
         public async Task LoadPolicyandPrivacyAsync()
         {
             try
@@ -1655,19 +1684,12 @@ namespace loukupm.ViewModel
             }
         }
 
-        /// <summary>
-        /// Enable reminder - send reminder time to API
-        /// </summary>
         private async Task EnableReminderTimerAsync()
         {
             try
             {
-                // Get the selected time from TimePicker
+               
                 var reminderTime = ReminderTime;
-
-                Console.WriteLine($"⏰ Selected reminder time: {reminderTime:hh\\:mm\\:ss}");
-
-                // Check if there's an upcoming appointment
                 var now = DateTime.Now;
                 var upcomingAppointment = Appointments
                     .FirstOrDefault(a => 
@@ -1680,73 +1702,52 @@ namespace loukupm.ViewModel
                 if (upcomingAppointment == null)
                 {
                     await Toast.Make("لا توجد مواعيد قادمة", ToastDuration.Short).Show();
-                    Console.WriteLine("❌ No upcoming appointments found");
+                   
                     return;
                 }
 
-                // Parse appointment date
+              
                 if (!DateTime.TryParse(upcomingAppointment.AppointmentDate, out var appointmentDateTime))
                 {
                     await Toast.Make("خطأ في قراءة موعد الحجز", ToastDuration.Short).Show();
                     return;
                 }
-
-                // CRITICAL FIX: Construct full DateTime objects for comparison
-                // This handles midnight edge cases correctly
-
-                // Step 1: Create reminderDateTime based on appointment DATE + selected TIME
-                // If the constructed time is >= appointment time, it means reminder is on the same day but after appointment
-                // In that case, move reminder to the previous day
                 var reminderDateTimeOnAppointmentDay = appointmentDateTime.Date.Add(reminderTime);
 
-                // Step 2: If reminder time is after appointment time on the same day, move reminder to previous day
+               
                 var reminderDateTime = reminderDateTimeOnAppointmentDay >= appointmentDateTime
-                    ? reminderDateTimeOnAppointmentDay.AddDays(-1)  // Move to previous day
-                    : reminderDateTimeOnAppointmentDay;              // Keep on same day
+                    ? reminderDateTimeOnAppointmentDay.AddDays(-1)  
+                    : reminderDateTimeOnAppointmentDay;              
 
-                Console.WriteLine($"📅 Appointment details:");
-                Console.WriteLine($"   Appointment date/time: {appointmentDateTime:yyyy-MM-dd HH:mm:ss}");
-                Console.WriteLine($"   Selected reminder time: {reminderTime:hh\\:mm\\:ss}");
-                Console.WriteLine($"   Constructed reminder date/time: {reminderDateTime:yyyy-MM-dd HH:mm:ss}");
-
-                // ✅ CORRECT: Compare full DateTime objects, not just TimeSpan
-                // This handles midnight edge cases properly
                 if (reminderDateTime >= appointmentDateTime)
                 {
-                    Console.WriteLine($"❌ Reminder time {reminderDateTime:yyyy-MM-dd HH:mm:ss} is NOT before appointment time {appointmentDateTime:yyyy-MM-dd HH:mm:ss}");
+                   
                     await Toast.Make("⚠️ وقت التذكير يجب أن يكون قبل موعد الحجز", ToastDuration.Short).Show();
                     return;
                 }
 
-                Console.WriteLine($"✅ Reminder time {reminderDateTime:yyyy-MM-dd HH:mm:ss} is BEFORE appointment time {appointmentDateTime:yyyy-MM-dd HH:mm:ss}");
+              
 
                 var remindAtDateTime = reminderDateTime;
 
-                Console.WriteLine($"📤 Sending reminder to API:");
-                Console.WriteLine($"   Appointment ID: {upcomingAppointment.Id}");
-                Console.WriteLine($"   Remind at: {remindAtDateTime:yyyy-MM-ddTHH:mm:ss}");
 
                 // Send to API
                 await SendAppointmentReminder(upcomingAppointment, remindAtDateTime);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
                 await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
             }
         }
 
-        /// <summary>
-        /// Send appointment reminder to API
-        /// </summary>
+       
         private async Task SendAppointmentReminder(Appointment appointment, DateTime remindAtDateTime)
         {
             try
             {
                 await SetAuthorizationHeaderAsync();
 
-                // Create reminder data with just appointment_id and remind_at
+               
                 var reminderData = new
                 {
                     appointment_id = appointment.Id,
@@ -1766,28 +1767,24 @@ namespace loukupm.ViewModel
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"✅ Reminder sent successfully!");
-                    Console.WriteLine($"   Response: {responseBody}");
+                  
                     await Toast.Make($"✅ تم إرسال التذكير بنجاح", ToastDuration.Short).Show();
                 }
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ Failed: {response.StatusCode}");
-                    Console.WriteLine($"   Error: {errorBody}");
+                   
                     await Toast.Make($"❌ فشل الإرسال: {response.StatusCode}", ToastDuration.Short).Show();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
+              
                 await Toast.Make($"❌ خطأ: {ex.Message}", ToastDuration.Short).Show();
             }
         }
 
-        /// <summary>
-        /// Stop the reminder timer (not needed in this implementation)
-        /// </summary>
+      
         public void StopReminderTimer()
         {
             Console.WriteLine("ℹ️ Reminders are sent directly to API, nothing to stop");

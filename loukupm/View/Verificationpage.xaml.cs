@@ -158,7 +158,8 @@ namespace loukupm.View
                 var payload = new
                 {
                     email = viewModel.Email,
-                    code = code
+                    code = code,
+                    type = 1
                 };
 
                 var json = JsonSerializer.Serialize(payload);

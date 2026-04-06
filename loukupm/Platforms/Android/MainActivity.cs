@@ -3,49 +3,42 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using AndroidX.Activity;
+using AndroidX.Core.View;
 using loukupm.Services;
 
 namespace loukupm
 {
-    [Activity(
-         Theme = "@style/Maui.SplashTheme",
-         MainLauncher = true,
-         LaunchMode = LaunchMode.SingleTop,
-         ConfigurationChanges = ConfigChanges.ScreenSize
-                              | ConfigChanges.Orientation
-                              | ConfigChanges.UiMode
-                              | ConfigChanges.ScreenLayout
-                              | ConfigChanges.SmallestScreenSize
-                              | ConfigChanges.Density,
-         WindowSoftInputMode = SoftInput.AdjustPan)]
+    [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // تحديد لون شريط الحالة
-            Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#202020"));
-
-            // ─────────────────────────────────────────────────────────
-            // Register back-navigation handler using the modern Android API.
-            //
-            // OnBackPressed() is deprecated on Android 13+ (API 33).
-            // OnBackPressedDispatcher is the correct approach and works on
-            // all API levels. Shell.OnBackButtonPressed() is NOT reliable
-            // in Release APK builds due to IL trimming — this is the fix.
-            // ─────────────────────────────────────────────────────────
-            OnBackPressedDispatcher.AddCallback(this, new AppBackPressedCallback(this));
+            ApplyStatusBarColor();
         }
 
-        // ─────────────────────────────────────────────────────────────
-        // NOTIFICATION TAP HANDLER - Cold Start & Resume
-        // 
-        // Called when:
-        // 1. App is running and notification is tapped (OnNewIntent fires)
-        // 2. App is terminated and launched via notification tap
-        // 
-        // KEY: LaunchMode.SingleTop ensures this is called in both cases
+        protected override void OnResume()
+        {
+            base.OnResume();
+            ApplyStatusBarColor();
+        }
+
+        private void ApplyStatusBarColor()
+        {
+            // فرض لون شريط الحالة #202020
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+            {
+                Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#202020"));
+            }
+
+            // API 29+ - استخدم الطريقة الحديثة
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+            {
+                WindowCompat.SetDecorFitsSystemWindows(Window, true);
+            }
+        }
+
         // ─────────────────────────────────────────────────────────────
         protected override void OnNewIntent(Android.Content.Intent intent)
         {
@@ -127,7 +120,7 @@ namespace loukupm
             {
                 _activity = activity;
             }
-
+           
             public override void HandleOnBackPressed()
             {
                 var currentPage = NavigationService.GetCurrentPageName();

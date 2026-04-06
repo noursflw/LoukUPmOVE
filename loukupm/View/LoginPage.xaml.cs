@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using static loukupm.Model.Auth;
 using System.Diagnostics.CodeAnalysis;
 using OneSignalSDK.DotNet;
+using loukupm.ViewModel;
 
 
 namespace loukupm.View;
@@ -131,7 +132,10 @@ public partial class LoginPage : ContentPage
                         await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
                     var popup = new CompletedLogin();
                     await this.ShowPopupAsync(popup);
-                    
+
+                    // ⭐ تحميل بيانات المستخدم قبل التنقل
+                    await AppViewModel.Instance.LoadUserDataAsync();
+
                     // Clear the navigation stack and navigate to HomePage using the navigation service
                     await ShellNavigationManager.NavigateToHomeAndClear();
 

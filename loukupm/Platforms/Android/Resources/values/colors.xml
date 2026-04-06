@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#EBD750</color>
-    <color name="colorPrimaryDark">#EBD750</color>
-    <color name="colorAccent">#EBD750</color>
-	<style name="Maui.MainTheme" parent="Theme.Material3.DayNight"></style>
+
+	<color name="colorPrimary">#EBD750</color>
+	<color name="colorPrimaryDark">#EBD750</color>
+	<color name="colorAccent">#EBD750</color>
+
 </resources>

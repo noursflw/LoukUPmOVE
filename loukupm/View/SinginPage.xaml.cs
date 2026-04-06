@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using static loukupm.Model.Auth;
+using loukupm.ViewModel;
 
 namespace loukupm.View;
 
@@ -137,6 +138,10 @@ public partial class SinginPage : ContentPage
                 }
 
                 await this.ShowPopupAsync(new CompletedLogin());
+
+                // ⭐ تحميل بيانات المستخدم قبل التنقل
+                await AppViewModel.Instance.LoadUserDataAsync();
+
                 await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)

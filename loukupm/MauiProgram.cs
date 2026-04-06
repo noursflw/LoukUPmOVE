@@ -65,7 +65,7 @@ public static class MauiProgram
 
         return builder.Build();
     }
-
+  
     private static string GetConfigurationFilePath()
     {
 #if __ANDROID__
@@ -88,3 +88,4 @@ public static class MauiProgram
 #endif
     }
 }
+
