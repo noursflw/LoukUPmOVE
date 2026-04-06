@@ -176,7 +176,7 @@ namespace loukupm.View
                 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("✅ OTP verified successfully");
+                   
                     return true;
                 }
 

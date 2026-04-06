@@ -685,6 +685,15 @@
   <data name="PolicyLastUpdate" xml:space="preserve">
     <value>آخر تحديث: ديسمبر 2026</value>
   </data>
+  <data name="notfoundtime" xml:space="preserve">
+    <value>لا توجد أوقات متاحة</value>
+  </data>
+  <data name="notfoundapement" xml:space="preserve">
+    <value>لا توجد حجوزات</value>
+  </data>
+  <data name="younotapement" xml:space="preserve">
+    <value>لم تقم بحجز أي موعد حتى الآن</value>
+  </data>
   <data name="TermsIntroduction" xml:space="preserve">
     <value>باستخدام تطبيق حجز مواعيد الحلاق فإنك توافق على الشروط التالية.</value>
   </data>
@@ -799,16 +808,118 @@
   <data name="TermsLastUpdateTerms" xml:space="preserve">
     <value>آخر تحديث: مارس 2026</value>
   </data>
-  <data name="notfoundtime" xml:space="preserve">
-    <value>لا توجد أوقات متاحة</value>
-  </data>
-  <data name="notfoundapement" xml:space="preserve">
-    <value>لا توجد حجوزات</value>
-  </data>
-  <data name="younotapement" xml:space="preserve">
-    <value>لم تقم بحجز أي موعد حتى الآن</value>
-  </data>
   <data name="CancelBooking" xml:space="preserve">
     <value>إلغاء الحجز</value>
+  </data>
+  <data name="Pleaseenterthepasswordinbothfields" xml:space="preserve">
+    <value>يرجى إدخال كلمة المرور في كلا الحقلين</value>
+  </data>
+  <data name="Passwordsdonotmatch" xml:space="preserve">
+    <value>كلمة المرور غير متطابقة</value>
+  </data>
+  <data name="Passwordupdatedsuccessfully" xml:space="preserve">
+    <value>تم تحديث كلمة المرور بنجاح</value>
+  </data>
+  <data name="Failedtoupdatethepassword" xml:space="preserve">
+    <value>فشل في تحديث كلمة المرور</value>
+  </data>
+  <data name="Errorbuildingtheservicelist" xml:space="preserve">
+    <value>خطأ في بناء قائمة الخدمات</value>
+  </data>
+  <data name="Pleaseselectatleastoneservice" xml:space="preserve">
+    <value>يرجى اختيار خدمة واحدة على الأقل</value>
+  </data>
+  <data name="Pleaseselectaserviceprovider" xml:space="preserve">
+    <value>يرجى اختيار مزود الخدمة</value>
+  </data>
+  <data name="Pleaseselectadate" xml:space="preserve">
+    <value>يرجى اختيار تاريخ</value>
+  </data>
+  <data name="Pleaseselectatime" xml:space="preserve">
+    <value>يرجى اختيار وقت</value>
+  </data>
+  <data name="Bookingsuccessful" xml:space="preserve">
+    <value>تم الحجز بنجاح</value>
+  </data>
+  <data name="Bookingfailed" xml:space="preserve">
+    <value>Booking failed</value>
+  </data>
+  <data name="Connectionerror" xml:space="preserve">
+    <value>خطأ في الاتصال</value>
+  </data>
+  <data name="Pleaseenterthefirstnameorselectanimage" xml:space="preserve">
+    <value>يرجى إدخال الاسم الأول أو اختيار صورة</value>
+  </data>
+  <data name="Anunexpectederroroccurred" xml:space="preserve">
+    <value>حدث خطأ غير متوقع</value>
+  </data>
+  <data name="Pleaseenterthecurrentpassword" xml:space="preserve">
+    <value>يرجى إدخال كلمة المرور الحالية</value>
+  </data>
+  <data name="Pleaseenterthenewpasswordinbothfields" xml:space="preserve">
+    <value>يرجى إدخال كلمة المرور الجديدة في كلا الحقلين</value>
+  </data>
+  <data name="Thenewpasswordsdonotmatch" xml:space="preserve">
+    <value>كلمات المرور الجديدة غير متطابقة</value>
+  </data>
+  <data name="Thenewpasswordmustbeatleast8characterslong" xml:space="preserve">
+    <value>كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل</value>
+  </data>
+  <data name="Thenewpasswordmustbedifferentfromthecurrentone" xml:space="preserve">
+    <value>كلمة المرور الجديدة يجب أن تكون مختلفة عن الحالية</value>
+  </data>
+  <data name="Invaliddata" xml:space="preserve">
+    <value>خطأ في البيانات</value>
+  </data>
+  <data name="DataverificationfailedPleasecheckthevalidityofthepasswords" xml:space="preserve">
+    <value>فشل التحقق من البيانات. تحقق من صحة كلمات المرور</value>
+  </data>
+  <data name="FailedtochangethepasswordPleasechecktheentereddata" xml:space="preserve">
+    <value>فشل تغيير كلمة المرور. تحقق من صحة البيانات المدخلة</value>
+  </data>
+  <data name="Thecurrentpasswordisincorrect" xml:space="preserve">
+    <value>كلمة المرور الحالية غير صحيحة</value>
+  </data>
+  <data name="InvalidrequestPleasechecktheentereddata" xml:space="preserve">
+    <value>طلب غير صحيح. تحقق من البيانات المدخلة</value>
+  </data>
+  <data name="Failedtochangethepassword" xml:space="preserve">
+    <value>فشل تغيير كلمة المرور</value>
+  </data>
+  <data name="Errorreadingthetime" xml:space="preserve">
+    <value>خطأ في قراءة الوقت</value>
+  </data>
+  <data name="Pleaseselectaservice" xml:space="preserve">
+    <value>يرجى اختيار خدمة</value>
+  </data>
+  <data name="Noavailabletimes" xml:space="preserve">
+    <value>لا توجد أوقات متاحة</value>
+  </data>
+  <data name="Fetchedsuccessfully" xml:space="preserve">
+    <value>تم جلب</value>
+  </data>
+  <data name="Availabletime" xml:space="preserve">
+    <value>وقت متاح</value>
+  </data>
+  <data name="Bookingcanceledsuccessfully" xml:space="preserve">
+    <value>تم إلغاء الحجز بنجاح</value>
+  </data>
+  <data name="Failedtocancelthebooking" xml:space="preserve">
+    <value>فشل في إلغاء الحجز</value>
+  </data>
+  <data name="Noupcomingappointments" xml:space="preserve">
+    <value>لا توجد مواعيد قادمة</value>
+  </data>
+  <data name="Errorreadingthebookingappointment" xml:space="preserve">
+    <value>خطأ في قراءة موعد الحجز</value>
+  </data>
+  <data name="Theremindertimemustbebeforethebookingappointment" xml:space="preserve">
+    <value>وقت التذكير يجب أن يكون قبل موعد الحجز</value>
+  </data>
+  <data name="Remindersentsuccessfully" xml:space="preserve">
+    <value>تم إرسال التذكير بنجاح</value>
+  </data>
+  <data name="Failedtosend" xml:space="preserve">
+    <value>فشل الإرسال</value>
   </data>
 </root>

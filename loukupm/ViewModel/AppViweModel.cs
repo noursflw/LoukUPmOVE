@@ -103,7 +103,7 @@ namespace loukupm.ViewModel
 
            
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
-            ConfirmCommand = new Command(async () => await SendCodeAsync());
+           
             ProviderDays = new ObservableCollection<DayItem>();
             SelectDayCommand = new Command<DayItem>(OnSelectDay);
             LoadCurrentWeekDays();
@@ -118,7 +118,7 @@ namespace loukupm.ViewModel
             {
                 if (service == null) return;
 
-                Console.WriteLine($"🔍 Service clicked: {service.NameServies}, Price: '{service.PriceServies}'");
+              
 
                
                 var exists = SelectedServices.Any(s => s.Id == service.Id);
@@ -127,7 +127,7 @@ namespace loukupm.ViewModel
                 {
                     SelectedServices.Add(service);  
                     CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
-                    Console.WriteLine($"✅ Service added: {service.NameServies}, Price: {service.PriceServies}");
+                  
                     
                    
                     await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
@@ -139,20 +139,17 @@ namespace loukupm.ViewModel
                     await Toast.Make(AppResource.theserviewasdone, ToastDuration.Short).Show();
                 }
 
-                // تحديث إجمالي السعر
+               
                 UpdateTotalPrice();
 
-                // طباعة القائمة للمراجعة
-                Console.WriteLine("📋 Current Selected Services:");
+               
                 foreach (var s in SelectedServices)
                     Console.WriteLine($"   - {s.NameServies} (Price: '{s.PriceServies}')");
-                Console.WriteLine($"💰 Total Price: {TotalPrice}");
+               
             });
 
-            // command to allow view to trigger reload
+           
             LoadAppointmentsCommand = new AsyncRelayCommand(LoadBookingsAsync);
-
-            // start async initialization (load user first so appointments can be loaded)
             _ = InitializeAsync();
         }
 
@@ -168,7 +165,7 @@ namespace loukupm.ViewModel
 
         private async Task SetAuthorizationHeaderAsync()
         {
-            // استدعاء SecureStorage بشكل غير متزامن
+            
             string? token = await SecureStorage.GetAsync("auth_token");
 
             if (!string.IsNullOrEmpty(token))
@@ -179,7 +176,7 @@ namespace loukupm.ViewModel
             }
             else
             {
-                // إزالة أي Authorization قديمة إذا لم يكن هناك توكن
+               
                 _httpClient.DefaultRequestHeaders.Authorization = null;
             }
 
@@ -272,7 +269,7 @@ namespace loukupm.ViewModel
             SearchTeamTerm = string.Empty;
             FilteredServices = new ObservableCollection<Servies>(Services);
             FilteredWorkTeams = new ObservableCollection<WorkTeam>(WorkTeams);
-            Console.WriteLine("🗑️ All searches cleared");
+          
         }
 
         
@@ -325,7 +322,7 @@ namespace loukupm.ViewModel
             {
                 IsLoadNotifiction = true;
 
-                // Load first page of notifications
+                
                 var (notificationList, unreadCount, hasMore) = await _apiServices.GetNotificationsAsync(cursor: null, perPage: 15);
 
                 Notifications.Clear();
@@ -340,13 +337,13 @@ namespace loukupm.ViewModel
 
                 UnreadNotificationCount = unreadCount;
                 HasMoreNotifications = hasMore;
-                NextNotificationCursor = null; // Reset cursor for first load
+                NextNotificationCursor = null; 
 
-                Console.WriteLine($"✅ Notifications loaded: {Notifications.Count} items, {UnreadNotificationCount} unread");
+              
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading notifications: {ex.Message}");
+               
                 Notifications.Clear();
             }
             finally
@@ -359,7 +356,7 @@ namespace loukupm.ViewModel
         {
             if (!HasMoreNotifications || string.IsNullOrEmpty(NextNotificationCursor))
             {
-                Console.WriteLine("⚠️ No more notifications to load");
+                
                 return;
             }
 
@@ -376,11 +373,11 @@ namespace loukupm.ViewModel
                 }
 
                 HasMoreNotifications = hasMore;
-                Console.WriteLine($"✅ Loaded {notificationList.Count} more notifications");
+              
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading more notifications: {ex.Message}");
+                
             }
         }
 
@@ -408,11 +405,11 @@ namespace loukupm.ViewModel
 
                 IsWorkTeamLoad = false;
 
-                Console.WriteLine($"✅ Loaded {WorkTeams.Count} work team members");
+                
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading work teams: {ex}");
+               
             }
             finally
             {
@@ -433,15 +430,15 @@ namespace loukupm.ViewModel
             provider.BorderColor = "#FFD700";
             SelectedProvider = provider;
 
-            Console.WriteLine($"✅ Provider selected: {provider.Name} (ID: {provider.Id})");
+          
 
-            // ✅ احفظ الخدمات المختارة سابقاً
+           
             var previousSelectedServices = new List<Servies>(SelectedServices);
 
-            // ✅ جلب خدمات هذا البروفايدر فقط
+           
             await LoadProviderServicesAsync(provider.Id);
 
-            // ✅ تحقق من أي الخدمات السابقة يقدمها البروفايدر الجديد
+           
             if (previousSelectedServices.Count > 0 && FilteredServices.Count > 0)
             {
                 SelectedServices.Clear();
@@ -449,27 +446,27 @@ namespace loukupm.ViewModel
 
                 foreach (var service in previousSelectedServices)
                 {
-                    // تحقق إذا كان البروفايدر الجديد يقدم هذه الخدمة
+                    
                     if (FilteredServices.Any(s => s.Id == service.Id))
                     {
                         SelectedServices.Add(service);
                         CurrentBooking.SelectedServices.Add(service);
-                        Console.WriteLine($"✅ Service retained: {service.NameServies}");
+                       
                     }
                     else
                     {
-                        Console.WriteLine($"⚠️ Service not offered by new provider: {service.NameServies}");
+                       return;
                     }
                 }
             }
             else
             {
-                // إذا ما فيه خدمات محددة سابقاً، امسح الخدمات الحالية
+               
                 SelectedServices.Clear();
                 CurrentBooking.SelectedServices.Clear();
             }
 
-            // ✅ جلب الأوقات إذا تم اختيار تاريخ
+           
             if (SelectedDate != default)
                 await LoadAvailableSlotsAsync();
         }
@@ -478,27 +475,26 @@ namespace loukupm.ViewModel
         {
             try
             {
-                Console.WriteLine($"📡 Loading services for provider {providerId}...");
                 
-                // جلب الخدمات (سيرجع خدمات البروفايدر إن وجدت، أو جميع الخدمات كبديل)
+                
+                
                 var providerServices = await _apiServices.GetProviderServicesAsync(providerId);
 
                 if (providerServices != null && providerServices.Count > 0)
                 {
-                    // عرض الخدمات
+                   
                     FilteredServices = new ObservableCollection<Servies>(providerServices);
-                    Console.WriteLine($"✅ Showing {FilteredServices.Count} services available for this provider");
+                  
                 }
                 else
                 {
-                    Console.WriteLine($"⚠️ No services found - showing all available services");
+                  
                     FilteredServices = new ObservableCollection<Servies>(Services);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading provider services: {ex.Message}");
-                // في حالة الخطأ: عرض جميع الخدمات
+              
                 FilteredServices = new ObservableCollection<Servies>(Services);
             }
         }
@@ -523,7 +519,7 @@ namespace loukupm.ViewModel
 
                 FilteredServices = new ObservableCollection<Servies>(Services);
 
-                // استخراج التصنيفات بدون تكرار
+               
                 Categories.Clear();
                 var uniqueCategories = Services
                     .Where(s => s.Category != null)
@@ -536,7 +532,7 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading services: {ex}");
+                return;
             }
             finally
             {
@@ -563,85 +559,13 @@ namespace loukupm.ViewModel
                 );
             }
 
-            // If there's an active search, reapply it to the newly filtered category
+           
             if (!string.IsNullOrWhiteSpace(SearchServiceTerm))
             {
                 PerformServiceSearch(SearchServiceTerm);
             }
         }
      
-        [RelayCommand]
-        public async Task PostEmailAsync()
-        {
-            if (string.IsNullOrWhiteSpace(Email))
-            {
-                await App.Current.MainPage.DisplayAlert("خطأ", "يرجى إدخال البريد الإلكتروني", "موافق");
-                return;
-            }
-
-            using var client = new HttpClient();
-            var json = JsonSerializer.Serialize(new { email = Email });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            try
-            {
-                var response = await client.PostAsync("https://example.com/api/send-email", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    await App.Current.MainPage.DisplayAlert("تم", "تم إرسال البريد الإلكتروني بنجاح", "موافق");
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("فشل", "فشل في إرسال البريد الإلكتروني", "موافق");
-                }
-            }
-            catch (Exception ex)
-            {
-                await App.Current.MainPage.DisplayAlert("خطأ", ex.Message, "موافق");
-            }
-        }
-
-
-
-
-
-        public string Digit1 { get; set; }
-        public string Digit2 { get; set; }
-        public string Digit3 { get; set; }
-        public string Digit4 { get; set; }
-
-        public ICommand ConfirmCommand { get; }
-        private async Task SendCodeAsync()
-        {
-            string code = $"{Digit1}{Digit2}{Digit3}{Digit4}";
-            if (code.Length < 4)
-            {
-                await App.Current.MainPage.DisplayAlert("خطأ", "الرجاء إدخال الكود الكامل", "موافق");
-                return;
-            }
-
-            using var client = new HttpClient();
-            var json = JsonSerializer.Serialize(new { code });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            try
-            {
-                // ضع عنوان الـ API الصحيح هنا
-                var response = await client.PostAsync("https://example.com/api/verify", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    await App.Current.MainPage.DisplayAlert("تم", "تم التحقق بنجاح", "موافق");
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("فشل", "كود غير صالح", "موافق");
-                }
-            }
-            catch (Exception ex)
-            {
-                await App.Current.MainPage.DisplayAlert("خطأ", ex.Message, "موافق");
-            }
-        }
         [ObservableProperty]
         private Servies selectedService;
 
@@ -655,13 +579,13 @@ namespace loukupm.ViewModel
         {
             if (string.IsNullOrWhiteSpace(NewPassword) || string.IsNullOrWhiteSpace(ConfirmPassword))
             {
-                await App.Current.MainPage.DisplayAlert("خطأ", "يرجى إدخال كلمة المرور في كلا الحقلين", "موافق");
+                await Toast.Make(AppResource.Pleaseenterthepasswordinbothfields).Show();
                 return;
             }
 
             if (NewPassword != ConfirmPassword)
             {
-                await App.Current.MainPage.DisplayAlert("خطأ", "كلمة المرور غير متطابقة", "موافق");
+                await Toast.Make(AppResource.Passwordsdonotmatch).Show();
                 return;
             }
 
@@ -674,11 +598,11 @@ namespace loukupm.ViewModel
                 var response = await client.PostAsync("https://example.com/api/reset-password", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    await App.Current.MainPage.DisplayAlert("تم", "تم تحديث كلمة المرور بنجاح", "موافق");
+                    await Toast.Make(AppResource.Passwordupdatedsuccessfully).Show();
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("فشل", "فشل في تحديث كلمة المرور", "موافق");
+                    await Toast.Make(AppResource.Failedtoupdatethepassword).Show();
                 }
             }
             catch (Exception ex)
@@ -717,7 +641,7 @@ namespace loukupm.ViewModel
                 var (services, totalEndTime) = BuildServicesArray();
                 if (services == null || services.Count == 0)
                 {
-                    await Toast.Make("خطأ في بناء قائمة الخدمات").Show();
+                    await Toast.Make(AppResource.Errorbuildingtheservicelist).Show();
                     return;
                 }
 
@@ -735,8 +659,7 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception in PostBookingAsync: {ex.Message}");
-                await Toast.Make($"خطأ: {ex.Message}").Show();
+               return;
             }
         }
 
@@ -744,25 +667,25 @@ namespace loukupm.ViewModel
         {
             if (SelectedServices?.Count == 0)
             {
-                Toast.Make("يرجى اختيار خدمة واحدة على الأقل").Show();
+                Toast.Make(AppResource.Pleaseselectatleastoneservice).Show();
                 return false;
             }
 
             if (SelectedProvider == null)
             {
-                Toast.Make("يرجى اختيار مزود الخدمة").Show();
+                Toast.Make(AppResource.Pleaseselectaserviceprovider).Show();
                 return false;
             }
 
             if (SelectedDate == default)
             {
-                Toast.Make("يرجى اختيار تاريخ").Show();
+                Toast.Make(AppResource.Pleaseselectadate).Show();
                 return false;
             }
 
             if (SelectedSlot == null)
             {
-                Toast.Make("يرجى اختيار وقت").Show();
+                Toast.Make(AppResource.Pleaseselectatime).Show();
                 return false;
             }
 
@@ -775,7 +698,7 @@ namespace loukupm.ViewModel
             {
                 string serviceList = string.Join(", ", unavailableServices.Select(s => s.NameServies));
                 Toast.Make($"الخدمات غير متاحة من {SelectedProvider.Name}: {serviceList}", ToastDuration.Long).Show();
-                Console.WriteLine($"❌ Unavailable services: {serviceList}");
+              
                 return false;
             }
 
@@ -790,14 +713,14 @@ namespace loukupm.ViewModel
 
             foreach (var service in SelectedServices)
             {
-                // Get duration with fallback to 30 minutes
+                
                 int serviceDuration = GetServiceDuration(service);
                 if (serviceDuration <= 0)
                     serviceDuration = 30;
 
                 TimeSpan endTime = currentStartTime.Add(TimeSpan.FromMinutes(serviceDuration));
 
-                // Add service with sequential timing
+               
                 services.Add(new
                 {
                     service_id = service.Id,
@@ -805,9 +728,7 @@ namespace loukupm.ViewModel
                     start_time = currentStartTime.ToString(@"hh\:mm")
                 });
 
-                Console.WriteLine($"   ⏱️ {service.NameServies}: {currentStartTime:hh\\:mm} - {endTime:hh\\:mm} ({serviceDuration}m)");
-
-                // Update start time for next service
+           
                 currentStartTime = endTime;
             }
 
@@ -823,13 +744,13 @@ namespace loukupm.ViewModel
             int duration = service.TimeServies;
             if (duration <= 0)
             {
-                Console.WriteLine($"⚠️ Invalid duration for {service.NameServies}: {duration}, using 30m");
+              
                 return 30;
             }
 
-            if (duration > 480) // 8 hours max per service
+            if (duration > 480) 
             {
-                Console.WriteLine($"⚠️ Unrealistic duration for {service.NameServies}: {duration}m, capping at 480m");
+               
                 return 480;
             }
 
@@ -852,7 +773,7 @@ namespace loukupm.ViewModel
                     System.Globalization.CultureInfo.InvariantCulture, out var price))
                     return price;
 
-                Console.WriteLine($"⚠️ Failed to parse price '{s.PriceServies}' for {s.NameServies}");
+             
                 return 0m;
             });
         }
@@ -891,8 +812,8 @@ namespace loukupm.ViewModel
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"✅ Booking successful (HTTP {response.StatusCode})");
-                    await Toast.Make("تم الحجز بنجاح! ✅").Show();
+                  
+                    await Toast.Make(AppResource.Bookingsuccessful).Show();
 
                     ClearBookingData();
                     await Shell.Current.GoToAsync(nameof(BookingPage));
@@ -900,14 +821,14 @@ namespace loukupm.ViewModel
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ Booking failed ({response.StatusCode}): {errorBody}");
-                    await Toast.Make($"فشل الحجز: {response.StatusCode}").Show();
+                   
+                    await Toast.Make(AppResource.Bookingfailed).Show();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Request error: {ex.Message}");
-                await Toast.Make($"خطأ في الاتصال: {ex.Message}").Show();
+              
+                await Toast.Make(AppResource.Connectionerror).Show();
             }
         }
 
@@ -1039,7 +960,7 @@ namespace loukupm.ViewModel
                 
                 if (string.IsNullOrWhiteSpace(UserFirstName) && string.IsNullOrWhiteSpace(SelectedImagePath))
                 {
-                    await Toast.Make("يرجى إدخال الاسم الأول أو اختيار صورة", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Pleaseenterthefirstnameorselectanimage, ToastDuration.Short).Show();
                     return;
                 }
 
@@ -1071,7 +992,7 @@ namespace loukupm.ViewModel
                 {
                     // ❌ API returned success: false - show error message
                     string errorMessage = apiResponse?.Message ?? "فشل في تحديث البيانات";
-                    Console.WriteLine($"❌ API returned success: false - {errorMessage}");
+                  
                     await Toast.Make(errorMessage, ToastDuration.Short).Show();
 
                     var popup = new NoConfermChange();
@@ -1079,8 +1000,7 @@ namespace loukupm.ViewModel
                 }
                 else if (apiResponse?.Success == null)
                 {
-                    // ⚠️ Success might be implicit (JSON parsing failed but HTTP was 200)
-                    Console.WriteLine($"⚠️ Response success was null - treating as success");
+                    
 
                     if (!string.IsNullOrWhiteSpace(UserFirstName))
                     {
@@ -1097,9 +1017,8 @@ namespace loukupm.ViewModel
                 }
                 else
                 {
-                    // Fallback for unexpected response
-                    Console.WriteLine($"⚠️ Unexpected response state");
-                    await Toast.Make("حدث خطأ غير متوقع", ToastDuration.Short).Show();
+                    
+                    await Toast.Make(AppResource.Anunexpectederroroccurred, ToastDuration.Short).Show();
 
                     var popup = new NoConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
@@ -1107,9 +1026,8 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception in UpdateUserInfo: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
-                await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
+               
+                await Toast.Make(AppResource.Anunexpectederroroccurred, ToastDuration.Short).Show();
 
                 var popup = new NoConfermChange();
                 await Application.Current.MainPage.ShowPopupAsync(popup);
@@ -1135,40 +1053,37 @@ namespace loukupm.ViewModel
            
             if (string.IsNullOrWhiteSpace(CurrentPassword))
             {
-                await Toast.Make("يرجى إدخال كلمة المرور الحالية").Show();
+                await Toast.Make(AppResource.Pleaseenterthecurrentpassword).Show();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
-                await Toast.Make("يرجى إدخال كلمة المرور الجديدة في كلا الحقلين").Show();
+                await Toast.Make(AppResource.Pleaseenterthenewpasswordinbothfields).Show();
                 return;
             }
 
             if (password != confirmPassword)
             {
-                await Toast.Make("كلمات المرور الجديدة غير متطابقة").Show();
+                await Toast.Make(AppResource.Thenewpasswordsdonotmatch).Show();
                 return;
             }
 
             if (password.Length < 8)
             {
-                await Toast.Make("كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل").Show();
+                await Toast.Make(AppResource.Thenewpasswordmustbeatleast8characterslong).Show();
                 return;
             }
 
             if (password == CurrentPassword)
             {
-                await Toast.Make("كلمة المرور الجديدة يجب أن تكون مختلفة عن الحالية").Show();
+                await Toast.Make(AppResource.Thenewpasswordmustbedifferentfromthecurrentone).Show();
                 return;
             }
 
             try
             {
                 await SetAuthorizationHeaderAsync();
-
-                // ✅ بناء البيانات بالصيغة الصحيحة للـ API
-                // الصيغة الأولى: snake_case (الأكثر شيوعاً في APIs)
                 var passwordChangeData = new
                 {
                     current_password = CurrentPassword,
@@ -1176,30 +1091,22 @@ namespace loukupm.ViewModel
                     password_confirmation = confirmPassword
                 };
 
-                Console.WriteLine("📤 Sending password change request:");
-                Console.WriteLine($"   Current Password: ***");
-                Console.WriteLine($"   New Password: ***");
-                Console.WriteLine($"   Confirmation: ***");
-                Console.WriteLine($"   Password Length: {password.Length}");
-
                 var json = JsonSerializer.Serialize(passwordChangeData);
-                Console.WriteLine($"📋 JSON Payload: {json}");
+             
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(
                     "https://test.center-yazan.com/api/profile/change-password",
                     content);
 
-                Console.WriteLine($"📊 Response Status: {response.StatusCode}");
+              
 
                 var responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"📄 Response Body: {responseBody}");
+            
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"✅ Password changed successfully");
-
-                    // ✅ تنظيف الحقول بعد النجاح
+                  
                     CurrentPassword = string.Empty;
                     Password = string.Empty;
                     ConfirmPassword = string.Empty;
@@ -1208,8 +1115,7 @@ namespace loukupm.ViewModel
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
                 {
-                    // معالجة خطأ 422 Unprocessable Entity
-                    Console.WriteLine($"❌ Validation Error (422): {responseBody}");
+                 
                     
                     try
                     {
@@ -1220,7 +1126,7 @@ namespace loukupm.ViewModel
                         {
                             var errorMessages = string.Join("\n", 
                                 errorResponse.Errors.Values.SelectMany(e => e));
-                            await Toast.Make($"خطأ في البيانات:\n{errorMessages}").Show();
+                            await Toast.Make(AppResource.Invaliddata).Show();
                         }
                         else if (!string.IsNullOrEmpty(errorResponse?.Message))
                         {
@@ -1228,38 +1134,35 @@ namespace loukupm.ViewModel
                         }
                         else
                         {
-                            await Toast.Make("فشل التحقق من البيانات. تحقق من صحة كلمات المرور").Show();
+                            await Toast.Make(AppResource.DataverificationfailedPleasecheckthevalidityofthepasswords).Show();
                         }
                     }
                     catch
                     {
-                        await Toast.Make("فشل تغيير كلمة المرور. تحقق من صحة البيانات المدخلة").Show();
+                        await Toast.Make(AppResource.FailedtochangethepasswordPleasechecktheentereddata).Show();
                     }
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    // 401: كلمة المرور الحالية خاطئة
-                    Console.WriteLine($"❌ Unauthorized (401): Wrong current password");
-                    await Toast.Make("كلمة المرور الحالية غير صحيحة").Show();
+                   
+                    await Toast.Make(AppResource.Thecurrentpasswordisincorrect).Show();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
-                    // 400: Bad Request
-                    Console.WriteLine($"❌ Bad Request (400): {responseBody}");
-                    await Toast.Make("طلب غير صحيح. تحقق من البيانات المدخلة").Show();
+                   
+                    await Toast.Make(AppResource.InvalidrequestPleasechecktheentereddata).Show();
                 }
                 else
                 {
-                    // أخطاء أخرى
-                    Console.WriteLine($"❌ Error Response ({response.StatusCode}): {responseBody}");
-                    await Toast.Make($"فشل تغيير كلمة المرور: خطأ {(int)response.StatusCode}").Show();
+                    
+                   
+                    await Toast.Make(AppResource.Failedtochangethepassword).Show();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
-                await Toast.Make($"خطأ في الاتصال: {ex.Message}").Show();
+                
+                await Toast.Make(AppResource.Connectionerror).Show();
             }
         }
 
@@ -1284,11 +1187,11 @@ namespace loukupm.ViewModel
                 }
 
 
-                // تنظيف البيانات المحلية
+                
                 SecureStorage.RemoveAll();
                 Preferences.Clear();
 
-                // الانتقال لشاشة تسجيل الدخول
+              
                 await Shell.Current.GoToAsync("//LoginPage");
             }
             catch (Exception)
@@ -1369,10 +1272,10 @@ namespace loukupm.ViewModel
                 }
                 else
                 {
-                    Console.WriteLine($"⚠️ Failed to parse time: {slot.StartTime}");
+                 
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        await Toast.Make($"خطأ في قراءة الوقت: {slot.StartTime}", ToastDuration.Short).Show();
+                        await Toast.Make(AppResource.Errorreadingthetime, ToastDuration.Short).Show();
                     });
                     return;
                 }
@@ -1432,7 +1335,7 @@ namespace loukupm.ViewModel
                     if (selectedService == null)
                     {
                        
-                        await Toast.Make("يرجى اختيار خدمة").Show();
+                        await Toast.Make(AppResource.Pleaseselectaservice).Show();
                         return;
                     }
                     
@@ -1462,17 +1365,16 @@ namespace loukupm.ViewModel
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"✅ Response Body: {responseBody}");
-
+                   
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     var availabilityResponse = JsonSerializer.Deserialize<AvailabilityResponse>(responseBody, options);
 
                     if (availabilityResponse?.Success == true && availabilityResponse.Data?.AvailableSlots != null)
                     {
-                        // حفظ معلومات التوفر الكاملة
+                       
                         CurrentAvailability = availabilityResponse.Data;
 
-                        // ملء قائمة الـ slots
+                       
                         AvailableSlots.Clear();
                         foreach (var slot in availabilityResponse.Data.AvailableSlots)
                         {
@@ -1485,15 +1387,15 @@ namespace loukupm.ViewModel
                             });
                         }
 
-                    
-                        await Toast.Make($"تم جلب {AvailableSlots.Count} وقت متاح").Show();
+
+                        await Toast.Make($"{AppResource.Fetchedsuccessfully} {AvailableSlots.Count} {AppResource.Availabletime}").Show();
                     }
                     else
                     {
                        
-                        AvailableSlots.Clear(); // ✅ امسح الأوقات السابقة
-                        HasAvailabilityError = true; // ✅ علّم أنه فيه خطأ
-                        await Toast.Make("لا توجد أوقات متاحة").Show();
+                        AvailableSlots.Clear(); 
+                        HasAvailabilityError = true; 
+                        await Toast.Make(AppResource.Noavailabletimes).Show();
                     }
                 }
                 else
@@ -1588,14 +1490,14 @@ namespace loukupm.ViewModel
                 if (success)
                 {
                    
-                    await Toast.Make("تم إلغاء الحجز بنجاح", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Bookingcanceledsuccessfully, ToastDuration.Short).Show();
 
                     await LoadBookingsAsync();
                 }
                 else
                 {
                    
-                    await Toast.Make("فشل في إلغاء الحجز", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Failedtocancelthebooking, ToastDuration.Short).Show();
                 }
             }
             catch (Exception ex)
@@ -1701,7 +1603,7 @@ namespace loukupm.ViewModel
 
                 if (upcomingAppointment == null)
                 {
-                    await Toast.Make("لا توجد مواعيد قادمة", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Noupcomingappointments, ToastDuration.Short).Show();
                    
                     return;
                 }
@@ -1709,7 +1611,7 @@ namespace loukupm.ViewModel
               
                 if (!DateTime.TryParse(upcomingAppointment.AppointmentDate, out var appointmentDateTime))
                 {
-                    await Toast.Make("خطأ في قراءة موعد الحجز", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Errorreadingthebookingappointment, ToastDuration.Short).Show();
                     return;
                 }
                 var reminderDateTimeOnAppointmentDay = appointmentDateTime.Date.Add(reminderTime);
@@ -1722,7 +1624,7 @@ namespace loukupm.ViewModel
                 if (reminderDateTime >= appointmentDateTime)
                 {
                    
-                    await Toast.Make("⚠️ وقت التذكير يجب أن يكون قبل موعد الحجز", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Theremindertimemustbebeforethebookingappointment, ToastDuration.Short).Show();
                     return;
                 }
 
@@ -1736,7 +1638,7 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-                await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
+                await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
             }
         }
 
@@ -1757,8 +1659,7 @@ namespace loukupm.ViewModel
                 var json = JsonSerializer.Serialize(reminderData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                Console.WriteLine($"📤 Sending reminder:");
-                Console.WriteLine($"   Payload: {json}");
+                
 
                 var response = await _httpClient.PostAsync(
                     "https://test.center-yazan.com/api/appointments/reminders",
@@ -1768,27 +1669,24 @@ namespace loukupm.ViewModel
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
                   
-                    await Toast.Make($"✅ تم إرسال التذكير بنجاح", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Remindersentsuccessfully, ToastDuration.Short).Show();
                 }
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
                    
-                    await Toast.Make($"❌ فشل الإرسال: {response.StatusCode}", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.Failedtosend, ToastDuration.Short).Show();
                 }
             }
             catch (Exception ex)
             {
               
-                await Toast.Make($"❌ خطأ: {ex.Message}", ToastDuration.Short).Show();
+                await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
             }
         }
 
       
-        public void StopReminderTimer()
-        {
-            Console.WriteLine("ℹ️ Reminders are sent directly to API, nothing to stop");
-        }
+        
     }
 }
 

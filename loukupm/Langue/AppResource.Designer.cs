@@ -178,11 +178,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ein unerwarteter Fehler ist aufgetreten.
+        /// </summary>
+        internal static string Anunexpectederroroccurred {
+            get {
+                return ResourceManager.GetString("Anunexpectederroroccurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Über die App.
         /// </summary>
         internal static string AppInfo {
             get {
                 return ResourceManager.GetString("AppInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Availabletime {
+            get {
+                return ResourceManager.GetString("Availabletime", resourceCulture);
             }
         }
         
@@ -205,6 +223,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Bookingcanceledsuccessfully {
+            get {
+                return ResourceManager.GetString("Bookingcanceledsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Buchung fehlgeschlagen.
+        /// </summary>
+        internal static string Bookingfailed {
+            get {
+                return ResourceManager.GetString("Bookingfailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Jetzt buchen.
         /// </summary>
         internal static string bookingNow {
@@ -219,6 +255,15 @@ namespace loukupm.Langue {
         internal static string bookingsentsuccessfully {
             get {
                 return ResourceManager.GetString("bookingsentsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Buchung erfolgreich.
+        /// </summary>
+        internal static string Bookingsuccessful {
+            get {
+                return ResourceManager.GetString("Bookingsuccessful", resourceCulture);
             }
         }
         
@@ -358,6 +403,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Verbindungsfehler.
+        /// </summary>
+        internal static string Connectionerror {
+            get {
+                return ResourceManager.GetString("Connectionerror", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Noch kein Konto?.
         /// </summary>
         internal static string CreatAccount {
@@ -372,6 +426,15 @@ namespace loukupm.Langue {
         internal static string CreatAcount2 {
             get {
                 return ResourceManager.GetString("CreatAcount2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data verification failed. Please check the validity of the passwords.
+        /// </summary>
+        internal static string DataverificationfailedPleasecheckthevalidityofthepasswords {
+            get {
+                return ResourceManager.GetString("DataverificationfailedPleasecheckthevalidityofthepasswords", resourceCulture);
             }
         }
         
@@ -529,11 +592,92 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fehler beim Erstellen der Dienstleistungsliste.
+        /// </summary>
+        internal static string Errorbuildingtheservicelist {
+            get {
+                return ResourceManager.GetString("Errorbuildingtheservicelist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Errorreadingthebookingappointment {
+            get {
+                return ResourceManager.GetString("Errorreadingthebookingappointment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Errorreadingthetime {
+            get {
+                return ResourceManager.GetString("Errorreadingthetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Failedtocancelthebooking {
+            get {
+                return ResourceManager.GetString("Failedtocancelthebooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Failedtochangethepassword {
+            get {
+                return ResourceManager.GetString("Failedtochangethepassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwortänderung fehlgeschlagen. Bitte überprüfen Sie die eingegebenen Daten..
+        /// </summary>
+        internal static string FailedtochangethepasswordPleasechecktheentereddata {
+            get {
+                return ResourceManager.GetString("FailedtochangethepasswordPleasechecktheentereddata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Failedtosend {
+            get {
+                return ResourceManager.GetString("Failedtosend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aktualisierung des Passworts fehlgeschlagen..
+        /// </summary>
+        internal static string Failedtoupdatethepassword {
+            get {
+                return ResourceManager.GetString("Failedtoupdatethepassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Das Aktualisieren des Passworts ist fehlgeschlagen.
         /// </summary>
         internal static string FeildUpdatePassord {
             get {
                 return ResourceManager.GetString("FeildUpdatePassord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Fetchedsuccessfully {
+            get {
+                return ResourceManager.GetString("Fetchedsuccessfully", resourceCulture);
             }
         }
         
@@ -570,6 +714,24 @@ namespace loukupm.Langue {
         internal static string Introduction {
             get {
                 return ResourceManager.GetString("Introduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid data.
+        /// </summary>
+        internal static string Invaliddata {
+            get {
+                return ResourceManager.GetString("Invaliddata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid request. Please check the entered data.
+        /// </summary>
+        internal static string InvalidrequestPleasechecktheentereddata {
+            get {
+                return ResourceManager.GetString("InvalidrequestPleasechecktheentereddata", resourceCulture);
             }
         }
         
@@ -664,6 +826,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Noavailabletimes {
+            get {
+                return ResourceManager.GetString("Noavailabletimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Es ist ein Fehler aufgetreten; die Daten wurden nicht aktualisiert. Bitte versuchen Sie es erneut..
         /// </summary>
         internal static string NoConfermChangeDataUser {
@@ -718,6 +889,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Noupcomingappointments {
+            get {
+                return ResourceManager.GetString("Noupcomingappointments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passwort vergessen?.
         /// </summary>
         internal static string NPasswordOnLogin {
@@ -763,11 +943,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Die Passwörter stimmen nicht überein.
+        /// </summary>
+        internal static string Passwordsdonotmatch {
+            get {
+                return ResourceManager.GetString("Passwordsdonotmatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Das Passwort wurde erfolgreich aktualisiert.
         /// </summary>
         internal static string PasswordUpdated {
             get {
                 return ResourceManager.GetString("PasswordUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwort erfolgreich aktualisiert.
+        /// </summary>
+        internal static string Passwordupdatedsuccessfully {
+            get {
+                return ResourceManager.GetString("Passwordupdatedsuccessfully", resourceCulture);
             }
         }
         
@@ -804,6 +1002,87 @@ namespace loukupm.Langue {
         internal static string PhoneNumber {
             get {
                 return ResourceManager.GetString("PhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie das aktuelle Passwort ein.
+        /// </summary>
+        internal static string Pleaseenterthecurrentpassword {
+            get {
+                return ResourceManager.GetString("Pleaseenterthecurrentpassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie den Vornamen ein oder wählen Sie ein Bild aus..
+        /// </summary>
+        internal static string Pleaseenterthefirstnameorselectanimage {
+            get {
+                return ResourceManager.GetString("Pleaseenterthefirstnameorselectanimage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie das neue Passwort in beide Felder ein.
+        /// </summary>
+        internal static string Pleaseenterthenewpasswordinbothfields {
+            get {
+                return ResourceManager.GetString("Pleaseenterthenewpasswordinbothfields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie das Passwort in beide Felder ein.
+        /// </summary>
+        internal static string Pleaseenterthepasswordinbothfields {
+            get {
+                return ResourceManager.GetString("Pleaseenterthepasswordinbothfields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen Sie ein Datum aus.
+        /// </summary>
+        internal static string Pleaseselectadate {
+            get {
+                return ResourceManager.GetString("Pleaseselectadate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Pleaseselectaservice {
+            get {
+                return ResourceManager.GetString("Pleaseselectaservice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen Sie einen Dienstleister aus.
+        /// </summary>
+        internal static string Pleaseselectaserviceprovider {
+            get {
+                return ResourceManager.GetString("Pleaseselectaserviceprovider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen Sie eine Uhrzeit aus.
+        /// </summary>
+        internal static string Pleaseselectatime {
+            get {
+                return ResourceManager.GetString("Pleaseselectatime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen Sie mindestens eine Dienstleistung aus..
+        /// </summary>
+        internal static string Pleaseselectatleastoneservice {
+            get {
+                return ResourceManager.GetString("Pleaseselectatleastoneservice", resourceCulture);
             }
         }
         
@@ -1595,6 +1874,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Remindersentsuccessfully {
+            get {
+                return ResourceManager.GetString("Remindersentsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Möchten Sie das Konto wirklich löschen?.
         /// </summary>
         internal static string RemoveMyCount {
@@ -2036,11 +2324,56 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The current password is incorrect.
+        /// </summary>
+        internal static string Thecurrentpasswordisincorrect {
+            get {
+                return ResourceManager.GetString("Thecurrentpasswordisincorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Benutzername bereits vergeben.
         /// </summary>
         internal static string TheEmailisUSED {
             get {
                 return ResourceManager.GetString("TheEmailisUSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Thenewpasswordmustbeatleast8characterslong {
+            get {
+                return ResourceManager.GetString("Thenewpasswordmustbeatleast8characterslong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Das neue Passwort muss sich vom aktuellen Passwort unterscheiden..
+        /// </summary>
+        internal static string Thenewpasswordmustbedifferentfromthecurrentone {
+            get {
+                return ResourceManager.GetString("Thenewpasswordmustbedifferentfromthecurrentone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die neuen Passwörter stimmen nicht überein.
+        /// </summary>
+        internal static string Thenewpasswordsdonotmatch {
+            get {
+                return ResourceManager.GetString("Thenewpasswordsdonotmatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Theremindertimemustbebeforethebookingappointment {
+            get {
+                return ResourceManager.GetString("Theremindertimemustbebeforethebookingappointment", resourceCulture);
             }
         }
         

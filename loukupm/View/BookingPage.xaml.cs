@@ -13,24 +13,36 @@ public partial class BookingPage : ContentPage
 		this.BindingContext = AppViewModel.Instance;
 	}
 
-    private void Button_Clicked(object sender, EventArgs e)
-    {
+	protected override async void OnAppearing()
+	{
+		base.OnAppearing();
 
-    }
+		
+		var viewModel = BindingContext as AppViewModel;
+		if (viewModel?.LoadAppointmentsCommand.IsRunning == false)
+		{
+			await viewModel.LoadAppointmentsCommand.ExecuteAsync(null);
+		}
+	}
 
-    private async void Button_Clicked_1(object sender, EventArgs e)
-    {
-        await Navigation.PopAsync();
-    }
-    protected override bool OnBackButtonPressed()
-    {
-        Shell.Current.GoToAsync("//HomePage");
-         return true;
+	private void Button_Clicked(object sender, EventArgs e)
+	{
 
-    }
+	}
 
-    private async void Button_Clicked_2(object sender, EventArgs e)
-    {
-        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_SERVICES);
-    }
+	private async void Button_Clicked_1(object sender, EventArgs e)
+	{
+		await Navigation.PopAsync();
+	}
+	protected override bool OnBackButtonPressed()
+	{
+		Shell.Current.GoToAsync("//HomePage");
+		 return true;
+
+	}
+
+	private async void Button_Clicked_2(object sender, EventArgs e)
+	{
+		await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_SERVICES);
+	}
 }
