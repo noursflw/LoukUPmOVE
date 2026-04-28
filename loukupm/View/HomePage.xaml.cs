@@ -7,6 +7,7 @@ using loukupm.ViewModel;
 using loukupm.Services;
 using System.Globalization;
 using System.Windows.Input;
+using Microsoft.Maui.Controls;
 
 /// <summary>
 /// «·’›Õ… «·—∆Ì”Ì…
@@ -14,16 +15,69 @@ using System.Windows.Input;
 /// </summary>
 public partial class HomePage : ContentPage
 {
+	private System.Timers.Timer _carouselTimer;
+	private int _currentCarouselIndex = 0;
+
 	public HomePage()
 	{
 		InitializeComponent();
-    	this.BindingContext= AppViewModel.Instance;
-    	
-    	//  ÂÌ∆…   »⁄ «··€… Ê«·« Ã«Â «· ·ﬁ«∆Ì
-    	this.InitializeLanguageTracking();
-    }
+		this.BindingContext= AppViewModel.Instance;
 
-    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+		//  ÂÌ∆…   »⁄ «··€… Ê«·« Ã«Â «· ·ﬁ«∆Ì
+		this.InitializeLanguageTracking();
+	}
+
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+		StartCarouselAutoScroll();
+	}
+
+	protected override void OnDisappearing()
+	{
+		base.OnDisappearing();
+		StopCarouselAutoScroll();
+	}
+
+	private void StartCarouselAutoScroll()
+	{
+		if (_carouselTimer != null)
+			return;
+
+		_carouselTimer = new System.Timers.Timer(2000); // 5 seconds interval
+		_carouselTimer.Elapsed += (s, e) =>
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				try
+				{
+					if (carouselView != null)
+					{
+						// 6 images in the carousel
+						_currentCarouselIndex = (_currentCarouselIndex + 1) % 6;
+						carouselView.Position = _currentCarouselIndex;
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"[HomePage] Carousel scroll error: {ex.Message}");
+				}
+			});
+		};
+		_carouselTimer.Start();
+	}
+
+	private void StopCarouselAutoScroll()
+	{
+		if (_carouselTimer != null)
+		{
+			_carouselTimer.Stop();
+			_carouselTimer.Dispose();
+			_carouselTimer = null;
+		}
+	}
+
+	private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
         await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_SERVICES);   
     }
@@ -33,20 +87,18 @@ public partial class HomePage : ContentPage
         await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
     }
 
-    /// <summary>
-    /// Service selection handler - delegates to ViewModel command for unified logic
-    /// This ensures HomePage uses the exact same selection behavior as ServicesPage
-    /// </summary>
-    private void Button_Clicked_1(object sender, EventArgs e)
+   
+
+    
+    private async void Button_Clicked_1(object sender, EventArgs e)
     {
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
-
-        // Delegate to the ViewModel's SelectServiceButtonCommand for unified logic
         var vm = BindingContext as AppViewModel;
         if (vm?.SelectServiceButtonCommand is ICommand command && command.CanExecute(service))
         {
             command.Execute(service);
+            await NavigationService.NavigateToPage(NavigationService.ROUTE_TERM_BOOKING);
         }
     }
 
@@ -74,38 +126,7 @@ public partial class HomePage : ContentPage
         await toast.Show();
     }
 
-    /// <summary>
-    /// “—  €ÌÌ— «··€…
-    /// «·œÊ—…: English ? German ? Arabic
-    /// «· ÕœÌÀ «· ·ﬁ«∆Ì ··« Ã«Â Ì „ „‰ ﬁ»· LocalizationResourcesManager Ê«·‹ PageLanguageHelper
-    /// </summary>
-    private void Button_Clicked_2(object sender, EventArgs e)
-    {
-        var current = Langue.LocalizationResourcesManager.Instanse.CurrentCulture.TwoLetterISOLanguageName;
-        CultureInfo newCulture;
-
-        switch (current)
-        {
-            case "en":
-                newCulture = new CultureInfo("de-DE");
-                break;
-            case "de":
-                newCulture = new CultureInfo("ar-AR");
-                break;
-            default:
-                newCulture = new CultureInfo("de-DE");
-                break;
-        }
-
-        // Save language preference
-        Preferences.Set("AppLanguage", newCulture.Name);
-        
-        // Update language and flow direction
-        // All subscribed pages will update automatically via the LanguageChanged event
-        Langue.LocalizationResourcesManager.Instanse.SetCulture(newCulture);
-
-        Console.WriteLine($"? Language Changed to {newCulture.DisplayName}");
-    }
+ 
 
     private Frame _lastSelectedFrame;
 
@@ -122,18 +143,15 @@ public partial class HomePage : ContentPage
             tappedFrame.BorderColor = Color.FromArgb("#EBD750");
             _lastSelectedFrame = tappedFrame;
 
-            // ?? ÷»ÿ AnchorX/AnchorY
+         
             tappedFrame.AnchorX = 0.5;
             tappedFrame.AnchorY = 0.5;
 
-            //  √ÀÌ— Scale
+         
             await tappedFrame.ScaleTo(1.05, 100, Easing.CubicOut);
             await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
         }
     }
 
-    private async void ImageButton_Clicked(object sender, EventArgs e)
-    {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
-    }
+   
 }

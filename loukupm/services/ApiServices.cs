@@ -54,6 +54,7 @@ namespace loukupm.services
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
+                
             }
             else
             {
@@ -152,9 +153,7 @@ namespace loukupm.services
             }
         }
 
-        /// <summary>
-        /// Legacy method for backward compatibility - returns only notification list
-        /// </summary>
+      
         [Obsolete("Use GetNotificationsAsync instead for pagination support")]
         public async Task<List<Notification>> GetNotificationsLegacyAsync()
         {
@@ -269,10 +268,7 @@ namespace loukupm.services
             }
         }
 
-        /// <summary>
-        /// جلب خدمات البروفايدر المحددة فقط
-        /// ملاحظة: إذا لم يكن هناك endpoint منفصل، سنستخدم جميع الخدمات
-        /// </summary>
+       
         public async Task<List<Servies>> GetProviderServicesAsync(int providerId)
         {
             try
@@ -449,37 +445,7 @@ namespace loukupm.services
                 return new List<string>();
             }
         }
-        public async Task<AuthResponse> LoginAsync(string email, string password)
-        {
-            try
-            {
-                var loginData = new { Email = email, Password = password };
-                var json = JsonSerializer.Serialize(loginData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync("https://api.example.com/auth/login", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseJson = await response.Content.ReadAsStringAsync();
-                    var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseJson);
-                    if (authResponse?.Token != null)
-                    {
-                        Preferences.Set("auth_token", authResponse.Token);
-                    }
-                    return authResponse;
-                }
-
-                return new AuthResponse { Success = false, Message = "Login failed" };
-            }
-            catch (Exception ex)
-            {
-                return new AuthResponse { Success = false, Message = ex.Message };
-            }
-        }
-
-     
-
+ 
 
         public async Task<CreatePaymentIntentResponse?> CreatePaymentIntentAsync(decimal amount, string currency, string email)
         {
@@ -598,8 +564,8 @@ namespace loukupm.services
                             string mimeType = GetMimeType(avatarImagePath);
                             fileContent.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
 
-                            form.Add(fileContent, "Avatar", fileName);
-                            Console.WriteLine($"📋 Field added: Avatar = file '{fileName}' (size: {fileBytes.Length} bytes, content-type: {mimeType})");
+                            form.Add(fileContent, "image", fileName);
+                            Console.WriteLine($"📋 Field added: image = file '{fileName}' (size: {fileBytes.Length} bytes, content-type: {mimeType})");
                         }
                         catch (Exception fileEx)
                         {
@@ -620,17 +586,19 @@ namespace loukupm.services
                     Console.WriteLine($"   Method: POST");
                     Console.WriteLine($"   Content-Type: multipart/form-data");
                     Console.WriteLine($"   Authorization: Bearer [token]");
-                    Console.WriteLine($"   Fields being sent: {(string.IsNullOrWhiteSpace(firstName) ? "" : "first_name ")}{(string.IsNullOrWhiteSpace(avatarImagePath) ? "" : "Avatar")}");
+                    Console.WriteLine($"   Fields being sent: {(string.IsNullOrWhiteSpace(firstName) ? "" : "first_name ")}{(string.IsNullOrWhiteSpace(avatarImagePath) ? "" : "image")}");
 
                     // ✅ Send request
                     var httpResponse = await _httpClient.PostAsync(
                         "https://test.center-yazan.com/api/profile",
                         form
                     );
-
+                    
+                  
                     // ✅ Log response
                     Console.WriteLine($"📊 Response Status: {httpResponse.StatusCode}");
                     string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
                     Console.WriteLine($"📄 Response Body: {responseBody}");
 
                     if (httpResponse.IsSuccessStatusCode)
@@ -793,14 +761,12 @@ namespace loukupm.services
         public string ClientSecret { get; set; } = string.Empty;
     }
 
-    /// <summary>
-    /// Response model for profile update API
-    /// </summary>
+  
     public class ProfileUpdateApiResponse
     {
         public bool? Success { get; set; }
         public string Message { get; set; } = string.Empty;
-        public object Data { get; set; }
+        public ProfileData Data { get; set; }
     }
 }
 

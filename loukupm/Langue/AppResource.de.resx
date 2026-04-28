@@ -157,7 +157,7 @@
     <value>und</value>
   </data>
   <data name="AppInfo" xml:space="preserve">
-    <value>Über die App</value>
+    <value>Über uns</value>
   </data>
   <data name="Benachrichtigungen" xml:space="preserve">
     <value>Benachrichtigungen</value>
@@ -921,5 +921,14 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   </data>
   <data name="Failedtosend" xml:space="preserve">
     <value>Senden fehlgeschlagen.</value>
+  </data>
+  <data name="Emailisrequired" xml:space="preserve">
+    <value>E-Mail ist erforderlich</value>
+  </data>
+  <data name="Thisfieldisrequired" xml:space="preserve">
+    <value>Dieses Feld ist erforderlich</value>
+  </data>
+  <data name="Passwordsmatch" xml:space="preserve">
+    <value>Passwörter stimmen überein</value>
   </data>
 </root>

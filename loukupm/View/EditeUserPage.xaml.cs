@@ -1,8 +1,9 @@
 ﻿// EditeUserPage.xaml.cs - الكود المحسّن النهائي
 
-using loukupm.ViewModel;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using loukupm.Services;
+using loukupm.ViewModel;
 
 namespace loukupm.View;
 
@@ -15,11 +16,39 @@ public partial class EditeUserPage : ContentPage
     }
 
     /// <summary>
+    /// معالج زر العودة - يستخدم نظام الملاحة المركزي
+    /// يتبع القاعدة: صفحات تدفق الملف الشخصي → //ProfilePage مباشرة
+    /// </summary>
+    protected override bool OnBackButtonPressed()
+    {
+        try
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    await NavigationService.HandleBackButton(NavigationService.ROUTE_EDIT_USER);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[EditeUserPage] Back button error: {ex.Message}");
+                }
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[EditeUserPage] OnBackButtonPressed crash: {ex.Message}");
+            return true;
+        }
+    }
+
+    /// <summary>
     /// زر العودة للصفحة السابقة
     /// </summary>
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+       await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_PROFILE);
     }
 
     /// <summary>
@@ -129,11 +158,7 @@ public partial class EditeUserPage : ContentPage
         }
     }
 
-    /// <summary>
-    /// عرض رسالة عند رفض المستخدم للأذن
-    /// ✅ خيار فتح الإعدادات
-    /// ✅ السماح للمستخدم بمنح الأذن يدويًا
-    /// </summary>
+    
     private async Task ShowPermissionDeniedAlert()
     {
         bool result = await DisplayAlert(

@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
+using loukupm.Services;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using System.Linq;
@@ -23,6 +24,19 @@ namespace loukupm.View
             InitializeComponent();
             Shell.SetNavBarIsVisible(this, false);
             this.BindingContext = AppViewModel.Instance;
+        }
+
+        /// <summary>
+        /// معالج زر العودة - يستخدم نظام الملاحة المركزي
+        /// يتبع القاعدة: جميع الصفحات الأخرى → pop one level
+        /// </summary>
+        protected override bool OnBackButtonPressed()
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await NavigationService.HandleBackButton("Verificationpage");
+            });
+            return true;
         }
 
         protected override void OnAppearing()

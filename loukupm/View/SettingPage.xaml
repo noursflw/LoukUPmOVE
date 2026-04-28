@@ -5,6 +5,7 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#252525"
               Shell.TabBarIsVisible="False"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              Title="SettingPage">
     <VerticalStackLayout Spacing="30" Margin="0,0,0,0">
@@ -89,5 +90,13 @@ Clicked="Button_Clicked" />
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
             </Frame.GestureRecognizers>
         </Frame>
+        <uranium:Dropdown 
+            CornerRadius="12"
+            HeightRequest="40"
+            BackgroundColor="#444444"
+            Placeholder="Choose Language"
+            ItemsSource="{Binding Languages}"
+            SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+            Margin="24,0,24,0" />
     </VerticalStackLayout>
 </ContentPage>

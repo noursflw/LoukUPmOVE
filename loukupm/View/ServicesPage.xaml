@@ -116,21 +116,41 @@
         TextColor="#D3D3D3" 
         FontSize="18"  />
 
-                                                    <Label  
-        Grid.Column="0" 
-        Text="{Binding PriceServies}" 
-        Margin="0,30,0,0" 
-        FontFamily="Oswald" 
-        TextColor="#D3D3D3" 
-        FontSize="14"  />
+                                                    <HorizontalStackLayout
+        Grid.Column="0"
+        Margin="0,30,0,0"
+        Spacing="5"
+        VerticalOptions="Start">
+                                                        
+                                                        <Label  
+            Text="{Binding PriceServies}" 
+            FontFamily="Oswald" 
+            TextColor="#D3D3D3" 
+            FontSize="14" 
+            VerticalOptions="Center" />
+                                                        <Label 
+Text="€" 
+FontSize="14"
+VerticalOptions="Center" />
+                                                    </HorizontalStackLayout>
 
-                                                    <Label  
-        Grid.Column="0" 
-        Text="{Binding TimeServies}" 
-        Margin="0,55,0,0" 
-        FontFamily="Oswald" 
-        TextColor="#D3D3D3" 
-        FontSize="14"  />
+                                                    <HorizontalStackLayout
+        Grid.Column="0"
+        Margin="0,55,0,0"
+        Spacing="5"
+        VerticalOptions="Start">
+                                                        <Label  
+            Text="{Binding TimeServies}" 
+            FontFamily="Oswald" 
+            TextColor="#D3D3D3" 
+            FontSize="14" 
+            VerticalOptions="Center" />
+
+                                                        <Label 
+            Text="m" 
+            FontSize="14"
+            VerticalOptions="Center" />
+                                                    </HorizontalStackLayout>
 
 
                                                     <Button 

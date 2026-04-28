@@ -15,29 +15,96 @@
                 <Label Text="{loc:Translate Name=CreatAcount2}" Grid.Row="0" FontSize="32" FontFamily="georgia-bold" Margin="110,130,30,0" TextColor="White" />
             </Grid>
             <VerticalStackLayout  x:Name="fglogin" >
-                <Label Text="{loc:Translate Name=NameUser}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
-                <material:TextField x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="Name" />
-                <Label Text="{loc:Translate Name=LastName}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
-                <material:TextField x:Name="RegisterLastNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="{loc:Translate Name=LastName}" />
-                <Label Text="{loc:Translate Name=EMail}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
-                <material:TextField x:Name="RegisterEmailEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=EMail}" />
-                <Label Text="{loc:Translate Name=PhoneNumber}" Margin="12,3,0,0" TextColor="White" Padding="10" FontSize="16"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=NameUser}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField TextChanged="RegisterNameEntry_TextChanged" x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="Name" />
+                <Label
+                  x:Name="ErorNameInput"
+                  TextColor="Red"
+                  FontSize="12"
+                 Margin="25,10,25,0"
+                 IsVisible="False"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=LastName}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField TextChanged="RegisterLastNameEntry_TextChanged" x:Name="RegisterLastNameEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="{loc:Translate Name=LastName}" />
+                <Label
+  x:Name="ErorLastNameInput"
+  TextColor="Red"
+  FontSize="12"
+ Margin="25,10,25,0"
+ IsVisible="False"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=EMail}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField x:Name="RegisterEmailEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=EMail}" TextChanged="OnEmailTextChanged" />
+                <Label
+                  x:Name="LiveErrorLabel"
+                  TextColor="Red"
+                  FontSize="12"
+                  Margin="25,10,25,0"
+                  IsVisible="False"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=PhoneNumber}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <material:TextField x:Name="RegisterPhoneEntry" Margin="25,0,25,0" InputBackgroundColor="#444444" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
-                <Label FontSize="16" Margin="12,24,0,0" Text="{loc:Translate Name=Password}" TextColor="White" Padding="10" />
+                <Label FontSize="16" Margin="12,24,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=Password}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <material:TextField x:Name="RegisterPasswordEntry" Title="{loc:Translate Name=Password }" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
+                    
                     <material:TextField.Attachments>
                         <material:TextFieldPasswordShowHideAttachment />
                     </material:TextField.Attachments>
                 </material:TextField>
-                <Label FontSize="16" Margin="12,24,0,0" Text="{loc:Translate Name=AcspetNewpassword}" TextColor="White" Padding="10" />
-                <material:TextField x:Name="RegisterConfirmPasswordEntry" Title="{loc:Translate Name=AcspetNewpassword}" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
+                
+                <Label FontSize="16" Margin="12,24,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=AcspetNewpassword}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField TextChanged="OnConfirmPasswordTextChanged" x:Name="RegisterConfirmPasswordEntry" Title="{loc:Translate Name=AcspetNewpassword}" CornerRadius="16" InputBackgroundColor="#444444" IsPassword="True" Margin="25,0,25,0">
                     <material:TextField.Attachments>
                         <material:TextFieldPasswordShowHideAttachment />
                     </material:TextField.Attachments>
                 </material:TextField>
+                <Label
+                  x:Name="PasswordMatchLabel"
+                  TextColor="Red"
+                  FontSize="12"
+                  Margin="25,10,25,0"
+                  IsVisible="False"/>
 
-             
-                    <Button
+                <Button
         x:Name="RegisterButton"
         TextColor="#1F1B04"
                     Margin="25"

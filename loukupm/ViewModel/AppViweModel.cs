@@ -957,42 +957,73 @@ namespace loukupm.ViewModel
         {
             try
             {
-                
+                // 🔍 DEBUG: Log input values
+                Console.WriteLine("\n" + new string('=', 60));
+                Console.WriteLine("🔄 UPDATE USER INFO STARTED");
+                Console.WriteLine(new string('=', 60));
+                Console.WriteLine($"📋 UserFirstName: '{UserFirstName}' (IsEmpty: {string.IsNullOrWhiteSpace(UserFirstName)})");
+                Console.WriteLine($"📋 SelectedImagePath: '{SelectedImagePath}' (IsEmpty: {string.IsNullOrWhiteSpace(SelectedImagePath)})");
+
+                if (!string.IsNullOrWhiteSpace(SelectedImagePath))
+                {
+                    bool fileExists = File.Exists(SelectedImagePath);
+                    Console.WriteLine($"📋 Image File Exists: {fileExists}");
+                    if (!fileExists)
+                    {
+                        Console.WriteLine($"❌ File not found at path: {SelectedImagePath}");
+                    }
+                }
+                Console.WriteLine(new string('=', 60) + "\n");
+
                 if (string.IsNullOrWhiteSpace(UserFirstName) && string.IsNullOrWhiteSpace(SelectedImagePath))
                 {
                     await Toast.Make(AppResource.Pleaseenterthefirstnameorselectanimage, ToastDuration.Short).Show();
                     return;
                 }
 
-              
+                Console.WriteLine("📤 Calling UpdateUserProfileAsync...\n");
                 var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath);
 
-                
+                Console.WriteLine("\n" + new string('=', 60));
+                Console.WriteLine("📥 RESPONSE RECEIVED FROM API");
+                Console.WriteLine(new string('=', 60));
+                Console.WriteLine($"📊 Success: {apiResponse?.Success}");
+                Console.WriteLine($"📊 Message: {apiResponse?.Message}");
+                Console.WriteLine($"📊 Data: {(apiResponse?.Data != null ? "Present" : "Null")}");
+                if (apiResponse?.Data != null)
+                {
+                    Console.WriteLine($"   - Id: {apiResponse.Data.Id}");
+                    Console.WriteLine($"   - FirstName: {apiResponse.Data.FirstName}");
+                    Console.WriteLine($"   - ProfileImageUrl: {apiResponse.Data.ProfileImageUrl}");
+                }
+                Console.WriteLine(new string('=', 60) + "\n");
+
+
                 if (apiResponse?.Success == true)
                 {
-                    
-                    if (!string.IsNullOrWhiteSpace(UserFirstName))
+
+                    if (!string.IsNullOrWhiteSpace(UserFirstName) && apiResponse?.Data != null)
                     {
-                        UserFirstName = UserFirstName.Trim();
-                       
+                        UserFirstName = apiResponse.Data.FirstName;
                     }
 
-                    if (!string.IsNullOrWhiteSpace(SelectedImagePath))
+                    // 🔑 KEY FIX: Use the server URL from the API response instead of local path
+                    if (!string.IsNullOrWhiteSpace(apiResponse?.Data?.ProfileImageUrl))
                     {
-                        Avatar = SelectedImagePath;
-                      
+                        Avatar = apiResponse.Data.ProfileImageUrl;
+                        Console.WriteLine($"✅ Profile image updated from API: {apiResponse.Data.ProfileImageUrl}");
                     }
 
-                   
+
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
-                   
+
                 }
                 else if (apiResponse?.Success == false)
                 {
                     // ❌ API returned success: false - show error message
                     string errorMessage = apiResponse?.Message ?? "فشل في تحديث البيانات";
-                  
+
                     await Toast.Make(errorMessage, ToastDuration.Short).Show();
 
                     var popup = new NoConfermChange();
@@ -1000,16 +1031,17 @@ namespace loukupm.ViewModel
                 }
                 else if (apiResponse?.Success == null)
                 {
-                    
+                    // ⚠️ Success is null - treat as success (for backward compatibility)
 
-                    if (!string.IsNullOrWhiteSpace(UserFirstName))
+                    if (!string.IsNullOrWhiteSpace(UserFirstName) && apiResponse?.Data != null)
                     {
-                        UserFirstName = UserFirstName.Trim();
+                        UserFirstName = apiResponse.Data.FirstName;
                     }
 
-                    if (!string.IsNullOrWhiteSpace(SelectedImagePath))
+                    if (!string.IsNullOrWhiteSpace(apiResponse?.Data?.ProfileImageUrl))
                     {
-                        Avatar = SelectedImagePath;
+                        Avatar = apiResponse.Data.ProfileImageUrl;
+                        Console.WriteLine($"✅ Profile image updated from API: {apiResponse.Data.ProfileImageUrl}");
                     }
 
                     var popup = new ConfermChange();
@@ -1017,7 +1049,7 @@ namespace loukupm.ViewModel
                 }
                 else
                 {
-                    
+
                     await Toast.Make(AppResource.Anunexpectederroroccurred, ToastDuration.Short).Show();
 
                     var popup = new NoConfermChange();
@@ -1586,63 +1618,51 @@ namespace loukupm.ViewModel
             }
         }
 
+        
+
         private async Task EnableReminderTimerAsync()
         {
             try
             {
-               
-                var reminderTime = ReminderTime;
                 var now = DateTime.Now;
+
                 var upcomingAppointment = Appointments
-                    .FirstOrDefault(a => 
+                    .Select(a =>
                     {
-                        if (DateTime.TryParse(a.AppointmentDate, out var appointmentDate))
-                            return appointmentDate > now;
-                        return false;
-                    });
+                        DateTime.TryParse(a.AppointmentDate, out var date);
+                        return new { Appointment = a, Date = date };
+                    })
+                    .Where(x => x.Date > now)
+                    .OrderBy(x => x.Date)
+                    .FirstOrDefault();
 
                 if (upcomingAppointment == null)
                 {
                     await Toast.Make(AppResource.Noupcomingappointments, ToastDuration.Short).Show();
-                   
                     return;
                 }
 
-              
-                if (!DateTime.TryParse(upcomingAppointment.AppointmentDate, out var appointmentDateTime))
+                if (ReminderTime == default)
                 {
-                    await Toast.Make(AppResource.Errorreadingthebookingappointment, ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
                     return;
                 }
-                var reminderDateTimeOnAppointmentDay = appointmentDateTime.Date.Add(reminderTime);
 
-               
-                var reminderDateTime = reminderDateTimeOnAppointmentDay >= appointmentDateTime
-                    ? reminderDateTimeOnAppointmentDay.AddDays(-1)  
-                    : reminderDateTimeOnAppointmentDay;              
+                var reminderDateTime = upcomingAppointment.Date - ReminderTime;
 
-                if (reminderDateTime >= appointmentDateTime)
+                if (reminderDateTime <= now)
                 {
-                   
                     await Toast.Make(AppResource.Theremindertimemustbebeforethebookingappointment, ToastDuration.Short).Show();
                     return;
                 }
 
-              
-
-                var remindAtDateTime = reminderDateTime;
-
-
-                // Send to API
-                await SendAppointmentReminder(upcomingAppointment, remindAtDateTime);
+                await SendAppointmentReminder(upcomingAppointment.Appointment, reminderDateTime);
             }
-            catch (Exception ex)
+            catch
             {
                 await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
             }
         }
-
-       
         private async Task SendAppointmentReminder(Appointment appointment, DateTime remindAtDateTime)
         {
             try

@@ -157,7 +157,7 @@
     <value>و</value>
   </data>
   <data name="AppInfo" xml:space="preserve">
-    <value>حول التطبيق</value>
+    <value>من نحن </value>
   </data>
   <data name="Benachrichtigungen" xml:space="preserve">
     <value>إشعارات</value>
@@ -921,5 +921,14 @@
   </data>
   <data name="Failedtosend" xml:space="preserve">
     <value>فشل الإرسال</value>
+  </data>
+  <data name="Emailisrequired" xml:space="preserve">
+    <value>البريد الإلكتروني مطلوب</value>
+  </data>
+  <data name="Thisfieldisrequired" xml:space="preserve">
+    <value>الحقل مطلوب</value>
+  </data>
+  <data name="Passwordsmatch" xml:space="preserve">
+    <value>كلمات المرور متطابقة</value>
   </data>
 </root>

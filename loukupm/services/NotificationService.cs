@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 
 namespace loukupm.services
 {
-    /// <summary>
-    /// Service class for handling notification-related API calls
-    /// </summary>
+    
     public class NotificationService
     {
         private readonly HttpClient _httpClient;
@@ -33,9 +31,7 @@ namespace loukupm.services
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "MAUI-App/1.0");
         }
 
-        /// <summary>
-        /// Set authorization header from secure storage
-        /// </summary>
+       
         private async Task SetAuthorizationHeaderAsync()
         {
             string? token = await SecureStorage.GetAsync("auth_token");
@@ -51,18 +47,14 @@ namespace loukupm.services
             }
         }
 
-        /// <summary>
-        /// Fetch all notifications from the API
-        /// API endpoint expects: per_page=15, cursor=, status=all
-        /// </summary>
-        /// <returns>List of NotificationItem objects</returns>
+        
         public async Task<List<NotificationItem>> GetAllNotificationsAsync()
         {
             try
             {
                 await SetAuthorizationHeaderAsync();
 
-                // API URL with correct parameters matching backend requirements
+             
                 string url = $"{BaseUrl}?per_page=15&cursor=&status=all";
 
                 Console.WriteLine($"📬 Fetching notifications from: {url}");
@@ -86,7 +78,7 @@ namespace loukupm.services
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 };
 
-                // Deserialize to custom response wrapper that uses NotificationItem with string IDs
+             
                 var apiResponse = JsonSerializer.Deserialize<NotificationApiResponseWithItems>(json, options);
 
                 if (apiResponse?.Data == null || apiResponse.Data.Count == 0)
@@ -107,10 +99,7 @@ namespace loukupm.services
             }
         }
 
-        /// <summary>
-        /// Custom API response wrapper that uses NotificationItem objects
-        /// Matches the actual API response format with string IDs (UUIDs)
-        /// </summary>
+        
         private class NotificationApiResponseWithItems
         {
             [JsonPropertyName("success")]
@@ -129,9 +118,6 @@ namespace loukupm.services
             public int UnreadCount { get; set; }
         }
 
-        /// <summary>
-        /// Pagination metadata from API
-        /// </summary>
         private class NotificationPagination
         {
             [JsonPropertyName("per_page")]

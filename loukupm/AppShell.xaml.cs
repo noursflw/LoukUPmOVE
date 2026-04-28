@@ -36,45 +36,38 @@ namespace loukupm
             }
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BACK BUTTON — global handler for the entire Shell
-        //
-        // Navigation rules enforced here:
-        //
-        //   TabBar page (any tab except Home) → Back → //HomePage
-        //   TabBar page (Home)                → Back → exit app (return false)
-        //   Subpage                           → Back → pop one level (..)
-        //
-        // Subpages that inherit NavigationAwarePage also override
-        // OnBackButtonPressed, but AppShell fires first in MAUI Shell,
-        // so this handler takes precedence for system/hardware back.
-        // ─────────────────────────────────────────────────────────
+       
         protected override bool OnBackButtonPressed()
         {
-            var currentPage = NavigationService.GetCurrentPageName();
-
-            if (NavigationService.IsTabBarPage(currentPage))
+            try
             {
-                // On HomePage — let the OS handle it (exit or minimize the app)
-                if (currentPage == NavigationService.ROUTE_HOME)
-                    return false;
+                var currentPage = NavigationService.GetCurrentPageName();
+                Console.WriteLine($"[AppShell] OnBackButtonPressed triggered from page: {currentPage}");
 
-                // On any other tab — go to Home without adding to the stack
+                // Delegate to centralized HandleBackButton logic
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
+                    try
+                    {
+                        bool handled = await NavigationService.HandleBackButton(currentPage);
+                        Console.WriteLine($"[AppShell] Back button handling result: {handled}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[AppShell] ERROR in HandleBackButton: {ex.Message}");
+                        Console.WriteLine($"[AppShell] Exception: {ex.GetType().Name}");
+                        Console.WriteLine($"[AppShell] Stack trace: {ex.StackTrace}");
+                    }
                 });
 
-                return true; // Handled
+                return true; // Always handled by centralized logic
             }
-
-            // Subpage — pop one level off the stack
-            MainThread.BeginInvokeOnMainThread(async () =>
+            catch (Exception ex)
             {
-                await NavigationService.HandleBackButton(currentPage);
-            });
-
-            return true; // Handled
+                Console.WriteLine($"[AppShell] CRITICAL ERROR in OnBackButtonPressed: {ex.Message}");
+                Console.WriteLine($"[AppShell] Stack trace: {ex.StackTrace}");
+                return true; // Prevent crash by returning true
+            }
         }
 
         // ─────────────────────────────────────────────────────────
@@ -100,6 +93,8 @@ namespace loukupm
             // Profile subpages
             Routing.RegisterRoute(NavigationService.ROUTE_EDIT_USER, typeof(EditeUserPage));
             Routing.RegisterRoute(NavigationService.ROUTE_EDIT_PASSWORD, typeof(EditePasswordPage));
+            Routing.RegisterRoute(NavigationService.ROUTE_EDIT_PASSWORD_VERIFICATION, typeof(EditPasswordVerification));
+            Routing.RegisterRoute(NavigationService.ROUTE_CHACKOUT, typeof(ChackoutPage));
             Routing.RegisterRoute(NavigationService.ROUTE_ABOUT_US, typeof(AboutUS));
             Routing.RegisterRoute(NavigationService.ROUTE_NOTIFICATION, typeof(NotifictionPage));
             Routing.RegisterRoute(NavigationService.ROUTE_SETTING, typeof(SettingPage));

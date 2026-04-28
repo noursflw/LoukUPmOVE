@@ -1,4 +1,5 @@
 using loukupm.ViewModel;
+using loukupm.Services;
 using The49.Maui.BottomSheet;
 
 namespace loukupm.View;
@@ -47,14 +48,14 @@ public partial class BottomShee : BottomSheet
             booking.PaymentMethod = "Cash";
 
             await Application.Current.MainPage.DisplayAlert("Payment Method", "You selected Cash payment.", "OK");
-            await Shell.Current.GoToAsync("//HomePage");
+            await ShellNavigationManager.NavigateToHomeAndClear();
             await this.DismissAsync();
         }
         else if (CardRadio.IsChecked)
         {
             booking.PaymentMethod = "Card";
 
-            await Shell.Current.GoToAsync(nameof(Paymentgetway));
+            await NavigationService.NavigateToPage(NavigationService.ROUTE_PAYMENT);
             await this.DismissAsync();
         }
         else

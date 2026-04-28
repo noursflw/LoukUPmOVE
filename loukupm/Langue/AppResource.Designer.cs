@@ -187,7 +187,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Über die App.
+        ///   Looks up a localized string similar to Über uns.
         /// </summary>
         internal static string AppInfo {
             get {
@@ -525,6 +525,15 @@ namespace loukupm.Langue {
         internal static string EMail {
             get {
                 return ResourceManager.GetString("EMail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-Mail ist erforderlich.
+        /// </summary>
+        internal static string Emailisrequired {
+            get {
+                return ResourceManager.GetString("Emailisrequired", resourceCulture);
             }
         }
         
@@ -948,6 +957,15 @@ namespace loukupm.Langue {
         internal static string Passwordsdonotmatch {
             get {
                 return ResourceManager.GetString("Passwordsdonotmatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwörter stimmen überein.
+        /// </summary>
+        internal static string Passwordsmatch {
+            get {
+                return ResourceManager.GetString("Passwordsmatch", resourceCulture);
             }
         }
         
@@ -2383,6 +2401,15 @@ namespace loukupm.Langue {
         internal static string theserviewasdone {
             get {
                 return ResourceManager.GetString("theserviewasdone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dieses Feld ist erforderlich.
+        /// </summary>
+        internal static string Thisfieldisrequired {
+            get {
+                return ResourceManager.GetString("Thisfieldisrequired", resourceCulture);
             }
         }
         

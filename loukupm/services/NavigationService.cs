@@ -1,14 +1,14 @@
-namespace loukupm.Services;
+ï»¿namespace loukupm.Services;
 
 /// <summary>
-/// Navigation Service — enforces two navigation rules:
+/// Navigation Service ï¿½ enforces two navigation rules:
 ///
-///   RULE 1 — Tab Bar pages:
+///   RULE 1 ï¿½ Tab Bar pages:
 ///     Back button always navigates to HomePage (absolute route //HomePage).
 ///     Switching between tabs never touches the back stack.
 ///     Exception: pressing Back while already on HomePage exits the app (returns false).
 ///
-///   RULE 2 — Subpages (pages outside the TabBar):
+///   RULE 2 ï¿½ Subpages (pages outside the TabBar):
 ///     Back button pops exactly one entry off the navigation stack ("..")
 ///     regardless of which tab was the origin.
 /// </summary>
@@ -29,7 +29,7 @@ public static class NavigationService
     public const string ROUTE_BOOKING = "BookingPage";
     public const string ROUTE_PROFILE = "ProfilePage";
 
-    // Subpages (outside TabBar — push onto the stack)
+    // Subpages (outside TabBar ï¿½ push onto the stack)
     public const string ROUTE_TERM_BOOKING = "TerminbuchenPage";
     public const string ROUTE_PAYMENT = "Paymentgetway";
     public const string ROUTE_POLICY_PRIVACY = "PolicyandPrivacyPage";
@@ -37,6 +37,8 @@ public static class NavigationService
     public const string ROUTE_TERMS_CONDITIONS = "TermsAndConditions";
     public const string ROUTE_EDIT_USER = "EditeUserPage";
     public const string ROUTE_EDIT_PASSWORD = "EditePasswordPage";
+    public const string ROUTE_EDIT_PASSWORD_VERIFICATION = "EditPasswordVerification";
+    public const string ROUTE_CHACKOUT = "ChackoutPage";
     public const string ROUTE_ABOUT_US = "AboutUS";
     public const string ROUTE_NOTIFICATION = "NotifictionPage";
     public const string ROUTE_SETTING = "SettingPage";
@@ -60,7 +62,7 @@ public static class NavigationService
         ROUTE_HOME, ROUTE_SERVICES, ROUTE_BOOKING, ROUTE_PROFILE,
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
-        ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD,
+        ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
         ROUTE_ABOUT_US, ROUTE_NOTIFICATION, ROUTE_SETTING
     };
 
@@ -77,7 +79,7 @@ public static class NavigationService
 
     /// <summary>
     /// Navigate to a TabBar page using an absolute route (//Page).
-    /// Replaces the navigation stack root — tab switching never adds stack entries.
+    /// Replaces the navigation stack root ï¿½ tab switching never adds stack entries.
     /// </summary>
     public static async Task NavigateToTabBarPage(string route)
     {
@@ -120,9 +122,9 @@ public static class NavigationService
     /// Central back-button handler.  Call from both the system back button override
     /// (AppShell.OnBackButtonPressed) and any in-app back button/gesture.
     ///
-    ///   • TabBar page + not Home  ?  navigate to //HomePage
-    ///   • TabBar page + Home      ?  return false  (let system exit the app)
-    ///   • Subpage                 ?  pop one level (..)
+    ///   ï¿½ TabBar page + not Home  ?  navigate to //HomePage
+    ///   ï¿½ TabBar page + Home      ?  return false  (let system exit the app)
+    ///   ï¿½ Subpage                 ?  pop one level (..)
     /// </summary>
     /// <param name="currentPage">The simple route name of the visible page (e.g. "ServicesPage").</param>
     /// <returns>true if the event was handled; false to let the OS handle it (exit).</returns>
@@ -135,7 +137,7 @@ public static class NavigationService
         {
             if (TabBarPages.Contains(currentPage))
             {
-                // Already on Home — do nothing, let the OS exit the app
+                // Already on Home ï¿½ do nothing, let the OS exit the app
                 if (currentPage == ROUTE_HOME)
                     return false;
 
@@ -144,7 +146,7 @@ public static class NavigationService
                 return true;
             }
 
-            // Subpage — pop one entry off the stack
+            // Subpage ï¿½ pop one entry off the stack
             await Shell.Current.GoToAsync("..", animate: true);
             return true;
         }
@@ -225,7 +227,7 @@ public static class NavigationService
     {
         if (Shell.Current == null)
         {
-            Console.WriteLine("[Navigation] Shell.Current is null — validation skipped");
+            Console.WriteLine("[Navigation] Shell.Current is null ï¿½ validation skipped");
             return false;
         }
         Console.WriteLine("[Navigation] Route validation OK");

@@ -17,7 +17,7 @@ public partial class ProfilePage : ContentPage
         Shell.SetNavBarIsVisible(this, false);
 	}
 
-    private void Button_Clicked(object sender, EventArgs e)
+    private async void Button_Clicked(object sender, EventArgs e)
     {
         NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
     }
@@ -88,7 +88,11 @@ public partial class ProfilePage : ContentPage
     }
     protected override bool OnBackButtonPressed()
     {
-        NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_PROFILE);
+        // TabBar page: Delegate to centralized back button logic
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_PROFILE);
+        });
         return true;
     }
 

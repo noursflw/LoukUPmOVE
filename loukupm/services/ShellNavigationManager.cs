@@ -23,13 +23,13 @@ namespace loukupm.Services
             try
             {
                 Console.WriteLine($"?? [Navigation] Clearing stack and navigating to: {route}");
-                
+
                 // For Shell navigation, using absolute routes with // will replace the entire stack
                 string absoluteRoute = route.StartsWith("//") ? route : $"//{route}";
-                
+
                 // Navigate with animation disabled for cleaner transition
                 await Shell.Current.GoToAsync(absoluteRoute, animate: false);
-                
+
                 Console.WriteLine($"? [Navigation] Successfully navigated to: {route}");
             }
             catch (Exception ex)
@@ -47,10 +47,10 @@ namespace loukupm.Services
             try
             {
                 Console.WriteLine($"?? [Navigation] Logging out and clearing stack");
-                
+
                 // Use relative route for LoginPage (global route)
                 await Shell.Current.GoToAsync("LoginPage", animate: false);
-                
+
                 Console.WriteLine($"? [Navigation] Successfully logged out to LoginPage");
             }
             catch (Exception ex)
@@ -68,10 +68,10 @@ namespace loukupm.Services
             try
             {
                 Console.WriteLine($"?? [Navigation] Logging in and navigating to home");
-                
+
                 // Use absolute route for TabBar pages
                 await Shell.Current.GoToAsync("//HomePage", animate: false);
-                
+
                 Console.WriteLine($"? [Navigation] Successfully logged in to HomePage");
             }
             catch (Exception ex)

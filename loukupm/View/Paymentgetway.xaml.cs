@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using loukupm.services;
+using loukupm.Services;
 using loukupm.ViewModel;
 using Microsoft.Maui.Controls;
 using System;
@@ -20,10 +21,23 @@ public partial class Paymentgetway : ContentPage
         BindingContext = new PaymentViewModel(_api);
     }
 
-   
+    /// <summary>
+    /// معالج زر العودة - يستخدم نظام الملاحة المركزي
+    /// يتبع القاعدة: جميع الصفحات الأخرى → pop one level
+    /// </summary>
+    protected override bool OnBackButtonPressed()
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_PAYMENT);
+        });
+        return true;
+    }
+
+
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        await NavigationService.HandleBackButton(NavigationService.ROUTE_PAYMENT);
     }
 
    
@@ -74,17 +88,11 @@ public partial class Paymentgetway : ContentPage
         booking.ExpirationDate = (ExpDatePicker.Date ?? DateTime.Now).ToString("MM/yyyy");
         booking.CVV = CvvEntry.Text;
 
-       
         await vm.PostBookingAsync();
 
         await DisplayAlert("Success", "Payment info saved.", "OK");
 
-        
-        await Shell.Current.GoToAsync("//HomePage");
+        // ✅ الذهاب إلى صفحة رئيسية (HomePage) باستخدام NavigationService
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
     }
-
-
-
-
-
 }

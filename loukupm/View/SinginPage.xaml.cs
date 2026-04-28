@@ -1,14 +1,15 @@
 ﻿using CommunityToolkit.Maui.Views;
 using Firebase.Auth;
+using loukupm.Langue;
 using loukupm.Model;
 using loukupm.services;
 using loukupm.Services;
 using loukupm.View.MassgingApp;
+using loukupm.ViewModel;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using static loukupm.Model.Auth;
-using loukupm.ViewModel;
 
 namespace loukupm.View;
 
@@ -35,7 +36,10 @@ public partial class SinginPage : ContentPage
 
     protected override bool OnBackButtonPressed()
     {
-        _ = NavigationService.HandleBackButton(NavigationService.ROUTE_SIGNIN);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_SIGNIN);
+        });
         return true;
     }
 
@@ -129,7 +133,7 @@ public partial class SinginPage : ContentPage
                     await SecureStorage.SetAsync("refresh_token", registerResponse.RefreshToken);
                 }
 
-                // ✨ NEW: ربط المستخدم بـ OneSignal
+
                 if (registerResponse?.User != null)
                 {
                     OneSignalService.RegisterUser(registerResponse.User.Id.ToString());
@@ -139,7 +143,7 @@ public partial class SinginPage : ContentPage
 
                 await this.ShowPopupAsync(new CompletedLogin());
 
-                // ⭐ تحميل بيانات المستخدم قبل التنقل
+
                 await AppViewModel.Instance.LoadUserDataAsync();
 
                 await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
@@ -150,7 +154,7 @@ public partial class SinginPage : ContentPage
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
             {
-                await this.ShowPopupAsync(new NoServerResponse()); // أو يمكن Popup مخصص "بيانات غير صالحة"
+                await this.ShowPopupAsync(new NoServerResponse());
             }
             else
             {
@@ -166,7 +170,7 @@ public partial class SinginPage : ContentPage
         {
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;
-            RegisterButton.Text = "إنشاء حساب";
+            RegisterButton.Text = AppResource.CreatAcount2;
             RegisterButton.IsVisible = true;
             RegisterButton.Scale = 0;
             await RegisterButton.RotateTo(0);
@@ -219,14 +223,14 @@ public partial class SinginPage : ContentPage
     {
         try
         {
-          
+
             fglogin.IsVisible = true;
             fglogin.IsVisible = false;
             GoogleButton.IsVisible = false;
             GoogleLoadingIndicator.IsVisible = true;
             GoogleLoadingIndicator.IsRunning = true;
 
-           
+
             if (MauiProgram.firebaseconfig == null || MauiProgram.firebaseconfig.Providers == null || MauiProgram.firebaseconfig.Providers.Length == 0)
             {
                 Console.WriteLine("Firebase configuration or providers are missing.");
@@ -244,7 +248,7 @@ public partial class SinginPage : ContentPage
 
             var provider = providerEntry.ProviderType;
 
-           
+
             var signInTask = MauiProgram.firebaseclient.SignInWithRedirectAsync(provider, async uri =>
             {
                 webView.Source = uri;
@@ -253,7 +257,7 @@ public partial class SinginPage : ContentPage
                 fglogin.IsVisible = false;
                 webView.Opacity = 1;
 
-                
+
                 string finalUrl = await WaitForNavigationToUrlAsync("https://test-23def.web.app/__/auth/handler", TimeSpan.FromSeconds(80));
                 fg.IsVisible = false;
                 fglogin.IsVisible = true;
@@ -279,9 +283,64 @@ public partial class SinginPage : ContentPage
 
             if (userCredential?.User != null)
             {
-                OneSignalService.RegisterUser(userCredential.User.Uid);
+                var userId = userCredential.User.Uid;
+
+                var idToken = await userCredential.User.GetIdTokenAsync();
+
+
+                var googleAuthData = new
+                {
+                    Token = idToken,
+                    UserId = userId,
+                    Email = userCredential.User.Info.Email,
+                    DisplayName = userCredential.User.Info.DisplayName
+                };
+
+                try
+                {
+                    var handler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                    };
+
+                    using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
+                    var json = JsonSerializer.Serialize(googleAuthData);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync("https://test.center-yazan.com/api/auth/google", content);
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var googleAuthResponse = JsonSerializer.Deserialize<RegisterResponse>(result,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        // حفظ التوكن إذا حصلت عليه من Backend
+                        if (!string.IsNullOrEmpty(googleAuthResponse?.AccessToken))
+                            await SecureStorage.SetAsync("auth_token", googleAuthResponse.AccessToken);
+
+                        if (!string.IsNullOrEmpty(googleAuthResponse?.RefreshToken))
+                            await SecureStorage.SetAsync("refresh_token", googleAuthResponse.RefreshToken);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Backend API error: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending token to backend: {ex.Message}");
+                }
+
+
+                OneSignalService.RegisterUser(userId);
                 OneSignalService.AddTag("email", userCredential.User.Info.Email);
                 OneSignalService.AddTag("signup_type", "google");
+
+
+                await AppViewModel.Instance.LoadUserDataAsync();
+
+                await ShellNavigationManager.NavigateToHomeAndClear();
             }
         }
         catch (FirebaseAuthHttpException fae)
@@ -305,7 +364,7 @@ public partial class SinginPage : ContentPage
         }
         finally
         {
-            
+
             GoogleLoadingIndicator.IsRunning = false;
             GoogleLoadingIndicator.IsVisible = false;
             GoogleButton.IsVisible = true;
@@ -368,9 +427,128 @@ public partial class SinginPage : ContentPage
         if (completed == tcs.Task)
             return await tcs.Task;
 
-        
+
         webView.Navigated -= handler;
         throw new TimeoutException("Navigation to redirect URL timed out.");
     }
-    // End Section Google Sign-In With FireBase aND SingUp API Authentication 
+
+    private void OnEmailTextChanged(object sender, TextChangedEventArgs e)
+    {
+        var email = e.NewTextValue?.Trim();
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            ShowLiveError(AppResource.Emailisrequired);
+            return;
+        }
+
+        if (!IsValidEmaile(email))
+        {
+            ShowLiveError(AppResource.ErorEmailInput);
+            return;
+        }
+
+        HideLiveError();
+    }
+    private bool IsValidEmaile(string email)
+    {
+        string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        return Regex.IsMatch(email, pattern);
+    }
+    private async void ShowLiveError(string message)
+    {
+        LiveErrorLabel.Text = message;
+        LiveErrorLabel.TextColor = Colors.Red;
+        LiveErrorLabel.IsVisible = true;
+
+        LiveErrorLabel.Opacity = 0;
+        await LiveErrorLabel.FadeTo(1, 150);
+    }
+
+    private void HideLiveError()
+    {
+        LiveErrorLabel.IsVisible = false;
+    }
+
+    private void OnConfirmPasswordTextChanged(object sender, TextChangedEventArgs e)
+    {
+        ValidatePasswords();
+    }
+    private void ValidatePasswords()
+    {
+        var password = RegisterPasswordEntry.Text;
+        var confirm = RegisterConfirmPasswordEntry.Text;
+
+
+        if (string.IsNullOrWhiteSpace(confirm))
+        {
+            PasswordMatchLabel.Text = AppResource.Thisfieldisrequired;
+            PasswordMatchLabel.TextColor = Colors.Orange;
+            PasswordMatchLabel.IsVisible = true;
+            return;
+        }
+
+
+        if (password != confirm)
+        {
+            PasswordMatchLabel.Text = AppResource.Passwordnotmatch;
+            PasswordMatchLabel.TextColor = Colors.Red;
+            PasswordMatchLabel.IsVisible = true;
+            return;
+        }
+
+        PasswordMatchLabel.Text = AppResource.Passwordsmatch;
+        PasswordMatchLabel.TextColor = Colors.Green;
+        PasswordMatchLabel.IsVisible = true;
+    }
+
+    private void RegisterNameEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        var name = e.NewTextValue?.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        { 
+            ShowNameError(AppResource.Thisfieldisrequired);
+        }
+        else
+        {
+            HideNameError();
+        }
+    }
+
+    private void HideNameError()
+    {
+        ErorNameInput.IsVisible = false;
+    }
+
+    private void ShowNameError(string thisfieldisrequired)
+    {
+        ErorNameInput.Text = thisfieldisrequired;
+        ErorNameInput.TextColor = Colors.Red;
+        ErorNameInput.IsVisible = true;
+    }
+
+    private void RegisterLastNameEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        var lastName = e.NewTextValue?.Trim(); 
+        if (string.IsNullOrWhiteSpace(lastName))
+        {
+            ShowLastNameError(AppResource.Thisfieldisrequired);
+        } 
+        else
+        {
+            HideLastNameError();
+        }
+    }
+
+    private void HideLastNameError()
+    {
+        ErorLastNameInput.IsVisible = false;
+    }
+
+    private void ShowLastNameError(string thisfieldisrequired)
+    {
+        ErorLastNameInput.Text = thisfieldisrequired;
+        ErorLastNameInput.TextColor = Colors.Red;
+        ErorLastNameInput.IsVisible = true;
+    }
 }

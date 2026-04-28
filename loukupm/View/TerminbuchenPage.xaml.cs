@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using loukupm.Model;
 using loukupm.ViewModel;
+using loukupm.Services;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Alerts;
@@ -14,20 +15,30 @@ public partial class TerminbuchenPage : ContentPage
 
     public Command<DayItem> SelectDayCommand { get; set; }
 
-    public TerminbuchenPage()
+	public TerminbuchenPage()
 	{
 		InitializeComponent();
-     
-       
-      
-        this.BindingContext= AppViewModel.Instance;    
-        MonthYearLabel.Text = DateTime.Now.ToString("MMMM yyyy"); 
-    }
 
-    private async void Button_Clicked(object sender, EventArgs e)
-    {
-		await Navigation.PopAsync();
-    }
+
+
+		this.BindingContext= AppViewModel.Instance;    
+		MonthYearLabel.Text = DateTime.Now.ToString("MMMM yyyy"); 
+	}
+
+	
+	protected override bool OnBackButtonPressed()
+	{
+		MainThread.BeginInvokeOnMainThread(async () =>
+		{
+			await NavigationService.HandleBackButton(NavigationService.ROUTE_TERM_BOOKING);
+		});
+		return true;
+	}
+
+	private async void Button_Clicked(object sender, EventArgs e)
+	{
+		await NavigationService.HandleBackButton(NavigationService.ROUTE_TERM_BOOKING);
+	}
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
@@ -38,11 +49,12 @@ public partial class TerminbuchenPage : ContentPage
     {
         var vm = AppViewModel.Instance;
         int idd = vm.SelectedProvider.Id;
-        vm.CurrentBooking.ProviderId =idd.ToString();
-        vm.CurrentBooking.Date =vm.SelectedDate;
-        vm.CurrentBooking.Time =vm.SelectedTime;
+        vm.CurrentBooking.ProviderId = idd.ToString();
+        vm.CurrentBooking.Date = vm.SelectedDate;
+        vm.CurrentBooking.Time = vm.SelectedTime;
 
-        await Navigation.PushAsync(new BookingPage());
+       
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
     }
 
     private async void Button_Clicked_2(object sender, EventArgs e)
@@ -50,7 +62,7 @@ public partial class TerminbuchenPage : ContentPage
         await Navigation.PopAsync();
     }
 
-    // ? „⁄«·Ã Õ–› «·Œœ„« 
+   
     private void OnRemoveService(object sender, EventArgs e)
     {
         try

@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
+using loukupm.Services;
 using System.Text;
 using System.Text.Json;
 
@@ -18,6 +19,34 @@ public partial class RestPassword : ContentPage
         InitializeComponent();
         Shell.SetNavBarIsVisible(this, false);
         this.BindingContext = AppViewModel.Instance;
+    }
+
+    /// <summary>
+    /// معالج زر العودة - يستخدم نظام الملاحة المركزي
+    /// يتبع القاعدة: صفحات تدفق الملف الشخصي → //ProfilePage مباشرة
+    /// </summary>
+    protected override bool OnBackButtonPressed()
+    {
+        try
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    await NavigationService.HandleBackButton(NavigationService.ROUTE_REST_PASSWORD);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[RestPassword] Back button error: {ex.Message}");
+                }
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[RestPassword] OnBackButtonPressed crash: {ex.Message}");
+            return true;
+        }
     }
     private async void Button_Clicked(object sender, EventArgs e)
     {

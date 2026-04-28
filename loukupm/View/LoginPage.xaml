@@ -61,7 +61,14 @@
 
 
                 <VerticalStackLayout Grid.Row="1" x:Name="fglogin">
-                    <Label Text="{loc:Translate Name=EMail}" Margin="12,5,0,0" TextColor="White" Padding="10" FontSize="16"/>
+                    <Label FontSize="16" Margin="20,5,0,0">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{loc:Translate Name=EMail}" TextColor="White"/>
+                                <Span Text=" *" TextColor="Red" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
                     <material:TextField
                         x:Name="EmailEntry"
                         TextColor="#EBD750"
@@ -70,9 +77,23 @@
                         InputBackgroundColor="#444444"
                         CornerRadius="16"
                         Icon="email.png" 
+                        TextChanged="OnEmailTextChanged"
                         HeightRequest="50"
                         Title="E-Mail" />
-                    <Label FontSize="16" Margin="12,24,0,0" Text="{loc:Translate Name=Password}" TextColor="White" Padding="10" />
+                    <Label
+                       x:Name="LiveErrorLabel"
+                       TextColor="Red"
+                       FontSize="12"
+                       Margin="25,10,25,0"
+                       IsVisible="False"/>
+                    <Label FontSize="16" Margin="12,24,0,0" Padding="10">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{loc:Translate Name=Password}" TextColor="White"/>
+                                <Span Text=" *" TextColor="Red" FontSize="14"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
                     <material:TextField 
                         x:Name="PasswordEntry"
                         Title="Password"  
@@ -166,7 +187,7 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <material:CheckBox x:Name="DD" CheckChanged="CheckBox_CheckChanged" Margin="10,7,0,0" BorderColor="#EBD750" Color="#EBD750" />
+                        
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Grid>

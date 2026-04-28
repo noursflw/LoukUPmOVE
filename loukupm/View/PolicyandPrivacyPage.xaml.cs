@@ -1,4 +1,5 @@
 using loukupm.ViewModel;
+using loukupm.Services;
 using System.Globalization;
 
 namespace loukupm.View;
@@ -9,21 +10,33 @@ public partial class PolicyandPrivacyPage : ContentPage
 	{
 		InitializeComponent();
 		this.BindingContext = AppViewModel.Instance;
-		
+
 		// Load policy and privacy data
 		_ = AppViewModel.Instance.LoadPolicyandPrivacyAsync();
-		
+
 		// Set initial flow direction based on current language
 		UpdateFlowDirection(Langue.LocalizationResourcesManager.Instanse.CurrentCulture);
-		
+
 		// Subscribe to language change event
 		Langue.LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
-		
+
 		// Cleanup on page unload
 		Unloaded += (s, e) =>
 		{
 			Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
 		};
+	}
+
+	/// <summary>
+	/// ????? ?? ?????? - ???? ????? ?????? Traditional Stack Navigation
+	/// </summary>
+	protected override bool OnBackButtonPressed()
+	{
+		MainThread.BeginInvokeOnMainThread(async () =>
+		{
+			await NavigationService.HandleBackButton(NavigationService.ROUTE_POLICY_PRIVACY);
+		});
+		return true;
 	}
 
 	/// <summary>

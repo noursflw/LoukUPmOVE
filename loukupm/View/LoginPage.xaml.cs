@@ -1,18 +1,19 @@
 ﻿using CommunityToolkit.Maui.Views;
 using Firebase.Auth;
-using loukupm.Model;
 using Firebase.Auth.Providers;
+using loukupm.Langue;
+using loukupm.Model;
 using loukupm.services;
 using loukupm.Services;
 using loukupm.View.MassgingApp;
+using loukupm.ViewModel;
 using Microsoft.Extensions.Logging;
+using OneSignalSDK.DotNet;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using static loukupm.Model.Auth;
-using System.Diagnostics.CodeAnalysis;
-using OneSignalSDK.DotNet;
-using loukupm.ViewModel;
 
 
 namespace loukupm.View;
@@ -29,7 +30,7 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         webView.Navigated += WebView_Navigated;
         webView.UserAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012)";
-        UpdateButtonsState();
+      
 
     }
     private void WebView_Navigated(object sender, WebNavigatedEventArgs e)
@@ -56,8 +57,6 @@ public partial class LoginPage : ContentPage
     private async void OnLoginClicked(object sender, EventArgs e)
     {
        
-        if (!RegisterButton.IsEnabled)
-            return;
 
         RegisterButton.IsEnabled = false;
 
@@ -305,10 +304,65 @@ public partial class LoginPage : ContentPage
             if (userCredential?.User != null)
             {
                 var userId = userCredential.User.Uid;
+
+                // احصل على ID Token من Firebase
+                var idToken = await userCredential.User.GetIdTokenAsync();
+
+                // أرسل Token إلى Backend API
+                var googleAuthData = new
+                {
+                    Token = idToken,
+                    UserId = userId,
+                    Email = userCredential.User.Info.Email,
+                    DisplayName = userCredential.User.Info.DisplayName
+                };
+
+                try
+                {
+                    var handler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                    };
+
+                    using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
+                    var json = JsonSerializer.Serialize(googleAuthData);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync("https://test.center-yazan.com/api/auth/google", content);
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var googleAuthResponse = JsonSerializer.Deserialize<LoginResponse>(result,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        // حفظ التوكن إذا حصلت عليه من Backend
+                        if (!string.IsNullOrEmpty(googleAuthResponse?.Token))
+                            await SecureStorage.SetAsync("auth_token", googleAuthResponse.Token);
+
+                        if (!string.IsNullOrEmpty(googleAuthResponse?.Refresh_Token))
+                            await SecureStorage.SetAsync("refresh_token", googleAuthResponse.Refresh_Token);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Backend API error: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending token to backend: {ex.Message}");
+                }
+
+                // OneSignal Setup
                 OneSignal.Login(userId);
                 OneSignal.User.AddTag("email", userCredential.User.Info.Email);
                 OneSignal.User.AddTag("login_type", "google");
                 OneSignal.User.AddTag("display_name", userCredential.User.Info.DisplayName);
+
+                // تحميل بيانات المستخدم وتنقل إلى الصفحة الرئيسية
+                await AppViewModel.Instance.LoadUserDataAsync();
+
+                await ShellNavigationManager.NavigateToHomeAndClear();
             }
         }
         catch (FirebaseAuthHttpException fae)
@@ -380,33 +434,69 @@ public partial class LoginPage : ContentPage
         await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
     }
 
-    private  void CheckBox_CheckChanged(object sender, EventArgs e)
-    {
-        UpdateButtonsState();
-    }
-    private void UpdateButtonsState()
-    {
-        if (DD.IsChecked)
-        {
-            GoogleButton.IsEnabled = true;
-            RegisterButton.IsEnabled = true;
-            GoogleButton.Opacity = 1;
-            RegisterButton.Opacity = 1;
-        }
-        else
-        {
-            GoogleButton.IsEnabled = false;
-            RegisterButton.IsEnabled = false;
-            GoogleButton.Opacity = 0.5;
-            RegisterButton.Opacity = 0.5;
-        }
-    }
+    //private  void CheckBox_CheckChanged(object sender, EventArgs e)
+    //{
+    //    UpdateButtonsState();
+    //}
+    //private void UpdateButtonsState()
+    //{
+    //    if (DD.IsChecked)
+    //    {
+    //        GoogleButton.IsEnabled = true;
+    //        RegisterButton.IsEnabled = true;
+    //        GoogleButton.Opacity = 1;
+    //        RegisterButton.Opacity = 1;
+    //    }
+    //    else
+    //    {
+    //        GoogleButton.IsEnabled = false;
+    //        RegisterButton.IsEnabled = false;
+    //        GoogleButton.Opacity = 0.5;
+    //        RegisterButton.Opacity = 0.5;
+    //    }
+    //}
 
     private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
     {
         await NavigationService.NavigateToPage(NavigationService.ROUTE_SIGNIN);
     }
+    private void OnEmailTextChanged(object sender, TextChangedEventArgs e)
+    {
+        var email = e.NewTextValue?.Trim();
 
-    // ... other methods unchanged ... End Section Log IN and Google Login WITH Firebase
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            ShowLiveError(AppResource.Emailisrequired);
+            return;
+        }
+
+        if (!IsValidEmaile(email))
+        {
+            ShowLiveError(AppResource.ErorEmailInput);
+            return;
+        }
+
+        HideLiveError();
+    }
+    private bool IsValidEmaile(string email)
+    {
+        string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        return Regex.IsMatch(email, pattern);
+    }
+    private async void ShowLiveError(string message)
+    {
+        LiveErrorLabel.Text = message;
+        LiveErrorLabel.TextColor = Colors.Red;
+        LiveErrorLabel.IsVisible = true;
+
+        LiveErrorLabel.Opacity = 0;
+        await LiveErrorLabel.FadeTo(1, 150);
+    }
+
+    private void HideLiveError()
+    {
+        LiveErrorLabel.IsVisible = false;
+    }
+   
 }
 

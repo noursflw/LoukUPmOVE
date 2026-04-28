@@ -36,9 +36,12 @@ public partial class BookingPage : ContentPage
 	}
 	protected override bool OnBackButtonPressed()
 	{
-		Shell.Current.GoToAsync("//HomePage");
-		 return true;
-
+		// TabBar page: Delegate to centralized back button logic
+		MainThread.BeginInvokeOnMainThread(async () =>
+		{
+			await NavigationService.HandleBackButton(NavigationService.ROUTE_BOOKING);
+		});
+		return true;
 	}
 
 	private async void Button_Clicked_2(object sender, EventArgs e)

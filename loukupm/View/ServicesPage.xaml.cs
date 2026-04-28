@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using loukupm.Langue;
 using loukupm.Model;
+using loukupm.Services;
 using loukupm.ViewModel;
 using System.Windows.Input;
 
@@ -67,7 +68,11 @@ public partial class ServicesPage : ContentPage
 
     protected override bool OnBackButtonPressed()
     {
-        Shell.Current.GoToAsync("//HomePage");
+        // TabBar page: Delegate to centralized back button logic
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_SERVICES);
+        });
         return true;
     }
 

@@ -1,4 +1,4 @@
-namespace loukupm.Services;
+ï»¿namespace loukupm.Services;
 
 /// <summary>
 /// Base class for subpages (pages outside the TabBar).
@@ -30,7 +30,7 @@ public abstract class NavigationAwarePage : ContentPage
             await NavigationService.HandleBackButton(PageName);
         });
 
-        return true; // Event handled — suppress the OS default
+        return true; // Event handled ï¿½ suppress the OS default
     }
 
     /// <summary>

@@ -52,7 +52,7 @@ namespace loukupm
                     : Microsoft.Maui.FlowDirection.LeftToRight;
             }
 
-            MainPage = new AppShell
+            MainPage = new AppShell()
             {
                 FlowDirection = direction
             };
