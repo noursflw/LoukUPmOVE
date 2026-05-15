@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using loukupm.Services;
 using loukupm.ViewModel;
 
@@ -172,5 +173,28 @@ public partial class EditeUserPage : ContentPage
         {
             AppInfo.ShowSettingsUI();
         }
+    }
+
+    private async void Button_Clicked_9(object sender, EventArgs e)
+    {
+        var popup = new RemoveUserPopup();
+        OneSignalService.Logout();
+
+        // مسح خريطة التنقل قبل حذف الحساب
+        //NavigationService.ClearPageSourceMap();
+
+        // Reset authentication check flag
+        App.ResetAuthenticationCheck();
+
+        await this.ShowPopupAsync(popup);
+    }
+    private async void Button_Clicked_2(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
+    }
+
+    private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
     }
 }

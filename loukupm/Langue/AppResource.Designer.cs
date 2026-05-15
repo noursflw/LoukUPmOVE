@@ -151,7 +151,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Alle Services.
+        ///   Looks up a localized string similar to Alle anzeigen.
         /// </summary>
         internal static string AllServies {
             get {
@@ -277,6 +277,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kontakt.
+        /// </summary>
+        internal static string Callmy {
+            get {
+                return ResourceManager.GetString("Callmy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Buchung stornieren.
         /// </summary>
         internal static string CancelBooking {
@@ -340,11 +349,20 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Eine Dienstleistung auswählen.
+        ///   Looks up a localized string similar to Beliebte Leistungen.
         /// </summary>
         internal static string chosesservies {
             get {
                 return ResourceManager.GetString("chosesservies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wähle deine Leistung und buche ganz einfach..
+        /// </summary>
+        internal static string chosessevvesandbegin {
+            get {
+                return ResourceManager.GetString("chosessevvesandbegin", resourceCulture);
             }
         }
         
@@ -426,6 +444,24 @@ namespace loukupm.Langue {
         internal static string CreatAcount2 {
             get {
                 return ResourceManager.GetString("CreatAcount2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persönliche Daten.
+        /// </summary>
+        internal static string dataself {
+            get {
+                return ResourceManager.GetString("dataself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persönliche Daten.
+        /// </summary>
+        internal static string dataself1 {
+            get {
+                return ResourceManager.GetString("dataself1", resourceCulture);
             }
         }
         
@@ -691,6 +727,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ALLGEMEIN.
+        /// </summary>
+        internal static string general {
+            get {
+                return ResourceManager.GetString("general", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mit Google fortfahren.
         /// </summary>
         internal static string GoogleLogin {
@@ -714,6 +759,15 @@ namespace loukupm.Langue {
         internal static string hrearchooes {
             get {
                 return ResourceManager.GetString("hrearchooes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profilbild.
+        /// </summary>
+        internal static string imegpesonaly {
+            get {
+                return ResourceManager.GetString("imegpesonaly", resourceCulture);
             }
         }
         
@@ -772,6 +826,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to WEITERE.
+        /// </summary>
+        internal static string Legal {
+            get {
+                return ResourceManager.GetString("Legal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Link senden.
         /// </summary>
         internal static string linkpass {
@@ -822,6 +885,15 @@ namespace loukupm.Langue {
         internal static string NewMyPassord {
             get {
                 return ResourceManager.GetString("NewMyPassord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schön, dass du da bist!.
+        /// </summary>
+        internal static string nicetommetyou {
+            get {
+                return ResourceManager.GetString("nicetommetyou", resourceCulture);
             }
         }
         
@@ -921,6 +993,42 @@ namespace loukupm.Langue {
         internal static string nubercrad {
             get {
                 return ResourceManager.GetString("nubercrad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 8 Zeichen.
+        /// </summary>
+        internal static string NUMBER8 {
+            get {
+                return ResourceManager.GetString("NUMBER8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 1 Großbuchstabe.
+        /// </summary>
+        internal static string ONECHARCAP {
+            get {
+                return ResourceManager.GetString("ONECHARCAP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 1 Zahl.
+        /// </summary>
+        internal static string ONENUMBER {
+            get {
+                return ResourceManager.GetString("ONENUMBER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WEITERE.
+        /// </summary>
+        internal static string other {
+            get {
+                return ResourceManager.GetString("other", resourceCulture);
             }
         }
         
@@ -1937,11 +2045,29 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sicherheit.
+        /// </summary>
+        internal static string scertey {
+            get {
+                return ResourceManager.GetString("scertey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code wurde gesendet.
         /// </summary>
         internal static string sendotp {
             get {
                 return ResourceManager.GetString("sendotp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Service wurde entfernt.
+        /// </summary>
+        internal static string serviceremoved {
+            get {
+                return ResourceManager.GetString("serviceremoved", resourceCulture);
             }
         }
         
@@ -1969,6 +2095,15 @@ namespace loukupm.Langue {
         internal static string standpay {
             get {
                 return ResourceManager.GetString("standpay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beginnt hier.
+        /// </summary>
+        internal static string startuphere {
+            get {
+                return ResourceManager.GetString("startuphere", resourceCulture);
             }
         }
         
@@ -2414,7 +2549,25 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Treffen Sie unser Team.
+        ///   Looks up a localized string similar to Dein Style.
+        /// </summary>
+        internal static string thisstyle {
+            get {
+                return ResourceManager.GetString("thisstyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zeit für deinen perfekten Look.
+        /// </summary>
+        internal static string timetosphelstel {
+            get {
+                return ResourceManager.GetString("timetosphelstel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unser Team.
         /// </summary>
         internal static string TitelTeam {
             get {
@@ -2468,6 +2621,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Willkommen bei lookup ✨.
+        /// </summary>
+        internal static string wellomeonlookup {
+            get {
+                return ResourceManager.GetString("wellomeonlookup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to abmelden.
         /// </summary>
         internal static string yes {
@@ -2491,6 +2653,15 @@ namespace loukupm.Langue {
         internal static string younotapement {
             get {
                 return ResourceManager.GetString("younotapement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dein Style.
+        /// </summary>
+        internal static string yourstylestatuphere {
+            get {
+                return ResourceManager.GetString("yourstylestatuphere", resourceCulture);
             }
         }
     }

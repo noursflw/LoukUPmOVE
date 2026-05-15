@@ -56,6 +56,14 @@ public static class NavigationService
         ROUTE_PROFILE
     };
 
+    /// <summary>Flyout menu pages (About Us, Privacy Policy, Terms and Conditions).</summary>
+    private static readonly HashSet<string> FlyoutPages = new()
+    {
+        ROUTE_ABOUT_US,
+        ROUTE_POLICY_PRIVACY,
+        ROUTE_TERMS_CONDITIONS, ROUTE_SETTING
+    };
+
     private static readonly HashSet<string> AllValidRoutes = new()
     {
         ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN,
@@ -63,7 +71,7 @@ public static class NavigationService
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
-        ROUTE_ABOUT_US, ROUTE_NOTIFICATION, ROUTE_SETTING
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION
     };
 
     // ?????????????????????????????????????????????
@@ -72,6 +80,9 @@ public static class NavigationService
 
     /// <summary>Returns true if <paramref name="route"/> is one of the four TabBar pages.</summary>
     public static bool IsTabBarPage(string route) => TabBarPages.Contains(route);
+
+    /// <summary>Returns true if <paramref name="route"/> is one of the Flyout menu pages.</summary>
+    public static bool IsFlyoutPage(string route) => FlyoutPages.Contains(route);
 
     // ?????????????????????????????????????????????
     // NAVIGATION
@@ -124,6 +135,7 @@ public static class NavigationService
     ///
     ///   � TabBar page + not Home  ?  navigate to //HomePage
     ///   � TabBar page + Home      ?  return false  (let system exit the app)
+    ///   � Flyout page             ?  navigate to //HomePage
     ///   � Subpage                 ?  pop one level (..)
     /// </summary>
     /// <param name="currentPage">The simple route name of the visible page (e.g. "ServicesPage").</param>
@@ -142,6 +154,13 @@ public static class NavigationService
                     return false;
 
                 // Any other tab ? go to Home
+                await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: true);
+                return true;
+            }
+
+            if (FlyoutPages.Contains(currentPage))
+            {
+                // Flyout page ? go to Home
                 await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: true);
                 return true;
             }

@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.SettingPage"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#252525"
+             BackgroundColor="#0A0A0A"
               Shell.TabBarIsVisible="False"
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              Title="SettingPage">
     <VerticalStackLayout Spacing="30" Margin="0,0,0,0">
-        <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+        <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A">
             <!-- العنوان على اليسار -->
             <Label Text="{Loc:Translate Name=setting}"
     TextColor="White"
@@ -24,76 +24,19 @@
        HeightRequest="40"
        CornerRadius="12"
        ImageSource="backbuttonpmg.png"
-       BackgroundColor="#202020"
-       BorderColor="#999999"
+       BackgroundColor="#0A0A0A"
+       BorderColor="#0A0A0A"
        Margin="0,0,10,0"            
        BorderWidth="1"
       HorizontalOptions="End"
       VerticalOptions="Center"
       Clicked="Button_Clicked_1" />
         </Grid>
-        <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-            <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                <HorizontalStackLayout>
-                    <Image Source="info.png" Margin="20,0,0,0" />
-                    <Label Text="{Loc:Translate Name=PolicyandPrivacy}"
-     TextColor="White"
-     Margin="24,0,0,0"
-     FontSize="16" VerticalOptions="Center" />
-                </HorizontalStackLayout>
-
-                <!-- الزر على اليمين -->
-                <Button Grid.Column="1"
-WidthRequest="40"
-HeightRequest="40"
-CornerRadius="12"
-ImageSource="backbuttonpmg.png"
-BackgroundColor="#444444"
-Padding="0" 
-Margin="0,5,10,0"            
-BorderWidth="1"
-HorizontalOptions="Center"
-VerticalOptions="Start"
-Clicked="Button_Clicked_11" />
-            </Grid>
-            <Frame.GestureRecognizers>
-                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_6" />
-            </Frame.GestureRecognizers>
-        </Frame>
-        <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-            <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                <HorizontalStackLayout>
-                    <Image Source="info.png" Margin="20,0,0,0" />
-                    <Label Text="{Loc:Translate Name=TermsandConditions}"
-     TextColor="White"
-     Margin="24,0,0,0"
-     FontSize="16" VerticalOptions="Center" />
-                </HorizontalStackLayout>
-
-                <!-- الزر على اليمين -->
-                <Button Grid.Column="1"
-WidthRequest="40"
-HeightRequest="40"
-CornerRadius="12"
-ImageSource="backbuttonpmg.png"
-BackgroundColor="#444444"
-Padding="0" 
-Margin="0,5,10,0"            
-BorderWidth="1"
-HorizontalOptions="Center"
-VerticalOptions="Start"
-Clicked="Button_Clicked" />
-            </Grid>
-            <Frame.GestureRecognizers>
-                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-            </Frame.GestureRecognizers>
-        </Frame>
+       
         <uranium:Dropdown 
             CornerRadius="12"
             HeightRequest="40"
-            BackgroundColor="#444444"
+            BackgroundColor="#181c21"
             Placeholder="Choose Language"
             ItemsSource="{Binding Languages}"
             SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"

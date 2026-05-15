@@ -4,18 +4,127 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:loukupm"
     xmlns:view="clr-namespace:loukupm.View"
-    Shell.FlyoutBehavior="Disabled"
-    Shell.TabBarTitleColor="#EBD750"
+    xmlns:Loc="clr-namespace:loukupm.Langue"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.BackgroundColor="Black"
+    Shell.TabBarTitleColor="#A8883C"
     Shell.TabBarUnselectedColor="Gray"
-    Shell.TabBarDisabledColor="DarkGray"
-    Shell.TabBarBackgroundColor="#202020"
-    Shell.TabBarForegroundColor="#EBD750"
+    Shell.TabBarDisabledColor="#151821"
+    Shell.TabBarBackgroundColor="#151821"
+    Shell.TabBarForegroundColor="#A8883C"
+    Shell.FlyoutBackgroundColor="#121416"
     Title="loukupm">
 
-    <!-- صفحات مخفية خارج التاب -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CUSTOM ITEM TEMPLATE - Controls all Flyout item appearance      -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <Shell.ItemTemplate>
+        
+        <DataTemplate>
+            <!-- Grid layout with icon + label -->
+            <Grid ColumnDefinitions="Auto,*" 
+                  ColumnSpacing="15" 
+                  Padding="20,12" 
+                  BackgroundColor="Transparent"
+                  VerticalOptions="Center">
+
+                <!-- Column 0: Icon -->
+                <Image Grid.Column="0"
+                       Source="{Binding Icon}"
+                       WidthRequest="30"
+                       HeightRequest="30"
+                       Aspect="AspectFit"
+                       Opacity="0.9"
+                       VerticalOptions="Center" />
+
+                <!-- Column 1: Title/Label -->
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="14"
+                       FontFamily="Oswald"
+                       TextColor="White"
+                       VerticalOptions="Center"
+                       LineBreakMode="TailTruncation"
+                       MaxLines="1" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <Grid Padding="10,5">
+                <Label Text="{Binding Text}"
+           TextColor="#555"
+           FontSize="12"
+           HorizontalOptions="Start" />
+            </Grid>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+
+    <Shell.FlyoutHeader>
+        <Grid RowDefinitions="Auto" 
+              Margin="10" 
+              ColumnDefinitions="Auto,*,Auto" 
+              Padding="20"  
+              BackgroundColor="Transparent" 
+              ColumnSpacing="15" 
+              RowSpacing="5">
+            
+            <Frame Grid.Column="0"
+       HeightRequest="80"
+       WidthRequest="80"
+       CornerRadius="40"
+       Margin="0,10,0,0"
+       Padding="0"
+       IsClippedToBounds="True"
+       BackgroundColor="#A8883C"
+       BorderColor="#A8883C"
+       HasShadow="False"
+       HorizontalOptions="Start"
+       VerticalOptions="Center">
+
+                <Image Source="{Binding Avatar}"
+           Aspect="AspectFill"/>
+            </Frame>
+
+            <Frame Grid.Column="0"
+       HeightRequest="80"
+       WidthRequest="80"
+       CornerRadius="40"
+       Margin="0,10,0,0"
+       Padding="0"
+       IsClippedToBounds="True"
+       BackgroundColor="#A8883C"
+       BorderColor="#A8883C"
+       HasShadow="False"
+       HorizontalOptions="Start"
+       VerticalOptions="Center">
+
+                <Image Source="{Binding Avatar}"
+           Aspect="AspectFill"/>
+            </Frame>
+            <VerticalStackLayout Grid.Column="1" 
+                                 Spacing="4" 
+                                 VerticalOptions="Center">
+                <Label Text="{Binding UserName}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       FontFamily="Oswald"
+                       TextColor="White"
+                       LineBreakMode="TailTruncation"
+                       MaxLines="1"/>
+                <Label Text="{Loc:Translate Name=wellomeonlookup}"
+                       FontSize="13"
+                       FontFamily="Oswald"
+                       TextColor="#999999"
+                       LineBreakMode="TailTruncation"
+                       MaxLines="1"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+    
     <ShellContent Route="MainPage"
-              ContentTemplate="{DataTemplate local:MainPage}"
-              IsVisible="False" />
+                  ContentTemplate="{DataTemplate local:MainPage}"
+                  IsVisible="False" />
 
     <ShellContent Route="LoginPage"
                   ContentTemplate="{DataTemplate view:LoginPage}"
@@ -28,7 +137,7 @@
                   ContentTemplate="{DataTemplate view:NotifictionPage}"
                   IsVisible="False" />
 
-    <!-- التاب بار الرئيسي -->
+    
     <TabBar>
         <ShellContent
             Icon="nhome.png"
@@ -52,11 +161,71 @@
             Route="ProfilePage" />
     </TabBar>
 
-    <!-- Deep link routes for Stripe Checkout -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- MAIN CONTENT SECTION -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False"  />
+    <MenuFlyoutItem Text="{Loc:Translate Name=general}" IsEnabled="False"  />
+
+    <FlyoutItem Title="{Loc:Translate Name=aboutusga}" Icon="uboutusy.svg">
+        <ShellContent
+            ContentTemplate="{DataTemplate view:AboutUS}"
+            Route="AboutUS" />
+    </FlyoutItem>
+    <FlyoutItem Title="{Loc:Translate Name=Callmy}" Icon="callme.svg">
+        <ShellContent
+      ContentTemplate="{DataTemplate view:PolicyandPrivacyPage}"
+      Route="PolicyandPrivacyPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="{Loc:Translate Name=setting}" Icon="sittingy.svg">
+        <ShellContent
+        ContentTemplate="{DataTemplate view:SettingPage}"
+        Route="SettingPage" />
+    </FlyoutItem>
+    <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False"  />
+    <MenuFlyoutItem Text="{Loc:Translate Name=Legal}" IsEnabled="False"  />
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- SECTION DIVIDER -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+ 
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- SUPPORT & LEGAL SECTION -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <FlyoutItem Title="{Loc:Translate Name=PolicyandPrivacy}" Icon="privacyolicyy.svg">
+        <ShellContent
+            ContentTemplate="{DataTemplate view:PolicyandPrivacyPage}"
+            Route="PolicyandPrivacyPage" />
+    </FlyoutItem>
+
+
+    <FlyoutItem Title="{Loc:Translate Name=TermsandConditions}" Icon="termy.svg">
+        <ShellContent
+            ContentTemplate="{DataTemplate view:TermsAndConditions}"
+            Route="TermsAndConditions" />
+    </FlyoutItem>
+    <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False" />
+    <MenuFlyoutItem Text="{Loc:Translate Name=other}" IsEnabled="False"  />
+
+    <FlyoutItem Title="{Loc:Translate Name=other}" Icon="marky.svg">
+        <ShellContent
+            ContentTemplate="{DataTemplate view:TermsAndConditions}"
+            Route="TermsAndConditions" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Logout" Icon="logouty.svg">
+        <ShellContent
+            ContentTemplate="{DataTemplate view:LoginPage}"
+            Route="LoginPage" />
+    </FlyoutItem>
+    <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False"/>
+        <!-- Deep link routes for Stripe Checkout -->
     <ShellContent Route="checkout/success"
                   ContentTemplate="{DataTemplate view:HomePage}"
                   IsVisible="False" />
     <ShellContent Route="checkout/cancel"
                   ContentTemplate="{DataTemplate view:HomePage}"
                   IsVisible="False" />
+
+
 </Shell>

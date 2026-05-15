@@ -71,8 +71,8 @@
                     </Label>
                     <material:TextField
                         x:Name="EmailEntry"
-                        TextColor="#EBD750"
-                        AccentColor="#EBD750"
+                        TextColor="#A8883C"
+                        AccentColor="#A8883C"
                         Margin="25,0,25,0"
                         InputBackgroundColor="#444444"
                         CornerRadius="16"
@@ -110,7 +110,7 @@
                             <FormattedString>
                                 <Span Text="{loc:Translate Name=NPasswordOnLogin}" 
                                     TextDecorations="Underline" 
-                                    TextColor="#EBD750">
+                                    TextColor="#A8883C">
                                     <Span.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
                                     </Span.GestureRecognizers>
@@ -149,7 +149,7 @@
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=Singin}"
                                         TextDecorations="Underline"
-                                        TextColor="#EBD750">
+                                        TextColor="#A8883C">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3" />
                                         </Span.GestureRecognizers>
@@ -165,7 +165,7 @@
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=TermsandConditions}"
                                                 TextDecorations="Underline"
-                                                TextColor="#EBD750">
+                                                TextColor="#A8883C">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                         </Span.GestureRecognizers>
@@ -179,7 +179,7 @@
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=PolicyandPrivacy}"
                      TextDecorations="Underline"
-                     TextColor="#EBD750">
+                     TextColor="#A8883C">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
                                         </Span.GestureRecognizers>

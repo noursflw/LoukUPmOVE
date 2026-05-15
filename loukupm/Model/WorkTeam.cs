@@ -21,7 +21,7 @@ namespace loukupm.Model
         [JsonPropertyName("phone")]
         public string? Job { get; set; }
 
-        [JsonPropertyName("avatar_url")]
+        [JsonPropertyName("profile_image_url")]
         public string? Image { get; set; }
 
         [JsonPropertyName("services")]
@@ -37,21 +37,18 @@ namespace loukupm.Model
             {
                 string imageUrl = null;
 
-                // Check avatar_url first
+                // تفحص Image أولاً
                 if (!string.IsNullOrWhiteSpace(Image))
                 {
                     imageUrl = Image;
                 }
-                // If no avatar, try first service image
-                else if (Services?.Count > 0 && !string.IsNullOrWhiteSpace(Services[0].ImageUrl))
-                {
-                    imageUrl = Services[0].ImageUrl;
-                }
+             
+               
 
-                // If no image found, return fallback
-                if (string.IsNullOrWhiteSpace(imageUrl))
+            
+                else if (string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    return "imagesafe.png";
+                    return "imagesafe.png";  // ✅ هنا!
                 }
 
                 // Handle URLs with special characters

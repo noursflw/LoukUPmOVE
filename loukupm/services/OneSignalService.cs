@@ -54,16 +54,24 @@ namespace loukupm.Services
             }
         }
 
-     
+
         private static async Task NavigateToNotificationPageAsync()
         {
             try
             {
-               
+
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
-                    Console.WriteLine("📍 Navigated to NotificationPage");
+                    try
+                    {
+                        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
+                        Console.WriteLine("📍 Navigated to NotificationPage");
+                    }
+                    catch (Exception navEx)
+                    {
+                        Console.WriteLine($"❌ Navigation error: {navEx.Message}");
+                        Console.WriteLine($"   Stack: {navEx.StackTrace}");
+                    }
                 });
             }
             catch (Exception ex)

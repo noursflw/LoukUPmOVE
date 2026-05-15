@@ -8,7 +8,7 @@
              Shell.TabBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
-             Title="{loc:Translate Name=PolicyandPrivacy}">
+             Title="">
 
     <ScrollView BackgroundColor="#252525">
         <VerticalStackLayout Padding="0" Spacing="0">

@@ -135,7 +135,7 @@
                             <FormattedString>
                                 <Span Text="{loc:Translate Name=Login}"
                                    TextDecorations="Underline"
-                                    TextColor="#EBD750">
+                                    TextColor="#A8883C">
                                     <Span.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                     </Span.GestureRecognizers>
@@ -180,14 +180,14 @@
             VerticalOptions="Center"
             HorizontalOptions="Center"/>
             </Frame>
-            <HorizontalStackLayout FlowDirection="LeftToRight" Margin="20,0,20,20" HorizontalOptions="Center" Spacing="2">
+            <HorizontalStackLayout FlowDirection="LeftToRight" VerticalOptions="Center" Margin="20,0,20,20" HorizontalOptions="Center" Spacing="2">
 
                 <Label Margin="0,10,0,0" >
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="{loc:Translate Name=TermsandConditions}"
                               TextDecorations="Underline"
-                              TextColor="#EBD750">
+                              TextColor="#A8883C">
                                 <Span.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                 </Span.GestureRecognizers>
@@ -201,7 +201,7 @@
                         <FormattedString>
                             <Span Text="{loc:Translate Name=PolicyandPrivacy}"
    TextDecorations="Underline"
-   TextColor="#EBD750">
+   TextColor="#A8883C">
                                 <Span.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
                                 </Span.GestureRecognizers>
@@ -209,7 +209,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:CheckBox x:Name="DD" CheckChanged="CheckBox_CheckChanged" Margin="10,7,0,0" BorderColor="#EBD750" Color="#EBD750" />
+                <material:CheckBox x:Name="DD" CheckChanged="CheckBox_CheckChanged" Margin="10,7,0,0" BorderColor="#A8883C" Color="#A8883C" />
             </HorizontalStackLayout>
         </StackLayout>
     </ScrollView>

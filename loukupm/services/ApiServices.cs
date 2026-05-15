@@ -19,31 +19,46 @@ namespace loukupm.services
 
         public ApiServices()
         {
-            // ✅ إنشاء HttpClientHandler محسّن مع معالجة SSL
+            // ✅ HttpClientHandler configuration with security best practices
             var handler = new HttpClientHandler();
 
-            #if DEBUG
-            // في بيئة التطوير: قبول جميع الشهادات (غير آمن - للاختبار فقط)
+#if DEBUG
+            // ⚠️ DEBUG ONLY: Relaxed SSL validation for testing with self-signed certificates
+            // This should NEVER be used in production
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
             {
-                Console.WriteLine($"🔒 Certificate validation: {errors}");
-                return true; // قبول الشهادة حتى لو كانت غير موثوقة
+                if (errors != System.Net.Security.SslPolicyErrors.None)
+                {
+                    Console.WriteLine($"⚠️ [DEBUG] Certificate validation bypassed: {errors}");
+                    Console.WriteLine($"   Subject: {cert?.Subject}");
+                    // Only accept specific test certificates, not any certificate
+                    if (cert?.Subject?.Contains("test.center-yazan.com") == true ||
+                        cert?.Subject?.Contains("test-23def.web.app") == true)
+                    {
+                        return true;
+                    }
+                    return false; // Still reject unknown certificates
+                }
+                return true;
             };
-            #else
-            // في الإنتاج: استخدام التحقق الطبيعي
+#else
+            // ✅ PRODUCTION: Use strict SSL validation
             handler.ServerCertificateCustomValidationCallback = null;
-            #endif
+            Console.WriteLine("✅ [ApiServices] Production SSL validation enabled");
+#endif
 
-            // تعطيل الضغط لتجنب مشاكل التوافق
+            // ✅ Properly configure decompression
             handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
             _httpClient = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromSeconds(30) // ✅ إضافة timeout
+                Timeout = TimeSpan.FromSeconds(30)
             };
 
-            // ✅ إضافة User-Agent
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "MAUI-App/1.0");
+            // ✅ Add User-Agent for API compliance
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "LoukUPmOVE-MAUI/1.0");
+
+            Console.WriteLine("✅ [ApiServices] Initialized with 30s timeout");
         }
 
         private async Task SetAuthorizationHeaderAsync()
@@ -161,7 +176,7 @@ namespace loukupm.services
             return notifications;
         }
         
-        public async Task<List<Appointment>> GetUserAppointmentsAsync(User user, string status = "PENDING")
+        public async Task<List<Appointment>> GetUserAppointmentsAsync(User user, string status = "ALL")
         {
             await SetAuthorizationHeaderAsync();
 
@@ -518,7 +533,7 @@ namespace loukupm.services
         /// Update user profile: first_name and avatar via MultipartFormDataContent
         /// Returns response object with success status, message, and profile data
         /// </summary>
-        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath)
+        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath,string phonenumber)
         {
             var response = new ProfileUpdateApiResponse();
 
@@ -547,7 +562,12 @@ namespace loukupm.services
                         form.Add(new StringContent(firstName.Trim()), "first_name");
                         Console.WriteLine($"📋 Field added: first_name = '{firstName.Trim()}'");
                     }
-
+                    // Add phone number field (only if provided)
+                    if (!string.IsNullOrWhiteSpace(phonenumber))
+                    {
+                        form.Add(new StringContent(phonenumber.Trim()), "phone_number");
+                        Console.WriteLine($"📋 Field added: phone_number = '{phonenumber.Trim()}'");
+                    }
                     // Add avatar file (only if image path is valid)
                     if (!string.IsNullOrWhiteSpace(avatarImagePath) && File.Exists(avatarImagePath))
                     {

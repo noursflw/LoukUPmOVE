@@ -98,47 +98,14 @@ public partial class SettingPage : ContentPage, INotifyPropertyChanged
 	/// </summary>
 	protected override bool OnBackButtonPressed()
 	{
-		try
-		{
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				try
-				{
-					await NavigationService.HandleBackButton(NavigationService.ROUTE_SETTING);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"[SettingPage] Back button error: {ex.Message}");
-				}
-			});
-			return true;
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"[SettingPage] OnBackButtonPressed crash: {ex.Message}");
-			return true;
-		}
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_HOME);
+        });
+        return true;
 	}
 
-	private async void TapGestureRecognizer_Tapped_6(object sender, TappedEventArgs e)
-	{
-		await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
-	}
-	private async void Button_Clicked_11(object sender, EventArgs e)
-	{
-		await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
-	}
-
-	private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-	{
-		await NavigationService.NavigateToPage(NavigationService.ROUTE_TERMS_CONDITIONS);
-	}
-
-	private async void Button_Clicked(object sender, EventArgs e)
-	{
-		await NavigationService.NavigateToPage(NavigationService.ROUTE_TERMS_CONDITIONS);
-	}
-
+	
 	private async void Button_Clicked_1(object sender, EventArgs e)
 	{
 		await NavigationService.HandleBackButton(NavigationService.ROUTE_SETTING);

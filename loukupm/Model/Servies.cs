@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace loukupm.Model
 {
@@ -13,7 +14,7 @@ namespace loukupm.Model
         public List<Servies> Data { get; set; }  // مصفوفة من الخدمات
     }
 
-    public class Servies
+    public partial class Servies : ObservableObject
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -36,6 +37,9 @@ namespace loukupm.Model
         public DateTime StartTime { get; set; }
 
         public DateTime EndTime { get; set; }
+
+        [ObservableProperty]
+        private bool isSelected = false;
 
         public string ImageSafe
         {

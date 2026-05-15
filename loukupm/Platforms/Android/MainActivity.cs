@@ -25,7 +25,7 @@ namespace loukupm
             base.OnCreate(savedInstanceState);
 
             // تحديد لون شريط الحالة
-            Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#202020"));
+            Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#000000"));
 
             // ─────────────────────────────────────────────────────────
             // Register back-navigation handler using the modern Android API.

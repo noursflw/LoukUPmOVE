@@ -148,7 +148,7 @@
     <value>Eine weitere Dienstleistung hinzufüge</value>
   </data>
   <data name="AllServies" xml:space="preserve">
-    <value>Alle Services</value>
+    <value>Alle anzeigen</value>
   </data>
   <data name="Alltext" xml:space="preserve">
     <value>Bitte füllen Sie alle Felder aus</value>
@@ -193,7 +193,7 @@
     <value>Passwort zurücksetzen</value>
   </data>
   <data name="chosesservies" xml:space="preserve">
-    <value>Eine Dienstleistung auswählen</value>
+    <value>Beliebte Leistungen</value>
   </data>
   <data name="CodeNotIncorrect" xml:space="preserve">
     <value>Der Code ist ungültig. Bitte versuchen Sie es erneut</value>
@@ -403,7 +403,7 @@
     <value>Der Dienst wurde bereits hinzugefügt</value>
   </data>
   <data name="TitelTeam" xml:space="preserve">
-    <value>Treffen Sie unser Team</value>
+    <value>Unser Team</value>
   </data>
   <data name="Titledescrption" xml:space="preserve">
     <value>Erfahrene Stylisten mit Leidenschaft und Kreativität für Ihr persönliches Styling.</value>
@@ -930,5 +930,65 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   </data>
   <data name="Passwordsmatch" xml:space="preserve">
     <value>Passwörter stimmen überein</value>
+  </data>
+  <data name="timetosphelstel" xml:space="preserve">
+    <value>Zeit für deinen perfekten Look</value>
+  </data>
+  <data name="yourstylestatuphere" xml:space="preserve">
+    <value>Dein Style
+Beginnt hier
+</value>
+  </data>
+  <data name="nicetommetyou" xml:space="preserve">
+    <value>Schön, dass du da bist!</value>
+  </data>
+  <data name="thisstyle" xml:space="preserve">
+    <value>Dein Style</value>
+  </data>
+  <data name="startuphere" xml:space="preserve">
+    <value>Beginnt hier</value>
+  </data>
+  <data name="chosessevvesandbegin" xml:space="preserve">
+    <value>Wähle deine Leistung und buche ganz einfach.</value>
+  </data>
+  <data name="wellomeonlookup" xml:space="preserve">
+    <value>Willkommen bei lookup ✨</value>
+  </data>
+  <data name="Callmy" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="Legal" xml:space="preserve">
+    <value>WEITERE</value>
+  </data>
+  <data name="other" xml:space="preserve">
+    <value>WEITERE</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>ALLGEMEIN</value>
+  </data>
+  <data name="serviceremoved" xml:space="preserve">
+    <value>Der Service wurde entfernt</value>
+    <comment>Nachricht wenn ein Service aus der Liste gelöscht wird</comment>
+  </data>
+  <data name="dataself" xml:space="preserve">
+    <value>Persönliche Daten</value>
+  </data>
+  <data name="dataself1" xml:space="preserve">
+    <value>Persönliche Daten</value>
+  </data>
+  <data name="imegpesonaly" xml:space="preserve">
+    <value>Profilbild</value>
+  </data>
+  <data name="scertey" xml:space="preserve">
+    <value>Sicherheit</value>
+  </data>
+  <data name="NUMBER8" xml:space="preserve">
+    <value>Mindestens 8 Zeichen</value>
+  </data>
+  <data name="ONECHARCAP" xml:space="preserve">
+    <value>Mindestens 1 Großbuchstabe</value>
+  </data>
+  <data name="ONENUMBER" xml:space="preserve">
+    <value>Mindestens 1 Zahl</value>
   </data>
 </root>

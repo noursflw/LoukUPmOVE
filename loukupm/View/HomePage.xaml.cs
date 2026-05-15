@@ -9,73 +9,33 @@ using System.Globalization;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 
-/// <summary>
-/// «·’›Õ… «·—∆Ì”Ì…
-///   ÕœÌÀ « Ã«ÂÂ«  ·ﬁ«∆Ì« ⁄‰œ  €ÌÌ— «··€…
-/// </summary>
 public partial class HomePage : ContentPage
 {
-	private System.Timers.Timer _carouselTimer;
-	private int _currentCarouselIndex = 0;
+	
 
 	public HomePage()
 	{
 		InitializeComponent();
 		this.BindingContext= AppViewModel.Instance;
 
-		//  ÂÌ∆…   »⁄ «··€… Ê«·« Ã«Â «· ·ﬁ«∆Ì
+		
 		this.InitializeLanguageTracking();
 	}
 
 	protected override void OnAppearing()
 	{
 		base.OnAppearing();
-		StartCarouselAutoScroll();
+	
 	}
 
 	protected override void OnDisappearing()
 	{
 		base.OnDisappearing();
-		StopCarouselAutoScroll();
+	
+		GC.SuppressFinalize(this);
 	}
 
-	private void StartCarouselAutoScroll()
-	{
-		if (_carouselTimer != null)
-			return;
-
-		_carouselTimer = new System.Timers.Timer(2000); // 5 seconds interval
-		_carouselTimer.Elapsed += (s, e) =>
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					if (carouselView != null)
-					{
-						// 6 images in the carousel
-						_currentCarouselIndex = (_currentCarouselIndex + 1) % 6;
-						carouselView.Position = _currentCarouselIndex;
-					}
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"[HomePage] Carousel scroll error: {ex.Message}");
-				}
-			});
-		};
-		_carouselTimer.Start();
-	}
-
-	private void StopCarouselAutoScroll()
-	{
-		if (_carouselTimer != null)
-		{
-			_carouselTimer.Stop();
-			_carouselTimer.Dispose();
-			_carouselTimer = null;
-		}
-	}
+	
 
 	private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
@@ -85,6 +45,11 @@ public partial class HomePage : ContentPage
     private async void Button_Clicked(object sender, EventArgs e)
     {
         await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
+    }
+
+    private void OnFlyoutMenuClicked(object sender, EventArgs e)
+    {
+        Shell.Current.FlyoutIsPresented = !Shell.Current.FlyoutIsPresented;
     }
 
    

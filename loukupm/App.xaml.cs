@@ -57,7 +57,27 @@ namespace loukupm
                 FlowDirection = direction
             };
 
-            MainPage.Loaded += async (s, e) => await CheckAuthentication();
+            MainPage.Loaded += async (s, e) =>
+            {
+                try
+                {
+                    await CheckAuthentication();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ [App] Error in CheckAuthentication: {ex.Message}");
+                    Console.WriteLine($"   Stack: {ex.StackTrace}");
+                    // Fallback to login page on any error
+                    try
+                    {
+                        await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
+                    }
+                    catch (Exception navEx)
+                    {
+                        Console.WriteLine($"❌ [App] Emergency fallback navigation failed: {navEx.Message}");
+                    }
+                }
+            };
         }
 
         // ─────────────────────────────────────────────────────────
@@ -127,6 +147,18 @@ namespace loukupm
                 Console.WriteLine($"[App CheckAuthentication ERROR]: {ex.Message}");
                 await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
             }
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                Console.WriteLine("💥 UNHANDLED CRASH:");
+                Console.WriteLine(e.ExceptionObject.ToString());
+            };
+
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                Console.WriteLine("💥 TASK CRASH:");
+                Console.WriteLine(e.Exception.ToString());
+                e.SetObserved();
+            };
         }
     }
 }

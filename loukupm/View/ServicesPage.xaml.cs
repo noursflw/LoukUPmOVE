@@ -38,6 +38,7 @@ public partial class ServicesPage : ContentPage
    
 
     private Frame _lastSelectedFrame;
+    private Label _lastSelectedLabel;
 
     private async void OnCategoryTapped(object sender, TappedEventArgs e)
     {
@@ -46,11 +47,26 @@ public partial class ServicesPage : ContentPage
             var vm = BindingContext as AppViewModel;
             vm?.FilterServices(selectedCategory);
 
-            if (_lastSelectedFrame != null)
+            // إعادة آخر عنصر مختار إلى الحالة الأصلية
+            if (_lastSelectedFrame != null && _lastSelectedLabel != null)
+            {
                 _lastSelectedFrame.BorderColor = Color.FromArgb("#444444");
+                _lastSelectedFrame.BackgroundColor = Color.FromArgb("#444444");
+                _lastSelectedLabel.TextColor = Color.FromArgb("#999999");
+            }
 
-            tappedFrame.BorderColor = Color.FromArgb("#EBD750");
+            // تعيين الألوان الجديدة للعنصر المختار الحالي
+            tappedFrame.BorderColor = Color.FromArgb("#C9A24A");
+            tappedFrame.BackgroundColor = Color.FromArgb("#C9A24A");
+
+            // البحث عن Label داخل الـ Frame وتغيير لونه
+            if (tappedFrame.Content is Label label)
+            {
+                label.TextColor = Color.FromArgb("#000000"); // أسود
+            }
+
             _lastSelectedFrame = tappedFrame;
+            _lastSelectedLabel = tappedFrame.Content as Label;
 
             // 🔹 ضبط AnchorX/AnchorY
             tappedFrame.AnchorX = 0.5;

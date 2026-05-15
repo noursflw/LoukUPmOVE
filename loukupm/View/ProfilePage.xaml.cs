@@ -112,19 +112,7 @@ public partial class ProfilePage : ContentPage
         await this.ShowPopupAsync(popup);  
     }
 
-    private async void Button_Clicked_9(object sender, EventArgs e)
-    {
-        var popup = new RemoveUserPopup();
-        OneSignalService.Logout();
-        
-        // مسح خريطة التنقل قبل حذف الحساب
-       // NavigationService.ClearPageSourceMap();
-        
-        // Reset authentication check flag
-        App.ResetAuthenticationCheck();
-
-        await this.ShowPopupAsync(popup);
-    }
+   
 
     private async void TapGestureRecognizer_Tapped_6(object sender, TappedEventArgs e)
     {

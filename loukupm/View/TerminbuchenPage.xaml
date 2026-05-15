@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.TerminbuchenPage"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#252525"
+             BackgroundColor="#0A0A0A"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
@@ -22,7 +22,7 @@
    
     <ScrollView>
         <VerticalStackLayout>
-            <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+            <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A">
                
                 <Label Text="{Loc:Translate Name=Booking}"
                        TextColor="White"
@@ -37,7 +37,7 @@
                     HeightRequest="40"
                     CornerRadius="12"
                     ImageSource="backbuttonpmg.png"
-                    BackgroundColor="#202020"
+                    BackgroundColor="#0A0A0A"
                     BorderColor="#999999"
                     Margin="0,0,10,0"            
                     BorderWidth="1"
@@ -50,26 +50,111 @@
                 <CollectionView Margin="6" ItemsSource="{Binding SelectedServices}" IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <VerticalStackLayout Spacing="10" Margin="24,10,24,0">
-                                <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" HeightRequest="122" >
-                                    <Grid  ColumnDefinitions="50*,50*">
-                                        <Label  Grid.Column="0" Text="{Binding NameServies}" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="18"  />
-                                        <Label  Grid.Column="0" Text="{Binding PriceServies}" Margin="0,30,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
-                                        <Label  Grid.Column="0" Text="{Binding TimeServies}" Margin="0,55,0,0" FontFamily="Oswald" TextColor="#D3D3D3" FontSize="14"  />
-                                        <Button Grid.Column="1"  
-                                                TextColor="White" 
-                                                BackgroundColor="Black" 
-                                                WidthRequest="40" 
+                            <VerticalStackLayout Margin="20,0,20,15" Spacing="0">
+                                <Border Margin="0" 
+                                        Stroke="#D4AF37" 
+                                        StrokeThickness="2" 
+                                        BackgroundColor="#2A2A2A" 
+                                        StrokeShape="RoundRectangle 16" 
+                                        HeightRequest="130" 
+                                        Padding="0">
+                                    <Grid ColumnDefinitions="100,*,80" RowDefinitions="*" Padding="0" ColumnSpacing="12">
+                                        <!-- Service Image -->
+                                        <Frame Grid.Column="0" 
+                                               Padding="0" 
+                                               Margin="12,12,0,12"
+                                               CornerRadius="12" 
+                                               BackgroundColor="#444444"
+                                               BorderColor="#444444"
+                                               HasShadow="False"
+                                               WidthRequest="90"
+                                               HeightRequest="100">
+                                            <ff:CachedImage 
+                                                Source="{Binding ImageSafe}"
+                                                Aspect="AspectFill"
+                                                LoadingPlaceholder="imagesafe.png"
+                                                ErrorPlaceholder="imagesafe.png" />
+                                        </Frame>
+
+                                        <!-- Service Details -->
+                                        <VerticalStackLayout Grid.Column="1" Spacing="5" Padding="8,12,0,12" VerticalOptions="Center">
+                                            <Label 
+                                                Text="{Binding NameServies}" 
                                                 FontFamily="Oswald" 
-                                                FontSize="16" 
-                                                ImageSource="exite.svg"  
-                                                CornerRadius="30"  
-                                                HeightRequest="40" 
-                                                VerticalOptions="Start"
-                                                HorizontalOptions="End"
+                                                TextColor="White" 
+                                                FontSize="16"
+                                                FontAttributes="Bold"
+                                                LineBreakMode="TailTruncation" />
+
+                                            <Label 
+                                                Text="{Binding Category.Name}" 
+                                                FontFamily="Oswald" 
+                                                TextColor="#999999" 
+                                                FontSize="12" 
+                                                LineBreakMode="TailTruncation" />
+
+                                            <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
+                                                <HorizontalStackLayout Spacing="3">
+                                                    <Label  
+                                                        Text="⏱" 
+                                                        FontSize="12" 
+                                                        TextColor="#D4AF37"
+                                                        VerticalOptions="Center" />
+                                                    <Label  
+                                                        Text="{Binding TimeServies}" 
+                                                        FontFamily="Oswald" 
+                                                        TextColor="#D3D3D3" 
+                                                        FontSize="12" 
+                                                        VerticalOptions="Center" />
+                                                    <Label 
+                                                        Text="Min." 
+                                                        FontSize="12"
+                                                        TextColor="#D3D3D3"
+                                                        VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+
+                                                <HorizontalStackLayout Spacing="3">
+                                                    <Label  
+                                                        Text="💰" 
+                                                        FontSize="12"
+                                                        TextColor="#D4AF37"
+                                                        VerticalOptions="Center" />
+                                                    <Label  
+                                                        Text="{Binding PriceServies}" 
+                                                        FontFamily="Oswald" 
+                                                        TextColor="#D3D3D3" 
+                                                        FontSize="12" 
+                                                        VerticalOptions="Center" />
+                                                    <Label 
+                                                        Text="€" 
+                                                        FontSize="12"
+                                                        TextColor="#D3D3D3"
+                                                        VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <!-- Remove Button -->
+                                        <VerticalStackLayout Grid.Column="2" 
+                                                             Padding="0,12,12,12"
+                                                             VerticalOptions="Center"
+                                                             HorizontalOptions="Center">
+                                            <Button 
+                                                ImageSource="Resources/Images/checkeseves.svg"
+                                                TextColor="White"
+                                                BackgroundColor="Transparent"
+                                                BorderColor="#D4AF37"
+                                                BorderWidth="1"
+                                                WidthRequest="45"
+                                                HeightRequest="45"
+                                                FontFamily="Oswald"
+                                                FontSize="11"
+                                                CornerRadius="8"
+                                                Padding="0"
                                                 Clicked="OnRemoveService" />
+                                        </VerticalStackLayout>
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -186,8 +271,8 @@ HasShadow="False">
              
                 <Label Text="{Loc:Translate Name=datebooking}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,0" />
                 <Label Text="{Loc:Translate Name=descrtiondate}" FontSize="14" TextColor="#999999" FontFamily="Oswald" Margin="22,10,0,0" />
-                
-                <!-- الأوقات المتاحة -->
+
+
                 <CollectionView x:Name="AvailableSlotsCollectionView"
                                 ItemsSource="{Binding AvailableSlots}" 
                                 IsVisible="{Binding Isloadday, Converter={StaticResource InverseBoolConverter}}"
@@ -208,7 +293,7 @@ HasShadow="False">
                                             Command="{Binding Source={x:Reference AvailableSlotsCollectionView}, Path=BindingContext.SelectSlotCommand}" 
                                             CommandParameter="{Binding .}" />
                                     </Frame.GestureRecognizers>
-                                    
+
                                     <Label Text="{Binding DisplayTime}" 
                                            Padding="0" 
                                            Margin="6,-5,0,0"  
@@ -222,8 +307,6 @@ HasShadow="False">
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
-                
                 <Label Text="{Loc:Translate Name=notfoundtime}" 
                         FontSize="16" 
                         TextColor="#999999" 
@@ -254,7 +337,6 @@ HasShadow="False">
              sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
              BorderColor="#444444" />
                 </HorizontalStackLayout>
-                <!-- Reminder Timer Section -->
                 <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" Margin="10" Padding="16">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="Appointment Reminder" 
@@ -283,10 +365,6 @@ HasShadow="False">
                                 Command="{Binding EnableReminderTimerCommand}" />
                     </VerticalStackLayout>
                 </Frame>
-
-
-              
-               
             </VerticalStackLayout>
             <Grid ColumnDefinitions="*,Auto" HeightRequest="60">
               

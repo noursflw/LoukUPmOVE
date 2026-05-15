@@ -45,6 +45,11 @@ namespace loukupm.ViewModel
         [ObservableProperty] private ObservableCollection<Booking> bookings = new();
         [ObservableProperty] private ObservableCollection<Appointment> appointments = new();
 
+        // Appointments divided by status for TabView
+        [ObservableProperty] private ObservableCollection<Appointment> upcomingAppointments = new();
+        [ObservableProperty] private ObservableCollection<Appointment> previousAppointments = new();
+        [ObservableProperty] private ObservableCollection<Appointment> canceledAppointments = new();
+
         [ObservableProperty] private bool hasNoAppointments = true;
 
         [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
@@ -93,15 +98,21 @@ namespace loukupm.ViewModel
 
         private string _token;
         public ICommand SelectServiceButtonCommand { get; }
-        private readonly HttpClient _httpClient;
+
+        // ✅ STATIC HttpClient - shared across all requests (proper pattern)
+        private static readonly HttpClient _httpClient = new HttpClient()
+        {
+            Timeout = TimeSpan.FromSeconds(30)
+        };
+
         public IAsyncRelayCommand EnableReminderTimerCommand { get; private set; }
         public IAsyncRelayCommand<int> CancelBookingCommand { get; private set; }
+
         public AppViewModel()
         {
             LoadData();
-            _httpClient = new HttpClient();
+            // ✅ Do NOT create new HttpClient here - use static instance
 
-           
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
            
             ProviderDays = new ObservableCollection<DayItem>();
@@ -118,34 +129,31 @@ namespace loukupm.ViewModel
             {
                 if (service == null) return;
 
-              
-
-               
                 var exists = SelectedServices.Any(s => s.Id == service.Id);
 
                 if (!exists)
                 {
+                    service.IsSelected = true;  // تحديث حالة الخدمة
                     SelectedServices.Add(service);  
                     CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
-                  
-                    
-                   
+
                     await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
                 }
                 else
                 {
-                    
-                    Console.WriteLine($"⚠️ Service already selected: {service.NameServies}");
-                    await Toast.Make(AppResource.theserviewasdone, ToastDuration.Short).Show();
+                    // إلغاء الاختيار
+                    service.IsSelected = false;
+                    SelectedServices.Remove(service);
+                    CurrentBooking.SelectedServices.Remove(service);
+
+                    await Toast.Make(AppResource.serviceremoved, ToastDuration.Short).Show();
+                    Console.WriteLine($"✅ Service deselected: {service.NameServies}");
                 }
 
-               
                 UpdateTotalPrice();
 
-               
                 foreach (var s in SelectedServices)
                     Console.WriteLine($"   - {s.NameServies} (Price: '{s.PriceServies}')");
-               
             });
 
            
@@ -155,12 +163,24 @@ namespace loukupm.ViewModel
 
         private async Task InitializeAsync()
         {
-            await LoadUser();
-            _token = await SecureStorage.GetAsync("auth_token") ?? string.Empty;
-            await LoadBookingsAsync();
-            _ = LoadNotificationsAsync();
-            _ = LoadWorkTeamsAsync();
-            _ = LoadServicesAsync();
+            try
+            {
+                await LoadUser();
+                _token = await SecureStorage.GetAsync("auth_token") ?? string.Empty;
+                await LoadBookingsAsync();
+
+                // Use Task.WhenAll for concurrent, exception-safe loading
+                await Task.WhenAll(
+                    LoadNotificationsAsync(),
+                    LoadWorkTeamsAsync(),
+                    LoadServicesAsync()
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ [AppViewModel] Initialization error: {ex.Message}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
+            }
         }
 
         private async Task SetAuthorizationHeaderAsync()
@@ -300,14 +320,41 @@ namespace loukupm.ViewModel
                 if (data == null || data.Count == 0)
                 {
                     Appointments.Clear();
+                    UpcomingAppointments.Clear();
+                    PreviousAppointments.Clear();
+                    CanceledAppointments.Clear();
                     HasNoAppointments = true;
                     return;
                 }
 
                 Appointments.Clear();
+                UpcomingAppointments.Clear();
+                PreviousAppointments.Clear();
+                CanceledAppointments.Clear();
 
                 foreach (var item in data)
+                {
                     Appointments.Add(item);
+
+                   
+                    if (item.Status == "USER_CANCELLED" || item.IsCancelled)
+                    {
+                        CanceledAppointments.Add(item);
+                    }
+                    else if (item.Status == "COMPLETED" || item.IsCompleted || item.IsPast)
+                    {
+                        PreviousAppointments.Add(item);
+                    }
+                    else if (item.Status == "PENDING" || item.IsUpcoming)
+                    {
+                        UpcomingAppointments.Add(item);
+                    }
+                    else
+                    {
+                        
+                        UpcomingAppointments.Add(item);
+                    }
+                }
 
                 HasNoAppointments = false;
             }
@@ -889,58 +936,75 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string? imageUser;
         [ObservableProperty] private string email;
         [ObservableProperty] private string fullName;
+        [ObservableProperty] private string phone;
 
         [ObservableProperty] private string userFirstName = string.Empty;
 
         public ICommand UpDateUserCommand { get; }
-        
-       
-        public string Avatar 
-        { 
-            get => ImageUser; 
-            set => ImageUser = value; 
+
+        private string avatar;
+        public string Avatar
+        {
+            get => avatar;
+            set
+            {
+                if (avatar != value)
+                {
+                    avatar = value;
+                    OnPropertyChanged();
+                }
+            }
         }
-        
+
         private User currentUser;
 
         private async Task LoadUser()
         {
-            IsLoadUser = true;
-            currentUser = await _apiServices.GetUserAsync(); 
-            if (currentUser != null)
-            {
-                UserName = currentUser.UserName;
-                Email = currentUser.Email;
-                FullName = currentUser.FullName;
-                ImageUser = currentUser.ProfileImageUrl ?? "default_avatar.png";
-            }
-            IsLoadUser = false;
-        }
-
-       
-        public async Task LoadUserDataAsync()
-        {
             try
             {
                 IsLoadUser = true;
-              
 
-              
                 currentUser = await _apiServices.GetUserAsync();
+
                 if (currentUser != null)
                 {
                     UserName = currentUser.UserName;
                     Email = currentUser.Email;
                     FullName = currentUser.FullName;
-                    ImageUser = currentUser.ProfileImageUrl ?? "default_avatar.png";
-                   
-                }
+                    phone = currentUser.Phone;
 
+                    Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                }
+            }
+            finally
+            {
                 IsLoadUser = false;
+            }
+        }
+
+        public async Task LoadUserDataAsync()
+        {
+            try
+            {
+                IsLoadUser = true;
+
+                currentUser = await _apiServices.GetUserAsync();
+
+                if (currentUser != null)
+                {
+                    UserName = currentUser.UserName;
+                    Email = currentUser.Email;
+                    FullName = currentUser.FullName;
+                    Phone = currentUser.Phone;
+                    Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                }
             }
             catch (Exception ex)
             {
-               
+                // optional logging
+            }
+            finally
+            {
                 IsLoadUser = false;
             }
         }
@@ -957,12 +1021,7 @@ namespace loukupm.ViewModel
         {
             try
             {
-                // 🔍 DEBUG: Log input values
-                Console.WriteLine("\n" + new string('=', 60));
-                Console.WriteLine("🔄 UPDATE USER INFO STARTED");
-                Console.WriteLine(new string('=', 60));
-                Console.WriteLine($"📋 UserFirstName: '{UserFirstName}' (IsEmpty: {string.IsNullOrWhiteSpace(UserFirstName)})");
-                Console.WriteLine($"📋 SelectedImagePath: '{SelectedImagePath}' (IsEmpty: {string.IsNullOrWhiteSpace(SelectedImagePath)})");
+                
 
                 if (!string.IsNullOrWhiteSpace(SelectedImagePath))
                 {
@@ -982,7 +1041,7 @@ namespace loukupm.ViewModel
                 }
 
                 Console.WriteLine("📤 Calling UpdateUserProfileAsync...\n");
-                var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath);
+                var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath, Phone);
 
                 Console.WriteLine("\n" + new string('=', 60));
                 Console.WriteLine("📥 RESPONSE RECEIVED FROM API");
@@ -1491,10 +1550,11 @@ namespace loukupm.ViewModel
             var serviceToRemove = SelectedServices.FirstOrDefault(s => s.Id == service.Id);
             if (serviceToRemove != null)
             {
+                serviceToRemove.IsSelected = false;  // تحديث الحالة
                 SelectedServices.Remove(serviceToRemove);
                 CurrentBooking.SelectedServices.Remove(serviceToRemove);
                 UpdateTotalPrice();
-                
+
             }
         }
 
@@ -1624,43 +1684,85 @@ namespace loukupm.ViewModel
         {
             try
             {
-                var now = DateTime.Now;
+                Console.WriteLine("\n=== EnableReminderTimerAsync Started ===");
 
+                // ✅ Validate reminder time input
+                if (string.IsNullOrWhiteSpace(ReminderMinutes) || !int.TryParse(ReminderMinutes, out var minutes))
+                {
+                    await Toast.Make("❌ Invalid reminder time. Please enter a number.", ToastDuration.Short).Show();
+                    return;
+                }
+
+                if (minutes <= 0 || minutes > 1440)  // 0 to 24 hours
+                {
+                    await Toast.Make("❌ Reminder must be between 1 and 1440 minutes.", ToastDuration.Short).Show();
+                    return;
+                }
+
+                ReminderTime = TimeSpan.FromMinutes(minutes);
+                Console.WriteLine($"✅ Reminder time set to: {ReminderTime:hh\\:mm\\:ss}");
+
+                var now = DateTime.Now;
+                Console.WriteLine($"   Current time: {now:yyyy-MM-dd HH:mm:ss}");
+
+                // ✅ Find upcoming appointment with null safety
                 var upcomingAppointment = Appointments
+                    .Where(a => !string.IsNullOrWhiteSpace(a?.AppointmentDate))  // Filter nulls
                     .Select(a =>
                     {
-                        DateTime.TryParse(a.AppointmentDate, out var date);
-                        return new { Appointment = a, Date = date };
+                        bool parsed = DateTime.TryParse(a.AppointmentDate, out var date);
+                        return new { Appointment = a, Date = date, WasParsed = parsed };
                     })
-                    .Where(x => x.Date > now)
+                    .Where(x => x.WasParsed && x.Date > now)  // Only valid future dates
                     .OrderBy(x => x.Date)
                     .FirstOrDefault();
 
                 if (upcomingAppointment == null)
                 {
+                    Console.WriteLine("❌ No upcoming appointments found");
                     await Toast.Make(AppResource.Noupcomingappointments, ToastDuration.Short).Show();
                     return;
                 }
 
-                if (ReminderTime == default)
+                Console.WriteLine($"   Found appointment: {upcomingAppointment.Date:yyyy-MM-dd HH:mm:ss}");
+
+                // ✅ Validate TimeSpan is not default
+                if (ReminderTime == TimeSpan.Zero)
                 {
-                    await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
+                    await Toast.Make("❌ Reminder time must be greater than zero.", ToastDuration.Short).Show();
                     return;
                 }
 
+                // ✅ Calculate reminder datetime with date context (from copilot-instructions)
                 var reminderDateTime = upcomingAppointment.Date - ReminderTime;
+
+                // ✅ Auto-adjust if reminder is on same day as appointment or later
+                if (reminderDateTime >= upcomingAppointment.Date)
+                {
+                    reminderDateTime = reminderDateTime.AddDays(-1);
+                    Console.WriteLine($"⚠️ Auto-adjusted reminder to previous day");
+                }
 
                 if (reminderDateTime <= now)
                 {
+                    Console.WriteLine($"❌ Reminder time in past: {reminderDateTime:yyyy-MM-dd HH:mm:ss}");
                     await Toast.Make(AppResource.Theremindertimemustbebeforethebookingappointment, ToastDuration.Short).Show();
                     return;
                 }
 
+                Console.WriteLine($"✅ Reminder set for: {reminderDateTime:yyyy-MM-dd HH:mm:ss}");
                 await SendAppointmentReminder(upcomingAppointment.Appointment, reminderDateTime);
             }
-            catch
+            catch (FormatException fex)
             {
-                await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
+                Console.WriteLine($"❌ Format error: {fex.Message}");
+                await Toast.Make("❌ Invalid date or time format.", ToastDuration.Short).Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in EnableReminderTimerAsync: {ex.Message}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
+                await Toast.Make($"❌ Error: {ex.Message}", ToastDuration.Short).Show();
             }
         }
         private async Task SendAppointmentReminder(Appointment appointment, DateTime remindAtDateTime)

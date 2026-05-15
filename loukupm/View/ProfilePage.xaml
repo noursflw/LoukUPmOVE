@@ -3,19 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.ProfilePage"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#252525"
+             BackgroundColor="#0A0A0A"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              Title="ProfilePage">
     <Grid>
         <ScrollView Margin="0,0,0,30">
             <VerticalStackLayout Spacing="10" FlowDirection="LeftToRight" >
-                <Grid ColumnDefinitions="*,Auto" HeightRequest="180" BackgroundColor="#202020">
+                <Grid ColumnDefinitions="*,Auto" HeightRequest="180" BackgroundColor="#0A0A0A">
 
                     <Label Text="{Loc:Translate Name=TitlwMyPrefile}"
                      TextColor="White"
-                      Margin="24,10,0,0"
+                      Margin="24,40,0,0"
                        FontSize="24"
-                         
+                         HorizontalOptions="Center"
                      FontFamily="georgia-bold"
                      VerticalOptions="Start" />
 
@@ -25,7 +25,7 @@
                        HeightRequest="40"
                        CornerRadius="12"
                         ImageSource="backbuttonpmg.png"
-                         BackgroundColor="#202020"
+                         BackgroundColor="#0A0A0A"
                          BorderColor="#999999"
                           Margin="0,10,10,0"            
                          BorderWidth="1"
@@ -33,53 +33,86 @@
                            VerticalOptions="Start"
                             Clicked="Button_Clicked" />
                     <Grid VerticalOptions="End" HorizontalOptions="Center" Margin="40,0,0,-60" >
-                        <!-- الإطار الدائري للصورة -->
-                        <Frame HeightRequest="150"
-                            WidthRequest="150" 
-                            CornerRadius="75"
-                            Margin="0,-70,0,0"
-                            BackgroundColor="White"
-                            Padding="0"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center">
-                            <Image Source="{Binding Avatar}"
-                          HeightRequest="125"
-                           WidthRequest="125"
-                           Aspect="AspectFill">
-                                <Image.Clip>
-                                    <EllipseGeometry Center="62.5,62.5" RadiusX="62.5" RadiusY="62.5"/>
-                                </Image.Clip>
-                            </Image>
-                            
 
+                        <Frame BackgroundColor="#181c21" BorderColor="#181c21" HeightRequest="165" WidthRequest="165"  >
+                            <Frame   HeightRequest="150"
+                                      WidthRequest="150" 
+                                      CornerRadius="75"
+                                      Margin="0,0,0,0"
+                                      BackgroundColor="White"
+                                      Padding="0"
+                                      HorizontalOptions="Center"
+                                      VerticalOptions="Center">
+                                <Image Source="{Binding Avatar}"
+                                       HeightRequest="125"
+                                       WidthRequest="125"
+                                        Aspect="AspectFill">
+                                    <Image.Clip>
+                                        <EllipseGeometry Center="62.5,62.5" RadiusX="62.5" RadiusY="62.5"/>
+                                    </Image.Clip>
+                                </Image>
+
+
+                            </Frame>
                         </Frame>
 
-                        <!-- زر بنفس الثيم -->
-                        <Button HeightRequest="40"
-                             WidthRequest="40"
-                             Padding="0"
-                             ImageSource="edit.png"
-                             CornerRadius="20"
-                             Margin="100,50,0,0"
-                             HorizontalOptions="Start"
-                              Clicked="Button_Clicked_7"
-                            VerticalOptions="Start"/>
 
-                      
+
+
                     </Grid>
 
 
                 </Grid>
-              
-                <VerticalStackLayout Margin="0,60,0,0" Spacing="24" >
-                    
-                                <VerticalStackLayout HorizontalOptions="Center" >
-                        <Label Text="{Binding FullName}" FontSize="20" Margin="20,0,20,0" TextColor="#D3D3D3" FontFamily="Oswald"  />
-                                   <Label Text="{Binding Email}" Margin="20,0,20,0" TextColor="#999999" FontSize="14"  FontFamily="Oswald"   />
-                                </VerticalStackLayout>
-                          
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
+
+                <VerticalStackLayout Margin="10,15,10,10" Spacing="24" >
+
+
+                    <Frame BackgroundColor="#181c21" BorderColor="#181c21" Margin="20,50,20,0" >
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Name"/>
+                            <Label Text="{Binding FullName}" FontSize="14" TextColor="#999999" FontFamily="Oswald"  />
+                            <BoxView BackgroundColor="#999999" HeightRequest="1" HorizontalOptions="Fill"
+             VerticalOptions="Center"   />
+                            <Label Text="Email"/>
+                            <Label Text="{Binding Email}"  TextColor="#999999" FontSize="14"  FontFamily="Oswald"   />
+                            <BoxView BackgroundColor="#999999"  HeightRequest="1"  />
+                            <Label Text="Telephone"/>
+                            <Label Text="{Binding Phone}" TextColor="#999999" FontSize="14"  FontFamily="Oswald" />
+
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,0,24,0" >
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#181c21">
+
+                            <HorizontalStackLayout>
+                                <Image Source="notification.png" Margin="20,0,0,0" />
+                                <Label Text="{Loc:Translate Name=Benachrichtigungen}"
+                                       TextColor="White"
+                                       Margin="24,0,0,0"
+                                       FontSize="16" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
+
+                            <Button Grid.Column="1"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    CornerRadius="12"
+                                    ImageSource="backbuttonpmg.png"
+                                    BackgroundColor="#181c21"
+                                    Padding="0" 
+                                   Margin="0,5,10,0"            
+                                   BorderWidth="1"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Start"
+                                   Clicked="Button_Clicked_4" />
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,0,24,0" >
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#181c21">
 
                             <HorizontalStackLayout>
                                 <Image Source="editee.png" Margin="20,0,0,0" />
@@ -89,14 +122,14 @@
                                        FontSize="16" VerticalOptions="Center" />
                             </HorizontalStackLayout>
 
-                            <!-- الزر على اليمين -->
+
                             <Button Grid.Column="1"
                           WidthRequest="40"
                           HeightRequest="40"
                           
                           CornerRadius="12"
                           ImageSource="backbuttonpmg.png"
-                          BackgroundColor="#444444"
+                          BackgroundColor="#181c21"
                           Padding="0" 
                           Margin="0,5,10,0"            
                           BorderWidth="1"
@@ -108,7 +141,8 @@
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                         </Frame.GestureRecognizers>
                     </Frame>
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
+                    <Button Clicked="Button_Clicked_8" BackgroundColor="#181c21" Text="Log Out" ImageSource="logout.png" TextColor="#f64a4a" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
+                    <!--<Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
                         <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
 
                             <HorizontalStackLayout>
@@ -117,9 +151,10 @@
                                      TextColor="White"
                                       Margin="24,0,0,0"
                                       FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
+                            </HorizontalStackLayout>-->
 
-                            <!-- الزر على اليمين -->
+                    <!-- الزر على اليمين -->
+                    <!--
                             <Button Grid.Column="1"
                                            WidthRequest="40"
                                            HeightRequest="40"
@@ -148,7 +183,9 @@
                                      FontSize="16" VerticalOptions="Center" />
                             </HorizontalStackLayout>
 
-                            <!-- الزر على اليمين -->
+                            -->
+                    <!-- الزر على اليمين -->
+                    <!--
                             <Button Grid.Column="1"
                                  WidthRequest="40"
                                  HeightRequest="40"
@@ -165,35 +202,7 @@
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
                         </Frame.GestureRecognizers>
                     </Frame>
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                            <HorizontalStackLayout>
-                                <Image Source="notification.png" Margin="20,0,0,0" />
-                                <Label Text="{Loc:Translate Name=Benachrichtigungen}"
-                                 TextColor="White"
-                                 Margin="24,0,0,0"
-                                 FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-
-                            <!-- الزر على اليمين -->
-                             <Button Grid.Column="1"
-                                  WidthRequest="40"
-                                 HeightRequest="40"
-                               CornerRadius="12"
-                              ImageSource="backbuttonpmg.png"
-                             BackgroundColor="#444444"
-                             Padding="0" 
-                            Margin="0,5,10,0"            
-                              BorderWidth="1"
-                          HorizontalOptions="Center"
-                         VerticalOptions="Start"
-                         Clicked="Button_Clicked_4" />
-                        </Grid>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3"/>
-                        </Frame.GestureRecognizers>
-                    </Frame>
+                  
                     <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
                         <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
 
@@ -203,9 +212,10 @@
                                   TextColor="White"
                                   Margin="24,0,0,0"
                                  FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
+                            </HorizontalStackLayout>-->
 
-                            <!-- الزر على اليمين -->
+                    <!-- الزر على اليمين -->
+                    <!--
                             <Button Grid.Column="1"
                             WidthRequest="40"
                             HeightRequest="40"
@@ -233,8 +243,6 @@
                                      Margin="24,0,0,0"
                                      FontSize="16" VerticalOptions="Center" />
                             </HorizontalStackLayout>
-
-                            <!-- الزر على اليمين -->
                             <Button Grid.Column="1"
                                 WidthRequest="40"
                                 HeightRequest="40"
@@ -262,8 +270,6 @@
                    Margin="24,0,0,0"
                    FontSize="16" VerticalOptions="Center" />
                             </HorizontalStackLayout>
-
-                            <!-- الزر على اليمين -->
                             <Button Grid.Column="1"
               WidthRequest="40"
               HeightRequest="40"
@@ -280,20 +286,19 @@
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_6" />
                         </Frame.GestureRecognizers>
-                    </Frame>
-                    <Button Clicked="Button_Clicked_8" BackgroundColor="Black" Text="Log Out" ImageSource="logout.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
-                    <Button BackgroundColor="Black" Clicked="Button_Clicked_9" Text="Remove My Account" ImageSource="exite.png" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
+                    </Frame>-->
+
+
                 </VerticalStackLayout>
-               
             </VerticalStackLayout>
         </ScrollView>
-        <Border Margin="0,0,0,0"
-       BackgroundColor="#444444"
+        <Border Margin="0,0,0,-10"
+       BackgroundColor="#151821"
        HeightRequest="20"
        VerticalOptions="End" 
        HorizontalOptions="Fill" 
-       Stroke="#444444" 
+       Stroke="#151821" 
        StrokeShape="RoundRectangle 10,10,0,0" />
 
     </Grid>
-</ContentPage>
+    </ContentPage>

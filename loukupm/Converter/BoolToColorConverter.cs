@@ -10,11 +10,11 @@ namespace loukupm.Converter
         {
             if (value is bool isSelected)
             {
-                // ≈–« ﬂ«‰ «·Êﬁ  „Œ «— ? »Ê—œ— –Â»Ì ›ﬁÿ
+               
                 if (isSelected)
-                    return Color.FromArgb("#FFD700"); // ? –Â»Ì ··»Ê—œ—
+                    return Color.FromArgb("#FFD700"); 
                 else
-                    return Color.FromArgb("#444444"); // —„«œÌ
+                    return Color.FromArgb("#444444"); 
             }
             return Color.FromArgb("#444444");
         }
@@ -25,14 +25,12 @@ namespace loukupm.Converter
         }
     }
 
-    /// <summary>
-    /// Converter · ÕœÌœ ·Ê‰ «·Œ·›Ì… (BackgroundColor) - Ì»ﬁÏ —„«œÌ œ«∆„«
-    /// </summary>
+    
     public class BoolToBackgroundColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // «·Œ·›Ì… œ«∆„« —„«œÌ »€÷ «·‰Ÿ— ⁄‰ «·«Œ Ì«—
+           
             return Color.FromArgb("#444444");
         }
 
