@@ -13,42 +13,54 @@ namespace loukupm.Model
         public bool Success { get; set; }
 
         [JsonPropertyName("data")]
-        public ObservableCollection<HomeSliderItem> Data { get; set; } = new();
+        public HomeSliderData Data { get; set; }
 
         [JsonPropertyName("message")]
         public string Message { get; set; }
     }
 
     /// <summary>
-    /// Individual slider item with multilingual support
+    /// Container for home slider items with grouping key
+    /// </summary>
+    public partial class HomeSliderData : ObservableObject
+    {
+        [JsonPropertyName("key")]
+        public string Key { get; set; } = "home";
+
+        [JsonPropertyName("items")]
+        public ObservableCollection<HomeSliderItem> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Individual slider item with promotional content
     /// </summary>
     public partial class HomeSliderItem : ObservableObject
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("image_url")]
-        public string ImageUrl { get; set; } = string.Empty;
-
-        [JsonPropertyName("action_type")]
-        public string ActionType { get; set; } = string.Empty;
-
-        [JsonPropertyName("action_value")]
-        public string ActionValue { get; set; } = string.Empty;
-
         [JsonPropertyName("sort_order")]
         public int SortOrder { get; set; }
 
-        [JsonPropertyName("is_active")]
-        public bool IsActive { get; set; }
-
         [JsonPropertyName("title")]
-        public MultiLanguageText Title { get; set; } = new();
+        public string Title { get; set; } = string.Empty;
 
         [JsonPropertyName("subtitle")]
-        public MultiLanguageText Subtitle { get; set; } = new();
+        public string Subtitle { get; set; } = string.Empty;
 
-        [JsonPropertyName("translations")]
-        public Dictionary<string, Dictionary<string, string>> Translations { get; set; } = new();
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("image_url")]
+        public string ImageUrl { get; set; } = string.Empty;
+
+        [JsonPropertyName("starts_at")]
+        public string StartsAt { get; set; }
+
+        [JsonPropertyName("ends_at")]
+        public string EndsAt { get; set; }
+
+        [JsonPropertyName("is_permanent")]
+        public bool IsPermanent { get; set; }
     }
 }

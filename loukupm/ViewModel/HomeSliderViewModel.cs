@@ -48,13 +48,12 @@ namespace loukupm.ViewModel
 
                 var response = await _apiServices.GetHomeSlidersAsync();
 
-                if (response?.Success == true && response.Data != null)
+                if (response?.Success == true && response.Data?.Items != null)
                 {
                     Items.Clear();
 
-                    // Sort by sort_order and filter active sliders
-                    var sortedSliders = response.Data
-                        .Where(s => s.IsActive)
+                    // Sort by sort_order
+                    var sortedSliders = response.Data.Items
                         .OrderBy(s => s.SortOrder)
                         .ToList();
 
@@ -82,15 +81,6 @@ namespace loukupm.ViewModel
             {
                 IsLoading = false;
             }
-        }
-
-        /// <summary>
-        /// Get text based on current language
-        /// </summary>
-        public string GetText(MultiLanguageText multiText)
-        {
-            if (multiText == null) return string.Empty;
-            return multiText.GetText(CurrentLanguage);
         }
 
         /// <summary>

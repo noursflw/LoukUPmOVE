@@ -146,16 +146,16 @@
                                                          MaximumWidthRequest="140"
                                                          ZIndex="2">
 
-                                        <Label Text="{Binding Title, Converter={StaticResource MultiLanguageConverter}}"
+                                        <Label Text="{Binding Title}"
                                                TextColor="White"
-                                               FontSize="18"
+                                              
                                                FontFamily="Oswald"
                                                FontAttributes="Bold"
                                                LineBreakMode="NoWrap"/>
 
-                                        <Label Text="{Binding Subtitle, Converter={StaticResource MultiLanguageConverter}}"
+                                        <Label Text="{Binding Subtitle}"
                                                TextColor="#f5b713"
-                                               FontSize="22"
+                                               
                                                FontFamily="Oswald"
                                                FontAttributes="Bold"
                                                LineBreakMode="WordWrap"
@@ -166,7 +166,7 @@
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
-                <material:TextField FlowDirection="LeftToRight" HeightRequest="20" Margin="25,20,25,0" InputBackgroundColor="#1C1F24" InputTransparent="False" CornerRadius="16" Icon="search.svg" Title="search"  Text="{Binding SearchServiceTerm}" />
+                <material:TextField  HeightRequest="50"  Margin="25,20,25,0" InputBackgroundColor="#1C1F24" InputTransparent="False" CornerRadius="16" Icon="search.svg" Title="search"  Text="{Binding SearchServiceTerm}" />
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Text="{ Loc:Translate Name=chosesservies}"  FontFamily="georgia" TextColor="White" FontSize="24" Margin="15" HorizontalOptions="Start" />
                     <Label 
