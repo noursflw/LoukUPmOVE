@@ -16,13 +16,20 @@ namespace loukupm.Services
         /// Navigate to a route while clearing all previous pages from the stack.
         /// This is equivalent to Flutter's pushAndRemoveUntil.
         /// </summary>
-        /// <param name="route">The route to navigate to (e.g., "HomePage", "LoginPage")</param>
+        /// <param name="route">The route to navigate to (e.g., "HomePage", "LoginPage")
         /// <param name="animate">Whether to animate the transition (default: false)</param>
         public static async Task ClearStackAndNavigate(string route)
         {
             try
             {
-                Console.WriteLine($"?? [Navigation] Clearing stack and navigating to: {route}");
+                Console.WriteLine($"🔄 [Navigation] Clearing stack and navigating to: {route}");
+
+                // Verify Shell.Current is available
+                if (Shell.Current == null)
+                {
+                    Console.WriteLine($"❌ [Navigation] Shell.Current is null - cannot navigate");
+                    throw new InvalidOperationException("Shell context is not available");
+                }
 
                 // For Shell navigation, using absolute routes with // will replace the entire stack
                 string absoluteRoute = route.StartsWith("//") ? route : $"//{route}";
@@ -30,11 +37,17 @@ namespace loukupm.Services
                 // Navigate with animation disabled for cleaner transition
                 await Shell.Current.GoToAsync(absoluteRoute, animate: false);
 
-                Console.WriteLine($"? [Navigation] Successfully navigated to: {route}");
+                Console.WriteLine($"✅ [Navigation] Successfully navigated to: {route}");
+            }
+            catch (InvalidOperationException iex)
+            {
+                Console.WriteLine($"❌ [Navigation] Invalid operation navigating to {route}: {iex.Message}");
+                throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"? [Navigation] Error navigating to {route}: {ex.Message}");
+                Console.WriteLine($"❌ [Navigation] Error navigating to {route}: {ex.Message}");
+                Console.WriteLine($"   Type: {ex.GetType().Name}");
                 throw;
             }
         }
@@ -46,16 +59,29 @@ namespace loukupm.Services
         {
             try
             {
-                Console.WriteLine($"?? [Navigation] Logging out and clearing stack");
+                Console.WriteLine($"🔄 [Navigation] Logging out and clearing stack");
+
+                // Verify Shell.Current is available
+                if (Shell.Current == null)
+                {
+                    Console.WriteLine($"❌ [Navigation] Shell.Current is null - cannot navigate");
+                    throw new InvalidOperationException("Shell context is not available");
+                }
 
                 // Use relative route for LoginPage (global route)
                 await Shell.Current.GoToAsync("LoginPage", animate: false);
 
-                Console.WriteLine($"? [Navigation] Successfully logged out to LoginPage");
+                Console.WriteLine($"✅ [Navigation] Successfully logged out to LoginPage");
+            }
+            catch (InvalidOperationException iex)
+            {
+                Console.WriteLine($"❌ [Navigation] Invalid operation during logout: {iex.Message}");
+                throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"? [Navigation] Error during logout navigation: {ex.Message}");
+                Console.WriteLine($"❌ [Navigation] Error during logout navigation: {ex.Message}");
+                Console.WriteLine($"   Type: {ex.GetType().Name}");
                 throw;
             }
         }
@@ -67,16 +93,30 @@ namespace loukupm.Services
         {
             try
             {
-                Console.WriteLine($"?? [Navigation] Logging in and navigating to home");
+                Console.WriteLine($"🔄 [Navigation] Logging in and navigating to home");
+
+                // Verify Shell.Current is available
+                if (Shell.Current == null)
+                {
+                    Console.WriteLine($"❌ [Navigation] Shell.Current is null - cannot navigate");
+                    throw new InvalidOperationException("Shell context is not available");
+                }
 
                 // Use absolute route for TabBar pages
                 await Shell.Current.GoToAsync("//HomePage", animate: false);
 
-                Console.WriteLine($"? [Navigation] Successfully logged in to HomePage");
+                Console.WriteLine($"✅ [Navigation] Successfully logged in to HomePage");
+            }
+            catch (InvalidOperationException iex)
+            {
+                Console.WriteLine($"❌ [Navigation] Invalid operation during login navigation: {iex.Message}");
+                throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"? [Navigation] Error during login navigation: {ex.Message}");
+                Console.WriteLine($"❌ [Navigation] Error during login navigation: {ex.Message}");
+                Console.WriteLine($"   Type: {ex.GetType().Name}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
                 throw;
             }
         }

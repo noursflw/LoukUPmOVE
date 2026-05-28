@@ -22,6 +22,7 @@ public static class NavigationService
     public const string ROUTE_MAIN_PAGE = "MainPage";
     public const string ROUTE_LOGIN = "LoginPage";
     public const string ROUTE_SIGNIN = "SinginPage";
+    public const string ROUTE_OTP = "OTPSINGIN";
 
     // TabBar pages
     public const string ROUTE_HOME = "HomePage";
@@ -66,7 +67,7 @@ public static class NavigationService
 
     private static readonly HashSet<string> AllValidRoutes = new()
     {
-        ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN,
+        ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN, ROUTE_OTP,
         ROUTE_HOME, ROUTE_SERVICES, ROUTE_BOOKING, ROUTE_PROFILE,
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
@@ -118,6 +119,25 @@ public static class NavigationService
         try
         {
             await Shell.Current.GoToAsync(route, animate: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Error navigating to {route}: {ex.Message}");
+        }
+    }
+    public static async Task NavigateToPage(string route, object parameter)
+    {
+        if (!ValidateRoute(route))
+            return;
+
+        try
+        {
+            // Serialize the parameter as JSON and pass as query string
+            string json = System.Text.Json.JsonSerializer.Serialize(parameter);
+            string encodedJson = Uri.EscapeDataString(json);
+            string routeWithParam = $"{route}?data={encodedJson}";
+
+            await Shell.Current.GoToAsync(routeWithParam, animate: true);
         }
         catch (Exception ex)
         {

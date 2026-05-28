@@ -17,6 +17,7 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToBackgroundColorConverter x:Key="BoolToBackgroundColorConverter" />
+            <converters:BoolToTextColorConverter x:Key="BoolToTextColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
    
@@ -54,7 +55,7 @@
                                 <Border Margin="0" 
                                         Stroke="#D4AF37" 
                                         StrokeThickness="2" 
-                                        BackgroundColor="#2A2A2A" 
+                                        BackgroundColor="Transparent" 
                                         StrokeShape="RoundRectangle 16" 
                                         HeightRequest="130" 
                                         Padding="0">
@@ -174,6 +175,7 @@
             <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,15" />
             <ScrollView Orientation="Horizontal" Margin="10,0,10,0">
                 <CollectionView 
+                  
         ItemsSource="{Binding WorkTeams}" 
         x:Name="WorkTeamsCollectionView"
         ItemsLayout="HorizontalList"
@@ -181,22 +183,23 @@
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Frame BackgroundColor="#202020" CornerRadius="30" BorderColor="{Binding BorderColor}" Margin="6">
+                            <Frame  BackgroundColor="Transparent"  CornerRadius="30" BorderColor="{Binding BorderColor}" Margin="2">
                                 <VerticalStackLayout Margin="12" Spacing="8">
-                                    <Frame BackgroundColor="#333333" 
-                                           WidthRequest="100" 
-                                           HeightRequest="100" 
+                                    <Frame BackgroundColor="Transparent" 
+                                           WidthRequest="60"
+                                           HeightRequest="60" 
                                            CornerRadius="50"
                                            Padding="0"
-                                           BorderColor="#333333"
+                                           BorderColor="Transparent"
                                            HasShadow="False">
                                         <ff:CachedImage
-                                            WidthRequest="100"
-                                            HeightRequest="100"
+                                            WidthRequest="60"
+                                            HeightRequest="60"
                                             Aspect="AspectFill"
                                             FadeAnimationEnabled="True"
                                             DownsampleToViewSize="True"
                                             BackgroundColor="#333333"
+                                            
                                             IsOpaque="False"
                                             Source="{Binding ImageSafe}" />
                                     </Frame>
@@ -239,9 +242,9 @@
 
                                     <Frame 
 HeightRequest="86" 
-WidthRequest="86"
+
 CornerRadius="16"
-BackgroundColor="#444444"
+BackgroundColor="Transparent"
 BorderColor="{Binding BorderColor}"
 HasShadow="False">
 
@@ -274,6 +277,7 @@ HasShadow="False">
 
 
                 <CollectionView x:Name="AvailableSlotsCollectionView"
+                                
                                 ItemsSource="{Binding AvailableSlots}" 
                                 IsVisible="{Binding Isloadday, Converter={StaticResource InverseBoolConverter}}"
                                 ItemsLayout="HorizontalList"
@@ -297,7 +301,7 @@ HasShadow="False">
                                     <Label Text="{Binding DisplayTime}" 
                                            Padding="0" 
                                            Margin="6,-5,0,0"  
-                                           TextColor="White" 
+                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToTextColorConverter}}"
                                            FontFamily="Oswald" 
                                            HorizontalTextAlignment="Center" 
                                            VerticalOptions="Center" 
@@ -357,7 +361,7 @@ HasShadow="False">
 
                         <Button Text="Enable Reminder Timer" 
                                 TextColor="Black" 
-                                BackgroundColor="#FFD700"
+                                
                                 FontFamily="Oswald" 
                                 FontSize="14"
                                 CornerRadius="8"

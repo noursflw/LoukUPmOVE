@@ -1,0 +1,105 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using loukupm.Model;
+using loukupm.services;
+using System.Collections.ObjectModel;
+
+namespace loukupm.ViewModel
+{
+    /// <summary>
+    /// ViewModel for managing Home Slider data
+    /// Handles loading, caching, and language changes
+    /// </summary>
+    public partial class HomeSliderViewModel : ObservableObject
+    {
+        private readonly ApiServices _apiServices;
+
+        [ObservableProperty]
+        private ObservableCollection<HomeSliderItem> items = new();
+
+        [ObservableProperty]
+        private bool isLoading = false;
+
+        [ObservableProperty]
+        private bool hasError = false;
+
+        [ObservableProperty]
+        private string errorMessage = string.Empty;
+
+        [ObservableProperty]
+        private string currentLanguage = "en";
+
+        public HomeSliderViewModel()
+        {
+            _apiServices = new ApiServices();
+        }
+
+        /// <summary>
+        /// Load home slider data from API
+        /// </summary>
+        [RelayCommand]
+        public async Task LoadSlidersAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                HasError = false;
+                ErrorMessage = string.Empty;
+
+                var response = await _apiServices.GetHomeSlidersAsync();
+
+                if (response?.Success == true && response.Data != null)
+                {
+                    Items.Clear();
+
+                    // Sort by sort_order and filter active sliders
+                    var sortedSliders = response.Data
+                        .Where(s => s.IsActive)
+                        .OrderBy(s => s.SortOrder)
+                        .ToList();
+
+                    foreach (var slider in sortedSliders)
+                    {
+                        Items.Add(slider);
+                    }
+
+                    Console.WriteLine($"✅ Home Sliders loaded successfully: {Items.Count} items");
+                }
+                else
+                {
+                    HasError = true;
+                    ErrorMessage = response?.Message ?? "Failed to load Home Sliders";
+                    Console.WriteLine($"❌ Home Sliders loading failed: {ErrorMessage}");
+                }
+            }
+            catch (Exception ex)
+            {
+                HasError = true;
+                ErrorMessage = $"Error loading sliders: {ex.Message}";
+                Console.WriteLine($"❌ Exception in LoadSlidersAsync: {ex}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        /// <summary>
+        /// Get text based on current language
+        /// </summary>
+        public string GetText(MultiLanguageText multiText)
+        {
+            if (multiText == null) return string.Empty;
+            return multiText.GetText(CurrentLanguage);
+        }
+
+        /// <summary>
+        /// Update current language and notify UI
+        /// </summary>
+        public void SetLanguage(string languageCode)
+        {
+            CurrentLanguage = languageCode;
+            OnPropertyChanged(nameof(Items));
+        }
+    }
+}

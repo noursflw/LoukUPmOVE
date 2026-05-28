@@ -25,7 +25,18 @@ public partial class HomePage : ContentPage
 	protected override void OnAppearing()
 	{
 		base.OnAppearing();
-	
+
+		// Explicitly trigger AboutUs data loading when page appears
+		if (BindingContext is AppViewModel appVM && appVM.AboutUsVM?.LoadAboutUsDataCommand.CanExecute(null) == true)
+		{
+			appVM.AboutUsVM.LoadAboutUsDataCommand.Execute(null);
+		}
+
+		// Trigger Home Sliders data loading when page appears
+		if (BindingContext is AppViewModel appVm && appVm.HomeSliderVM?.LoadSlidersCommand.CanExecute(null) == true)
+		{
+			appVm.HomeSliderVM.LoadSlidersCommand.Execute(null);
+		}
 	}
 
 	protected override void OnDisappearing()

@@ -43,6 +43,141 @@ public partial class SinginPage : ContentPage
         return true;
     }
 
+    //private async void OnRegisterClicked(object sender, EventArgs e)
+    //{
+    //    await Task.WhenAll(
+    //        RegisterButton.RotateTo(10),
+    //        RegisterButton.RotateTo(-10),
+    //        RegisterButton.ScaleTo(0.5, 100, Easing.Linear),
+    //        RegisterButton.ScaleTo(0, 150, Easing.CubicIn));
+
+    //    RegisterButton.IsVisible = false;
+    //    RegisterButton.Text = "";
+    //    LoadingIndicator.IsVisible = true;
+    //    LoadingIndicator.IsRunning = true;
+
+    //    try
+    //    {
+    //        string firstName = RegisterNameEntry.Text?.Trim();
+    //        string lastName = RegisterLastNameEntry.Text?.Trim();
+    //        string email = RegisterEmailEntry.Text?.Trim();
+    //        string phone = RegisterPhoneEntry.Text?.Trim();
+    //        string password = RegisterPasswordEntry.Text;
+    //        string passwordConfirmation = RegisterConfirmPasswordEntry.Text;
+
+    //        if (string.IsNullOrWhiteSpace(firstName) ||
+    //            string.IsNullOrWhiteSpace(lastName) ||
+    //            string.IsNullOrWhiteSpace(email) ||
+    //            string.IsNullOrWhiteSpace(password) ||
+    //            string.IsNullOrWhiteSpace(phone) ||
+    //            string.IsNullOrWhiteSpace(passwordConfirmation))
+    //        {
+    //            await this.ShowPopupAsync(new EnterAllFailed());
+    //            return;
+    //        }
+
+    //        if (!IsValidEmail(email))
+    //        {
+    //            await this.ShowPopupAsync(new EroreInputEmaile());
+    //            return;
+    //        }
+
+    //        if (password != passwordConfirmation)
+    //        {
+    //            await this.ShowPopupAsync(new Paswordmatch());
+    //            return;
+    //        }
+
+    //        if (password.Length < 6)
+    //        {
+    //            await this.ShowPopupAsync(new paslen());
+    //            return;
+    //        }
+
+    //        if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+    //        {
+    //            await this.ShowPopupAsync(new NoEnternetConacted());
+    //            return;
+    //        }
+
+    //        var registerData = new RegisterRequest
+    //        {
+    //            FirstName = firstName,
+    //            LastName = lastName,
+    //            Email = email,
+    //            Phone = phone,
+    //            Password = password,
+    //            PasswordConfirmation = passwordConfirmation
+    //        };
+
+    //        var json = JsonSerializer.Serialize(registerData);
+    //        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    //        var handler = new HttpClientHandler
+    //        {
+    //            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+    //        };
+    //        using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
+
+    //        var response = await client.PostAsync("https://test.center-yazan.com/api/auth/register", content);
+    //        var result = await response.Content.ReadAsStringAsync();
+
+    //        if (response.IsSuccessStatusCode)
+    //        {
+    //            var registerResponse = JsonSerializer.Deserialize<RegisterResponse>(result,
+    //                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+    //            if (!string.IsNullOrEmpty(registerResponse?.AccessToken))
+    //            {
+    //                await SecureStorage.SetAsync("auth_token", registerResponse.AccessToken);
+    //                await SecureStorage.SetAsync("refresh_token", registerResponse.RefreshToken);
+    //            }
+
+
+    //            if (registerResponse?.User != null)
+    //            {
+    //                OneSignalService.RegisterUser(registerResponse.User.Id.ToString());
+    //                OneSignalService.AddTag("email", registerResponse.User.Email);
+    //                OneSignalService.AddTag("signup_date", DateTime.Now.ToString("yyyy-MM-dd"));
+    //            }
+
+    //            await this.ShowPopupAsync(new CompletedLogin());
+
+
+    //            await AppViewModel.Instance.LoadUserDataAsync();
+
+    //            await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
+    //        }
+    //        else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+    //        {
+    //            await this.ShowPopupAsync(new EmaileUsed());
+    //        }
+    //        else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+    //        {
+    //            await this.ShowPopupAsync(new NoServerResponse());
+    //        }
+    //        else
+    //        {
+    //            await this.ShowPopupAsync(new NoServerResponse());
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"Register Error: {ex.Message}");
+    //        await this.ShowPopupAsync(new NoServerResponse());
+    //    }
+    //    finally
+    //    {
+    //        LoadingIndicator.IsRunning = false;
+    //        LoadingIndicator.IsVisible = false;
+    //        RegisterButton.Text = AppResource.CreatAcount2;
+    //        RegisterButton.IsVisible = true;
+    //        RegisterButton.Scale = 0;
+    //        await RegisterButton.RotateTo(0);
+    //        await RegisterButton.ScaleTo(1.1, 150, Easing.CubicOut);
+    //        await RegisterButton.ScaleTo(1.0, 100, Easing.Linear);
+    //    }
+    //}
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
         await Task.WhenAll(
@@ -52,7 +187,6 @@ public partial class SinginPage : ContentPage
             RegisterButton.ScaleTo(0, 150, Easing.CubicIn));
 
         RegisterButton.IsVisible = false;
-        RegisterButton.Text = "";
         LoadingIndicator.IsVisible = true;
         LoadingIndicator.IsRunning = true;
 
@@ -99,7 +233,6 @@ public partial class SinginPage : ContentPage
                 await this.ShowPopupAsync(new NoEnternetConacted());
                 return;
             }
-
             var registerData = new RegisterRequest
             {
                 FirstName = firstName,
@@ -107,46 +240,46 @@ public partial class SinginPage : ContentPage
                 Email = email,
                 Phone = phone,
                 Password = password,
-                PasswordConfirmation = passwordConfirmation
+                PasswordConfirmation = passwordConfirmation,
+                RegistrationMethod = string.IsNullOrWhiteSpace(phone) ? "email" : "phone"
             };
 
             var json = JsonSerializer.Serialize(registerData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var handler = new HttpClientHandler
+            using var client = new HttpClient
             {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                Timeout = TimeSpan.FromSeconds(30)
             };
-            using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
-
-            var response = await client.PostAsync("https://test.center-yazan.com/api/auth/register", content);
+           
+            var response = await client.PostAsync(
+                "https://test.center-yazan.com/api/auth/register",
+                content);
+            Console.WriteLine($"Register API response: {response}");
             var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                var registerResponse = JsonSerializer.Deserialize<RegisterResponse>(result,
+                var registerResponse = JsonSerializer.Deserialize<RegisterResponse>(
+                    result,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                if (!string.IsNullOrEmpty(registerResponse?.AccessToken))
-                {
-                    await SecureStorage.SetAsync("auth_token", registerResponse.AccessToken);
-                    await SecureStorage.SetAsync("refresh_token", registerResponse.RefreshToken);
-                }
+                // ❌ REMOVE: NO TOKENS HERE ANYMORE
 
-
-                if (registerResponse?.User != null)
+                var otpContext = new OtpContext
                 {
-                    OneSignalService.RegisterUser(registerResponse.User.Id.ToString());
-                    OneSignalService.AddTag("email", registerResponse.User.Email);
-                    OneSignalService.AddTag("signup_date", DateTime.Now.ToString("yyyy-MM-dd"));
-                }
+                    Email = email,
+                    Phone = phone,
+                    RegistrationMethod = string.IsNullOrWhiteSpace(phone) ? "email" : "phone",
+                    MaskedDestination = registerResponse?.MaskedDestination
+                };
+
+                await NavigationService.NavigateToPage(
+                    NavigationService.ROUTE_OTP,
+                    otpContext);
+                RegisterButton.IsVisible = true;
 
                 await this.ShowPopupAsync(new CompletedLogin());
-
-
-                await AppViewModel.Instance.LoadUserDataAsync();
-
-                await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
@@ -170,12 +303,7 @@ public partial class SinginPage : ContentPage
         {
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;
-            RegisterButton.Text = AppResource.CreatAcount2;
             RegisterButton.IsVisible = true;
-            RegisterButton.Scale = 0;
-            await RegisterButton.RotateTo(0);
-            await RegisterButton.ScaleTo(1.1, 150, Easing.CubicOut);
-            await RegisterButton.ScaleTo(1.0, 100, Easing.Linear);
         }
     }
 

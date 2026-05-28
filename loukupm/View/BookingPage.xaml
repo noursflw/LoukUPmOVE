@@ -286,7 +286,7 @@
 
                 
                 <StackLayout Grid.Column="0" Spacing="0" Padding="0">
-                    <Button Text="القادمة" 
+                    <Button Text="{Loc:Translate Name=TabUpcoming}" 
                             BackgroundColor="Transparent"
                             TextColor="#FFD700"
                             FontFamily="georgia-bold"
@@ -299,7 +299,7 @@
 
               
                 <StackLayout Grid.Column="1" Spacing="0" Padding="0">
-                    <Button Text="السابقة" 
+                    <Button Text="{Loc:Translate Name=TabPast}" 
                             BackgroundColor="Transparent"
                             TextColor="#999999"
                             FontFamily="georgia-bold"
@@ -312,7 +312,7 @@
 
                
                 <StackLayout Grid.Column="2" Spacing="0" Padding="0">
-                    <Button Text="الملغاة" 
+                    <Button Text="{Loc:Translate Name=TabCancelled}" 
                             BackgroundColor="Transparent"
                             TextColor="#999999"
                             FontFamily="georgia-bold"

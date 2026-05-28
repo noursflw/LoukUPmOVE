@@ -2117,6 +2117,33 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Storniert.
+        /// </summary>
+        internal static string TabCancelled {
+            get {
+                return ResourceManager.GetString("TabCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vergangen.
+        /// </summary>
+        internal static string TabPast {
+            get {
+                return ResourceManager.GetString("TabPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ausstehend.
+        /// </summary>
+        internal static string TabUpcoming {
+            get {
+                return ResourceManager.GetString("TabUpcoming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nasradin Albarho.
         /// </summary>
         internal static string TeamNaser {

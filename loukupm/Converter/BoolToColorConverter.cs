@@ -10,13 +10,13 @@ namespace loukupm.Converter
         {
             if (value is bool isSelected)
             {
-               
+
                 if (isSelected)
-                    return Color.FromArgb("#FFD700"); 
+                    return Color.FromArgb("#000000"); // أسود عند الاختيار
                 else
-                    return Color.FromArgb("#444444"); 
+                    return Colors.WhiteSmoke; // شفاف عند عدم الاختيار
             }
-            return Color.FromArgb("#444444");
+            return Colors.Transparent;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -30,8 +30,34 @@ namespace loukupm.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-           
-            return Color.FromArgb("#444444");
+            if (value is bool isSelected)
+            {
+                if (isSelected)
+                    return Color.FromArgb("#A8883C"); // أصفر عند الاختيار
+                else
+                    return Colors.Transparent; // شفاف عند عدم الاختيار
+            }
+            return Colors.Transparent;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BoolToTextColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool isSelected)
+            {
+                if (isSelected)
+                    return Color.FromArgb("#000000"); // أسود عند الاختيار
+                else
+                    return Color.FromArgb("#CCCCCC"); // فضي فاتح عند عدم الاختيار
+            }
+            return Color.FromArgb("#CCCCCC"); // فضي فاتح كقيمة افتراضية
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

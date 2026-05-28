@@ -6,7 +6,7 @@
              Shell.TabBarIsVisible="False"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:converters="clr-namespace:loukupm.Converter"
-             BackgroundColor="#252525"
+             BackgroundColor="#0A0A0A"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              FlowDirection="LeftToRight"
              Title="NotifictionPage">
@@ -17,9 +17,9 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="60,*" BackgroundColor="#252525">
+    <Grid RowDefinitions="60,*" BackgroundColor="#0A0A0A">
         <!-- Header -->
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#202020">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A">
             <!-- Title -->
             <Label Text="{Loc:Translate Name=Benachrichtigungen}"
                  TextColor="White"
@@ -34,8 +34,8 @@
                  HeightRequest="40"
                  CornerRadius="12"
                  ImageSource="backbuttonpmg.png"
-                 BackgroundColor="#202020"
-                 BorderColor="#999999"
+                 BackgroundColor="#0A0A0A"
+                 BorderColor="#0A0A0A"
                  Margin="0,0,10,0"            
                  BorderWidth="1"
                  HorizontalOptions="End"
@@ -48,8 +48,8 @@
                      Command="{Binding LoadNotificationsCommand}"
                      IsRefreshing="{Binding IsRefreshing}"
                      RefreshColor="#FFFFFF"
-                     BackgroundColor="#252525">
-            <Grid RowDefinitions="*" ColumnDefinitions="*" BackgroundColor="#252525">
+                     BackgroundColor="#0A0A0A">
+            <Grid RowDefinitions="*" ColumnDefinitions="*" BackgroundColor="#0A0A0A">
                 <!-- Loading Skeleton - Shows while loading notifications -->
                 <VerticalStackLayout Grid.Row="0" IsVisible="{Binding IsLoading}" Margin="16,10,16,0" Spacing="8" Padding="0">
                     <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444" 
@@ -70,7 +70,7 @@
 
                 <!-- Notifications List Container -->
                 <VerticalStackLayout Grid.Row="0" IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" 
-                                    Padding="0" Spacing="0" BackgroundColor="#252525">
+                                    Padding="0" Spacing="0" BackgroundColor="#0A0A0A">
 
                     <!-- Empty State -->
                     <VerticalStackLayout IsVisible="{Binding Notifications.Count, Converter={converters:InverseBoolConverter}}" 
@@ -86,7 +86,7 @@
                                    IsVisible="{Binding Notifications.Count}"
                                    SelectionMode="None"
                                    Margin="0"
-                                   BackgroundColor="#252525">
+                                   BackgroundColor="#0A0A0A">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame BackgroundColor="#303030" BorderColor="#404040" 

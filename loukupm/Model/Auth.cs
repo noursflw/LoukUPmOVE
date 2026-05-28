@@ -17,6 +17,9 @@ namespace loukupm.Model
             [JsonPropertyName("password")]
             public string Password { get; set; }
 
+            [JsonPropertyName("registration_method")]
+            public string RegistrationMethod { get; set; }
+
             [JsonPropertyName("refresh_token")]
             public string RefreshToken { get; set; }
         }
@@ -59,6 +62,8 @@ namespace loukupm.Model
 
             [JsonPropertyName("password_confirmation")]
             public string PasswordConfirmation { get; set; }
+            [JsonPropertyName("registration_method")]
+            public string RegistrationMethod { get; set; }
         }
 
 
@@ -84,6 +89,9 @@ namespace loukupm.Model
 
             [JsonPropertyName("otp")]
             public string Otp { get; set; }
+            // 🔥 ADD THIS
+            [JsonPropertyName("masked_destination")]
+            public string MaskedDestination { get; set; }
         }
 
 
@@ -101,6 +109,117 @@ namespace loukupm.Model
         { 
             public string Email { get; set; }
             public string Code { get; set; }
+        }
+
+        // OTP Context passed to the OTPSINGIN page
+        public class OtpContext
+        {
+            [JsonPropertyName("email")]
+            public string Email { get; set; }
+
+            [JsonPropertyName("phone")]
+            public string Phone { get; set; }
+
+            [JsonPropertyName("registration_method")]
+            public string RegistrationMethod { get; set; }
+
+            [JsonPropertyName("masked_destination")]
+            public string MaskedDestination { get; set; }
+
+            [JsonPropertyName("user_id")]
+            public int? UserId { get; set; }
+        }
+
+        /// <summary>
+        /// OTP Verification Request sent to the backend.
+        /// 
+        /// REQUIRED FIELDS:
+        /// - Otp: The 6-digit OTP code sent to the user (NOT "code")
+        /// - RegistrationMethod: Either "email" or "phone" indicating which method was used for registration
+        /// 
+        /// EMAIL vs PHONE:
+        /// - If RegistrationMethod == "email": Backend validates using Email field, Phone can be null
+        /// - If RegistrationMethod == "phone": Backend validates using Phone field, Email can be null
+        /// - Always send the relevant field based on RegistrationMethod to avoid 422 errors
+        /// 
+        /// COMMON ISSUE: Sending "code" instead of "otp" will result in 422 Unprocessable Entity error
+        /// </summary>
+        public class OtpVerificationRequest
+        {
+            /// <summary>
+            /// Email address (required if RegistrationMethod is "email", can be null otherwise)
+            /// </summary>
+            [JsonPropertyName("email")]
+            public string Email { get; set; }
+
+            /// <summary>
+            /// Phone number (required if RegistrationMethod is "phone", can be null otherwise)
+            /// </summary>
+            [JsonPropertyName("phone")]
+            public string Phone { get; set; }
+
+            /// <summary>
+            /// The 6-digit OTP code. IMPORTANT: Use "otp" field, NOT "code"
+            /// </summary>
+            [JsonPropertyName("otp")]
+            public string Otp { get; set; }
+
+            /// <summary>
+            /// Registration method: "email" or "phone". Tells backend which field to validate
+            /// </summary>
+            [JsonPropertyName("registration_method")]
+            public string RegistrationMethod { get; set; }
+        }
+
+        // OTP Verification Response
+        public class OtpVerificationResponse
+        {
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; set; }
+
+            [JsonPropertyName("refresh_token")]
+            public string RefreshToken { get; set; }
+
+            [JsonPropertyName("token_type")]
+            public string TokenType { get; set; }
+
+            [JsonPropertyName("access_expires_at")]
+            public string AccessExpiresAt { get; set; }
+
+            [JsonPropertyName("refresh_expires_at")]
+            public string RefreshExpiresAt { get; set; }
+
+            [JsonPropertyName("user")]
+            public UserData User { get; set; }
+
+            [JsonPropertyName("message")]
+            public string Message { get; set; }
+        }
+
+        // Resend OTP Request
+        public class ResendOtpRequest
+        {
+            [JsonPropertyName("email")]
+            public string Email { get; set; }
+
+            [JsonPropertyName("phone")]
+            public string Phone { get; set; }
+
+            [JsonPropertyName("registration_method")]
+            public string RegistrationMethod { get; set; }
+        }
+
+        // Resend OTP Response
+        public class ResendOtpResponse
+        {
+            [JsonPropertyName("message")]
+            public string Message { get; set; }
+
+            [JsonPropertyName("otp_sent")]
+            public bool OtpSent { get; set; }
+
+            [JsonPropertyName("resend_after")]
+            public int? ResendAfter { get; set; }
         }
 
 

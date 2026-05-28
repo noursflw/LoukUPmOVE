@@ -77,7 +77,7 @@ namespace loukupm.Model
         public DateTime WorkTime { get; set; }
 
         [ObservableProperty]
-        private string borderColor = "#202020";
+        private string borderColor = "Transparent";
 
         public WorkTeam() { }
 

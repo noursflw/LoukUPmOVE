@@ -991,4 +991,13 @@
   <data name="ONENUMBER" xml:space="preserve">
     <value>على الأقل رقم واحد</value>
   </data>
+  <data name="TabUpcoming" xml:space="preserve">
+    <value>القادمة</value>
+  </data>
+  <data name="TabPast" xml:space="preserve">
+    <value>السابقة</value>
+  </data>
+  <data name="TabCancelled" xml:space="preserve">
+    <value>الملغاة</value>
+  </data>
 </root>

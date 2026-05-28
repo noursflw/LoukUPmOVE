@@ -102,6 +102,7 @@ namespace loukupm
                     (NavigationService.ROUTE_MAIN_PAGE, typeof(MainPage)),
                     (NavigationService.ROUTE_LOGIN, typeof(LoginPage)),
                     (NavigationService.ROUTE_SIGNIN, typeof(SinginPage)),
+                    (NavigationService.ROUTE_OTP, typeof(OTPSINGIN)),
 
                     // Booking subpages
                     (NavigationService.ROUTE_TERM_BOOKING, typeof(TerminbuchenPage)),

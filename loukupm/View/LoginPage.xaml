@@ -14,21 +14,22 @@
         <VerticalStackLayout>
             <Grid RowDefinitions="40*,60*">
 
-                <Image Grid.Row="0" Margin="0,-100,0,0" WidthRequest="200" HeightRequest="60" Source="slogo.svg"/>
+                <Image Grid.Row="0" Margin="0,-100,0,0" WidthRequest="200" HeightRequest="130" Source="slogo.svg"/>
+                <BoxView HeightRequest="3" Margin="0,70,0,0"  WidthRequest="250" Color="#A8883C" />
 
-                <Label Grid.Row="0" Margin="25,70,0,25" FontSize="32" FontFamily="georgia-bold"
-                         Text="{loc:Translate Name=Login}" TextColor="White"
+                <Label Grid.Row="0" Margin="25,150,0,25" FontSize="32" FontFamily="georgia-bold"
+                         Text="{loc:Translate Name=Login}" TextColor="#A8883C"
                           VerticalOptions="Center" 
                           HorizontalOptions="Center" />
                 <StackLayout>
                      
                     
-                    <Grid Margin="25,240,25,0" HeightRequest="60">
+                    <Grid Margin="25,300,25,0" HeightRequest="60">
                         <Button
-                           BackgroundColor="#202020"
+                           BackgroundColor="Transparent"
                            FontFamily="Oswald"
                            TextColor="White"
-                           BorderColor="#D3D3D3"
+                           BorderColor="#A8883C"
                            ImageSource="google.png"
                            Clicked="GoogleButton_Clicked"
                            BorderWidth="1"
@@ -74,7 +75,7 @@
                         TextColor="#A8883C"
                         AccentColor="#A8883C"
                         Margin="25,0,25,0"
-                        InputBackgroundColor="#444444"
+                        InputBackgroundColor="Transparent"
                         CornerRadius="16"
                         Icon="email.png" 
                         TextChanged="OnEmailTextChanged"
@@ -98,7 +99,7 @@
                         x:Name="PasswordEntry"
                         Title="Password"  
                         CornerRadius="16"  
-                        InputBackgroundColor="#444444" 
+                        InputBackgroundColor="Transparent" 
                         IsPassword="True"  
                         Margin="25,0,25,0" >
                         <material:TextField.Attachments>

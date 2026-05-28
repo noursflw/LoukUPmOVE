@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.OTPSINGIN"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             FlowDirection="LeftToRight"
+             BackgroundColor="#202020"
+             BackgroundImageSource="baackgroundpage.png"
+             Title="OTP Verification">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="25" Spacing="20">
+
+            <!-- Header Logo -->
+            <Image Margin="0,30,0,20" 
+                   WidthRequest="150" 
+                   HeightRequest="100" 
+                   Source="slogo.svg"
+                   HorizontalOptions="Center"/>
+
+            <!-- Title -->
+            <Label FontSize="28" 
+                   FontFamily="georgia-bold"
+                   Text="Verify Your Account" 
+                   TextColor="#A8883C"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,0"/>
+
+            <!-- Divider Line -->
+            <BoxView HeightRequest="2" 
+                     WidthRequest="150" 
+                     Margin="0,10,0,20" 
+                     Color="#A8883C"
+                     HorizontalOptions="Center"/>
+
+            <!-- Instruction Text -->
+            <Label FontSize="14" 
+                   Text="Enter the 6-digit verification code sent to:" 
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,0"/>
+
+            <!-- Masked Destination (email or phone) -->
+            <Label x:Name="MaskedDestinationLabel"
+                   FontSize="16" 
+                   FontFamily="georgia-bold"
+                   Text="a***@mail.com" 
+                   TextColor="#A8883C"
+                   HorizontalOptions="Center"
+                   Margin="0,5,0,20"/>
+
+            <!-- OTP Input Container -->
+            <Frame BorderColor="#A8883C" 
+                   CornerRadius="12" 
+                   HasShadow="False"
+                   BackgroundColor="Transparent"
+                   Margin="0,10,0,20"
+                   Padding="15">
+                <Entry x:Name="OtpEntry"
+                       Placeholder="000000"
+                       PlaceholderColor="#666666"
+                       TextColor="White"
+                       BackgroundColor="Transparent"
+                       FontSize="24"
+                       FontFamily="georgia-bold"
+                       HorizontalTextAlignment="Center"
+                       MaxLength="6"
+                       Keyboard="Numeric"
+                       TextChanged="OnOtpTextChanged"/>
+            </Frame>
+
+            <!-- Error Message -->
+            <Label x:Name="ErrorMessageLabel"
+                   TextColor="Red"
+                   FontSize="12"
+                   IsVisible="False"
+                   Margin="0,10,0,10"
+                   HorizontalOptions="Center"
+                   Text="Invalid verification code"/>
+
+            <!-- Verify Button -->
+            <Button x:Name="VerifyButton"
+                    Text="Verify"
+                    BackgroundColor="#A8883C"
+                    TextColor="White"
+                    FontFamily="Oswald"
+                    FontSize="16"
+                    CornerRadius="12"
+                    Padding="20,12"
+                    Margin="0,20,0,10"
+                    IsEnabled="False"
+                    Clicked="OnVerifyClicked"
+                    HeightRequest="50"/>
+
+            <!-- Loading Indicator (overlays the button) -->
+            <Grid x:Name="LoadingGrid"
+                  IsVisible="False"
+                  BackgroundColor="Transparent"
+                  Margin="0,-50,0,0">
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                   IsRunning="True"
+                                   IsVisible="True"
+                                   Color="White"
+                                   Scale="1.2"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+            </Grid>
+
+            <!-- Divider -->
+            <BoxView HeightRequest="1" 
+                     Color="#444444"
+                     Margin="0,20,0,20"/>
+
+            <!-- Resend OTP Section -->
+            <VerticalStackLayout Spacing="10" Margin="0,20,0,30">
+                <Label FontSize="12" 
+                       Text="Didn't receive the code?" 
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+
+                <!-- Resend Button with Timer -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <Button x:Name="ResendButton"
+                            Grid.Column="0"
+                            Text="Resend OTP"
+                            BackgroundColor="Transparent"
+                            TextColor="#A8883C"
+                            FontFamily="Oswald"
+                            FontSize="14"
+                            BorderColor="#A8883C"
+                            BorderWidth="1"
+                            CornerRadius="10"
+                            Padding="15,10"
+                            Clicked="OnResendClicked"
+                            HeightRequest="45"/>
+
+                    <Label x:Name="TimerLabel"
+                           Grid.Column="1"
+                           Text="60s"
+                           TextColor="#A8883C"
+                           FontFamily="georgia-bold"
+                           FontSize="14"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           IsVisible="False"
+                           WidthRequest="50"/>
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- Back Button (optional) -->
+            <Button Text="Back"
+                    BackgroundColor="Transparent"
+                    TextColor="Gray"
+                    FontFamily="Oswald"
+                    FontSize="12"
+                    Clicked="OnBackClicked"
+                    CornerRadius="8"
+                    Padding="15,10"
+                    Margin="0,0,0,20"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

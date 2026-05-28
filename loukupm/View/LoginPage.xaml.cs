@@ -74,7 +74,7 @@ public partial class LoginPage : ContentPage
 
         string email = EmailEntry.Text?.Trim();
         string password = PasswordEntry.Text;
-
+        
         try
         {
           
@@ -102,7 +102,8 @@ public partial class LoginPage : ContentPage
             var loginData = new LoginRequest
             {
                 Email = email,
-                Password = password
+                Password = password,
+                RegistrationMethod = "email"
             };
 
             var handler = new HttpClientHandler

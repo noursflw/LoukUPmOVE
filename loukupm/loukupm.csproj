@@ -48,14 +48,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" />
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#202020" BaseSize="128,128" />
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" /> 
     <MauiImage Include="Resources\Images\*" />
     <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
     <MauiFont Include="Resources\Fonts\*" />
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-    <AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
-    <MauiAsset Include="appsettings.json" LogicalName="appsettings.json" />
+	  <MauiSplashScreen Include="Resources\Splash\mmm.svg"   Color="#000000" />
+	
+
+	  <MauiAsset Include="appsettings.json" LogicalName="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiSplashScreen Include="Resources\Splash\mmm.svg" />
   </ItemGroup>
 
   <ItemGroup>

@@ -87,9 +87,15 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private string selectedImagePath = string.Empty;
 
-      
+
         [ObservableProperty]
         private bool isCancelingBooking = false;
+
+        [ObservableProperty]
+        private AboutUsViewModel aboutUsVM;
+
+        [ObservableProperty]
+        private HomeSliderViewModel homeSliderVM;
 
         private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel());
         public static AppViewModel Instance => _instance.Value;
@@ -111,6 +117,8 @@ namespace loukupm.ViewModel
         public AppViewModel()
         {
             LoadData();
+            AboutUsVM = new AboutUsViewModel();
+            HomeSliderVM = new HomeSliderViewModel();
             // ✅ Do NOT create new HttpClient here - use static instance
 
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
@@ -472,7 +480,7 @@ namespace loukupm.ViewModel
         private async void OnSelectProvider(WorkTeam provider)
         {
             foreach (var p in WorkTeams)
-                p.BorderColor = "#202020";
+                p.BorderColor = "Transparent";
 
             provider.BorderColor = "#FFD700";
             SelectedProvider = provider;
@@ -988,24 +996,91 @@ namespace loukupm.ViewModel
             {
                 IsLoadUser = true;
 
+                Console.WriteLine("📥 [AppViewModel] Starting LoadUserDataAsync");
+
                 currentUser = await _apiServices.GetUserAsync();
 
-                if (currentUser != null)
+                if (currentUser == null)
                 {
-                    UserName = currentUser.UserName;
-                    Email = currentUser.Email;
-                    FullName = currentUser.FullName;
-                    Phone = currentUser.Phone;
-                    Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                    Console.WriteLine("⚠️ [AppViewModel] GetUserAsync returned null");
+                    return;
                 }
+
+                Console.WriteLine($"✅ [AppViewModel] User loaded: {currentUser.Email}");
+
+                // Update properties with null checks
+                try
+                {
+                    UserName = currentUser.UserName ?? "";
+                    Console.WriteLine($"✅ [AppViewModel] UserName set: {UserName}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting UserName: {ex.Message}");
+                    UserName = "";
+                }
+
+                try
+                {
+                    Email = currentUser.Email ?? "";
+                    Console.WriteLine($"✅ [AppViewModel] Email set: {Email}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting Email: {ex.Message}");
+                    Email = "";
+                }
+
+                try
+                {
+                    FullName = currentUser.FullName ?? "";
+                    Console.WriteLine($"✅ [AppViewModel] FullName set: {FullName}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting FullName: {ex.Message}");
+                    FullName = "";
+                }
+
+                try
+                {
+                    Phone = currentUser.Phone ?? "";
+                    Console.WriteLine($"✅ [AppViewModel] Phone set");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting Phone: {ex.Message}");
+                    Phone = "";
+                }
+
+                try
+                {
+                    Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                    Console.WriteLine($"✅ [AppViewModel] Avatar set: {Avatar}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting Avatar: {ex.Message}");
+                    Avatar = "default_avatar.png";
+                }
+
+                Console.WriteLine("✅ [AppViewModel] LoadUserDataAsync completed successfully");
+            }
+            catch (NullReferenceException nex)
+            {
+                Console.WriteLine($"❌ [AppViewModel] NullReferenceException in LoadUserDataAsync: {nex.Message}");
+                Console.WriteLine($"   Stack: {nex.StackTrace}");
             }
             catch (Exception ex)
             {
-                // optional logging
+                Console.WriteLine($"❌ [AppViewModel] Exception in LoadUserDataAsync: {ex.Message}");
+                Console.WriteLine($"   Type: {ex.GetType().Name}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
             }
             finally
             {
                 IsLoadUser = false;
+                Console.WriteLine("ℹ️ [AppViewModel] LoadUserDataAsync finished (IsLoadUser = false)");
             }
         }
 

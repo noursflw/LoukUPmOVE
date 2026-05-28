@@ -69,7 +69,7 @@ namespace loukupm.services
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
-                
+
             }
             else
             {
@@ -77,8 +77,153 @@ namespace loukupm.services
             }
         }
 
+        /// <summary>
+        /// Verify OTP for email or phone verification.
+        /// 
+        /// IMPORTANT: Use the 'otp' parameter, NOT 'code'. The API expects field name "otp".
+        /// 
+        /// EMAIL vs PHONE:
+        /// - For email registration: Pass email + otp + "email" as registration_method
+        /// - For phone registration: Pass phone + otp + "phone" as registration_method
+        /// - The backend validates based on registration_method
+        /// 
+        /// Returns (success, accessToken, refreshToken, user, statusCode, errorMessage)
+        /// </summary>
+        public async Task<(bool Success, string AccessToken, string RefreshToken, Auth.UserData User, int StatusCode, string ErrorMessage)> VerifyOtpAsync(
+            string email = null,
+            string phone = null,
+            string otp = null,
+            string registrationMethod = "email")
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(otp) || otp.Length != 6)
+                {
+                    return (false, null, null, null, 400, "Invalid OTP format");
+                }
 
-     public async Task<List<PolicyandPrivacyS>> GetPolicyandPrivaciesAsync()
+                var request = new Auth.OtpVerificationRequest
+                {
+                    Email = email,
+                    Phone = phone,
+                    Otp = otp,
+                    RegistrationMethod = registrationMethod
+                };
+
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/verify-otp", content);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"🔐 OTP Verification Response ({response.StatusCode}): {responseContent}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        var otpResponse = JsonSerializer.Deserialize<Auth.OtpVerificationResponse>(responseContent,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        return (true, otpResponse?.AccessToken, otpResponse?.RefreshToken, otpResponse?.User,
+                            (int)response.StatusCode, null);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Console.WriteLine($"❌ Failed to deserialize OTP response: {ex.Message}");
+                        return (false, null, null, null, 500, "Failed to parse server response");
+                    }
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity) // 422
+                {
+                    return (false, null, null, null, 422, "Invalid verification code or missing required fields");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden) // 403
+                {
+                    return (false, null, null, null, 403, "Account not verified or OTP expired");
+                }
+                else
+                {
+                    return (false, null, null, null, (int)response.StatusCode, "Verification failed");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"❌ Network error during OTP verification: {ex.Message}");
+                return (false, null, null, null, 0, "Network connection error");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Unexpected error during OTP verification: {ex.Message}");
+                return (false, null, null, null, 0, "Unexpected error occurred");
+            }
+        }
+
+        /// <summary>
+        /// Resend OTP to email or phone.
+        /// Returns (success, statusCode, message, resendAfter)
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string Message, int? ResendAfter)> ResendOtpAsync(
+            string email = null,
+            string phone = null,
+            string registrationMethod = "email")
+        {
+            try
+            {
+                var request = new Auth.ResendOtpRequest
+                {
+                    Email = email,
+                    Phone = phone,
+                    RegistrationMethod = registrationMethod
+                };
+
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/resend-verification-otp", content);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"📤 Resend OTP Response ({response.StatusCode}): {responseContent}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        var resendResponse = JsonSerializer.Deserialize<Auth.ResendOtpResponse>(responseContent,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        return (true, (int)response.StatusCode, resendResponse?.Message ?? "OTP resent successfully",
+                            resendResponse?.ResendAfter);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Console.WriteLine($"❌ Failed to deserialize resend response: {ex.Message}");
+                        return (true, (int)response.StatusCode, "OTP resent successfully", null);
+                    }
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) // 429
+                {
+                    return (false, 429, "Too many resend attempts. Please try later.", null);
+                }
+                else
+                {
+                    return (false, (int)response.StatusCode, "Failed to resend OTP", null);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"❌ Network error during resend OTP: {ex.Message}");
+                return (false, 0, "Network connection error", null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Unexpected error during resend OTP: {ex.Message}");
+                return (false, 0, "Unexpected error occurred", null);
+            }
+        }
+
+
+        public async Task<List<PolicyandPrivacyS>> GetPolicyandPrivaciesAsync()
         {
             var response = await _httpClient.GetAsync("https://api.example.com/policies");
             if (response.IsSuccessStatusCode)
@@ -168,14 +313,14 @@ namespace loukupm.services
             }
         }
 
-      
+
         [Obsolete("Use GetNotificationsAsync instead for pagination support")]
         public async Task<List<Notification>> GetNotificationsLegacyAsync()
         {
             var (notifications, _, _) = await GetNotificationsAsync();
             return notifications;
         }
-        
+
         public async Task<List<Appointment>> GetUserAppointmentsAsync(User user, string status = "ALL")
         {
             await SetAuthorizationHeaderAsync();
@@ -283,7 +428,7 @@ namespace loukupm.services
             }
         }
 
-       
+
         public async Task<List<Servies>> GetProviderServicesAsync(int providerId)
         {
             try
@@ -292,9 +437,9 @@ namespace loukupm.services
 
                 // محاولة أولاً: جلب خدمات البروفايدر من endpoint منفصل
                 string url = $"https://test.center-yazan.com/api/providers/{providerId}/services";
-                
+
                 var response = await _httpClient.GetAsync(url);
-                
+
                 // إذا نجحت الطلبة: رجع البيانات
                 if (response.IsSuccessStatusCode)
                 {
@@ -313,7 +458,7 @@ namespace loukupm.services
                     // إذا فشلت: استخدم جميع الخدمات كبديل
                     Console.WriteLine($"⚠️ Provider services endpoint not available ({response.StatusCode})");
                     Console.WriteLine($"⚠️ Returning all services as fallback for provider {providerId}");
-                    
+
                     return await GetServiesAsync();
                 }
             }
@@ -327,49 +472,49 @@ namespace loukupm.services
 
 
         public async Task<bool> RefreshTokenAsync()
-{
-    try
-    {
-        string refreshToken = await SecureStorage.GetAsync("refresh_token");
-        if (string.IsNullOrEmpty(refreshToken))
-            return false;
-
-        var payload = new
         {
-            refresh_token = refreshToken
-        };
+            try
+            {
+                string refreshToken = await SecureStorage.GetAsync("refresh_token");
+                if (string.IsNullOrEmpty(refreshToken))
+                    return false;
 
-        var json = JsonSerializer.Serialize(payload);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var payload = new
+                {
+                    refresh_token = refreshToken
+                };
 
-        var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/refresh", content);
+                var json = JsonSerializer.Serialize(payload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        if (!response.IsSuccessStatusCode)
-            return false;
+                var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/refresh", content);
 
-        var responseJson = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                    return false;
 
-        var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseJson,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var responseJson = await response.Content.ReadAsStringAsync();
 
-        if (!string.IsNullOrEmpty(authResponse?.AccessToken))
-        {
-            await SecureStorage.SetAsync("auth_token", authResponse.AccessToken);
+                var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseJson,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            // إذا رجع refresh_token جديد، حدّثه كمان
-            if (!string.IsNullOrEmpty(authResponse.RefreshToken))
-                await SecureStorage.SetAsync("refresh_token", authResponse.RefreshToken);
+                if (!string.IsNullOrEmpty(authResponse?.AccessToken))
+                {
+                    await SecureStorage.SetAsync("auth_token", authResponse.AccessToken);
 
-            return true;
+                    // إذا رجع refresh_token جديد، حدّثه كمان
+                    if (!string.IsNullOrEmpty(authResponse.RefreshToken))
+                        await SecureStorage.SetAsync("refresh_token", authResponse.RefreshToken);
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
-
-        return false;
-    }
-    catch
-    {
-        return false;
-    }
-}
 
         public async Task<List<string>> GetCategoriesAsync()
         {
@@ -460,7 +605,7 @@ namespace loukupm.services
                 return new List<string>();
             }
         }
- 
+
 
         public async Task<CreatePaymentIntentResponse?> CreatePaymentIntentAsync(decimal amount, string currency, string email)
         {
@@ -533,7 +678,7 @@ namespace loukupm.services
         /// Update user profile: first_name and avatar via MultipartFormDataContent
         /// Returns response object with success status, message, and profile data
         /// </summary>
-        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath,string phonenumber)
+        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath, string phonenumber)
         {
             var response = new ProfileUpdateApiResponse();
 
@@ -613,8 +758,8 @@ namespace loukupm.services
                         "https://test.center-yazan.com/api/profile",
                         form
                     );
-                    
-                  
+
+
                     // ✅ Log response
                     Console.WriteLine($"📊 Response Status: {httpResponse.StatusCode}");
                     string responseBody = await httpResponse.Content.ReadAsStringAsync();
@@ -715,79 +860,144 @@ namespace loukupm.services
             };
         }
 
-            /// <summary>
-            /// Cancel a booking/appointment by ID
-            /// </summary>
-            public async Task<bool> CancelBookingAsync(int bookingId)
+        /// <summary>
+        /// Cancel a booking/appointment by ID
+        /// </summary>
+        public async Task<bool> CancelBookingAsync(int bookingId)
+        {
+            await SetAuthorizationHeaderAsync();
+
+            try
             {
-                await SetAuthorizationHeaderAsync();
+                string url = $"https://test.center-yazan.com/api/bookings/{bookingId}/cancel";
 
-                try
+                // POST request without body (some APIs require this for cancel operations)
+                var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    string url = $"https://test.center-yazan.com/api/bookings/{bookingId}/cancel";
-
-                    // POST request without body (some APIs require this for cancel operations)
-                    var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-                    var response = await _httpClient.PostAsync(url, content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        Console.WriteLine($"✅ Booking {bookingId} cancelled successfully");
-                        return true;
-                    }
-                    else
-                    {
-                        var errorContent = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine($"❌ Cancel booking failed: {response.StatusCode} - {errorContent}");
-                        return false;
-                    }
+                    Console.WriteLine($"✅ Booking {bookingId} cancelled successfully");
+                    return true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine($"❌ Exception while cancelling booking {bookingId}: {ex.Message}");
-                    Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"❌ Cancel booking failed: {response.StatusCode} - {errorContent}");
                     return false;
                 }
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while cancelling booking {bookingId}: {ex.Message}");
+                Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+                return false;
+            }
         }
 
+        /// <summary>
+        /// Get AboutUs page data from API
+        /// </summary>
+        public async Task<AboutUsResponse> GetAboutUsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/about-us");
 
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ AboutUs API error: {response.StatusCode}");
+                    return null;
+                }
 
-    public class CreateCheckoutSessionRequest
-    {
-        public int Amount { get; set; }
-        public string Currency { get; set; } = "eur";
-        public string SuccessUrl { get; set; } = string.Empty;
-        public string CancelUrl { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-    }
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✅ AboutUs data retrieved successfully");
 
-    public class ServiesResponse
-    {
-        public List<Servies> Data { get; set; }
-        public List<Servies> Servies { get; set; }
-    }
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
-    public class CategoriesResponse
-    {
-        public List<string> Categories { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public bool Success { get; set; }
-    }
+                var result = JsonSerializer.Deserialize<AboutUsResponse>(json, options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading AboutUs data: {ex.Message}");
+                return null;
+            }
+        }
 
-    public class CreatePaymentIntentResponse
-    {
-        public string ClientSecret { get; set; } = string.Empty;
-    }
+        /// <summary>
+        /// Get Home Slider data from API
+        /// </summary>
+        public async Task<HomeSliderResponse> GetHomeSlidersAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/sliders/home");
 
-  
-    public class ProfileUpdateApiResponse
-    {
-        public bool? Success { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public ProfileData Data { get; set; }
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Home Sliders API error: {response.StatusCode}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✅ Home Sliders data retrieved successfully");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var result = JsonSerializer.Deserialize<HomeSliderResponse>(json, options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading Home Sliders data: {ex.Message}");
+                return null;
+            }
+        }
+
+        public class CreateCheckoutSessionRequest
+        {
+            public int Amount { get; set; }
+            public string Currency { get; set; } = "eur";
+            public string SuccessUrl { get; set; } = string.Empty;
+            public string CancelUrl { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+        }
+
+        public class WorkTeamWrapper
+        {
+            public List<WorkTeam> Data { get; set; }
+        }
+
+        public class ServiesResponse
+        {
+            public List<Servies> Data { get; set; }
+            public List<Servies> Servies { get; set; }
+        }
+
+        public class CategoriesResponse
+        {
+            public List<string> Categories { get; set; }
+            public string Message { get; set; } = string.Empty;
+            public bool Success { get; set; }
+        }
+
+        public class CreatePaymentIntentResponse
+        {
+            public string ClientSecret { get; set; } = string.Empty;
+        }
+
+        public class ProfileUpdateApiResponse
+        {
+            public bool? Success { get; set; }
+            public string Message { get; set; } = string.Empty;
+            public ProfileData Data { get; set; }
+        }
     }
 }
-
-
