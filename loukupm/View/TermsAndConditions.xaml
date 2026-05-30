@@ -2,242 +2,232 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converter="clr-namespace:loukupm.Converter"
              x:Class="loukupm.View.TermsAndConditions"
              BackgroundImageSource="baackgroundpage.png"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
-             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              Title="">
 
-    <ScrollView BackgroundColor="#252525">
-        <VerticalStackLayout Padding="0" Spacing="0">
-            
-            <!-- Header -->
-            <Frame BackgroundColor="#202020"
-                   BorderColor="Transparent"
-                   CornerRadius="0"
-                   Padding="20"
-                   Margin="0">
-                <Label Text="{loc:Translate Name=TermsandConditions}"
-                       HorizontalOptions="Center"
-                       FontSize="26"
-                       FontAttributes="Bold"
-                       TextColor="#EBD750" />
-            </Frame>
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#252525">
+        <!-- Header -->
+        <Frame Grid.Row="0"
+               BackgroundColor="#202020"
+               BorderColor="Transparent"
+               CornerRadius="0"
+               Padding="20"
+               Margin="0">
+            <Label Text="{loc:Translate Name=TermsandConditions}"
+                   HorizontalOptions="Center"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="#EBD750" />
+        </Frame>
 
-            <!-- Main Content -->
-            <VerticalStackLayout Padding="20" Spacing="15">
+        <!-- Main Content Area with RefreshView -->
+        <Grid Grid.Row="1" RowDefinitions="*" BackgroundColor="#252525">
 
-                <!-- Introduction Section -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <Label Text="{loc:Translate Name=TermsIntroduction}"
-                           FontSize="14"
-                           TextColor="White"
-                           LineBreakMode="WordWrap" />
-                </Frame>
-
-                <!-- 1. App Usage -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsAppUsage}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsAppUsageDesc}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsAppUsageAgreement}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsProvideCorrectInfo}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsUseLegalWay}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsNoHacking}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 2. Accounts -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsAccounts}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsAccountResponsibility}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsKeepPassword}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsAccountActivities}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsAccountSuspend}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold"
-                               Margin="0,10,0,0" />
-                        <Label Text="{loc:Translate Name=TermsAbusiveUse}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsViolateTerms}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 3. Bookings -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsBookings}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsBookingCommitment}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsAttendOnTime}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsLateCancel}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 4. Payment -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsPayment}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsNoOnlinePayment}"
-                               FontSize="14"
-                               TextColor="#FFD700"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsCashPayment}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 5. Cancellation -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsCancellation}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsCancelBooking}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 6. Service Responsibility -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsServiceResponsibility}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsPlatformOnly}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsNotResponsible}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsQualityOfService}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsUserDispute}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 7. Availability -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsAvailability}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsAvailabilityEffort}"
-                               FontSize="14"
-                               TextColor="#D3D3D3"
-                               FontAttributes="Bold" />
-                        <Label Text="{loc:Translate Name=TermsNoTechnicalIssues}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsNoFullGuarantee}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 8. Account Termination -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsAccountTermination}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsUserCanDelete}" FontSize="13" TextColor="White" />
-                        <Label Text="{loc:Translate Name=TermsAdminCanTerminate}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- 9. Modifications -->
-                <Frame BorderColor="#444444"
-                       BackgroundColor="#2A2A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="{loc:Translate Name=TermsModifications}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="#EBD750" />
-                        <Label Text="{loc:Translate Name=TermsCanModify}" FontSize="13" TextColor="White" />
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- Last Update -->
-                <Frame BorderColor="#FFD700"
-                       BackgroundColor="#3A3A2A"
-                       CornerRadius="16"
-                       Padding="15"
-                       Margin="0,10,0,20"
-                       HasShadow="True">
-                    <Label Text="{loc:Translate Name=TermsLastUpdateTerms}"
-                           HorizontalOptions="Center"
-                           FontSize="14"
-                           TextColor="#FFD700"
-                           FontAttributes="Bold" />
-                </Frame>
-
+            <!-- Loading State -->
+            <VerticalStackLayout x:Name="LoadingIndicator"
+                                 VerticalOptions="CenterAndExpand"
+                                 HorizontalOptions="FillAndExpand"
+                                 Padding="20"
+                                 Spacing="20"
+                                 BackgroundColor="#252525"
+                                 IsVisible="{Binding IsLoading}">
+                <Label Text="Loading Terms and Conditions..."
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#EBD750"
+                                   Scale="1.5"
+                                   HorizontalOptions="Center" />
             </VerticalStackLayout>
-        </VerticalStackLayout>
-    </ScrollView>
 
+            <!-- RefreshView for Pull-to-Refresh + Content -->
+            <RefreshView x:Name="RefreshView"
+                         Command="{Binding RetryLoadTermsAndConditionsCommand}"
+                         IsRefreshing="{Binding IsLoading}"
+                         RefreshColor="#EBD750"
+                         BackgroundColor="#252525"
+                         IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}, ConverterParameter=false}">
+                <Grid RowDefinitions="*" BackgroundColor="#252525">
+
+                    <!-- Content ScrollView (shown when CmsData is available) -->
+                    <ScrollView BackgroundColor="#252525"
+                                IsVisible="{Binding CmsData, Converter={toolkit:IsNotNullConverter}}">
+                        <VerticalStackLayout Padding="20" Spacing="15">
+                            <!-- Dynamic Content Blocks using BindableLayout -->
+                            <VerticalStackLayout>
+                                <BindableLayout.ItemsSource>
+                                    <Binding Path="CmsData.Blocks" />
+                                </BindableLayout.ItemsSource>
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <VerticalStackLayout Spacing="15">
+                                            <!-- Heading Block -->
+                                            <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=heading}"
+                                                   BorderColor="#444444"
+                                                   BackgroundColor="#2A2A2A"
+                                                   CornerRadius="16"
+                                                   Padding="15"
+                                                   HasShadow="True">
+                                                <Label Text="{Binding Content.Text}"
+                                                       FontSize="20"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#EBD750"
+                                                       LineBreakMode="WordWrap" />
+                                            </Frame>
+
+                                            <!-- Paragraph Block -->
+                                            <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=paragraph}"
+                                                   BorderColor="#444444"
+                                                   BackgroundColor="#2A2A2A"
+                                                   CornerRadius="16"
+                                                   Padding="15"
+                                                   HasShadow="True">
+                                                <Label Text="{Binding Content.Text}"
+                                                       FontSize="14"
+                                                       TextColor="White"
+                                                       LineBreakMode="WordWrap" />
+                                            </Frame>
+
+                                           
+                                         
+
+                                            <!-- Unordered List Block -->
+                                            <Frame IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=unordered_list}"
+                                                   BorderColor="#444444"
+                                                   BackgroundColor="#2A2A2A"
+                                                   CornerRadius="16"
+                                                   Padding="15"
+                                                   HasShadow="True">
+                                                <VerticalStackLayout Spacing="8">
+                                                    <BindableLayout.ItemsSource>
+                                                        <Binding Path="Content.Items" />
+                                                    </BindableLayout.ItemsSource>
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate x:DataType="x:String">
+                                                            <HorizontalStackLayout Spacing="10" Padding="5,0">
+                                                                <Label Text="•"
+                                                                       FontSize="14"
+                                                                       TextColor="#EBD750"
+                                                                       VerticalOptions="Start" />
+                                                                <Label Text="{Binding}"
+                                                                       FontSize="13"
+                                                                       TextColor="White"
+                                                                       LineBreakMode="WordWrap" />
+                                                            </HorizontalStackLayout>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </VerticalStackLayout>
+                                            </Frame>
+
+                                            <!-- Warning Box Block -->
+                                            <Frame IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=warning_box}"
+                                                   BorderColor="#FFD700"
+                                                   BackgroundColor="#3A3A2A"
+                                                   CornerRadius="16"
+                                                   Padding="15"
+                                                   HasShadow="True">
+                                                <VerticalStackLayout Spacing="5">
+                                                    <Label Text="⚠️ Warning"
+                                                           FontSize="14"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#FFD700" />
+                                                    <Label Text="{Binding Content.Text}"
+                                                           FontSize="13"
+                                                           TextColor="White"
+                                                           LineBreakMode="WordWrap" />
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+
+                            <!-- Last Updated Footer -->
+                            <Frame BorderColor="#FFD700"
+                                   BackgroundColor="#3A3A2A"
+                                   CornerRadius="16"
+                                   Padding="15"
+                                   Margin="0,10,0,20"
+                                   HasShadow="True">
+                                <Label Text="{loc:Translate Name=TermsLastUpdateTerms}"
+                                       HorizontalOptions="Center"
+                                       FontSize="14"
+                                       TextColor="#FFD700"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </VerticalStackLayout>
+                    </ScrollView>
+
+                    <!-- Empty State (no data loaded yet, no error) -->
+                    <VerticalStackLayout IsVisible="{Binding CmsData, Converter={toolkit:IsNullConverter}}"
+                                        Padding="20"
+                                        Spacing="20"
+                                        VerticalOptions="CenterAndExpand"
+                                        HorizontalOptions="FillAndExpand">
+                        <Label Text="No Content Available"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#EBD750"
+                               HorizontalOptions="Center" />
+                        <Label Text="Pull down to refresh"
+                               FontSize="12"
+                               TextColor="#AAAAAA"
+                               HorizontalOptions="Center" />
+                        <Button Text="Refresh Now"
+                                Command="{Binding RetryLoadTermsAndConditionsCommand}"
+                                BackgroundColor="#EBD750"
+                                TextColor="#1a1a1a"
+                                Padding="10"
+                                CornerRadius="8"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                WidthRequest="150"
+                                HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+
+                    <!-- Error State (shown when HasError is true) -->
+                    <VerticalStackLayout IsVisible="{Binding HasError}"
+                                        Padding="20"
+                                        Spacing="15"
+                                        VerticalOptions="CenterAndExpand"
+                                        HorizontalOptions="FillAndExpand">
+                        <Frame BorderColor="#FF6B6B"
+                               BackgroundColor="#3A2A2A"
+                               CornerRadius="16"
+                               Padding="20"
+                               HasShadow="True">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="⚠️ Error Loading Content"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#FF6B6B" />
+                                <Label Text="{Binding ErrorMessage}"
+                                       FontSize="14"
+                                       TextColor="White"
+                                       LineBreakMode="WordWrap" />
+                                <Label Text="Pull down to try again"
+                                       FontSize="12"
+                                       TextColor="#AAAAAA" />
+                                <Button Text="Retry"
+                                        Command="{Binding RetryLoadTermsAndConditionsCommand}"
+                                        BackgroundColor="#EBD750"
+                                        TextColor="#1a1a1a"
+                                        Padding="10"
+                                        CornerRadius="8"
+                                        FontSize="14"
+                                        FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </VerticalStackLayout>
+                </Grid>
+            </RefreshView>
+        </Grid>
+    </Grid>
 </ContentPage>

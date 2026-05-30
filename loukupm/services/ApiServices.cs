@@ -78,6 +78,25 @@ namespace loukupm.services
         }
 
         /// <summary>
+        /// Creates a JsonSerializerOptions instance configured for CMS API responses.
+        /// Includes custom converters for flexible int? and string deserialization.
+        /// </summary>
+        private JsonSerializerOptions CreateCmsJsonSerializerOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = false
+            };
+
+            // Register custom converters for CMS data
+            options.Converters.Add(new FlexibleNullableIntConverter());
+            options.Converters.Add(new FlexibleStringConverter());
+
+            return options;
+        }
+
+        /// <summary>
         /// Verify OTP for email or phone verification.
         /// 
         /// IMPORTANT: Use the 'otp' parameter, NOT 'code'. The API expects field name "otp".
@@ -957,6 +976,54 @@ namespace loukupm.services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Exception while loading Home Sliders data: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get Terms and Conditions content from CMS API
+        /// </summary>
+        public async Task<TermsConditionsResponse> GetTermsAndConditionsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/pages/terms-conditions");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Terms & Conditions API error: {response.StatusCode}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✅ Terms & Conditions data retrieved successfully");
+
+                // Handle potential double-encoded JSON
+                // Example: "{\"success\":true,\"data\":{...}}" instead of {"success":true,"data":{...}}
+                if (json.StartsWith("\"") && json.EndsWith("\""))
+                {
+                    Console.WriteLine($"⚠️ Detected double-encoded JSON response, attempting to decode...");
+                    try
+                    {
+                        // Remove surrounding quotes and unescape
+                        json = System.Text.RegularExpressions.Regex.Unescape(json.Substring(1, json.Length - 2));
+                        Console.WriteLine($"✅ Successfully decoded double-encoded JSON");
+                    }
+                    catch (Exception decodeEx)
+                    {
+                        Console.WriteLine($"⚠️ Failed to decode double-encoded JSON: {decodeEx.Message}");
+                        // Continue with original json if decode fails
+                    }
+                }
+
+                var options = CreateCmsJsonSerializerOptions();
+
+                var result = JsonSerializer.Deserialize<TermsConditionsResponse>(json, options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading Terms & Conditions data: {ex.Message}");
                 return null;
             }
         }

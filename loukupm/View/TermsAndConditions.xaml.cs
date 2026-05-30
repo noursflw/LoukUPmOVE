@@ -1,30 +1,69 @@
 namespace loukupm.View;
+
 using System.Globalization;
 using loukupm.Services;
+using loukupm.ViewModel;
 
 /// <summary>
-/// ’›Õ… «·‘—Êÿ Ê«·√Õﬂ«„
-///   ÕœÀ « Ã«ÂÂ«  ·ﬁ«∆Ì« ⁄‰œ  €ÌÌ— «··€…
+/// Terms and Conditions page with dynamic CMS content loading
 /// </summary>
 public partial class TermsAndConditions : ContentPage
 {
-	public TermsAndConditions()
-	{
-		InitializeComponent();
+    private TermsAndConditionsViewModel _viewModel;
 
-		//  ÂÌ∆…   »⁄ «··€… Ê«·« Ã«Â «· ·ﬁ«∆Ì
-		this.InitializeLanguageTracking();
-	}
+    public TermsAndConditions()
+    {
+        InitializeComponent();
 
-	/// <summary>
-	/// ????? ?? ?????? - ???? ????? ?????? Traditional Stack Navigation
-	/// </summary>
-	protected override bool OnBackButtonPressed()
-	{
-		MainThread.BeginInvokeOnMainThread(async () =>
-		{
-			await NavigationService.HandleBackButton(NavigationService.ROUTE_TERMS_CONDITIONS);
-		});
-		return true;
-	}
+        // Initialize language tracking
+        this.InitializeLanguageTracking();
+
+        // Create and set the ViewModel
+        _viewModel = new TermsAndConditionsViewModel();
+        this.BindingContext = _viewModel;
+    }
+
+    /// <summary>
+    /// Load content when page appears
+    /// </summary>
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        try
+        {
+            // Load Terms and Conditions from CMS API
+            if (_viewModel != null)
+            {
+                Console.WriteLine("üìÑ TermsAndConditions page appearing - triggering data load");
+                await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"‚ùå Error in OnAppearing: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Clean up when page disappears
+    /// </summary>
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        Console.WriteLine("üìÑ TermsAndConditions page disappearing");
+    }
+
+    /// <summary>
+    /// Handle back button navigation
+    /// ????? ?? ?????? - ???? ????? ?????? Traditional Stack Navigation
+    /// </summary>
+    protected override bool OnBackButtonPressed()
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_TERMS_CONDITIONS);
+        });
+        return true;
+    }
 }
