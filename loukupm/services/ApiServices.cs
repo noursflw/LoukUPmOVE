@@ -954,7 +954,19 @@ namespace loukupm.services
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/sliders/home");
+                // Step 1: Read saved application language preference
+                string savedCulture = Preferences.Get("AppLanguage", "de-DE");
+                Console.WriteLine($"📍 [HomeSliders] Saved culture value: '{savedCulture}'");
+
+                // Step 2: Convert culture code to ISO language code (e.g., "de-DE" → "de", "ar-AR" → "ar")
+                string languageCode = savedCulture.Split('-')[0].ToLower();
+                Console.WriteLine($"📍 [HomeSliders] Generated language code: '{languageCode}'");
+
+                // Step 3: Build URL with language query parameter
+                string apiUrl = $"https://test.center-yazan.com/api/sliders/home?lang={languageCode}";
+                Console.WriteLine($"📍 [HomeSliders] Final request URL: '{apiUrl}'");
+
+                var response = await _httpClient.GetAsync(apiUrl);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -964,6 +976,21 @@ namespace loukupm.services
 
                 var json = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"✅ Home Sliders data retrieved successfully");
+
+                // Optional: handle double-encoded JSON (same pattern as CMS pages)
+                if (json.StartsWith("\"") && json.EndsWith("\""))
+                {
+                    Console.WriteLine($"⚠️ Detected double-encoded JSON response, attempting to decode...");
+                    try
+                    {
+                        json = System.Text.RegularExpressions.Regex.Unescape(json.Substring(1, json.Length - 2));
+                        Console.WriteLine($"✅ Successfully decoded double-encoded JSON");
+                    }
+                    catch (Exception decodeEx)
+                    {
+                        Console.WriteLine($"⚠️ Failed to decode JSON: {decodeEx.Message}");
+                    }
+                }
 
                 var options = new JsonSerializerOptions
                 {
