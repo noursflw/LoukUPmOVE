@@ -963,7 +963,7 @@ namespace loukupm.services
                 Console.WriteLine($"📍 [HomeSliders] Generated language code: '{languageCode}'");
 
                 // Step 3: Build URL with language query parameter
-                string apiUrl = $"https://test.center-yazan.com/api/sliders/home?lang={languageCode}";
+                string apiUrl = $"https://test.center-yazan.com/api/sliders/home?locale={languageCode}";
                 Console.WriteLine($"📍 [HomeSliders] Final request URL: '{apiUrl}'");
 
                 var response = await _httpClient.GetAsync(apiUrl);
