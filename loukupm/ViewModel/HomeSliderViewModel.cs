@@ -50,19 +50,23 @@ namespace loukupm.ViewModel
 
                 if (response?.Success == true && response.Data?.Items != null)
                 {
-                    Items.Clear();
-
-                    // Sort by sort_order
-                    var sortedSliders = response.Data.Items
-                        .OrderBy(s => s.SortOrder)
-                        .ToList();
-
-                    foreach (var slider in sortedSliders)
+                    // Update collections on main thread
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        Items.Add(slider);
-                    }
+                        Items.Clear();
 
-                    Console.WriteLine($"✅ Home Sliders loaded successfully: {Items.Count} items");
+                        // Sort by sort_order
+                        var sortedSliders = response.Data.Items
+                            .OrderBy(s => s.SortOrder)
+                            .ToList();
+
+                        foreach (var slider in sortedSliders)
+                        {
+                            Items.Add(slider);
+                        }
+
+                        Console.WriteLine($"✅ Home Sliders loaded successfully: {Items.Count} items");
+                    });
                 }
                 else
                 {
@@ -79,7 +83,11 @@ namespace loukupm.ViewModel
             }
             finally
             {
-                IsLoading = false;
+                // Ensure IsLoading is set on main thread
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    IsLoading = false;
+                });
             }
         }
 

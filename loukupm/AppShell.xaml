@@ -204,6 +204,13 @@
             ContentTemplate="{DataTemplate view:TermsAndConditions}"
             Route="TermsAndConditions" />
     </FlyoutItem>
+
+    <FlyoutItem Title="Impressum" Icon="info.svg">
+        <ShellContent
+            ContentTemplate="{DataTemplate view:ImpressumPage}"
+            Route="ImpressumPage" />
+    </FlyoutItem>
+
     <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False" />
     <MenuFlyoutItem Text="{Loc:Translate Name=other}" IsEnabled="False"  />
 

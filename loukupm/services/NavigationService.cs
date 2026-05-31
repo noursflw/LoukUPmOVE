@@ -32,6 +32,7 @@ public static class NavigationService
 
     // Subpages (outside TabBar � push onto the stack)
     public const string ROUTE_TERM_BOOKING = "TerminbuchenPage";
+    public const string ROUTE_IMPRESSUM = "ImpressumPage"; 
     public const string ROUTE_PAYMENT = "Paymentgetway";
     public const string ROUTE_POLICY_PRIVACY = "PolicyandPrivacyPage";
     public const string ROUTE_REST_PASSWORD = "RestPassword";
@@ -62,7 +63,7 @@ public static class NavigationService
     {
         ROUTE_ABOUT_US,
         ROUTE_POLICY_PRIVACY,
-        ROUTE_TERMS_CONDITIONS, ROUTE_SETTING
+        ROUTE_TERMS_CONDITIONS, ROUTE_SETTING,ROUTE_IMPRESSUM
     };
 
     private static readonly HashSet<string> AllValidRoutes = new()
@@ -72,7 +73,7 @@ public static class NavigationService
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
-        ROUTE_ABOUT_US, ROUTE_NOTIFICATION
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM
     };
 
     // ?????????????????????????????????????????????

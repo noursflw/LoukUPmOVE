@@ -1,76 +1,71 @@
 using loukupm.ViewModel;
-using loukupm.Services;
+using loukupm.services;
 using System.Globalization;
+using loukupm.Services;
 
 namespace loukupm.View;
 
 public partial class PolicyandPrivacyPage : ContentPage
 {
-	public PolicyandPrivacyPage()
-	{
-		InitializeComponent();
-		this.BindingContext = AppViewModel.Instance;
+    private PrivacyPolicyViewModel _viewModel;
 
-		// Load policy and privacy data
-		_ = AppViewModel.Instance.LoadPolicyandPrivacyAsync();
+    public PolicyandPrivacyPage()
+    {
+        InitializeComponent();
 
-		// Set initial flow direction based on current language
-		UpdateFlowDirection(Langue.LocalizationResourcesManager.Instanse.CurrentCulture);
+        // Create and bind ViewModel
+        _viewModel = new PrivacyPolicyViewModel();
+        this.BindingContext = _viewModel;
 
-		// Subscribe to language change event
-		Langue.LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
+        // Subscribe to language change event for automatic reload
+        Langue.LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
 
-		// Cleanup on page unload
-		Unloaded += (s, e) =>
-		{
-			Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
-		};
-	}
+        // Cleanup on page unload
+        Unloaded += (s, e) =>
+        {
+            Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
+        };
+    }
 
-	/// <summary>
-	/// ????? ?? ?????? - ???? ????? ?????? Traditional Stack Navigation
-	/// </summary>
-	protected override bool OnBackButtonPressed()
-	{
-		MainThread.BeginInvokeOnMainThread(async () =>
-		{
-			await NavigationService.HandleBackButton(NavigationService.ROUTE_POLICY_PRIVACY);
-		});
-		return true;
-	}
+    /// <summary>
+    /// Load Privacy Policy when page appears
+    /// </summary>
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        Console.WriteLine($"üìÑ Privacy Policy page appearing");
 
-	/// <summary>
-	/// Ì „ «” œ⁄«¡ Â–Â «·œ«·… ⁄‰œ  €ÌÌ— «··€…
-	/// </summary>
-	private void OnLanguageChanged(CultureInfo culture)
-	{
-		MainThread.BeginInvokeOnMainThread(() =>
-		{
-			UpdateFlowDirection(culture);
-		});
-	}
+        // Load privacy policy content from CMS
+        if (_viewModel != null)
+        {
+            await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
+        }
+    }
 
-	/// <summary>
-	///  ÕœÌÀ « Ã«Â «·‰’ »‰«¡ ⁄·Ï «··€… «·Õ«·Ì…
-	/// «·⁄—»Ì… ? RightToLeft (RTL)
-	/// «·√·„«‰Ì… Ê«·≈‰Ã·Ì“Ì… ? LeftToRight (LTR)
-	/// </summary>
-	private void UpdateFlowDirection(CultureInfo culture)
-	{
-		if (culture == null) return;
+    /// <summary>
+    /// Handle back button navigation
+    /// </summary>
+    protected override bool OnBackButtonPressed()
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_POLICY_PRIVACY);
+        });
+        return true;
+    }
 
-		//  Õﬁﬁ „‰ —„“ «··€… (ar ··⁄—»Ì…)
-		string languageCode = culture.TwoLetterISOLanguageName.ToLower();
-
-		if (languageCode == "ar")
-		{
-			this.FlowDirection = FlowDirection.RightToLeft;
-			Console.WriteLine($"? Page Flow Direction Changed to RTL (Arabic)");
-		}
-		else
-		{
-			this.FlowDirection = FlowDirection.LeftToRight;
-			Console.WriteLine($"? Page Flow Direction Changed to LTR ({culture.DisplayName})");
-		}
-	}
+    /// <summary>
+    /// Reload Privacy Policy when language changes
+    /// </summary>
+    private void OnLanguageChanged(CultureInfo culture)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            Console.WriteLine($"üîÑ Language changed to {culture.DisplayName}, reloading Privacy Policy");
+            if (_viewModel != null)
+            {
+                await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
+            }
+        });
+    }
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:converter="clr-namespace:loukupm.Converter"
-             x:Class="loukupm.View.TermsAndConditions"
+             x:Class="loukupm.View.ImpressumPage"
              BackgroundImageSource="baackgroundpage.png"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
@@ -18,7 +18,7 @@
                CornerRadius="0"
                Padding="20"
                Margin="0">
-            <Label Text="{loc:Translate Name=TermsandConditions}"
+            <Label Text="Impressum"
                    HorizontalOptions="Center"
                    FontSize="26"
                    FontAttributes="Bold"
@@ -36,7 +36,7 @@
                                  Spacing="20"
                                  BackgroundColor="#252525"
                                  IsVisible="{Binding IsLoading}">
-                <Label Text="Loading Terms and Conditions..."
+                <Label Text="Loading Impressum..."
                        FontSize="16"
                        TextColor="White"
                        HorizontalOptions="Center" />
@@ -49,7 +49,7 @@
 
             <!-- RefreshView for Pull-to-Refresh + Content -->
             <RefreshView x:Name="RefreshView"
-                         Command="{Binding RetryLoadTermsAndConditionsCommand}"
+                         Command="{Binding RetryLoadImpressumCommand}"
                          IsRefreshing="{Binding IsLoading}"
                          RefreshColor="#EBD750"
                          BackgroundColor="#252525"
@@ -59,7 +59,7 @@
                     <!-- Content ScrollView (shown when CmsData is available) -->
                     <ScrollView BackgroundColor="#252525"
                                 IsVisible="{Binding CmsData, Converter={toolkit:IsNotNullConverter}}">
-                        <VerticalStackLayout Padding="20" Spacing="15">
+                        <VerticalStackLayout Padding="20" Spacing="15" FlowDirection="{Binding ContentFlowDirection}">
                             <!-- Dynamic Content Blocks using BindableLayout -->
                             <VerticalStackLayout>
                                 <BindableLayout.ItemsSource>
@@ -68,7 +68,7 @@
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <VerticalStackLayout Spacing="15">
-                                            <!-- Heading Block -->
+                                            <!-- Heading Block (h1, h2, h3) -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=heading}"
                                                    BorderColor="#444444"
                                                    BackgroundColor="#2A2A2A"
@@ -95,14 +95,30 @@
                                                        LineBreakMode="WordWrap" />
                                             </Frame>
 
-                                           
-                                         
+                                            <!-- Title Paragraph Block -->
+                                            <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=title_paragraph}"
+                                                   BorderColor="#444444"
+                                                   BackgroundColor="#2A2A2A"
+                                                   CornerRadius="16"
+                                                   Padding="15"
+                                                   HasShadow="True">
+                                                <VerticalStackLayout Spacing="10">
+                                                    <Label Text="{Binding Content.Title}"
+                                                           FontSize="16"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#D3D3D3" />
+                                                    <Label Text="{Binding Content.Text}"
+                                                           FontSize="13"
+                                                           TextColor="White"
+                                                           LineBreakMode="WordWrap" />
+                                                </VerticalStackLayout>
+                                            </Frame>
 
                                             <!-- Unordered List Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=unordered_list}"
                                                    BorderColor="#444444"
                                                    BackgroundColor="#2A2A2A"
-                                                   CornerRadius="20"
+                                                   CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
                                                 <VerticalStackLayout Spacing="8">
@@ -110,112 +126,84 @@
                                                         <Binding Path="Content.Items" />
                                                     </BindableLayout.ItemsSource>
                                                     <BindableLayout.ItemTemplate>
-                                                        <DataTemplate x:DataType="x:String">
-                                                            <HorizontalStackLayout Spacing="10" Padding="5,0">
-                                                                <Label Text="•"
-                                                                       FontSize="14"
-                                                                       TextColor="#EBD750"
-                                                                       VerticalOptions="Start" />
-                                                                <Label Text="{Binding}"
-                                                                       FontSize="13"
-                                                                       TextColor="White"
-                                                                       LineBreakMode="WordWrap" />
-                                                            </HorizontalStackLayout>
+                                                        <DataTemplate>
+                                                            <Label Text="{Binding ., StringFormat='• {0}'}"
+                                                                   FontSize="13"
+                                                                   TextColor="White"
+                                                                   LineBreakMode="WordWrap" />
                                                         </DataTemplate>
                                                     </BindableLayout.ItemTemplate>
                                                 </VerticalStackLayout>
                                             </Frame>
 
-                                            <!-- Warning Box Block -->
-                                            <Frame IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=warning_box}"
-                                                   BorderColor="#FFD700"
-                                                   BackgroundColor="#3A3A2A"
+                                            <!-- Divider Block -->
+                                            <BoxView IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=divider}"
+                                                     HeightRequest="1"
+                                                     BackgroundColor="#444444"
+                                                     Margin="5,10" />
+
+                                            <!-- Warning Box Block (Unique to Impressum) -->
+                                            <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=warning_box}"
+                                                   BorderColor="#FFA500"
+                                                   BackgroundColor="#3A2A1A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
-                                                <VerticalStackLayout Spacing="5">
-                                                    <Label Text="⚠️ Warning"
-                                                           FontSize="14"
+                                                <VerticalStackLayout Spacing="10">
+                                                    <!-- Warning Title -->
+                                                    <Label Text="{Binding Content.Title}"
+                                                           FontSize="16"
                                                            FontAttributes="Bold"
-                                                           TextColor="#FFD700" />
+                                                           TextColor="#FFA500"
+                                                           IsVisible="{Binding Content.Title, Converter={toolkit:IsNotNullConverter}}"
+                                                           LineBreakMode="WordWrap" />
+                                                    <!-- Warning Text -->
                                                     <Label Text="{Binding Content.Text}"
                                                            FontSize="13"
-                                                           TextColor="White"
+                                                           TextColor="#FFD9A8"
                                                            LineBreakMode="WordWrap" />
                                                 </VerticalStackLayout>
                                             </Frame>
+
                                         </VerticalStackLayout>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </VerticalStackLayout>
-
-                          
                         </VerticalStackLayout>
                     </ScrollView>
 
-                    <!-- Empty State (no data loaded yet, no error) -->
-                    <VerticalStackLayout IsVisible="{Binding CmsData, Converter={toolkit:IsNullConverter}}"
-                                        Padding="20"
-                                        Spacing="20"
-                                        VerticalOptions="CenterAndExpand"
-                                        HorizontalOptions="FillAndExpand">
-                        <Label Text="No Content Available"
-                               FontSize="16"
+                    <!-- Error State -->
+                    <VerticalStackLayout IsVisible="{Binding HasError}"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="FillAndExpand"
+                                         Padding="20"
+                                         Spacing="20"
+                                         BackgroundColor="#252525">
+                        <Label Text="Unable to load Impressum"
+                               FontSize="18"
                                FontAttributes="Bold"
                                TextColor="#EBD750"
                                HorizontalOptions="Center" />
-                        <Label Text="Pull down to refresh"
-                               FontSize="12"
-                               TextColor="#AAAAAA"
-                               HorizontalOptions="Center" />
-                        <Button Text="Refresh Now"
-                                Command="{Binding RetryLoadTermsAndConditionsCommand}"
+                        <Label Text="{Binding ErrorMessage}"
+                               FontSize="14"
+                               TextColor="White"
+                               LineBreakMode="WordWrap"
+                               HorizontalTextAlignment="Center" />
+                        <Button Text="Retry"
+                                Command="{Binding RetryLoadImpressumCommand}"
                                 BackgroundColor="#EBD750"
-                                TextColor="#1a1a1a"
-                                Padding="10"
-                                CornerRadius="8"
-                                FontSize="14"
+                                TextColor="#252525"
+                                CornerRadius="16"
+                                Padding="20,10"
                                 FontAttributes="Bold"
-                                WidthRequest="150"
-                                HorizontalOptions="Center" />
+                                HorizontalOptions="Center"
+                                WidthRequest="120" />
                     </VerticalStackLayout>
 
-                    <!-- Error State (shown when HasError is true) -->
-                    <VerticalStackLayout IsVisible="{Binding HasError}"
-                                        Padding="20"
-                                        Spacing="15"
-                                        VerticalOptions="CenterAndExpand"
-                                        HorizontalOptions="FillAndExpand">
-                        <Frame BorderColor="#FF6B6B"
-                               BackgroundColor="#3A2A2A"
-                               CornerRadius="16"
-                               Padding="20"
-                               HasShadow="True">
-                            <VerticalStackLayout Spacing="10">
-                                <Label Text="⚠️ Error Loading Content"
-                                       FontSize="16"
-                                       FontAttributes="Bold"
-                                       TextColor="#FF6B6B" />
-                                <Label Text="{Binding ErrorMessage}"
-                                       FontSize="14"
-                                       TextColor="White"
-                                       LineBreakMode="WordWrap" />
-                                <Label Text="Pull down to try again"
-                                       FontSize="12"
-                                       TextColor="#AAAAAA" />
-                                <Button Text="Retry"
-                                        Command="{Binding RetryLoadTermsAndConditionsCommand}"
-                                        BackgroundColor="#EBD750"
-                                        TextColor="#1a1a1a"
-                                        Padding="10"
-                                        CornerRadius="8"
-                                        FontSize="14"
-                                        FontAttributes="Bold" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </VerticalStackLayout>
                 </Grid>
             </RefreshView>
+
         </Grid>
     </Grid>
+
 </ContentPage>

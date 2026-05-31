@@ -981,13 +981,25 @@ namespace loukupm.services
         }
 
         /// <summary>
-        /// Get Terms and Conditions content from CMS API
+        /// Get Terms and Conditions content from CMS API with dynamic language parameter
         /// </summary>
         public async Task<TermsConditionsResponse> GetTermsAndConditionsAsync()
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/pages/terms-conditions");
+                // Step 1: Read saved application language preference
+                string savedCulture = Preferences.Get("AppLanguage", "de-DE");
+                Console.WriteLine($"📍 [T&C API] Saved culture value: '{savedCulture}'");
+
+                // Step 2: Convert culture code to ISO language code (e.g., "de-DE" → "de", "ar-AR" → "ar")
+                string languageCode = savedCulture.Split('-')[0].ToLower();
+                Console.WriteLine($"📍 [T&C API] Generated language code: '{languageCode}'");
+
+                // Step 3: Build URL with language query parameter
+                string apiUrl = $"https://test.center-yazan.com/api/pages/terms-conditions?lang={languageCode}";
+                Console.WriteLine($"📍 [T&C API] Final request URL: '{apiUrl}'");
+
+                var response = await _httpClient.GetAsync(apiUrl);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -1065,6 +1077,126 @@ namespace loukupm.services
             public bool? Success { get; set; }
             public string Message { get; set; } = string.Empty;
             public ProfileData Data { get; set; }
+        }
+
+        /// <summary>
+        /// Get Privacy Policy content from CMS API with dynamic language parameter
+        /// </summary>
+        public async Task<PrivacyPolicyResponse> GetPrivacyPolicyAsync()
+        {
+            try
+            {
+                // Step 1: Read saved application language preference
+                string savedCulture = Preferences.Get("AppLanguage", "de-DE");
+                Console.WriteLine($"📍 [PrivacyPolicy] Saved culture value: '{savedCulture}'");
+
+                // Step 2: Convert culture code to ISO language code (e.g., "de-DE" → "de", "ar-AR" → "ar")
+                string languageCode = savedCulture.Split('-')[0].ToLower();
+                Console.WriteLine($"📍 [PrivacyPolicy] Generated language code: '{languageCode}'");
+
+                // Step 3: Build URL with language query parameter
+                string apiUrl = $"https://test.center-yazan.com/api/pages/privacy-policy?lang={languageCode}";
+                Console.WriteLine($"📍 [PrivacyPolicy] Final request URL: '{apiUrl}'");
+
+                var response = await _httpClient.GetAsync(apiUrl);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Privacy Policy API error: {response.StatusCode}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✅ Privacy Policy data retrieved successfully");
+
+                // Handle potential double-encoded JSON
+                // Example: "{\"success\":true,\"data\":{...}}" instead of {"success":true,"data":{...}}
+                if (json.StartsWith("\"") && json.EndsWith("\""))
+                {
+                    Console.WriteLine($"⚠️ Detected double-encoded JSON response, attempting to decode...");
+                    try
+                    {
+                        // Remove surrounding quotes and unescape
+                        json = System.Text.RegularExpressions.Regex.Unescape(json.Substring(1, json.Length - 2));
+                        Console.WriteLine($"✅ Successfully decoded double-encoded JSON");
+                    }
+                    catch (Exception decodeEx)
+                    {
+                        Console.WriteLine($"⚠️ Failed to decode double-encoded JSON: {decodeEx.Message}");
+                        // Continue with original json if decode fails
+                    }
+                }
+
+                var options = CreateCmsJsonSerializerOptions();
+
+                var result = JsonSerializer.Deserialize<PrivacyPolicyResponse>(json, options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading Privacy Policy data: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get Impressum (Legal Information) content from CMS API with dynamic language parameter
+        /// </summary>
+        public async Task<ImpressumResponse> GetImpressumAsync()
+        {
+            try
+            {
+                // Step 1: Read saved application language preference
+                string savedCulture = Preferences.Get("AppLanguage", "de-DE");
+                Console.WriteLine($"📍 [Impressum] Saved culture value: '{savedCulture}'");
+
+                // Step 2: Convert culture code to ISO language code (e.g., "de-DE" → "de", "ar-AR" → "ar")
+                string languageCode = savedCulture.Split('-')[0].ToLower();
+                Console.WriteLine($"📍 [Impressum] Generated language code: '{languageCode}'");
+
+                // Step 3: Build URL with language query parameter
+                string apiUrl = $"https://test.center-yazan.com/api/pages/impressum?lang={languageCode}";
+                Console.WriteLine($"📍 [Impressum] Final request URL: '{apiUrl}'");
+
+                var response = await _httpClient.GetAsync(apiUrl);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Impressum API error: {response.StatusCode}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✅ Impressum data retrieved successfully");
+
+                // Handle potential double-encoded JSON
+                // Example: "{\"success\":true,\"data\":{...}}" instead of {"success":true,"data":{...}}
+                if (json.StartsWith("\"") && json.EndsWith("\""))
+                {
+                    Console.WriteLine($"⚠️ Detected double-encoded JSON response, attempting to decode...");
+                    try
+                    {
+                        // Remove surrounding quotes and unescape
+                        json = System.Text.RegularExpressions.Regex.Unescape(json.Substring(1, json.Length - 2));
+                        Console.WriteLine($"✅ Successfully decoded double-encoded JSON");
+                    }
+                    catch (Exception decodeEx)
+                    {
+                        Console.WriteLine($"⚠️ Failed to decode double-encoded JSON: {decodeEx.Message}");
+                        // Continue with original json if decode fails
+                    }
+                }
+
+                var options = CreateCmsJsonSerializerOptions();
+
+                var result = JsonSerializer.Deserialize<ImpressumResponse>(json, options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading Impressum data: {ex.Message}");
+                return null;
+            }
         }
     }
 }

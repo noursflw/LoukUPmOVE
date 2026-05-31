@@ -1,28 +1,28 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
     /// <summary>
-    /// Root response wrapper for Privacy Policy API
+    /// Root response wrapper for Impressum API
     /// </summary>
-    public partial class PrivacyPolicyResponse : ObservableObject
+    public partial class ImpressumResponse : ObservableObject
     {
         [JsonPropertyName("success")]
         public bool Success { get; set; }
 
         [JsonPropertyName("data")]
-        public PrivacyPolicyData Data { get; set; }
+        public ImpressumData Data { get; set; }
 
         [JsonPropertyName("message")]
         public string Message { get; set; }
     }
 
     /// <summary>
-    /// Main Privacy Policy data container
+    /// Main Impressum data container
     /// </summary>
-    public partial class PrivacyPolicyData : ObservableObject
+    public partial class ImpressumData : ObservableObject
     {
         [JsonPropertyName("slug")]
         [JsonConverter(typeof(FlexibleStringConverter))]
@@ -41,13 +41,13 @@ namespace loukupm.Model
         public string Direction { get; set; }
 
         [JsonPropertyName("blocks")]
-        public ObservableCollection<PrivacyPolicyCmsBlock> Blocks { get; set; } = new ObservableCollection<PrivacyPolicyCmsBlock>();
+        public ObservableCollection<ImpressumCmsBlock> Blocks { get; set; } = new ObservableCollection<ImpressumCmsBlock>();
     }
 
     /// <summary>
-    /// Individual CMS block (heading, paragraph, divider, unordered_list, title_paragraph)
+    /// Individual CMS block (heading, paragraph, divider, unordered_list, title_paragraph, warning_box)
     /// </summary>
-    public partial class PrivacyPolicyCmsBlock : ObservableObject
+    public partial class ImpressumCmsBlock : ObservableObject
     {
         [JsonPropertyName("type")]
         [JsonConverter(typeof(FlexibleStringConverter))]
@@ -58,17 +58,17 @@ namespace loukupm.Model
         public string Id { get; set; }
 
         [JsonPropertyName("props")]
-        public PrivacyPolicyCmsBlockProps Props { get; set; }
+        public ImpressumCmsBlockProps Props { get; set; }
 
         [JsonPropertyName("content")]
-        public PrivacyPolicyCmsBlockContent Content { get; set; }
+        public ImpressumCmsBlockContent Content { get; set; }
     }
 
     /// <summary>
-    /// Block properties (heading level, alignment, etc.)
+    /// Block properties (heading level, alignment, color, backgroundColor, etc.)
     /// Uses FlexibleNullableIntConverter for level to handle int/"h1"/"h2"/null formats
     /// </summary>
-    public partial class PrivacyPolicyCmsBlockProps : ObservableObject
+    public partial class ImpressumCmsBlockProps : ObservableObject
     {
         [JsonPropertyName("level")]
         [JsonConverter(typeof(FlexibleNullableIntConverter))]
@@ -85,12 +85,29 @@ namespace loukupm.Model
         [JsonPropertyName("backgroundColor")]
         [JsonConverter(typeof(FlexibleStringConverter))]
         public string BackgroundColor { get; set; }
+
+        [JsonPropertyName("alignment")]
+        [JsonConverter(typeof(FlexibleStringConverter))]
+        public string Alignment { get; set; }
+
+        [JsonPropertyName("size")]
+        [JsonConverter(typeof(FlexibleStringConverter))]
+        public string Size { get; set; }
+
+        [JsonPropertyName("style")]
+        [JsonConverter(typeof(FlexibleStringConverter))]
+        public string Style { get; set; }
+
+        [JsonPropertyName("orientation")]
+        [JsonConverter(typeof(FlexibleStringConverter))]
+        public string Orientation { get; set; }
     }
 
     /// <summary>
-    /// Block content structure (text, items, children, etc.)
+    /// Block content structure (text, items, children, title, etc.)
+    /// Supports all block types: heading, paragraph, title_paragraph, unordered_list, divider, warning_box
     /// </summary>
-    public partial class PrivacyPolicyCmsBlockContent : ObservableObject
+    public partial class ImpressumCmsBlockContent : ObservableObject
     {
         [JsonPropertyName("text")]
         [JsonConverter(typeof(FlexibleStringConverter))]
@@ -104,33 +121,14 @@ namespace loukupm.Model
         public ObservableCollection<string> Items { get; set; } = new ObservableCollection<string>();
 
         [JsonPropertyName("children")]
-        public ObservableCollection<PrivacyPolicyCmsBlockContentChild> Children { get; set; } = new ObservableCollection<PrivacyPolicyCmsBlockContentChild>();
-    }
+        public ObservableCollection<ImpressumCmsBlock> Children { get; set; } = new ObservableCollection<ImpressumCmsBlock>();
 
-    /// <summary>
-    /// Nested content structure for complex blocks
-    /// </summary>
-    public partial class PrivacyPolicyCmsBlockContentChild : ObservableObject
-    {
-        [JsonPropertyName("type")]
+        [JsonPropertyName("description")]
         [JsonConverter(typeof(FlexibleStringConverter))]
-        public string Type { get; set; }
+        public string Description { get; set; }
 
-        [JsonPropertyName("text")]
-        [JsonConverter(typeof(FlexibleStringConverter))]
-        public string Text { get; set; }
-    }
-
-    /// <summary>
-    /// Legacy model - kept for backward compatibility
-    /// This should not be used for new Privacy Policy loading
-    /// </summary>
-    [Obsolete("Use PrivacyPolicyData instead")]
-    public partial class PolicyandPrivacyS : ObservableObject
-    {
-        public int id { get; set; }
-        public string LastUpate { get; set; }
-        [ObservableProperty]
-        public string description;
+        [JsonPropertyName("level")]
+        [JsonConverter(typeof(FlexibleNullableIntConverter))]
+        public int? Level { get; set; }
     }
 }
