@@ -4,6 +4,7 @@ using loukupm.Langue;
 using System.Globalization;
 using System.Windows.Input;
 using System.ComponentModel;
+using OneSignalSDK.DotNet;
 
 public partial class SettingPage : ContentPage, INotifyPropertyChanged
 {
@@ -109,5 +110,61 @@ public partial class SettingPage : ContentPage, INotifyPropertyChanged
 	private async void Button_Clicked_1(object sender, EventArgs e)
 	{
 		await NavigationService.HandleBackButton(NavigationService.ROUTE_SETTING);
+	}
+
+	/// <summary>
+	/// OnAppearing - Called when the page is about to appear.
+	/// Loads the saved notification preference and sets the Switch state.
+	/// </summary>
+	protected override void OnAppearing()
+	{
+		base.OnAppearing();
+		try
+		{
+			// Load saved notification preference (default: true/enabled)
+			bool isNotificationsEnabled = Preferences.Get("NotificationsEnabled", true);
+			NotificationsSwitch.IsToggled = isNotificationsEnabled;
+			Console.WriteLine($"🔔 Loaded notification preference: {isNotificationsEnabled}");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"[SettingPage] Error loading notification preference: {ex.Message}");
+		}
+	}
+
+	/// <summary>
+	/// OnNotificationsSwitchToggled - Called when the notifications switch is toggled.
+	/// Saves the preference and applies the OptIn/OptOut state to OneSignal.
+	/// </summary>
+	private async void OnNotificationsSwitchToggled(object sender, ToggledEventArgs e)
+	{
+		try
+		{
+			bool isEnabled = e.Value;
+
+			// Save preference to device storage
+			Preferences.Set("NotificationsEnabled", isEnabled);
+			Console.WriteLine($"💾 Notification preference saved: {isEnabled}");
+
+			// Apply the preference to OneSignal
+			if (isEnabled)
+			{
+				// Enable notifications
+				OneSignal.User.PushSubscription.OptIn();
+				Console.WriteLine("✅ Notifications OptIn triggered");
+			}
+			else
+			{
+				// Disable notifications
+				OneSignal.User.PushSubscription.OptOut();
+				Console.WriteLine("🔕 Notifications OptOut triggered");
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"[SettingPage] Error toggling notifications: {ex.Message}");
+			// Revert the switch to the previous state if an error occurs
+			NotificationsSwitch.IsToggled = !e.Value;
+		}
 	}
 }

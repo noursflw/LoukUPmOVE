@@ -41,5 +41,22 @@
             ItemsSource="{Binding Languages}"
             SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
             Margin="24,0,24,0" />
+
+        <!-- Notifications ON/OFF Switch -->
+        <Frame BackgroundColor="#181c21" CornerRadius="12" Margin="24,0,24,0" Padding="16" HasShadow="False">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                <Label Grid.Column="0"
+                       Text="Notifications"
+                       TextColor="White"
+                       FontSize="16"
+                       FontFamily="georgia"
+                       VerticalOptions="Center" />
+
+                <Switch Grid.Column="1"
+                        x:Name="NotificationsSwitch"
+                        VerticalOptions="Center"
+                        Toggled="OnNotificationsSwitchToggled" />
+            </Grid>
+        </Frame>
     </VerticalStackLayout>
 </ContentPage>

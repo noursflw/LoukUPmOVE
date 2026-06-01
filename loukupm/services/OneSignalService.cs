@@ -1,6 +1,7 @@
 ﻿using OneSignalSDK.DotNet;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Maui.Storage;
 
 namespace loukupm.Services
 {
@@ -27,8 +28,25 @@ namespace loukupm.Services
                 OneSignal.Initialize(_appId);
                 await OneSignal.Notifications.RequestPermissionAsync(true);
 
-               
-               
+                // Apply saved notification preference after initialization
+                try
+                {
+                    bool isNotificationsEnabled = Preferences.Get("NotificationsEnabled", true);
+                    if (isNotificationsEnabled)
+                    {
+                        OneSignal.User.PushSubscription.OptIn();
+                        Console.WriteLine("✅ OneSignal: Notifications OptIn applied from saved preference");
+                    }
+                    else
+                    {
+                        OneSignal.User.PushSubscription.OptOut();
+                        Console.WriteLine("🔕 OneSignal: Notifications OptOut applied from saved preference");
+                    }
+                }
+                catch (Exception prefEx)
+                {
+                    Console.WriteLine($"⚠️ OneSignal: Error applying notification preference: {prefEx.Message}");
+                }
 
                 _initialized = true;
                 Console.WriteLine("✅ OneSignal initialized successfully");
