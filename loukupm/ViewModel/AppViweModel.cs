@@ -977,11 +977,14 @@ namespace loukupm.ViewModel
                 if (currentUser != null)
                 {
                     UserName = currentUser.UserName;
+                    UserFirstName = currentUser.UserName ?? string.Empty;  // ✅ Initialize from API first_name
                     Email = currentUser.Email;
                     FullName = currentUser.FullName;
                     phone = currentUser.Phone;
 
                     Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+
+                    Console.WriteLine($"✅ [AppViewModel] User initialized: UserFirstName = '{UserFirstName}'");
                 }
             }
             finally
@@ -1064,6 +1067,27 @@ namespace loukupm.ViewModel
                     Avatar = "default_avatar.png";
                 }
 
+                // ✅ CRITICAL FIX: Only update UserFirstName if it's empty or null
+                // This prevents overwriting recently edited values after navigation
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(UserFirstName))
+                    {
+                        UserFirstName = currentUser.UserName ?? string.Empty;
+                        Console.WriteLine($"✅ [AppViewModel] UserFirstName initialized from API: '{UserFirstName}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"ℹ️ [AppViewModel] UserFirstName already set ('{UserFirstName}'), skipping API override to preserve user edits");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting UserFirstName: {ex.Message}");
+                    if (string.IsNullOrWhiteSpace(UserFirstName))
+                        UserFirstName = "";
+                }
+
                 Console.WriteLine("✅ [AppViewModel] LoadUserDataAsync completed successfully");
             }
             catch (NullReferenceException nex)
@@ -1135,10 +1159,16 @@ namespace loukupm.ViewModel
 
                 if (apiResponse?.Success == true)
                 {
-
-                    if (!string.IsNullOrWhiteSpace(UserFirstName) && apiResponse?.Data != null)
+                    // ✅ Update UserFirstName from API response
+                    if (apiResponse?.Data != null && !string.IsNullOrWhiteSpace(apiResponse.Data.FirstName))
                     {
                         UserFirstName = apiResponse.Data.FirstName;
+                        Console.WriteLine($"✅ UserFirstName updated from API response: '{UserFirstName}'");
+                    }
+                    else if (string.IsNullOrWhiteSpace(UserFirstName))
+                    {
+                        // Only log warning if both API and local are empty
+                        Console.WriteLine($"⚠️ API response FirstName is empty or null, keeping local value: '{UserFirstName}'");
                     }
 
                     // 🔑 KEY FIX: Use the server URL from the API response instead of local path
@@ -1147,7 +1177,6 @@ namespace loukupm.ViewModel
                         Avatar = apiResponse.Data.ProfileImageUrl;
                         Console.WriteLine($"✅ Profile image updated from API: {apiResponse.Data.ProfileImageUrl}");
                     }
-
 
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
@@ -1167,9 +1196,11 @@ namespace loukupm.ViewModel
                 {
                     // ⚠️ Success is null - treat as success (for backward compatibility)
 
-                    if (!string.IsNullOrWhiteSpace(UserFirstName) && apiResponse?.Data != null)
+                    // ✅ Update UserFirstName from API response
+                    if (apiResponse?.Data != null && !string.IsNullOrWhiteSpace(apiResponse.Data.FirstName))
                     {
                         UserFirstName = apiResponse.Data.FirstName;
+                        Console.WriteLine($"✅ UserFirstName updated from API response (Success=null): '{UserFirstName}'");
                     }
 
                     if (!string.IsNullOrWhiteSpace(apiResponse?.Data?.ProfileImageUrl))
@@ -1737,21 +1768,21 @@ namespace loukupm.ViewModel
         }
 
         
-        public async Task LoadPolicyandPrivacyAsync()
-        {
-            try
-            {
-                var data = await _apiServices.GetPolicyandPrivaciesAsync();
+        //public async Task LoadPolicyandPrivacyAsync()
+        //{
+        //    try
+        //    {
+        //        var data = await _apiServices.GetPolicyandPrivaciesAsync();
 
-                ListpolicyandPrivacy.Clear();
-                foreach (var item in data)
-                    ListpolicyandPrivacy.Add(item);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading Policy and Privacy: {ex.Message}");
-            }
-        }
+        //        ListpolicyandPrivacy.Clear();
+        //        foreach (var item in data)
+        //            ListpolicyandPrivacy.Add(item);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error loading Policy and Privacy: {ex.Message}");
+        //    }
+        //}
 
         
 

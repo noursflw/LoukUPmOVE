@@ -46,7 +46,7 @@
                                  TextColor="White"
                                   Text="{Loc:Translate Name=Wellcom}"/>
 
-                        <Label Text="{Binding UserName}"
+                        <Label Text="{Binding UserFirstName}"
                                Margin="5,10,0,0"
                                FontSize="18"
                                FontFamily="Oswald"

@@ -10,6 +10,10 @@ namespace loukupm.Model
         [JsonPropertyName("first_name")]
         public string UserName { get; set; }
 
+        // ✅ Added FirstName as alias for UserName for clarity
+        [JsonIgnore]
+        public string FirstName => UserName;
+
         [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
