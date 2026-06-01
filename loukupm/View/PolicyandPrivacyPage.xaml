@@ -13,9 +13,9 @@
     <Grid RowDefinitions="Auto,*" BackgroundColor="#252525">
         <!-- Header -->
         <Frame Grid.Row="0"
-               BackgroundColor="#202020"
-               BorderColor="Transparent"
-               CornerRadius="0"
+               BackgroundColor="#0A0A0A"
+               BorderColor="#EBD750"
+               CornerRadius="20,0,0,0"
                Padding="20"
                Margin="0">
             <Label Text="{loc:Translate Name=PolicyandPrivacy}"
@@ -57,7 +57,7 @@
                 <Grid RowDefinitions="*" BackgroundColor="#252525">
 
                     <!-- Content ScrollView (shown when CmsData is available) -->
-                    <ScrollView BackgroundColor="#252525"
+                    <ScrollView BackgroundColor="#0A0A0A"
                                 IsVisible="{Binding CmsData, Converter={toolkit:IsNotNullConverter}}">
                         <VerticalStackLayout Padding="20" Spacing="15" FlowDirection="{Binding ContentFlowDirection}">
                             <!-- Dynamic Content Blocks using BindableLayout -->
@@ -71,7 +71,7 @@
                                             <!-- Heading Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=heading}"
                                                    BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
@@ -85,7 +85,7 @@
                                             <!-- Paragraph Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=paragraph}"
                                                    BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
