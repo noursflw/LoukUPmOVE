@@ -12,7 +12,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <ApplicationTitle>loukupm</ApplicationTitle>
+    <ApplicationTitle>LookUp</ApplicationTitle>
     <ApplicationId>com.master-code.it.loukupm</ApplicationId>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>

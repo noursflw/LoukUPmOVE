@@ -14,8 +14,8 @@
         <!-- Header -->
         <Frame Grid.Row="0"
                BackgroundColor="#0A0A0A"
-               BorderColor="#EBD750"
-               CornerRadius="20,0,0,0"
+               BorderColor="Transparent"
+               CornerRadius="0"
                Padding="20"
                Margin="0">
             <Label Text="{loc:Translate Name=PolicyandPrivacy}"
@@ -26,7 +26,7 @@
         </Frame>
 
         <!-- Main Content Area with RefreshView -->
-        <Grid Grid.Row="1" RowDefinitions="*" BackgroundColor="#252525">
+        <Grid Grid.Row="1" RowDefinitions="*" BackgroundColor="#0A0A0A">
 
             <!-- Loading State -->
             <VerticalStackLayout x:Name="LoadingIndicator"
@@ -34,7 +34,7 @@
                                  HorizontalOptions="FillAndExpand"
                                  Padding="20"
                                  Spacing="20"
-                                 BackgroundColor="#252525"
+                                 BackgroundColor="#0A0A0A"
                                  IsVisible="{Binding IsLoading}">
                 <Label Text="Loading Privacy Policy..."
                        FontSize="16"
@@ -54,7 +54,7 @@
                          RefreshColor="#EBD750"
                          BackgroundColor="#252525"
                          IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}, ConverterParameter=false}">
-                <Grid RowDefinitions="*" BackgroundColor="#252525">
+                <Grid RowDefinitions="*" BackgroundColor="#0A0A0A">
 
                     <!-- Content ScrollView (shown when CmsData is available) -->
                     <ScrollView BackgroundColor="#0A0A0A"
@@ -70,7 +70,7 @@
                                         <VerticalStackLayout Spacing="15">
                                             <!-- Heading Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=heading}"
-                                                   BorderColor="#444444"
+                                                   BorderColor="#EBD750"
                                                    BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
@@ -98,7 +98,7 @@
                                             <!-- Title Paragraph Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=title_paragraph}"
                                                    BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
@@ -117,7 +117,7 @@
                                             <!-- Unordered List Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=unordered_list}"
                                                    BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">

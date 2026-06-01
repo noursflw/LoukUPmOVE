@@ -10,10 +10,10 @@
              xmlns:loc="clr-namespace:loukupm.Langue"
              Title="">
 
-    <Grid RowDefinitions="Auto,*" BackgroundColor="#252525">
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#0A0A0A">
         <!-- Header -->
         <Frame Grid.Row="0"
-               BackgroundColor="#202020"
+               BackgroundColor="#0A0A0A"
                BorderColor="Transparent"
                CornerRadius="0"
                Padding="20"
@@ -57,7 +57,7 @@
                 <Grid RowDefinitions="*" BackgroundColor="#252525">
 
                     <!-- Content ScrollView (shown when CmsData is available) -->
-                    <ScrollView BackgroundColor="#252525"
+                    <ScrollView BackgroundColor="#0A0A0A"
                                 IsVisible="{Binding CmsData, Converter={toolkit:IsNotNullConverter}}">
                         <VerticalStackLayout Padding="20" Spacing="15">
                             <!-- Dynamic Content Blocks using BindableLayout -->
@@ -70,8 +70,8 @@
                                         <VerticalStackLayout Spacing="15">
                                             <!-- Heading Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=heading}"
-                                                   BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BorderColor="#EBD750"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
@@ -85,7 +85,7 @@
                                             <!-- Paragraph Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=paragraph}"
                                                    BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
@@ -101,7 +101,7 @@
                                             <!-- Unordered List Block -->
                                             <Frame Margin="5" IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=unordered_list}"
                                                    BorderColor="#444444"
-                                                   BackgroundColor="#2A2A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="20"
                                                    Padding="15"
                                                    HasShadow="True">
@@ -129,7 +129,7 @@
                                             <!-- Warning Box Block -->
                                             <Frame IsVisible="{Binding Type, Converter={converter:StringEqualsConverter}, ConverterParameter=warning_box}"
                                                    BorderColor="#FFD700"
-                                                   BackgroundColor="#3A3A2A"
+                                                   BackgroundColor="#0A0A0A"
                                                    CornerRadius="16"
                                                    Padding="15"
                                                    HasShadow="True">
