@@ -114,6 +114,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="View\PolicyandPrivacyPageatAthun.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\PolicyandPrivacyFlyoutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\TermsAndConditionsAthun.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\TermsAndConditionsFlyoutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="View\MassegBoxLogout.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</None>

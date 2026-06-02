@@ -132,6 +132,12 @@
     <ShellContent Route="SinginPage"
                   ContentTemplate="{DataTemplate view:SinginPage}"
                   IsVisible="False" />
+    <ShellContent Route="PolicyandPrivacyPageatAthun"
+              ContentTemplate="{DataTemplate view:PolicyandPrivacyPageatAthun}"
+              IsVisible="False" />
+    <ShellContent Route="TermsAndConditionsAthun"
+           ContentTemplate="{DataTemplate view:TermsAndConditionsAthun}"
+           IsVisible="False" />
 
     <ShellContent Route="NotifictionPage"
                   ContentTemplate="{DataTemplate view:NotifictionPage}"

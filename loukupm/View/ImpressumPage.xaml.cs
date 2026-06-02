@@ -28,7 +28,10 @@ public partial class ImpressumPage : ContentPage
     }
     protected override bool OnBackButtonPressed()
     {
-        _ = NavigationService.HandleBackButton(NavigationService.ROUTE_IMPRESSUM);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_IMPRESSUM);
+        });
         return true;
     }
 }

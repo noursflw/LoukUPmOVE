@@ -4,31 +4,23 @@ using System.Globalization;
 using loukupm.Services;
 using loukupm.ViewModel;
 
-/// <summary>
-/// Terms and Conditions page with dynamic CMS content loading
-/// </summary>
-public partial class TermsAndConditions : ContentPage
+
+public partial class TermsAndConditionsAthun : ContentPage
 {
     private TermsAndConditionsViewModel _viewModel;
-
-    public TermsAndConditions()
-    {
-        InitializeComponent();
-
-        // Initialize language tracking
+    public TermsAndConditionsAthun()
+	{
+		InitializeComponent();
         this.InitializeLanguageTracking();
-
-        // Create and set the ViewModel
         _viewModel = new TermsAndConditionsViewModel();
         this.BindingContext = _viewModel;
     }
-
-    /// <summary>
-    /// Load content when page appears
-    /// </summary>
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        await Task.Yield();
+        
 
         try
         {
@@ -66,4 +58,5 @@ public partial class TermsAndConditions : ContentPage
         });
         return true;
     }
+
 }

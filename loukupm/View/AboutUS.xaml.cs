@@ -180,22 +180,16 @@ public partial class AboutUS : ContentPage
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-        // Set origin to MainApp before navigating to another Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
     }
 
     private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
     {
-        // Set origin to MainApp before navigating to another Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_TERMS_CONDITIONS);
     }
 
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
     {
-        // Set origin to MainApp before navigating to another Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_IMPRESSUM);
     }
 }

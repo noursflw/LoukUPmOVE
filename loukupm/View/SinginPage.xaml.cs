@@ -518,9 +518,10 @@ public partial class SinginPage : ContentPage
             fglogin.IsVisible = true;
         }
     }
+   
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY_AUTH);
     }
     private void CheckBox_CheckChanged(object sender, EventArgs e)
     {
@@ -697,5 +698,10 @@ public partial class SinginPage : ContentPage
         ErorLastNameInput.Text = thisfieldisrequired;
         ErorLastNameInput.TextColor = Colors.Red;
         ErorLastNameInput.IsVisible = true;
+    }
+
+    private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_TermsAndConditions_Athun);
     }
 }

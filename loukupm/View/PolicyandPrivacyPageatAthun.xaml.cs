@@ -1,18 +1,18 @@
+
 using loukupm.ViewModel;
 using loukupm.services;
 using System.Globalization;
 using loukupm.Services;
 
+
 namespace loukupm.View;
 
-public partial class PolicyandPrivacyPage : ContentPage
+public partial class PolicyandPrivacyPageatAthun : ContentPage
 {
     private PrivacyPolicyViewModel _viewModel;
-
-    public PolicyandPrivacyPage()
-    {
-        InitializeComponent();
-
+    public PolicyandPrivacyPageatAthun()
+	{
+		InitializeComponent();
         // Create and bind ViewModel
         _viewModel = new PrivacyPolicyViewModel();
         this.BindingContext = _viewModel;
@@ -26,20 +26,13 @@ public partial class PolicyandPrivacyPage : ContentPage
             Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
         };
     }
-
-    /// <summary>
-    /// Load Privacy Policy when page appears
-    /// </summary>
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        Console.WriteLine($"📄 Privacy Policy page appearing");
 
-        // Load privacy policy content from CMS
-        if (_viewModel != null)
-        {
-            await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
-        }
+        await Task.Yield(); // 🔥 أهم سطر هنا
+
+        await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
     }
 
     /// <summary>
@@ -49,9 +42,10 @@ public partial class PolicyandPrivacyPage : ContentPage
     {
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            await NavigationService.HandleBackButton(NavigationService.ROUTE_POLICY_PRIVACY);
+            await NavigationService.ForceNavigateToLogin();
         });
-        return true;
+
+        return true; // يمنع الرجوع الطبيعي
     }
 
     /// <summary>
@@ -68,4 +62,5 @@ public partial class PolicyandPrivacyPage : ContentPage
             }
         });
     }
+
 }

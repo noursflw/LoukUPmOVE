@@ -64,29 +64,21 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_5(object sender, EventArgs e)
     {
-        // Set origin to MainApp before navigating to Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);    
     }
 
     private async void TapGestureRecognizer_Tapped_4(object sender, TappedEventArgs e)
     {
-        // Set origin to MainApp before navigating to Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);
     }
 
     private async void Button_Clicked_6(object sender, EventArgs e)
     {
-        // Set origin to MainApp before navigating to Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
     }
 
     private async void TapGestureRecognizer_Tapped_5(object sender, TappedEventArgs e)
     {
-        // Set origin to MainApp before navigating to Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
     }
 
@@ -106,34 +98,30 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_8(object sender, EventArgs e)
     {
-        OneSignalService.Logout();
+        OneSignalService.Logout();  // ✨ استخدم async
         SecureStorage.Remove("auth_token");
         SecureStorage.Remove("refresh_token");
-
+        
+        // مسح خريطة التنقل
+        //NavigationService.ClearPageSourceMap();
+        
         // Reset authentication check flag to allow re-authentication
         App.ResetAuthenticationCheck();
-
+        
         var popup = new MassegBoxLogout();
-        await this.ShowPopupAsync(popup);
-
-        // Navigate to login using absolute routing (not relative)
-        await NavigationService.NavigateToLoginPage();
+        await this.ShowPopupAsync(popup);  
     }
 
    
 
     private async void TapGestureRecognizer_Tapped_6(object sender, TappedEventArgs e)
     {
-        // Set origin to MainApp before navigating to Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await Navigation.PushAsync(new PolicyandPrivacyPage());
     }
 
     
     private async void Button_Clicked_11(object sender, EventArgs e)
     {
-        // Set origin to MainApp before navigating to Flyout page
-        NavigationService.SetFlyoutOrigin(NavigationOrigin.MainApp);
         await Navigation.PushAsync(new PolicyandPrivacyPage());
     }
 }

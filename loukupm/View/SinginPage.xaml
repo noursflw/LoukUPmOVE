@@ -189,7 +189,7 @@
                               TextDecorations="Underline"
                               TextColor="#A8883C">
                                 <Span.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" />
                                 </Span.GestureRecognizers>
                             </Span>
                         </FormattedString>

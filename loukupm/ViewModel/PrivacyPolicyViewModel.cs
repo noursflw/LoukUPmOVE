@@ -64,41 +64,32 @@ namespace loukupm.ViewModel
             try
             {
                 IsLoading = true;
+                await Task.Yield(); 
+
                 HasError = false;
                 ErrorMessage = string.Empty;
 
                 var response = await _apiServices.GetPrivacyPolicyAsync();
 
-                // Check only response.Data != null (remove Success flag dependency)
-                // The API may have inconsistent Success values, but if Data is present, use it
                 if (response?.Data != null)
                 {
                     CmsData = response.Data;
 
-                    // Set flow direction based on API response
                     PageDirection = response.Data.Direction?.ToLower() ?? "ltr";
-                    ContentFlowDirection = PageDirection == "rtl" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-
-                    Console.WriteLine($"✅ Privacy Policy loaded successfully");
-                    Console.WriteLine($"   Language: {CmsData.Language}");
-                    Console.WriteLine($"   Direction: {PageDirection}");
-                    Console.WriteLine($"   Blocks: {CmsData.Blocks?.Count ?? 0}");
+                    ContentFlowDirection = PageDirection == "rtl"
+                        ? FlowDirection.RightToLeft
+                        : FlowDirection.LeftToRight;
                 }
                 else
                 {
                     HasError = true;
                     ErrorMessage = response?.Message ?? "Failed to load Privacy Policy";
-                    Console.WriteLine($"❌ Privacy Policy API returned error: {ErrorMessage}");
-                    Console.WriteLine($"   Response Success: {response?.Success}");
-                    Console.WriteLine($"   Response Data: {(response?.Data == null ? "null" : "not null")}");
                 }
             }
             catch (Exception ex)
             {
                 HasError = true;
-                ErrorMessage = "An unexpected error occurred while loading Privacy Policy";
-                Console.WriteLine($"❌ Exception in LoadPrivacyPolicy: {ex.Message}");
-                Console.WriteLine($"   Stack Trace: {ex.StackTrace}");
+                ErrorMessage = "An unexpected error occurred";
             }
             finally
             {
