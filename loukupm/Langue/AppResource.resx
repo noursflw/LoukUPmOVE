@@ -1002,4 +1002,7 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   <data name="TabCancelled" xml:space="preserve">
     <value>Storniert</value>
   </data>
+  <data name="DataPblicer" xml:space="preserve">
+    <value>Impressum</value>
+  </data>
 </root>

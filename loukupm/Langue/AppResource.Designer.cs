@@ -448,6 +448,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Impressum.
+        /// </summary>
+        internal static string DataPblicer {
+            get {
+                return ResourceManager.GetString("DataPblicer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Persönliche Daten.
         /// </summary>
         internal static string dataself {

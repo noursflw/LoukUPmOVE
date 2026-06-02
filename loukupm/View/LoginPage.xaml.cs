@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using loukupm.Langue;
@@ -39,6 +41,8 @@ public partial class LoginPage : ContentPage
     }
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
+        // Set origin to Authentication before navigating to Flyout page
+        NavigationService.SetFlyoutOrigin(NavigationOrigin.Authentication);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_TERMS_CONDITIONS);
     }
 
@@ -47,12 +51,29 @@ public partial class LoginPage : ContentPage
         await NavigationService.NavigateToPage(NavigationService.ROUTE_REST_PASSWORD);
     }
 
+    private DateTime _lastBackPressed = DateTime.MinValue;
     protected override bool OnBackButtonPressed()
     {
-        // على صفحة تسجيل الدخول، لا تسمح بالخروج من التطبيق
-        return true; // منع الضغط على الزر الخلفي
+        var currentTime = DateTime.Now;
+
+        if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
+        {
+#if ANDROID
+            Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+#endif
+            return true;
+        }
+
+        _lastBackPressed = currentTime;
+        ShowToast("ÇÖÛØ ãÑÉ ÃÎÑì ááÎÑæÌ");
+        return true;
     }
 
+    private async void ShowToast(string message)
+    {
+        var toast = Toast.Make(message, ToastDuration.Short);
+        await toast.Show();
+    }
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
@@ -432,30 +453,12 @@ public partial class LoginPage : ContentPage
 
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
     {
+        // Set origin to Authentication before navigating to Flyout page
+        NavigationService.SetFlyoutOrigin(NavigationOrigin.Authentication);
         await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY);
     }
 
-    //private  void CheckBox_CheckChanged(object sender, EventArgs e)
-    //{
-    //    UpdateButtonsState();
-    //}
-    //private void UpdateButtonsState()
-    //{
-    //    if (DD.IsChecked)
-    //    {
-    //        GoogleButton.IsEnabled = true;
-    //        RegisterButton.IsEnabled = true;
-    //        GoogleButton.Opacity = 1;
-    //        RegisterButton.Opacity = 1;
-    //    }
-    //    else
-    //    {
-    //        GoogleButton.IsEnabled = false;
-    //        RegisterButton.IsEnabled = false;
-    //        GoogleButton.Opacity = 0.5;
-    //        RegisterButton.Opacity = 0.5;
-    //    }
-    //}
+   
 
     private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
     {

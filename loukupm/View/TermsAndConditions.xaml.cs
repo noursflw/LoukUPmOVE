@@ -56,14 +56,10 @@ public partial class TermsAndConditions : ContentPage
 
     /// <summary>
     /// Handle back button navigation
-    /// ????? ?? ?????? - ???? ????? ?????? Traditional Stack Navigation
     /// </summary>
     protected override bool OnBackButtonPressed()
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
-        {
-            await NavigationService.HandleBackButton(NavigationService.ROUTE_TERMS_CONDITIONS);
-        });
+        _ = NavigationService.HandleBackButton(NavigationService.ROUTE_TERMS_CONDITIONS);
         return true;
     }
 }

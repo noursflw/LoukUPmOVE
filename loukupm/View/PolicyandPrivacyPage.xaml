@@ -14,7 +14,7 @@
         <!-- Header -->
         <Frame Grid.Row="0"
                BackgroundColor="#0A0A0A"
-               BorderColor="Transparent"
+               BorderColor="#0A0A0A"
                CornerRadius="0"
                Padding="20"
                Margin="0">

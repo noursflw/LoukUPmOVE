@@ -132,20 +132,20 @@ namespace loukupm
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    Console.WriteLine("🔐 No token found → LoginPage");
-                    await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
+                    Console.WriteLine("🔐 No token found → NavigateToLoginPage (absolute routing)");
+                    await NavigationService.NavigateToLoginPage();
                 }
                 else
                 {
-                    Console.WriteLine("✅ Token found → HomePage");
+                    Console.WriteLine("✅ Token found → NavigateToMainApp (absolute routing)");
                     _authenticationChecked = true;
-                    await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
+                    await NavigationService.NavigateToMainApp();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[App CheckAuthentication ERROR]: {ex.Message}");
-                await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
+                await NavigationService.NavigateToLoginPage();
             }
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {

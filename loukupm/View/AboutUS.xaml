@@ -438,19 +438,7 @@ LineBreakMode="WordWrap"/>
                     </Border>
                     <BoxView HeightRequest="1" BackgroundColor="#444444" Margin="0,30,0,15"/>
 
-                    <CollectionView ItemsSource="{Binding AboutUsData.Legal.Links}" SelectionMode="None">
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="20"/>
-                        </CollectionView.ItemsLayout>
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Label Text="{Binding Label, Converter={StaticResource MultiLanguageConverter}}" 
-                                   FontFamily="georgia-bold" 
-                                   FontSize="12" 
-                                   TextColor="#EBD750"/>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                 
 
 
                 </VerticalStackLayout>

@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using Firebase.Auth;
 using loukupm.Langue;
 using loukupm.Model;
@@ -34,14 +36,31 @@ public partial class SinginPage : ContentPage
         await NavigationService.NavigateToPage(NavigationService.ROUTE_LOGIN);
     }
 
+    private DateTime _lastBackPressed = DateTime.MinValue;
     protected override bool OnBackButtonPressed()
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
+        var currentTime = DateTime.Now;
+
+        if ((currentTime - _lastBackPressed).TotalSeconds <= 2)
         {
-            await NavigationService.HandleBackButton(NavigationService.ROUTE_SIGNIN);
-        });
+#if ANDROID
+            Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+#endif
+            return true;
+        }
+
+        _lastBackPressed = currentTime;
+        ShowToast("ÇÖÛØ ãÑÉ ÃÎÑì ááÎÑæÌ");
         return true;
     }
+
+    private async void ShowToast(string message)
+    {
+        var toast = Toast.Make(message, ToastDuration.Short);
+        await toast.Show();
+    }
+
+
 
     //private async void OnRegisterClicked(object sender, EventArgs e)
     //{

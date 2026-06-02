@@ -1000,4 +1000,7 @@
   <data name="TabCancelled" xml:space="preserve">
     <value>الملغاة</value>
   </data>
+  <data name="DataPblicer" xml:space="preserve">
+    <value>بيانات النشر</value>
+  </data>
 </root>

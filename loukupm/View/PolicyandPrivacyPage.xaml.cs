@@ -47,10 +47,7 @@ public partial class PolicyandPrivacyPage : ContentPage
     /// </summary>
     protected override bool OnBackButtonPressed()
     {
-        MainThread.BeginInvokeOnMainThread(async () =>
-        {
-            await NavigationService.HandleBackButton(NavigationService.ROUTE_POLICY_PRIVACY);
-        });
+        _ = NavigationService.HandleBackButton(NavigationService.ROUTE_POLICY_PRIVACY);
         return true;
     }
 
