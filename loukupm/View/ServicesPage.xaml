@@ -140,7 +140,7 @@
                                                             TextColor="White" 
                                                             FontSize="16"
                                                             FontAttributes="Bold"
-                                                            LineBreakMode="TailTruncation" />
+                                                           LineBreakMode="WordWrap" />
 
                                                         <Label 
                                                             Text="{Binding Category.Name}" 
@@ -149,7 +149,7 @@
                                                             FontSize="12" 
                                                             LineBreakMode="TailTruncation" />
 
-                                                        <HorizontalStackLayout Spacing="15" Margin="0,5,0,0">
+                                                        <HorizontalStackLayout Spacing="15" Margin="5,5,5,5">
                                                             <HorizontalStackLayout Spacing="3">
                                                                 <Label  
                                                                     Text="⏱" 
@@ -241,7 +241,7 @@
                         </VerticalStackLayout>
                     </ScrollView>
                 </VerticalStackLayout>
-             
+                <BoxView HeightRequest="150" Opacity="0"/>
             </VerticalStackLayout>
         </ScrollView>
         <Button  VerticalOptions="End" 

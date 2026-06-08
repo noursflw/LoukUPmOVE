@@ -359,16 +359,83 @@ HasShadow="False">
              
             </VerticalStackLayout>
         </ScrollView>
-        <Frame Grid.Row="1" Background="#111111" BorderColor="Transparent" Padding="0" HeightRequest="70" VerticalOptions="End" HorizontalOptions="Fill" CornerRadius="10" Margin="10,0,10,30">
+        <Frame Grid.Row="1"
+       Background="#111111"
+       BorderColor="Transparent"
+       Padding="0"
+       HeightRequest="70"
+       VerticalOptions="End"
+       HorizontalOptions="Fill"
+       CornerRadius="10"
+       Margin="10,0,10,30">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+            </Frame.GestureRecognizers>
+
             <Grid ColumnDefinitions="*,Auto" Padding="0">
-                <HorizontalStackLayout Grid.Column="0" HorizontalOptions="Start" Spacing="10" Padding="20,15,0,15">
-                    <Image Source="calendartick" WidthRequest="24" HeightRequest="24"/>
-                    <VerticalStackLayout Spacing="0" VerticalOptions="Center">
-                        <Label  TextColor="White" Text="{Loc:Translate Name=timetosphelstel}" FontSize="Default"/>
-                        <Label TextColor="White" Text="{Loc:Translate Name=yourstylestatuphere}" FontSize="12"/>
+
+                <!-- LEFT SIDE -->
+                <Grid Grid.Column="0"
+              ColumnDefinitions="Auto,*"
+              Padding="20,15,10,15"
+              ColumnSpacing="10">
+
+                    <Image Source="calendartick"
+                   WidthRequest="24"
+                   HeightRequest="24"
+                   VerticalOptions="Center"/>
+
+                    <VerticalStackLayout Grid.Column="1"
+                                 Spacing="0"
+                                 VerticalOptions="Center">
+
+                        <Label TextColor="White"
+                       Text="{Loc:Translate Name=timetosphelstel}"
+                       FontSize="Default"
+                       LineBreakMode="TailTruncation"/>
+
+                        <Label TextColor="White"
+                       Text="{Loc:Translate Name=yourstylestatuphere}"
+                       FontSize="12"
+                       LineBreakMode="TailTruncation"/>
                     </VerticalStackLayout>
-                </HorizontalStackLayout>
-                <Button ImageSource="calendarticky.svg"  Text="{Loc:Translate Name=bookinNowAbotus}" FontFamily="OpenSansSemibold" TextColor="Black"  Grid.Column="1" HorizontalOptions="End" FontSize="Micro" VerticalOptions="Center" Margin="0,0,20,0"  HeightRequest="40"/>
+
+                </Grid>
+
+                <!-- BUTTON -->
+                <Frame Grid.Column="1"
+       BackgroundColor="#D4AF37"
+       CornerRadius="20"
+       Padding="0"
+       HeightRequest="40"
+       HorizontalOptions="End"
+       VerticalOptions="Center"
+       Margin="0,0,20,0"
+       HasShadow="False">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </Frame.GestureRecognizers>
+
+                    <HorizontalStackLayout Padding="10,0"
+                           Spacing="6"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+
+                        <Image Source="calendarticky.svg"
+               WidthRequest="18"
+               HeightRequest="18"
+               VerticalOptions="Center"/>
+
+                        <Label Text="{Loc:Translate Name=bookinNowAbotus}"
+               FontFamily="OpenSansSemibold"
+               TextColor="Black"
+               FontSize="Micro"
+               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                </Frame>
+
             </Grid>
         </Frame>
 

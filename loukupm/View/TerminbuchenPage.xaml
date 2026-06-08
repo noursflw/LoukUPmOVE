@@ -170,7 +170,7 @@
          BorderColor="#444444" />
 
 
-                <Button  Text="{Loc:Translate Name=addservies}" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" VerticalOptions="End" Margin="10" />
+                <Button  Text="{Loc:Translate Name=addservies}" BorderColor="Black" TextColor="White" Clicked="Button_Clicked_2" BackgroundColor="Black" ImageSource="plus.png"  FontFamily="Oswald" FontSize="16"   CornerRadius="16"  HeightRequest="48" VerticalOptions="End" Margin="10" />
             </VerticalStackLayout>
             <Label Text="{Loc:Translate Name=hrearchooes}" FontSize="18" TextColor="White" FontFamily="Oswald" Margin="22,10,0,15" />
             <ScrollView Orientation="Horizontal" Margin="10,0,10,0">

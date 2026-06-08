@@ -14,7 +14,7 @@
 		<ApplicationTitle>LookUp</ApplicationTitle>
 		<ApplicationId>com.master-code.it.loukupm</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">16.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
@@ -45,7 +45,7 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<MultiDexEnabled>true</MultiDexEnabled>
 		<AndroidDexTool>d8</AndroidDexTool>
-		<AndroidSupportedAbis>armeabi-v7a;arm64-v8a;x86;x86_64</AndroidSupportedAbis>
+		
 	</PropertyGroup>
 
 	<PropertyGroup>

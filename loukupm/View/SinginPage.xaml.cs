@@ -260,7 +260,7 @@ public partial class SinginPage : ContentPage
                 Phone = phone,
                 Password = password,
                 PasswordConfirmation = passwordConfirmation,
-                RegistrationMethod = string.IsNullOrWhiteSpace(phone) ? "email" : "phone"
+                RegistrationMethod = string.IsNullOrWhiteSpace(email) ? "phone" : "email"
             };
 
             var json = JsonSerializer.Serialize(registerData);

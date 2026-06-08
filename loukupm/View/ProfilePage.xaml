@@ -100,11 +100,19 @@
                                     ImageSource="backbuttonpmg.png"
                                     BackgroundColor="#181c21"
                                     Padding="0" 
+                                   
                                    Margin="0,5,10,0"            
                                    BorderWidth="1"
+                                    BorderColor="#181c21"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Start"
-                                   Clicked="Button_Clicked_4" />
+                                   Clicked="Button_Clicked_4" >
+
+                                <Button.Shadow>
+                                    <Shadow Opacity="0" Radius="0" Offset="0,0"/>
+                                </Button.Shadow>
+
+                            </Button>
                         </Grid>
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3"/>
@@ -126,168 +134,34 @@
                             <Button Grid.Column="1"
                           WidthRequest="40"
                           HeightRequest="40"
-                          
+                         
                           CornerRadius="12"
                           ImageSource="backbuttonpmg.png"
                           BackgroundColor="#181c21"
                           Padding="0" 
                           Margin="0,5,10,0"            
+                          BorderColor="#181c21"          
                           BorderWidth="1"
                           HorizontalOptions="Center"
                           VerticalOptions="Start"
-                          Clicked="Button_Clicked_1" />
+                          Clicked="Button_Clicked_1">
+
+                                    <Button.Shadow>
+                                        <Shadow Opacity="0" Radius="0" Offset="0,0"/>
+                                    </Button.Shadow>
+                               
+                            </Button>
                         </Grid>
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                         </Frame.GestureRecognizers>
                     </Frame>
-                    <Button Clicked="Button_Clicked_8" BackgroundColor="#181c21" Text="Log Out" ImageSource="logout.png" TextColor="#f64a4a" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56"  />
-                    <!--<Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                            <HorizontalStackLayout>
-                                <Image Source="password1.png" Margin="20,0,0,0" />
-                                <Label Text="{Loc:Translate Name=ChangPassord}"
-                                     TextColor="White"
-                                      Margin="24,0,0,0"
-                                      FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>-->
-
-                    <!-- الزر على اليمين -->
-                    <!--
-                            <Button Grid.Column="1"
-                                           WidthRequest="40"
-                                           HeightRequest="40"
-                                           CornerRadius="12"
-                                           ImageSource="backbuttonpmg.png"
-                                           BackgroundColor="#444444"
-                                           Padding="0" 
-                                           Margin="0,5,10,0"            
-                                           BorderWidth="1"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Start"
-                                           Clicked="Button_Clicked_2" />
-                        </Grid>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                            <HorizontalStackLayout>
-                                <Image Source="calendar.png" Margin="20,0,0,0" />
-                                <Label Text="{Loc:Translate Name=Mybook}"
-                                     TextColor="White"
-                                     Margin="24,0,0,0"
-                                     FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-
-                            -->
-                    <!-- الزر على اليمين -->
-                    <!--
-                            <Button Grid.Column="1"
-                                 WidthRequest="40"
-                                 HeightRequest="40"
-                                 CornerRadius="12"
-                                 ImageSource="backbuttonpmg.png"
-                                 BackgroundColor="#444444"
-                                 Padding="0"                                     Margin="0,5,10,0"            
-                                 BorderWidth="1"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Start"
-                                 Clicked="Button_Clicked_3" />
-                        </Grid>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
-                  
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                            <HorizontalStackLayout>
-                                <Image Source="settings.png" Margin="20,0,0,0" />
-                                <Label Text="{Loc:Translate Name=setting}"
-                                  TextColor="White"
-                                  Margin="24,0,0,0"
-                                 FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>-->
-
-                    <!-- الزر على اليمين -->
-                    <!--
-                            <Button Grid.Column="1"
-                            WidthRequest="40"
-                            HeightRequest="40"
-                            CornerRadius="12"
-                            ImageSource="backbuttonpmg.png"
-                            BackgroundColor="#444444"
-                            Padding="0" 
-                            Margin="0,5,10,0"            
-                            BorderWidth="1"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Start"
-                            Clicked="Button_Clicked_5" />
-                        </Grid>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_4" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                            <HorizontalStackLayout>
-                                <Image Source="info.png" Margin="20,0,0,0" />
-                                <Label Text="{Loc:Translate Name=AppInfo}"
-                                     TextColor="White"
-                                     Margin="24,0,0,0"
-                                     FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                            <Button Grid.Column="1"
-                                WidthRequest="40"
-                                HeightRequest="40"
-                                CornerRadius="12"
-                                ImageSource="backbuttonpmg.png"
-                                BackgroundColor="#444444"
-                                Padding="0" 
-                                Margin="0,5,10,0"            
-                                BorderWidth="1"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Start"
-                                Clicked="Button_Clicked_6" />
-                        </Grid>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_5" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#444444" BorderColor="#444444" Margin="24,0,24,0" >
-                        <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#444444">
-
-                            <HorizontalStackLayout>
-                                <Image Source="info.png" Margin="20,0,0,0" />
-                                <Label Text="{Loc:Translate Name=PolicyandPrivacy}"
-                   TextColor="White"
-                   Margin="24,0,0,0"
-                   FontSize="16" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                            <Button Grid.Column="1"
-              WidthRequest="40"
-              HeightRequest="40"
-              CornerRadius="12"
-              ImageSource="backbuttonpmg.png"
-              BackgroundColor="#444444"
-              Padding="0" 
-              Margin="0,5,10,0"            
-              BorderWidth="1"
-              HorizontalOptions="Center"
-              VerticalOptions="Start"
-              Clicked="Button_Clicked_11" />
-                        </Grid>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_6" />
-                        </Frame.GestureRecognizers>
-                    </Frame>-->
-
+                    <Button Clicked="Button_Clicked_8" BackgroundColor="#181c21" BorderColor="#181c21" Text="Log Out" ImageSource="logout.png" TextColor="#f64a4a" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56">
+                        <Button.Shadow>
+                            <Shadow Opacity="0" Radius="0" Offset="0,0"/>
+                        </Button.Shadow>
+                    </Button>
+             
 
                 </VerticalStackLayout>
             </VerticalStackLayout>
