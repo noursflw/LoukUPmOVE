@@ -142,15 +142,24 @@
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
                     Scale="1.4" />
+                    <HorizontalStackLayout
+    Margin="0,4,0,0"
+    HorizontalOptions="Center"
+    VerticalOptions="Center"
+    Spacing="3">
 
-                    <HorizontalStackLayout   Margin="0,4,0,0" HorizontalOptions="Center" Spacing="2">
-                        <Label Text="{loc:Translate Name=CreatAccount}" FontSize="18"  TextColor="White"/>
-                        <Label Margin="3,5,0,0" FontSize="18">
+                        <Label Text="{loc:Translate Name=CreatAccount}"
+           FontSize="18"
+           TextColor="White"
+           VerticalTextAlignment="Center"/>
+
+                        <Label FontSize="18"
+           VerticalTextAlignment="Center">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=Singin}"
-                                        TextDecorations="Underline"
-                                        TextColor="#A8883C">
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3" />
                                         </Span.GestureRecognizers>
@@ -158,15 +167,20 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout FlowDirection="LeftToRight" Margin="10" HorizontalOptions="Center" Spacing="2">
 
-                        <Label Margin="15,10,0,0" >
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout
+    FlowDirection="LeftToRight"
+    HorizontalOptions="Center"
+    VerticalOptions="Center"
+    Spacing="5">
+
+                        <Label VerticalOptions="Center">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=TermsandConditions}"
-                                                TextDecorations="Underline"
-                                                TextColor="#A8883C">
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                         </Span.GestureRecognizers>
@@ -174,13 +188,18 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <Label Text="{loc:Translate Name=AND}" TextColor="White" FontSize="19" />
-                        <Label Margin="3,10,0,0" >
+
+                        <Label Text="{loc:Translate Name=AND}"
+           TextColor="White"
+           FontSize="19"
+           VerticalOptions="Center"/>
+
+                        <Label VerticalOptions="Center">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="{loc:Translate Name=PolicyandPrivacy}"
-                     TextDecorations="Underline"
-                     TextColor="#A8883C">
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
                                         <Span.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
                                         </Span.GestureRecognizers>
@@ -188,7 +207,7 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        
+
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Grid>

@@ -128,21 +128,26 @@
         VerticalOptions="Center"
         HorizontalOptions="Center"
         Scale="1.4" />
-                <HorizontalStackLayout Margin="60,20,0,0" Spacing="2">
-                    <Label Text="{loc:Translate Name=YouHaveAcount}" FontSize="18" TextColor="White"/>
-                    <Label FontSize="18">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{loc:Translate Name=Login}"
-                                   TextDecorations="Underline"
-                                    TextColor="#A8883C">
-                                    <Span.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                                    </Span.GestureRecognizers>
-                                </Span>
-                            </FormattedString>
-                        </Label.FormattedText>
+                <HorizontalStackLayout
+    Margin="60,20,0,0"
+    Spacing="4"
+    VerticalOptions="Center">
+
+                    <Label Text="{loc:Translate Name=YouHaveAcount}"
+           FontSize="18"
+           TextColor="White"
+           VerticalTextAlignment="Center"/>
+
+                    <Label Text="{loc:Translate Name=Login}"
+           FontSize="18"
+           TextColor="#A8883C"
+           TextDecorations="Underline"
+           VerticalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                        </Label.GestureRecognizers>
                     </Label>
+
                 </HorizontalStackLayout>
             </VerticalStackLayout>
             <Image Margin="25,0" Source="or.svg" HeightRequest="24"/>
@@ -180,14 +185,19 @@
             VerticalOptions="Center"
             HorizontalOptions="Center"/>
             </Frame>
-            <HorizontalStackLayout FlowDirection="LeftToRight" VerticalOptions="Center" Margin="20,0,20,20" HorizontalOptions="Center" Spacing="2">
+            <HorizontalStackLayout
+    FlowDirection="LeftToRight"
+    VerticalOptions="Center"
+    HorizontalOptions="Center"
+    Margin="20,0,20,20"
+    Spacing="5">
 
-                <Label Margin="0,10,0,0" >
+                <Label VerticalTextAlignment="Center">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="{loc:Translate Name=TermsandConditions}"
-                              TextDecorations="Underline"
-                              TextColor="#A8883C">
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
                                 <Span.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" />
                                 </Span.GestureRecognizers>
@@ -195,13 +205,18 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <Label Text="{loc:Translate Name=AND}" TextColor="White" FontSize="19" />
-                <Label Margin="3,10,0,0" >
+
+                <Label Text="{loc:Translate Name=AND}"
+           TextColor="White"
+           FontSize="19"
+           VerticalTextAlignment="Center"/>
+
+                <Label VerticalTextAlignment="Center">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="{loc:Translate Name=PolicyandPrivacy}"
-   TextDecorations="Underline"
-   TextColor="#A8883C">
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
                                 <Span.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
                                 </Span.GestureRecognizers>
@@ -209,7 +224,13 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:CheckBox x:Name="DD" CheckChanged="CheckBox_CheckChanged" Margin="10,7,0,0" BorderColor="#A8883C" Color="#A8883C" />
+
+                <material:CheckBox
+        x:Name="DD"
+        CheckChanged="CheckBox_CheckChanged"
+        BorderColor="#A8883C"
+        Color="#A8883C"
+        VerticalOptions="Center"/>
             </HorizontalStackLayout>
         </StackLayout>
     </ScrollView>

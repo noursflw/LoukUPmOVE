@@ -201,7 +201,15 @@
                                             BackgroundColor="#333333"
                                             
                                             IsOpaque="False"
-                                            Source="{Binding ImageSafe}" />
+                                            Source="{Binding ImageSafe}">
+
+                                            <ff:CachedImage.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                   Command="{Binding Source={x:Reference WorkTeamsCollectionView}, Path=BindingContext.SelectWorkTeamCommand}"
+                                                  CommandParameter="{Binding}" />
+                                            </ff:CachedImage.GestureRecognizers>
+
+                                        </ff:CachedImage>
                                     </Frame>
                                     <Label Text="{Binding Name}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#999999" FontSize="12" LineBreakMode="TailTruncation" />
                                 </VerticalStackLayout>

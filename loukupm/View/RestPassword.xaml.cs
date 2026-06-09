@@ -125,65 +125,44 @@ public partial class RestPassword : ContentPage
         }
     }
 
- 
+
     private async Task<bool> SendOtpRequestAsync(string email)
     {
         try
         {
             using var client = new HttpClient();
 
-            
-            var payload = new { email = email };
+            var payload = new
+            {
+                registration_method = "email",
+                email = email
+            };
+
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+
             var response = await client.PostAsync(
                 "https://test.center-yazan.com/api/auth/request-otp",
                 content
             );
 
-          
             if (response.IsSuccessStatusCode)
-            {
-                var popup = new CompletSendEmail();
-                await this.ShowPopupAsync(popup);
-                await Navigation.PushAsync(new Verificationpage());
                 return true;
-            }
 
-           
             var errorContent = await response.Content.ReadAsStringAsync();
-           
-
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                var popup = new EmaileIsNotFound();
-                await this.ShowPopupAsync(popup);
-             
-            }
+                await this.ShowPopupAsync(new EmaileIsNotFound());
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                var popup = new EroreInputEmaile();
-                await this.ShowPopupAsync(popup);
-            }
+                await this.ShowPopupAsync(new EroreInputEmaile());
             else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-            {
-                var popup = new WateResposeOTP();
-                await this.ShowPopupAsync(popup);
-            }
+                await this.ShowPopupAsync(new WateResposeOTP());
 
             return false;
         }
-        catch (HttpRequestException ex)
+        catch
         {
-            var popup = new NoServerResponse();
-            await this.ShowPopupAsync(popup);
-            return false;
-        }
-        catch (Exception ex)
-        {
-            var popup = new NoServerResponse();
-            await this.ShowPopupAsync(popup);
+            await this.ShowPopupAsync(new NoServerResponse());
             return false;
         }
     }
