@@ -9,7 +9,7 @@
                BackgroundColor="#202020"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
               BackgroundImageSource="baackgroundpage.png"
-             Title="LoginPage">
+             >
     <ScrollView>
         <VerticalStackLayout>
             <Grid RowDefinitions="40*,60*">

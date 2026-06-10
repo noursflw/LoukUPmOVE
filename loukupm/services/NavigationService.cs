@@ -26,6 +26,7 @@ public static class NavigationService
     public const string ROUTE_POLICY_PRIVACY_AUTH = "PolicyandPrivacyPageatAthun";
     public const string ROUTE_TermsAndConditions_Athun = "TermsAndConditionsAthun";
     // TabBar pages
+    public const string ROUTE_SPLASH = "LoadingPage";
     public const string ROUTE_HOME = "HomePage";
     public const string ROUTE_SERVICES = "ServicesPage";
     public const string ROUTE_BOOKING = "BookingPage";
@@ -51,8 +52,8 @@ public static class NavigationService
     // ?????????????????????????????????????????????
     private static readonly HashSet<string> TerminalPages = new()
 {
-    ROUTE_LOGIN,
-    
+    ROUTE_LOGIN,ROUTE_SPLASH
+
 };
     /// <summary>All four TabBar pages.</summary>
     private static readonly HashSet<string> TabBarPages = new()
@@ -73,12 +74,12 @@ public static class NavigationService
 
     private static readonly HashSet<string> AllValidRoutes = new()
     {
-        ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN, ROUTE_OTP,
+        ROUTE_MAIN_PAGE, ROUTE_SIGNIN, ROUTE_OTP,
         ROUTE_HOME, ROUTE_SERVICES, ROUTE_BOOKING, ROUTE_PROFILE,
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
-        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,  ROUTE_TermsAndConditions_Athun,
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,ROUTE_TermsAndConditions_Athun,
     };
 
     // ?????????????????????????????????????????????
@@ -91,14 +92,7 @@ public static class NavigationService
     /// <summary>Returns true if <paramref name="route"/> is one of the Flyout menu pages.</summary>
     public static bool IsFlyoutPage(string route) => FlyoutPages.Contains(route);
 
-    // ?????????????????????????????????????????????
-    // NAVIGATION
-    // ?????????????????????????????????????????????
-
-    /// <summary>
-    /// Navigate to a TabBar page using an absolute route (//Page).
-    /// Replaces the navigation stack root � tab switching never adds stack entries.
-    /// </summary>
+   
     public static async Task NavigateToTabBarPage(string route)
     {
         if (!ValidateRoute(route) || !TabBarPages.Contains(route))
@@ -173,11 +167,19 @@ public static class NavigationService
 
         try
         {
-            // 🔐 Terminal pages (Login / Auth state)
+            // Add null check for Shell.Current at the start
+            if (Shell.Current == null)
+            {
+                Console.WriteLine($"[Navigation] Shell.Current is null - cannot handle back button from {currentPage}");
+                return false;
+            }
+
             if (TerminalPages.Contains(currentPage))
             {
-                // ممنوع الرجوع نهائيًا
-                return false;
+                // Terminal pages use double-tap to exit
+                // RegisterBackPress returns true if this is the first press, false if second press within timeout
+                bool shouldAllowExit = !BackButtonTracker.RegisterBackPress(currentPage);
+                return !shouldAllowExit; // Return true to handle (prevent exit), false to allow exit
             }
 
             // 📌 Tab pages
@@ -198,12 +200,18 @@ public static class NavigationService
             }
 
             // 📌 Sub pages
-            await Shell.Current.GoToAsync("..", animate: true);
-            return true;
+            if (Shell.Current != null)
+            {
+                await Shell.Current.GoToAsync("..", animate: true);
+                return true;
+            }
+
+            return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[Navigation] Back button error from {currentPage}: {ex.Message}");
+            Console.WriteLine($"[Navigation] Stack trace: {ex.StackTrace}");
             return false;
         }
     }

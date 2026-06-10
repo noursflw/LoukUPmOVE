@@ -295,7 +295,7 @@
     <value>اسم العائلة</value>
   </data>
   <data name="linkpass" xml:space="preserve">
-    <value>إرسال الرابط</value>
+    <value>إعادة تعيين كلمة المرور</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>تسجيل الدخول </value>
@@ -367,7 +367,7 @@
     <value>هل أنت متأكد من حذف الحساب؟</value>
   </data>
   <data name="ResetPasswordvv" xml:space="preserve">
-    <value>الرجاء إدخال عنوان بريدك الإلكتروني لتلقي التعليمات حول كيفية إعادة تعيين كلمة المرور الخاصة بك</value>
+    <value>أدخل بريدك الإلكتروني. سنرسل لك رمز OTP لإعادة تعيين كلمة المرور.</value>
   </data>
   <data name="Sacsess" xml:space="preserve">
     <value>نجاح</value>

@@ -853,7 +853,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log in.
+        ///   Looks up a localized string similar to Anmelden.
         /// </summary>
         internal static string Login {
             get {
@@ -1051,7 +1051,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password.
+        ///   Looks up a localized string similar to Passwort.
         /// </summary>
         internal static string Password {
             get {
@@ -2027,7 +2027,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bitte geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen Ihres Passworts zu erhaltenn.
+        ///   Looks up a localized string similar to Geben Sie Ihre E-Mail-Adresse ein. Wir senden Ihnen einen OTP-Code zum Zurücksetzen Ihres Passworts..
         /// </summary>
         internal static string ResetPasswordvv {
             get {

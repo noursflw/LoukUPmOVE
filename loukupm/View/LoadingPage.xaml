@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.LoadingPage"
+             BackgroundImageSource="baackgroundpage.png"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid>
+
+     
+        <VerticalStackLayout HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Spacing="20">
+
+            <Image Source="appicon.png"
+                   WidthRequest="180"
+                   HeightRequest="180"
+                   Aspect="AspectFit"/>
+
+           
+            <ActivityIndicator IsRunning="True"
+                               Color="#A8883C"
+                               WidthRequest="40"
+                               HeightRequest="40"/>
+
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentPage>

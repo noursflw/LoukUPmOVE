@@ -300,7 +300,7 @@
     <value>Link senden</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>Log in</value>
+    <value>Anmelden</value>
   </data>
   <data name="Logoutmessag" xml:space="preserve">
     <value>Sind Sie sicher, dass Sie sich abmelden möchten?</value>
@@ -340,7 +340,7 @@
     <value>Das Passwort muss mehr als 6 Zeichen enthalten</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Password</value>
+    <value>Passwort</value>
   </data>
   <data name="Passwordnotmatch" xml:space="preserve">
     <value>Die Passwörter stimmen nicht überein</value>
@@ -370,7 +370,7 @@
     <value>Möchten Sie das Konto wirklich löschen?</value>
   </data>
   <data name="ResetPasswordvv" xml:space="preserve">
-    <value>Bitte geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen Ihres Passworts zu erhaltenn</value>
+    <value>Geben Sie Ihre E-Mail-Adresse ein. Wir senden Ihnen einen OTP-Code zum Zurücksetzen Ihres Passworts.</value>
   </data>
   <data name="Sacsess" xml:space="preserve">
     <value>Erfolg</value>

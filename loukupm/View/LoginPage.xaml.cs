@@ -47,13 +47,6 @@ public partial class LoginPage : ContentPage
         await NavigationService.NavigateToPage(NavigationService.ROUTE_REST_PASSWORD);
     }
 
-    protected override bool OnBackButtonPressed()
-    {
-        // على صفحة تسجيل الدخول، لا تسمح بالخروج من التطبيق
-        return true; // منع الضغط على الزر الخلفي
-    }
-
-
     private async void OnLoginClicked(object sender, EventArgs e)
     {
        

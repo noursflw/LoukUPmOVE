@@ -114,6 +114,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="View\LoadingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\PolicyandPrivacyPageatAthun.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -68,7 +68,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:TextField x:Name="RegisterPhoneEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
+                <material:TextField x:Name="RegisterPhoneEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png"  Keyboard="Numeric" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
                 <Label FontSize="16" Margin="12,24,0,0" Padding="10">
                     <Label.FormattedText>
                         <FormattedString>
