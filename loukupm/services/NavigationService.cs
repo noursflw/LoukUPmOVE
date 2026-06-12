@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Maui.Controls;
+using loukupm.View;
+
 namespace loukupm.Services;
 
 /// <summary>
@@ -100,7 +106,15 @@ public static class NavigationService
 
         try
         {
-            await Shell.Current.GoToAsync($"//{route}", animate: true);
+            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            if (shell != null)
+            {
+                await shell.GoToAsync($"//{route}", animate: true);
+            }
+            else
+            {
+                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to tab {route}");
+            }
         }
         catch (Exception ex)
         {
@@ -118,7 +132,15 @@ public static class NavigationService
 
         try
         {
-            await Shell.Current.GoToAsync(route, animate: true);
+            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            if (shell != null)
+            {
+                await shell.GoToAsync(route, animate: true);
+            }
+            else
+            {
+                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to page {route}");
+            }
         }
         catch (Exception ex)
         {
@@ -137,7 +159,15 @@ public static class NavigationService
             string encodedJson = Uri.EscapeDataString(json);
             string routeWithParam = $"{route}?data={encodedJson}";
 
-            await Shell.Current.GoToAsync(routeWithParam, animate: true);
+            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            if (shell != null)
+            {
+                await shell.GoToAsync(routeWithParam, animate: true);
+            }
+            else
+            {
+                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to page {route} with param");
+            }
         }
         catch (Exception ex)
         {
@@ -168,9 +198,10 @@ public static class NavigationService
         try
         {
             // Add null check for Shell.Current at the start
-            if (Shell.Current == null)
+            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            if (shell == null)
             {
-                Console.WriteLine($"[Navigation] Shell.Current is null - cannot handle back button from {currentPage}");
+                Console.WriteLine($"[Navigation] Shell context is null - cannot handle back button from {currentPage}");
                 return false;
             }
 
@@ -188,23 +219,21 @@ public static class NavigationService
                 if (currentPage == ROUTE_HOME)
                     return false;
 
-                await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: true);
+                await shell.GoToAsync($"//{ROUTE_HOME}", animate: true);
                 return true;
             }
 
             // 📌 Flyout pages
             if (FlyoutPages.Contains(currentPage))
             {
-                await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: true);
+                await shell.GoToAsync($"//{ROUTE_HOME}", animate: true);
                 return true;
             }
 
             // 📌 Sub pages
-            if (Shell.Current != null)
-            {
-                await Shell.Current.GoToAsync("..", animate: true);
-                return true;
-            }
+            // Sub pages: navigate up one level
+            await shell.GoToAsync("..", animate: true);
+            return true;
 
             return false;
         }
@@ -309,6 +338,46 @@ public static class NavigationService
         }
         Console.WriteLine("[Navigation] Route validation OK");
         return true;
+    }
+
+    /// <summary>
+    /// Navigate one level up if possible, otherwise navigate to Login and clear stack.
+    /// Centralizes the "pop or go to login" behavior to avoid direct Shell calls.
+    /// </summary>
+    public static async Task NavigateUpOrToLogin()
+    {
+        try
+        {
+            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            if (shell != null)
+            {
+                if (shell.Navigation.NavigationStack.Count > 1)
+                {
+                    await shell.GoToAsync("..", animate: true);
+                    return;
+                }
+
+                await shell.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
+                return;
+            }
+
+            if (Application.Current?.MainPage is NavigationPage nav)
+            {
+                if (nav.Navigation.NavigationStack.Count > 1)
+                {
+                    await nav.PopAsync(true);
+                    return;
+                }
+
+                await nav.PopToRootAsync(false);
+                await nav.PushAsync(new LoginPage(), false);
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] NavigateUpOrToLogin error: {ex.Message}");
+        }
     }
 
     // ?????????????????????????????????????????????

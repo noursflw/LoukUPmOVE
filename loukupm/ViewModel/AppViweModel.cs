@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using loukupm.Langue;
 using loukupm.Model;
-using loukupm.services;
+using loukupm.Services;
 using loukupm.View;
 using loukupm.View.MassgingApp;
 using System;
@@ -871,7 +871,7 @@ namespace loukupm.ViewModel
                     await Toast.Make(AppResource.Bookingsuccessful).Show();
 
                     ClearBookingData();
-                    await Shell.Current.GoToAsync(nameof(BookingPage));
+                    await NavigationService.NavigateToPage(nameof(BookingPage));
                 }
                 else
                 {
@@ -1389,7 +1389,7 @@ namespace loukupm.ViewModel
                 Preferences.Clear();
 
               
-                await Shell.Current.GoToAsync("//LoginPage");
+                await ShellNavigationManager.NavigateToLoginAndClear();
             }
             catch (Exception)
             {

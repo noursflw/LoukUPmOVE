@@ -46,18 +46,13 @@ public partial class App : Application
                 : Microsoft.Maui.FlowDirection.LeftToRight;
         }
 
-        // ⭐ أهم نقطة: التطبيق يبدأ من LoadingPage فقط
-        MainPage = new NavigationPage(new LoadingPage())
+        // ⭐ IMPORTANT: The application MUST start from LoadingPage only.
+        // LoadingPage is the single bootstrap entry point and will perform
+        // authentication checks and decide final MainPage.
+        MainPage = new LoadingPage()
         {
             FlowDirection = direction
         };
-
-        // تشغيل فحص الدخول بعد ما UI يجهز بالكامل
-        MainThread.BeginInvokeOnMainThread(async () =>
-        {
-            await Task.Delay(600);
-            await HandleStartNavigation();
-        });
     }
 
     private async Task HandleStartNavigation()

@@ -293,6 +293,7 @@
                             FontSize="16"
                             Padding="12,8"
                             Clicked="OnTab1Clicked"
+                            BorderColor="#0A0A0A" 
                             x:Name="Tab1Button" />
                     <BoxView x:Name="b1" CornerRadius="6" BackgroundColor="#FFD700" HeightRequest="2" Margin="0" />
                 </StackLayout>
@@ -306,6 +307,7 @@
                             FontSize="16"
                             Padding="12,8"
                             Clicked="OnTab2Clicked"
+                            BorderColor="#0A0A0A" 
                             x:Name="Tab2Button" />
                     <BoxView x:Name="b2" CornerRadius="6" BackgroundColor="Transparent" HeightRequest="2" Margin="0" />
                 </StackLayout>
@@ -319,6 +321,7 @@
                             FontSize="16"
                             Padding="12,8"
                             Clicked="OnTab3Clicked"
+                             BorderColor="#0A0A0A" 
                             x:Name="Tab3Button" />
                     <BoxView x:Name="b3" CornerRadius="6" BackgroundColor="Transparent" HeightRequest="2" Margin="0" />
                 </StackLayout>

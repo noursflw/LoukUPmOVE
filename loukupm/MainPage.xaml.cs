@@ -1,4 +1,5 @@
 ﻿using loukupm.View;
+using loukupm.Services;
 namespace loukupm
 {
     public partial class MainPage : ContentPage
@@ -11,11 +12,12 @@ namespace loukupm
 
         private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
         {
-            await Navigation.PushAsync(new LoginPage());
+            await ShellNavigationManager.NavigateToLoginAndClear();
         }
         protected override bool OnBackButtonPressed()
         {
-            Shell.Current.GoToAsync("//MainPage");
+            // Ensure centralized handling
+            ShellNavigationManager.LogNavigationState();
             return true;
         }
     }

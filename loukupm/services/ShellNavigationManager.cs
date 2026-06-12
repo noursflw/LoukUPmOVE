@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using loukupm.View;
 namespace loukupm.Services
 {
     /// <summary>
@@ -25,9 +26,16 @@ namespace loukupm.Services
                 Console.WriteLine($"🔄 [Navigation] Clearing stack and navigating to: {route}");
 
                 // Verify Shell.Current is available
-                if (Shell.Current == null)
+                var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+                if (shell == null)
                 {
-                    Console.WriteLine($"❌ [Navigation] Shell.Current is null - cannot navigate");
+                    Console.WriteLine($"❌ [Navigation] Shell context is null - cannot navigate {route}");
+                    // Fallback: attempt to set MainPage directly when possible
+                    if (Application.Current?.MainPage is NavigationPage nav && !route.StartsWith("//"))
+                    {
+                        await nav.PushAsync(new ContentPage());
+                        return;
+                    }
                     throw new InvalidOperationException("Shell context is not available");
                 }
 
@@ -35,7 +43,7 @@ namespace loukupm.Services
                 string absoluteRoute = route.StartsWith("//") ? route : $"//{route}";
 
                 // Navigate with animation disabled for cleaner transition
-                await Shell.Current.GoToAsync(absoluteRoute, animate: false);
+                await shell.GoToAsync(absoluteRoute, animate: false);
 
                 Console.WriteLine($"✅ [Navigation] Successfully navigated to: {route}");
             }
@@ -62,14 +70,21 @@ namespace loukupm.Services
                 Console.WriteLine($"🔄 [Navigation] Logging out and clearing stack");
 
                 // Verify Shell.Current is available
-                if (Shell.Current == null)
+                var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+                if (shell == null)
                 {
-                    Console.WriteLine($"❌ [Navigation] Shell.Current is null - cannot navigate");
+                    Console.WriteLine($"❌ [Navigation] Shell context is null - fallback to NavigationPage for LoginPage");
+                    if (Application.Current?.MainPage is NavigationPage nav)
+                    {
+                        await nav.PopToRootAsync(false);
+                        await nav.PushAsync(new LoginPage(), false);
+                        return;
+                    }
                     throw new InvalidOperationException("Shell context is not available");
                 }
 
                 // Use relative route for LoginPage (global route)
-                await Shell.Current.GoToAsync("LoginPage", animate: false);
+                await shell.GoToAsync("LoginPage", animate: false);
 
                 Console.WriteLine($"✅ [Navigation] Successfully logged out to LoginPage");
             }
@@ -96,14 +111,20 @@ namespace loukupm.Services
                 Console.WriteLine($"🔄 [Navigation] Logging in and navigating to home");
 
                 // Verify Shell.Current is available
-                if (Shell.Current == null)
+                var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+                if (shell == null)
                 {
-                    Console.WriteLine($"❌ [Navigation] Shell.Current is null - cannot navigate");
+                    Console.WriteLine($"❌ [Navigation] Shell context is null - fallback to NavigationPage for HomePage");
+                    if (Application.Current?.MainPage is NavigationPage nav)
+                    {
+                        await nav.PopToRootAsync(false);
+                        return;
+                    }
                     throw new InvalidOperationException("Shell context is not available");
                 }
 
                 // Use absolute route for TabBar pages
-                await Shell.Current.GoToAsync("//HomePage", animate: false);
+                await shell.GoToAsync("//HomePage", animate: false);
 
                 Console.WriteLine($"✅ [Navigation] Successfully logged in to HomePage");
             }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace loukupm.services
+namespace loukupm.Services
 {
     public class ApiServices
     {

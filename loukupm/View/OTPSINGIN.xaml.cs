@@ -441,13 +441,13 @@ public partial class OTPSINGIN : ContentPage
 			{
 				try
 				{
-					if (Shell.Current?.Navigation.NavigationStack.Count > 1)
+					if (Shell.Current?.Navigation?.NavigationStack != null && Shell.Current.Navigation.NavigationStack.Count > 1)
 					{
-						await Shell.Current.GoToAsync("..");
+						await NavigationService.NavigateUpOrToLogin();
 					}
 					else
 					{
-						// If no previous page, go to login
+						// If no previous page, go to login via ShellNavigationManager
 						await ShellNavigationManager.NavigateToLoginAndClear();
 					}
 				}

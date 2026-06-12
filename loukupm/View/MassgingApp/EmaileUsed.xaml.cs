@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
+using loukupm.Services;
 
 namespace loukupm.View.MassgingApp;
 
@@ -12,6 +13,6 @@ public partial class EmaileUsed : Popup
 	}
 	private async void CancelClicked(object? sender, EventArgs e)
 	{
-        await Shell.Current.GoToAsync("LoginPage");
+		await ShellNavigationManager.NavigateToLoginAndClear();
     }
 }
