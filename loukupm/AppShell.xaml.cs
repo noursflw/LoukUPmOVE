@@ -188,5 +188,9 @@ namespace loukupm
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
             }
         }
+        public static void ResetAuthenticationCheck()
+        {
+            Console.WriteLine("🔄 ResetAuthenticationCheck called (no-op in new flow)");
+        }
     }
 }

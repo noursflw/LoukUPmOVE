@@ -6,23 +6,10 @@ using loukupm.View;
 
 namespace loukupm.Services;
 
-/// <summary>
-/// Navigation Service � enforces two navigation rules:
-///
-///   RULE 1 � Tab Bar pages:
-///     Back button always navigates to HomePage (absolute route //HomePage).
-///     Switching between tabs never touches the back stack.
-///     Exception: pressing Back while already on HomePage exits the app (returns false).
-///
-///   RULE 2 � Subpages (pages outside the TabBar):
-///     Back button pops exactly one entry off the navigation stack ("..")
-///     regardless of which tab was the origin.
-/// </summary>
+
 public static class NavigationService
 {
-    // ?????????????????????????????????????????????
-    // ROUTE CONSTANTS
-    // ?????????????????????????????????????????????
+   
 
     // Auth pages (hidden, outside TabBar)
     public const string ROUTE_MAIN_PAGE = "MainPage";
@@ -77,6 +64,14 @@ public static class NavigationService
         ROUTE_POLICY_PRIVACY,
         ROUTE_TERMS_CONDITIONS, ROUTE_SETTING,ROUTE_IMPRESSUM
     };
+    private static readonly HashSet<string> AuthPages = new()
+{
+    ROUTE_SIGNIN,
+    ROUTE_REST_PASSWORD,
+    ROUTE_POLICY_PRIVACY_AUTH,
+    ROUTE_TermsAndConditions_Athun,
+    ROUTE_OTP
+};
 
     private static readonly HashSet<string> AllValidRoutes = new()
     {
@@ -123,8 +118,33 @@ public static class NavigationService
     }
 
     /// <summary>
-    /// Navigate to a subpage using a relative route (pushes onto the stack).
+    /// Creates a page instance from a route name. Used for NavigationPage fallback.
     /// </summary>
+    private static Page GetPageForRoute(string route)
+    {
+        return route switch
+        {
+            ROUTE_SIGNIN => new SinginPage(),
+            ROUTE_OTP => new OTPSINGIN(),
+            ROUTE_POLICY_PRIVACY_AUTH => new PolicyandPrivacyPageatAthun(),
+            ROUTE_TermsAndConditions_Athun => new TermsAndConditionsAthun(),
+            ROUTE_REST_PASSWORD => new RestPassword(),
+            ROUTE_POLICY_PRIVACY => new PolicyandPrivacyPage(),
+            ROUTE_TERMS_CONDITIONS => new TermsAndConditions(),
+            ROUTE_EDIT_USER => new EditeUserPage(),
+            ROUTE_EDIT_PASSWORD => new EditePasswordPage(),
+            ROUTE_EDIT_PASSWORD_VERIFICATION => new EditPasswordVerification(),
+            ROUTE_TERM_BOOKING => new TerminbuchenPage(),
+            ROUTE_PAYMENT => new Paymentgetway(),
+            ROUTE_CHACKOUT => new ChackoutPage(),
+            ROUTE_ABOUT_US => new AboutUS(),
+            ROUTE_NOTIFICATION => new NotifictionPage(),
+            ROUTE_IMPRESSUM => new ImpressumPage(),
+            ROUTE_SETTING => new SettingPage(),
+            _ => throw new InvalidOperationException($"Unknown route: {route}")
+        };
+    }
+
     public static async Task NavigateToPage(string route)
     {
         if (!ValidateRoute(route) || TabBarPages.Contains(route))
@@ -139,7 +159,21 @@ public static class NavigationService
             }
             else
             {
-                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to page {route}");
+                // Fallback: Use NavigationPage if Shell is not available (e.g., during auth flow)
+                var navPage = Application.Current?.MainPage as NavigationPage;
+                if (navPage != null)
+                {
+                    var page = GetPageForRoute(route);
+                    if (page != null)
+                    {
+                        await navPage.PushAsync(page);
+                        Console.WriteLine($"[Navigation] Successfully navigated to {route} using NavigationPage");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[Navigation] Shell and NavigationPage not available - cannot navigate to page {route}");
+                }
             }
         }
         catch (Exception ex)
@@ -154,7 +188,6 @@ public static class NavigationService
 
         try
         {
-            // Serialize the parameter as JSON and pass as query string
             string json = System.Text.Json.JsonSerializer.Serialize(parameter);
             string encodedJson = Uri.EscapeDataString(json);
             string routeWithParam = $"{route}?data={encodedJson}";
@@ -166,7 +199,21 @@ public static class NavigationService
             }
             else
             {
-                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to page {route} with param");
+                // Fallback: Use NavigationPage if Shell is not available
+                var navPage = Application.Current?.MainPage as NavigationPage;
+                if (navPage != null)
+                {
+                    var page = GetPageForRoute(route);
+                    if (page != null)
+                    {
+                        await navPage.PushAsync(page);
+                        Console.WriteLine($"[Navigation] Successfully navigated to {route} with param using NavigationPage");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[Navigation] Shell and NavigationPage not available - cannot navigate to page {route} with param");
+                }
             }
         }
         catch (Exception ex)
@@ -175,18 +222,6 @@ public static class NavigationService
         }
     }
 
-    // ?????????????????????????????????????????????
-    // BACK BUTTON
-    // ?????????????????????????????????????????????
-
-    /// <summary>
-    /// Central back-button handler.  Call from both the system back button override
-    /// (AppShell.OnBackButtonPressed) and any in-app back button/gesture.
-    ///
-    ///   � TabBar page + not Home  ?  navigate to //HomePage
-    ///   � TabBar page + Home      ?  return false  (let system exit the app)
-    ///   � Flyout page             ?  navigate to //HomePage
-    ///   � Subpage                 ?  pop one level (..)
     /// </summary>
     /// <param name="currentPage">The simple route name of the visible page (e.g. "ServicesPage").</param>
     /// <returns>true if the event was handled; false to let the OS handle it (exit).</returns>
@@ -207,12 +242,35 @@ public static class NavigationService
 
             if (TerminalPages.Contains(currentPage))
             {
-                // Terminal pages use double-tap to exit
-                // RegisterBackPress returns true if this is the first press, false if second press within timeout
+                
                 bool shouldAllowExit = !BackButtonTracker.RegisterBackPress(currentPage);
-                return !shouldAllowExit; // Return true to handle (prevent exit), false to allow exit
+                return !shouldAllowExit; 
             }
 
+            // 📌 Auth pages
+            if (AuthPages.Contains(currentPage))
+            {
+                var navPage = Application.Current?.MainPage as NavigationPage;
+
+                if (navPage != null)
+                {
+                    // LoginPage موجودة تحتها بالـ Stack
+                    if (navPage.Navigation.NavigationStack.Count > 1)
+                    {
+                        await navPage.PopAsync(true);
+                        return true;
+                    }
+                }
+
+                // fallback
+                if (shell != null)
+                {
+                    await shell.GoToAsync($"//{ROUTE_LOGIN}", animate: true);
+                    return true;
+                }
+
+                return true;
+            }
             // 📌 Tab pages
             if (TabBarPages.Contains(currentPage))
             {
@@ -244,12 +302,6 @@ public static class NavigationService
             return false;
         }
     }
-
-    // ?????????????????????????????????????????????
-    // AUTH FLOWS
-    // ?????????????????????????????????????????????
-
-    /// <summary>Navigate to LoginPage and clear the entire stack (logout).</summary>
     public static async Task NavigateToLoginAndClear()
     {
         try
@@ -263,25 +315,35 @@ public static class NavigationService
         }
     }
 
-    /// <summary>
-    /// Forces the user to return to LoginPage and clears navigation stack completely.
-    /// Used for token expiration, unauthorized access, or forced logout.
-    /// </summary>
-    public static async Task ForceNavigateToLogin()
-    {
-        try
-        {
-            Shell.Current.FlyoutIsPresented = false;
+    //public static async Task NavigateToLoginAndClear()
+    //{
+    //    try
+    //    {
+    //        await Shell.Current.GoToAsync("LoginPage", animate: false);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"[Navigation] Logout navigation error: {ex.Message}");
+    //        throw;
+    //    }
+    //}
 
-            await Shell.Current.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Force login error: {ex.Message}");
-        }
-    }
 
-    /// <summary>Navigate to HomePage (TabBar) and clear the entire stack (after login).</summary>
+    //public static async Task ForceNavigateToLogin()
+    //{
+    //    try
+    //    {
+    //        Shell.Current.FlyoutIsPresented = false;
+
+    //        await Shell.Current.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"[Navigation] Force login error: {ex.Message}");
+    //    }
+    //}
+
+
     public static async Task NavigateToHomeAndClear()
     {
         try
@@ -315,10 +377,6 @@ public static class NavigationService
         }
     }
 
-    /// <summary>
-    /// Extracts just the last path segment from the current route.
-    /// e.g. "//HomePage/NotifictionPage" ? "NotifictionPage"
-    /// </summary>
     public static string GetCurrentPageName()
     {
         var route = GetCurrentRoute();
@@ -326,9 +384,6 @@ public static class NavigationService
         return segments.LastOrDefault() ?? string.Empty;
     }
 
-    /// <summary>
-    /// Validates all routes are registered (call at app startup).
-    /// </summary>
     public static bool ValidateRoutes()
     {
         if (Shell.Current == null)
@@ -340,10 +395,7 @@ public static class NavigationService
         return true;
     }
 
-    /// <summary>
-    /// Navigate one level up if possible, otherwise navigate to Login and clear stack.
-    /// Centralizes the "pop or go to login" behavior to avoid direct Shell calls.
-    /// </summary>
+ 
     public static async Task NavigateUpOrToLogin()
     {
         try
@@ -380,9 +432,6 @@ public static class NavigationService
         }
     }
 
-    // ?????????????????????????????????????????????
-    // PRIVATE
-    // ?????????????????????????????????????????????
 
     private static bool ValidateRoute(string route)
     {

@@ -42,7 +42,8 @@ public partial class PolicyandPrivacyPageatAthun : ContentPage
     {
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            await NavigationService.ForceNavigateToLogin();
+            await NavigationService.HandleBackButton(
+        NavigationService.ROUTE_POLICY_PRIVACY_AUTH);
         });
 
         return true; // يمنع الرجوع الطبيعي

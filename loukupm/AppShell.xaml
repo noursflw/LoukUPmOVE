@@ -145,6 +145,7 @@
 
     
     <TabBar>
+        
         <ShellContent
             Icon="nhome.png"
             Title="Home"

@@ -1,10 +1,13 @@
-using Microsoft.Maui.Storage;
+using loukupm.Services;
 using loukupm.View;
+using Microsoft.Maui.Storage;
 
 namespace loukupm.View;
 
 public partial class LoadingPage : ContentPage
 {
+    private CancellationTokenSource _cts;
+
     public LoadingPage()
     {
         InitializeComponent();
@@ -15,36 +18,83 @@ public partial class LoadingPage : ContentPage
     {
         base.OnAppearing();
 
-        await Task.Delay(300); 
+        _cts = new CancellationTokenSource();
 
-        var token = await SecureStorage.GetAsync("auth_token");
-        // Prevent any navigation until initialization completes.
+        // Start animation safely
+        _ = StartLogoAnimation(_cts.Token);
+
+        // Initialize app flow
+        await InitializeApp();
+    }
+
+    private async Task InitializeApp()
+    {
         try
         {
-            // Ensure AppShell registers routes before navigation
-            MainThread.BeginInvokeOnMainThread(() =>
+            var startTime = DateTime.UtcNow;
+
+            var token = await SecureStorage.GetAsync("auth_token");
+
+            // 🎯 Minimum splash duration BEFORE navigation
+            var minSplashTime = TimeSpan.FromSeconds(4);
+
+            await Task.Delay(300); // UX buffer
+
+            var elapsed = DateTime.UtcNow - startTime;
+            if (elapsed < minSplashTime)
             {
-                // Keep LoadingPage visible until we replace MainPage
+                await Task.Delay(minSplashTime - elapsed);
+            }
+
+            Application.Current.MainPage = new AppShell();
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    await Shell.Current.GoToAsync($"//{NavigationService.ROUTE_LOGIN}");
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync($"//{NavigationService.ROUTE_HOME}");
+                }
             });
-
-            await Task.Delay(500); // small delay for UI stability
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                // Navigate to LoginPage as the new MainPage wrapped in NavigationPage
-                Application.Current.MainPage = new NavigationPage(new LoginPage());
-            }
-            else
-            {
-                // Authenticated: set AppShell as MainPage (Shell)
-                Application.Current.MainPage = new AppShell();
-            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[LoadingPage] Initialization error: {ex.Message}");
-            // Fallback to LoginPage on any initialization error
-            Application.Current.MainPage = new NavigationPage(new LoginPage());
+
+            await Task.Delay(1500);
+
+            Application.Current.MainPage =
+                new NavigationPage(new LoginPage());
         }
+    }
+    private async Task StartLogoAnimation(CancellationToken token)
+    {
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await LogoImage.ScaleTo(1.1, 800, Easing.CubicInOut);
+                await LogoImage.ScaleTo(1.0, 800, Easing.CubicInOut);
+
+                await LogoImage.FadeTo(1.0, 500);
+                await LogoImage.FadeTo(0.7, 500);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // expected when page is disposed
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = null;
     }
 }

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
+using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
 using loukupm.Services;
 using loukupm.ViewModel;
 using Microsoft.Maui.Controls.Shapes;     // RoundRectangle
@@ -10,12 +10,12 @@ namespace loukupm.View;
 
 public partial class ProfilePage : ContentPage
 {
-	public ProfilePage()
-	{
-		InitializeComponent();
+    public ProfilePage()
+    {
+        InitializeComponent();
         this.BindingContext = AppViewModel.Instance;
         Shell.SetNavBarIsVisible(this, false);
-	}
+    }
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
@@ -44,7 +44,7 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_3(object sender, EventArgs e)
     {
-        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);   
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
     }
 
     private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
@@ -54,7 +54,7 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_4(object sender, EventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);    
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
     }
 
     private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
@@ -64,7 +64,7 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_5(object sender, EventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);    
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);
     }
 
     private async void TapGestureRecognizer_Tapped_4(object sender, TappedEventArgs e)
@@ -101,25 +101,25 @@ public partial class ProfilePage : ContentPage
         OneSignalService.Logout();  // ✨ استخدم async
         SecureStorage.Remove("auth_token");
         SecureStorage.Remove("refresh_token");
-        
+
         // مسح خريطة التنقل
         //NavigationService.ClearPageSourceMap();
-        
+
         // Reset authentication check flag to allow re-authentication
         App.ResetAuthenticationCheck();
-        
+
         var popup = new MassegBoxLogout();
-        await this.ShowPopupAsync(popup);  
+        await this.ShowPopupAsync(popup);
     }
 
-   
+
 
     private async void TapGestureRecognizer_Tapped_6(object sender, TappedEventArgs e)
     {
         await Navigation.PushAsync(new PolicyandPrivacyPage());
     }
 
-    
+
     private async void Button_Clicked_11(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new PolicyandPrivacyPage());
