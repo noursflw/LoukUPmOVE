@@ -306,12 +306,22 @@ public static class NavigationService
     {
         try
         {
-            await Shell.Current.GoToAsync("LoginPage", animate: false);
+         
+            if (Shell.Current != null)
+                Shell.Current.FlyoutIsPresented = false;
+
+           
+            Application.Current!.MainPage = new AppShell();
+
+         
+            await Task.Delay(50);
+
+           
+            await Shell.Current.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Navigation] Logout navigation error: {ex.Message}");
-            throw;
+            Console.WriteLine($"[Navigation] Logout hard reset error: {ex.Message}");
         }
     }
 

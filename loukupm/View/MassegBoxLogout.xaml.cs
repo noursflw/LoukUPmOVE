@@ -1,5 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using loukupm.Services;
+using loukupm.ViewModel;
+
 
 namespace loukupm.View;
 
@@ -7,7 +9,8 @@ public partial class MassegBoxLogout : Popup
 {
 	public MassegBoxLogout()
 	{
-		InitializeComponent();
+        BindingContext= new AppViewModel();
+        InitializeComponent();
 	}
 
     private async void Button_Clicked(object sender, EventArgs e)

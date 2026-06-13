@@ -59,6 +59,7 @@
    TextColor="Black"
    HeightRequest="44"
    WidthRequest="100"
+   Command="{Binding LogoutCommand}"
    Clicked="Button_Clicked"/>
 
 

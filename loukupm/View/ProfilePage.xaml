@@ -156,7 +156,7 @@
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                         </Frame.GestureRecognizers>
                     </Frame>
-                    <Button Clicked="Button_Clicked_8" BackgroundColor="#181c21" BorderColor="#181c21" Text="Log Out" ImageSource="logout.png" TextColor="#f64a4a" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56">
+                    <Button  Clicked="Button_Clicked_8" BackgroundColor="#181c21" BorderColor="#181c21" Text="Log Out" ImageSource="logout.png" TextColor="#f64a4a" FontSize="18" FontFamily="georgia" Margin="24,0,24,0" CornerRadius="16" HeightRequest="56">
                         <Button.Shadow>
                             <Shadow Opacity="0" Radius="0" Offset="0,0"/>
                         </Button.Shadow>

@@ -4,7 +4,9 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using loukupm.Langue;
+using loukupm.Langue;
 using loukupm.Model;
+using loukupm.services;
 using loukupm.Services;
 using loukupm.View;
 using loukupm.View.MassgingApp;
@@ -17,7 +19,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using loukupm.Langue;
 using static loukupm.Model.Auth;
 
 
@@ -1235,8 +1236,35 @@ namespace loukupm.ViewModel
             }
         }
 
+        public void ResetUser()
+        {
+            currentUser = null;
 
+            UserName = "";
+            UserFirstName = "";
+            Email = "";
+            FullName = "";
+            Phone = "";
+            Avatar = "default_avatar.png";
 
+            IsLoadUser = false;
+        }
+        public ICommand LogoutCommand => new Command(async () => await Logout());
+
+        private async Task Logout()
+        {
+            try
+            {
+                OneSignalService.Logout();
+                SecureStorage.RemoveAll();
+                ResetUser();
+                await NavigationService.NavigateToLoginAndClear();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -1770,25 +1798,6 @@ namespace loukupm.ViewModel
         {
             return SelectedServices.Sum(s => s.TimeServies);
         }
-
-        
-        //public async Task LoadPolicyandPrivacyAsync()
-        //{
-        //    try
-        //    {
-        //        var data = await _apiServices.GetPolicyandPrivaciesAsync();
-
-        //        ListpolicyandPrivacy.Clear();
-        //        foreach (var item in data)
-        //            ListpolicyandPrivacy.Add(item);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error loading Policy and Privacy: {ex.Message}");
-        //    }
-        //}
-
-        
 
         private async Task EnableReminderTimerAsync()
         {
