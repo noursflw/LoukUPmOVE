@@ -152,12 +152,19 @@
                                            CornerRadius="12"
                                            ImageSource="backbuttonpmg.png"
                                            BackgroundColor="#181c21"
+                                           BorderColor="#181c21"
                                            Padding="0" 
                                            Margin="0,5,10,0"            
                                            BorderWidth="1"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Start"
-                                           Clicked="Button_Clicked_2" />
+                                           Clicked="Button_Clicked_2" >
+
+
+                                    <Button.Shadow>
+                                        <Shadow Opacity="0" Radius="0" Offset="0,0"/>
+                                    </Button.Shadow>
+                                </Button>
                             </Grid>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" />

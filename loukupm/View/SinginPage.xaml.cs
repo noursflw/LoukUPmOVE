@@ -226,30 +226,35 @@ public partial class SinginPage : ContentPage
                 string.IsNullOrWhiteSpace(passwordConfirmation))
             {
                 await this.ShowPopupAsync(new EnterAllFailed());
+                ResetRegisterUI();
                 return;
             }
 
             if (!IsValidEmail(email))
             {
                 await this.ShowPopupAsync(new EroreInputEmaile());
+                ResetRegisterUI();
                 return;
             }
 
             if (password != passwordConfirmation)
             {
                 await this.ShowPopupAsync(new Paswordmatch());
+                ResetRegisterUI();
                 return;
             }
 
             if (password.Length < 6)
             {
                 await this.ShowPopupAsync(new paslen());
+                ResetRegisterUI();
                 return;
             }
 
             if (Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
                 await this.ShowPopupAsync(new NoEnternetConacted());
+                ResetRegisterUI();
                 return;
             }
             var registerData = new RegisterRequest
@@ -296,34 +301,46 @@ public partial class SinginPage : ContentPage
                 await NavigationService.NavigateToPage(
                     NavigationService.ROUTE_OTP,
                     otpContext);
-                RegisterButton.IsVisible = true;
+                ResetRegisterUI();
 
-                await this.ShowPopupAsync(new CompletedLogin());
+                
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
                 await this.ShowPopupAsync(new EmaileUsed());
+                ResetRegisterUI();
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
             {
                 await this.ShowPopupAsync(new NoServerResponse());
+                ResetRegisterUI();
             }
             else
             {
                 await this.ShowPopupAsync(new NoServerResponse());
+                ResetRegisterUI();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Register Error: {ex.Message}");
             await this.ShowPopupAsync(new NoServerResponse());
+            ResetRegisterUI();
         }
         finally
         {
-            LoadingIndicator.IsRunning = false;
-            LoadingIndicator.IsVisible = false;
-            RegisterButton.IsVisible = true;
+            ResetRegisterUI();
         }
+    }
+    private void ResetRegisterUI()
+    {
+        LoadingIndicator.IsRunning = false;
+        LoadingIndicator.IsVisible = false;
+
+        RegisterButton.IsVisible = true;
+        RegisterButton.Opacity = 1;
+        RegisterButton.Scale = 1;
+        RegisterButton.Rotation = 0;
     }
 
     private bool IsValidEmail(string email)

@@ -307,7 +307,7 @@
     <value>Meine Termine</value>
   </data>
   <data name="NameUser" xml:space="preserve">
-    <value>Name</value>
+    <value>Vorname</value>
   </data>
   <data name="NewMyPassord" xml:space="preserve">
     <value>Neues Passwort</value>

@@ -11,22 +11,18 @@ namespace loukupm.View;
 
 public partial class ServicesPage : ContentPage
 {
-	public ServicesPage()
-	{
-		InitializeComponent();
+    public ServicesPage()
+    {
+        InitializeComponent();
         this.BindingContext = AppViewModel.Instance;
     }
 
-    /// <summary>
-    /// Service selection handler - delegates to ViewModel command for unified logic
-    /// This ensures ServicesPage uses the same selection behavior as HomePage
-    /// </summary>
+  
     private void Button_Clicked_1(object sender, EventArgs e)
     {
         var service = (sender as Button)?.BindingContext as Servies;
         if (service == null) return;
 
-        // Delegate to the ViewModel's SelectServiceButtonCommand for unified logic
         var vm = BindingContext as AppViewModel;
         if (vm?.SelectServiceButtonCommand is ICommand command && command.CanExecute(service))
         {
@@ -34,11 +30,10 @@ public partial class ServicesPage : ContentPage
         }
     }
 
-
    
-
     private Frame _lastSelectedFrame;
-    private Label _lastSelectedLabel;
+
+    private readonly List<Frame> _categoryFrames = new();
 
     private async void OnCategoryTapped(object sender, TappedEventArgs e)
     {
@@ -47,48 +42,62 @@ public partial class ServicesPage : ContentPage
             var vm = BindingContext as AppViewModel;
             vm?.FilterServices(selectedCategory);
 
-            // إعادة آخر عنصر مختار إلى الحالة الأصلية
-            if (_lastSelectedFrame != null && _lastSelectedLabel != null)
+            
+            if (!_categoryFrames.Contains(tappedFrame))
+                _categoryFrames.Add(tappedFrame);
+
+           
+            if (_lastSelectedFrame != null)
             {
                 _lastSelectedFrame.BorderColor = Color.FromArgb("#444444");
                 _lastSelectedFrame.BackgroundColor = Color.FromArgb("#444444");
-                _lastSelectedLabel.TextColor = Color.FromArgb("#999999");
+
+                if (_lastSelectedFrame.Content is Label oldLabel)
+                    oldLabel.TextColor = Color.FromArgb("#999999");
             }
 
-            // تعيين الألوان الجديدة للعنصر المختار الحالي
+         
             tappedFrame.BorderColor = Color.FromArgb("#C9A24A");
             tappedFrame.BackgroundColor = Color.FromArgb("#C9A24A");
 
-            // البحث عن Label داخل الـ Frame وتغيير لونه
+           
             if (tappedFrame.Content is Label label)
             {
-                label.TextColor = Color.FromArgb("#000000"); // أسود
+                label.TextColor = Color.FromArgb("#000000");
             }
 
             _lastSelectedFrame = tappedFrame;
-            _lastSelectedLabel = tappedFrame.Content as Label;
 
-            // 🔹 ضبط AnchorX/AnchorY
             tappedFrame.AnchorX = 0.5;
             tappedFrame.AnchorY = 0.5;
 
-            // تأثير Scale
             await tappedFrame.ScaleTo(1.05, 100, Easing.CubicOut);
             await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
         }
     }
 
+    private void ResetCategoriesUI()
+    {
+        _lastSelectedFrame = null;
 
+        foreach (var frame in _categoryFrames)
+        {
+            frame.BorderColor = Color.FromArgb("#444444");
+            frame.BackgroundColor = Color.FromArgb("#444444");
 
+            if (frame.Content is Label label)
+                label.TextColor = Color.FromArgb("#999999");
+        }
+    }
 
-
+  
     protected override bool OnBackButtonPressed()
     {
-        // TabBar page: Delegate to centralized back button logic
         MainThread.BeginInvokeOnMainThread(async () =>
         {
             await NavigationService.HandleBackButton(NavigationService.ROUTE_SERVICES);
         });
+
         return true;
     }
 
@@ -97,6 +106,7 @@ public partial class ServicesPage : ContentPage
         await Navigation.PopAsync();
     }
 
+   
     private async void Button_Clicked_2(object sender, EventArgs e)
     {
         var selected = AppViewModel.Instance.CurrentBooking.SelectedServices;
@@ -110,8 +120,9 @@ public partial class ServicesPage : ContentPage
         await Navigation.PushAsync(new TerminbuchenPage());
     }
 
-    /// <summary>
-    /// Toast notifications for service selection are now handled in the ViewModel command
-    /// This method is no longer needed as the notification is centralized
-    /// </summary>
+  
+    private void Button_Clicked_3(object sender, EventArgs e)
+    {
+        ResetCategoriesUI();
+    }
 }

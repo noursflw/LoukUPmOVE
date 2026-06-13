@@ -16,7 +16,7 @@ public partial class HomePage : ContentPage
 	public HomePage()
 	{
 		InitializeComponent();
-		this.BindingContext= AppViewModel.Instance;
+		this.BindingContext= new AppViewModel();
 
 		
 		this.InitializeLanguageTracking();
@@ -104,30 +104,7 @@ public partial class HomePage : ContentPage
 
  
 
-    private Frame _lastSelectedFrame;
-
-    private async void OnCategoryTapped(object sender, TappedEventArgs e)
-    {
-        if (sender is Frame tappedFrame && tappedFrame.BindingContext is Category selectedCategory)
-        {
-            var vm = BindingContext as AppViewModel;
-            vm?.FilterServices(selectedCategory);
-
-            if (_lastSelectedFrame != null)
-                _lastSelectedFrame.BorderColor = Color.FromArgb("#444444");
-
-            tappedFrame.BorderColor = Color.FromArgb("#EBD750");
-            _lastSelectedFrame = tappedFrame;
-
-         
-            tappedFrame.AnchorX = 0.5;
-            tappedFrame.AnchorY = 0.5;
-
-         
-            await tappedFrame.ScaleTo(1.05, 100, Easing.CubicOut);
-            await tappedFrame.ScaleTo(1, 100, Easing.CubicIn);
-        }
-    }
+    
 
     private void Button_Clicked_2(object sender, EventArgs e)
     {

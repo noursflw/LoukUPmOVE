@@ -880,7 +880,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
+        ///   Looks up a localized string similar to Vorname.
         /// </summary>
         internal static string NameUser {
             get {

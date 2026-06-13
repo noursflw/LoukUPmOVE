@@ -96,6 +96,7 @@ namespace loukupm.ViewModel
 
         [ObservableProperty]
         private HomeSliderViewModel homeSliderVM;
+        public IAsyncRelayCommand RefreshServicesCommand { get; }
 
         private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel());
         public static AppViewModel Instance => _instance.Value;
@@ -122,7 +123,7 @@ namespace loukupm.ViewModel
             // ✅ Do NOT create new HttpClient here - use static instance
 
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
-           
+            RefreshServicesCommand = new AsyncRelayCommand(LoadServicesAsync);
             ProviderDays = new ObservableCollection<DayItem>();
             SelectDayCommand = new Command<DayItem>(OnSelectDay);
             LoadCurrentWeekDays();
@@ -572,22 +573,23 @@ namespace loukupm.ViewModel
                 foreach (var item in data)
                     Services.Add(item);
 
-                FilteredServices = new ObservableCollection<Servies>(Services);
+                // 🔥 مهم: لا new
+                FilteredServices.Clear();
+                foreach (var item in Services)
+                    FilteredServices.Add(item);
 
-               
                 Categories.Clear();
+
                 var uniqueCategories = Services
                     .Where(s => s.Category != null)
                     .GroupBy(s => s.Category.Name)
-                    .Select(g => g.First().Category)
-                    .ToList();
+                    .Select(g => g.First().Category);
 
                 foreach (var cat in uniqueCategories)
                     Categories.Add(cat);
-            }
-            catch (Exception ex)
-            {
-                return;
+
+              
+                SelectedCategory = null;
             }
             finally
             {
@@ -598,29 +600,31 @@ namespace loukupm.ViewModel
 
         [ObservableProperty]
         private Category selectedCategory;
-        
+
         public void FilterServices(Category category)
         {
             SelectedCategory = category;
 
-            if (category == null || string.IsNullOrWhiteSpace(category.Name) || category.Name == "الكل")
+            IEnumerable<Servies> result = Services;
+
+            if (category != null &&
+                !string.IsNullOrWhiteSpace(category.Name) &&
+                category.Name != "الكل")
             {
-                FilteredServices = new ObservableCollection<Servies>(Services);
-            }
-            else
-            {
-                FilteredServices = new ObservableCollection<Servies>(
-                    Services.Where(s => s.Category?.Name == category.Name)
-                );
+                result = result.Where(s => s.Category?.Name == category.Name);
             }
 
-           
+            FilteredServices.Clear();
+
+            foreach (var item in result)
+                FilteredServices.Add(item);
+
             if (!string.IsNullOrWhiteSpace(SearchServiceTerm))
             {
                 PerformServiceSearch(SearchServiceTerm);
             }
         }
-     
+
         [ObservableProperty]
         private Servies selectedService;
 

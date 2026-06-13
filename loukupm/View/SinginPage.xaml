@@ -104,6 +104,78 @@
                   Margin="25,10,25,0"
                   IsVisible="False"/>
 
+                <VerticalStackLayout Margin="24,10,0,0">
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Frame WidthRequest="22"
+HeightRequest="22"
+CornerRadius="11"
+BackgroundColor="#22C55E"
+Padding="0"
+HasShadow="False"
+VerticalOptions="Center">
+
+                            <Label Text="✓"
+    TextColor="White"
+    FontSize="14"
+    HorizontalOptions="Center"
+    VerticalOptions="Center"
+    HorizontalTextAlignment="Center"
+    VerticalTextAlignment="Center"/>
+                        </Frame>
+
+                        <Label Text="{loc:Translate Name=NUMBER8}"
+TextColor="White"
+VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <!-- شرط 2 -->
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Frame WidthRequest="22"
+HeightRequest="22"
+CornerRadius="11"
+BackgroundColor="#22C55E"
+Padding="0"
+HasShadow="False"
+VerticalOptions="Center">
+
+                            <Label Text="✓"
+    TextColor="White"
+    FontSize="14"
+    HorizontalTextAlignment="Center"
+    VerticalTextAlignment="Center"/>
+                        </Frame>
+
+                        <Label Text="{loc:Translate Name=ONECHARCAP}"
+TextColor="White"
+VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <!-- شرط 3 -->
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Frame WidthRequest="22"
+HeightRequest="22"
+CornerRadius="11"
+BackgroundColor="#22C55E"
+Padding="0"
+HasShadow="False"
+VerticalOptions="Center">
+
+                            <Label Text="✓"
+    TextColor="White"
+    FontSize="14"
+    HorizontalTextAlignment="Center"
+    VerticalTextAlignment="Center"/>
+                        </Frame>
+
+                        <Label Text="{loc:Translate Name=ONENUMBER}"
+TextColor="White"
+VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
                 <Button
         x:Name="RegisterButton"
         TextColor="#1F1B04"
