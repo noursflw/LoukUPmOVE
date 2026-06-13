@@ -294,7 +294,7 @@ public partial class SinginPage : ContentPage
                 {
                     Email = email,
                     Phone = phone,
-                    RegistrationMethod = string.IsNullOrWhiteSpace(phone) ? "email" : "phone",
+                    RegistrationMethod = string.IsNullOrWhiteSpace(email) ? "phone" : "email",
                     MaskedDestination = registerResponse?.MaskedDestination
                 };
 
@@ -338,7 +338,7 @@ public partial class SinginPage : ContentPage
         LoadingIndicator.IsVisible = false;
 
         RegisterButton.IsVisible = true;
-        RegisterButton.Opacity = 1;
+        RegisterButton         .Opacity = 1;
         RegisterButton.Scale = 1;
         RegisterButton.Rotation = 0;
     }
