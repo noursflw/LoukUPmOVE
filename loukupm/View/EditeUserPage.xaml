@@ -45,7 +45,6 @@
 
 
             </Grid>
-
             <VerticalStackLayout  Spacing="10" Margin="0,50,0,0">
                 <ScrollView>
                     <VerticalStackLayout>

@@ -1,8 +1,9 @@
-﻿// EditeUserPage.xaml.cs - الكود المحسّن النهائي
+﻿
 
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
+using loukupm.Langue;
 using loukupm.Services;
 using loukupm.ViewModel;
 
@@ -16,10 +17,6 @@ public partial class EditeUserPage : ContentPage
         this.BindingContext = AppViewModel.Instance;
     }
 
-    /// <summary>
-    /// معالج زر العودة - يستخدم نظام الملاحة المركزي
-    /// يتبع القاعدة: صفحات تدفق الملف الشخصي → //ProfilePage مباشرة
-    /// </summary>
     protected override bool OnBackButtonPressed()
     {
         try
@@ -44,25 +41,17 @@ public partial class EditeUserPage : ContentPage
         }
     }
 
-    /// <summary>
-    /// زر العودة للصفحة السابقة
-    /// </summary>
+    
     private async void Button_Clicked(object sender, EventArgs e)
     {
        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_PROFILE);
     }
 
-    /// <summary>
-    /// معالج زر تغيير الصورة - يطلب الأذن ثم يختار صورة
-    /// ✅ يطلب أذن الوصول للصور
-    /// ✅ يفتح المعرج
-    /// ✅ يحدّث الصورة في الحساب
-    /// </summary>
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         try
         {
-            // 🔹 الخطوة 1: طلب الأذن
+         
             bool hasPermission = await RequestPhotoPermissionAsync();
 
             if (!hasPermission)
@@ -71,21 +60,14 @@ public partial class EditeUserPage : ContentPage
                 return;
             }
 
-            // ✅ الخطوة 2: اختيار الصورة
+           
             await PickAndSetPhotoAsync();
         }
         catch (Exception ex)
         {
-            await DisplayAlert("خطأ", $"حدث خطأ: {ex.Message}", "حسناً");
+            await Toast.Make(AppResource.image_upload_failed, ToastDuration.Short).Show();
         }
     }
-
-    /// <summary>
-    /// طلب أذن الوصول للصور
-    /// ✅ يدعم Android 13+ (Permissions.Media)
-    /// ✅ يدعم Android 12 وأقل (Permissions.StorageRead)
-    /// ✅ يدعم iOS (Permissions.Photos)
-    /// </summary>
     private async Task<bool> RequestPhotoPermissionAsync()
     {
         PermissionStatus status = PermissionStatus.Unknown;
@@ -114,19 +96,13 @@ public partial class EditeUserPage : ContentPage
         return status == PermissionStatus.Granted;
     }
 
-    /// <summary>
-    /// اختيار صورة من المعرج وتحديث الملف الشخصي
-    /// ✅ تخزين مسار الصورة المختارة
-    /// ✅ تحديث Avatar لعرضها مباشرة
-    /// ✅ معالجة شاملة للأخطاء
-    /// </summary>
     private async Task PickAndSetPhotoAsync()
     {
         try
         {
             var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
             {
-                Title = "اختر صورة من المعرج"
+                Title = AppResource.select_image_from_gallery
             });
 
             if (result != null)
@@ -134,28 +110,25 @@ public partial class EditeUserPage : ContentPage
                 var viewModel = BindingContext as AppViewModel;
                 if (viewModel != null)
                 {
-                    // 🔹 تخزين مسار الصورة المختارة مؤقتًا
+                    
                     viewModel.SelectedImagePath = result.FullPath;
 
-                    // 🎨 تحديث Avatar لعرض الصورة مباشرة
+                    
                     viewModel.Avatar = result.FullPath;
 
-                    Console.WriteLine($"📸 Image selected: {result.FullPath}");
-                    await Toast.Make(
-                        "تم تحميل الصورة بنجاح",
-                        ToastDuration.Short
-                    ).Show();
+                   
+                    await Toast.Make(AppResource.image_upload_completed_success).Show();
                 }
             }
         }
         catch (OperationCanceledException)
         {
-            await Toast.Make("تم الإلغاء", ToastDuration.Short).Show();
+            await Toast.Make(AppResource.operation_cancelled, ToastDuration.Short).Show();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error selecting image: {ex.Message}");
-            await DisplayAlert("خطأ", $"فشل تحميل الصورة: {ex.Message}", "حسناً");
+            
+            await Toast.Make(AppResource.image_upload_failed, ToastDuration.Short).Show();
         }
     }
 
@@ -179,11 +152,6 @@ public partial class EditeUserPage : ContentPage
     {
         var popup = new RemoveUserPopup();
         OneSignalService.Logout();
-
-        // مسح خريطة التنقل قبل حذف الحساب
-        //NavigationService.ClearPageSourceMap();
-
-        // Reset authentication check flag
         App.ResetAuthenticationCheck();
 
         await this.ShowPopupAsync(popup);
@@ -197,4 +165,8 @@ public partial class EditeUserPage : ContentPage
     {
         await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
     }
+
+   
+
+
 }

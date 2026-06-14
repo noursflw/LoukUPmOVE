@@ -984,14 +984,8 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   <data name="scertey" xml:space="preserve">
     <value>Sicherheit</value>
   </data>
-  <data name="NUMBER8" xml:space="preserve">
-    <value>Mindestens 8 Zeichen</value>
-  </data>
-  <data name="ONECHARCAP" xml:space="preserve">
+  <data name="password_uppercase_required" xml:space="preserve">
     <value>Mindestens 1 Großbuchstabe</value>
-  </data>
-  <data name="ONENUMBER" xml:space="preserve">
-    <value>Mindestens 1 Zahl</value>
   </data>
   <data name="TabUpcoming" xml:space="preserve">
     <value>Ausstehend</value>
@@ -1012,9 +1006,18 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
     <value>Wähle ein Bild aus der Galerie</value>
   </data>
   <data name="operation_cancelled" xml:space="preserve">
-    <value>action_cancelled</value>
+    <value>Abgebrochen</value>
+  </data>
+  <data name="operation_cancelled1" xml:space="preserve">
+    <value>Abgebrochen</value>
   </data>
   <data name="image_upload_failed" xml:space="preserve">
     <value>Bild konnte nicht hochgeladen werden</value>
+  </data>
+  <data name="password_min_length" xml:space="preserve">
+    <value>Mindestens 8 Zeichen</value>
+  </data>
+  <data name="password_number_required " xml:space="preserve">
+    <value>Mindestens 1 Zahl</value>
   </data>
 </root>

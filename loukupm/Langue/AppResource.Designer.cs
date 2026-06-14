@@ -1024,38 +1024,20 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mindestens 8 Zeichen.
-        /// </summary>
-        internal static string NUMBER8 {
-            get {
-                return ResourceManager.GetString("NUMBER8", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mindestens 1 Großbuchstabe.
-        /// </summary>
-        internal static string ONECHARCAP {
-            get {
-                return ResourceManager.GetString("ONECHARCAP", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mindestens 1 Zahl.
-        /// </summary>
-        internal static string ONENUMBER {
-            get {
-                return ResourceManager.GetString("ONENUMBER", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to action_cancelled.
+        ///   Looks up a localized string similar to Abgebrochen.
         /// </summary>
         internal static string operation_cancelled {
             get {
                 return ResourceManager.GetString("operation_cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abgebrochen.
+        /// </summary>
+        internal static string operation_cancelled1 {
+            get {
+                return ResourceManager.GetString("operation_cancelled1", resourceCulture);
             }
         }
         
@@ -1083,6 +1065,33 @@ namespace loukupm.Langue {
         internal static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 8 Zeichen.
+        /// </summary>
+        internal static string password_min_length {
+            get {
+                return ResourceManager.GetString("password_min_length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 1 Zahl.
+        /// </summary>
+        internal static string password_number_required_ {
+            get {
+                return ResourceManager.GetString("password_number_required ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 1 Großbuchstabe.
+        /// </summary>
+        internal static string password_uppercase_required {
+            get {
+                return ResourceManager.GetString("password_uppercase_required", resourceCulture);
             }
         }
         

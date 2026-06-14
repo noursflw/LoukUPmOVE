@@ -540,7 +540,7 @@ public partial class SinginPage : ContentPage
     {
         await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY_AUTH);
     }
-    private void CheckBox_CheckChanged(object sender, EventArgs e)
+    private void CheckBox_CheckChanged(object sender, EventArgs e) 
     {
         UpdateButtonsState();
     }
@@ -721,4 +721,46 @@ public partial class SinginPage : ContentPage
     {
         await NavigationService.NavigateToPage(NavigationService.ROUTE_TermsAndConditions_Athun);
     }
+
+    private bool _hasMinLength;
+    private bool _hasUppercase;
+    private bool _hasNumber;
+    private bool _isPasswordValid;
+    private void RegisterPasswordEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        var password = e.NewTextValue ?? "";
+
+        _hasMinLength = password.Length >= 8;
+        _hasUppercase = Regex.IsMatch(password, "[A-Z]");
+        _hasNumber = Regex.IsMatch(password, "[0-9]");
+
+        UpdatePasswordUI();
+        ValidateForm();
+    }
+    private void UpdatePasswordUI()
+    {
+        SetRuleUI(LengthFrame, LengthIcon, _hasMinLength);
+        SetRuleUI(UpperFrame, UpperIcon, _hasUppercase);
+        SetRuleUI(NumberFrame, NumberIcon, _hasNumber);
+    }
+
+    private void SetRuleUI(Frame frame, Label icon, bool isValid)
+    {
+        frame.BackgroundColor = isValid ? Colors.Green : Colors.Red;
+        icon.Text = isValid ? "✔" : "○";
+    }
+    private void ValidateForm()
+    {
+        var isNameValid = !string.IsNullOrWhiteSpace(RegisterNameEntry.Text);
+        var isLastNameValid = !string.IsNullOrWhiteSpace(RegisterLastNameEntry.Text);
+        var isEmailValid = IsValidEmaile(RegisterEmailEntry.Text);
+        var isPasswordValid = _hasMinLength && _hasUppercase && _hasNumber;
+
+        RegisterButton.IsEnabled =
+            isNameValid &&
+            isLastNameValid &&
+            isEmailValid &&
+            isPasswordValid;
+    }
+
 }

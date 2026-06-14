@@ -1,5 +1,6 @@
 using loukupm.ViewModel;
 using loukupm.Services;
+using System.Text.RegularExpressions;
 
 namespace loukupm.View;
 
@@ -51,4 +52,41 @@ public partial class EditePasswordPage : ContentPage
             Console.WriteLine($"[EditePasswordPage] Button click navigation error: {ex.Message}");
         }
     }
+
+    private bool _hasMinLength;
+    private bool _hasUppercase;
+    private bool _hasNumber;
+    private bool _isPasswordValid;
+    private void RegisterPasswordEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        var password = e.NewTextValue ?? "";
+
+        _hasMinLength = password.Length >= 8;
+        _hasUppercase = Regex.IsMatch(password, "[A-Z]");
+        _hasNumber = Regex.IsMatch(password, "[0-9]");
+
+        UpdatePasswordUI();
+        ValidateForm();
+    }
+    private void UpdatePasswordUI()
+    {
+        SetRuleUI(LengthFrame, LengthIcon, _hasMinLength);
+        SetRuleUI(UpperFrame, UpperIcon, _hasUppercase);
+        SetRuleUI(NumberFrame, NumberIcon, _hasNumber);
+    }
+
+    private void SetRuleUI(Frame frame, Label icon, bool isValid)
+    {
+        frame.BackgroundColor = isValid ? Colors.Green : Colors.Red;
+        icon.Text = isValid ? "✔" : "○";
+    }
+    private void ValidateForm()
+    {
+
+
+        var isPasswordValid = _hasMinLength && _hasUppercase && _hasNumber;
+
+        RegisterButton.IsEnabled =isPasswordValid;
+    }
+
 }

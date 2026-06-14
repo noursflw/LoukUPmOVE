@@ -68,7 +68,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:TextField x:Name="RegisterPhoneEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png"  Keyboard="Numeric" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
+                <material:TextField x:Name="RegisterPhoneEntry"  Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png"  Keyboard="Numeric" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
                 <Label FontSize="16" Margin="12,24,0,0" Padding="10">
                     <Label.FormattedText>
                         <FormattedString>
@@ -77,7 +77,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:TextField x:Name="RegisterPasswordEntry" Title="{loc:Translate Name=Password }" CornerRadius="16" InputBackgroundColor="Transparent" IsPassword="True" Margin="25,0,25,0">
+                <material:TextField x:Name="RegisterPasswordEntry" Title="{loc:Translate Name=Password }" TextChanged="RegisterPasswordEntry_TextChanged" CornerRadius="16" InputBackgroundColor="Transparent" IsPassword="True" Margin="25,0,25,0">
                     
                     <material:TextField.Attachments>
                         <material:TextFieldPasswordShowHideAttachment />
@@ -104,78 +104,90 @@
                   Margin="25,10,25,0"
                   IsVisible="False"/>
 
-                <VerticalStackLayout Margin="24,10,0,0">
+                <VerticalStackLayout Spacing="10" Margin="24,10,0,0">
+
+                    <!-- شرط: طول كلمة المرور -->
                     <HorizontalStackLayout Spacing="10">
 
-                        <Frame WidthRequest="22"
-HeightRequest="22"
-CornerRadius="11"
-BackgroundColor="#22C55E"
-Padding="0"
-HasShadow="False"
-VerticalOptions="Center">
+                        <Frame x:Name="LengthFrame"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               BackgroundColor="Red"
+               Padding="0"
+               HasShadow="False"
+               VerticalOptions="Center">
 
-                            <Label Text="✓"
-    TextColor="White"
-    FontSize="14"
-    HorizontalOptions="Center"
-    VerticalOptions="Center"
-    HorizontalTextAlignment="Center"
-    VerticalTextAlignment="Center"/>
+                            <Label x:Name="LengthIcon"
+                   Text="○"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
                         </Frame>
 
-                        <Label Text="{loc:Translate Name=NUMBER8}"
-TextColor="White"
-VerticalOptions="Center"/>
+                        <Label Text="{loc:Translate Name=password_min_length}"
+               TextColor="White"
+               VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
-                    <!-- شرط 2 -->
+                    <!-- شرط: حرف كبير -->
                     <HorizontalStackLayout Spacing="10">
 
-                        <Frame WidthRequest="22"
-HeightRequest="22"
-CornerRadius="11"
-BackgroundColor="#22C55E"
-Padding="0"
-HasShadow="False"
-VerticalOptions="Center">
+                        <Frame x:Name="UpperFrame"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               BackgroundColor="Red"
+               Padding="0"
+               HasShadow="False"
+               VerticalOptions="Center">
 
-                            <Label Text="✓"
-    TextColor="White"
-    FontSize="14"
-    HorizontalTextAlignment="Center"
-    VerticalTextAlignment="Center"/>
+                            <Label x:Name="UpperIcon"
+                   Text="○"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
                         </Frame>
 
-                        <Label Text="{loc:Translate Name=ONECHARCAP}"
-TextColor="White"
-VerticalOptions="Center"/>
+                        <Label Text="{loc:Translate Name=password_uppercase_required}"
+               TextColor="White"
+               VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
-                    <!-- شرط 3 -->
+                    <!-- شرط: رقم -->
                     <HorizontalStackLayout Spacing="10">
 
-                        <Frame WidthRequest="22"
-HeightRequest="22"
-CornerRadius="11"
-BackgroundColor="#22C55E"
-Padding="0"
-HasShadow="False"
-VerticalOptions="Center">
+                        <Frame x:Name="NumberFrame"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               BackgroundColor="Red"
+               Padding="0"
+               HasShadow="False"
+               VerticalOptions="Center">
 
-                            <Label Text="✓"
-    TextColor="White"
-    FontSize="14"
-    HorizontalTextAlignment="Center"
-    VerticalTextAlignment="Center"/>
+                            <Label x:Name="NumberIcon"
+                   Text="○"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
                         </Frame>
 
-                        <Label Text="{loc:Translate Name=ONENUMBER}"
-TextColor="White"
-VerticalOptions="Center"/>
+                        <Label Text="{loc:Translate Name=password_number_required}"
+               TextColor="White"
+               VerticalOptions="Center"/>
                     </HorizontalStackLayout>
+
                 </VerticalStackLayout>
-
                 <Button
         x:Name="RegisterButton"
         TextColor="#1F1B04"
