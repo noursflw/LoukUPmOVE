@@ -1003,4 +1003,13 @@ Beginnt hier
   <data name="DataPblicer" xml:space="preserve">
     <value>Impressum</value>
   </data>
+  <data name="image_upload_completed_success" xml:space="preserve">
+    <value>Das Bild wurde erfolgreich hochgeladen</value>
+  </data>
+  <data name="select_image_from_gallery" xml:space="preserve">
+    <value>Wähle ein Bild aus der Galerie</value>
+  </data>
+  <data name="image_upload_failed" xml:space="preserve">
+    <value>Bild konnte nicht hochgeladen werden</value>
+  </data>
 </root>

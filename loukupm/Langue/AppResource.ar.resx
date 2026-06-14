@@ -1003,4 +1003,16 @@
   <data name="DataPblicer" xml:space="preserve">
     <value>بيانات النشر</value>
   </data>
+  <data name="image_upload_completed_success" xml:space="preserve">
+    <value>تم تحميل الصورة بنجاح </value>
+  </data>
+  <data name="select_image_from_gallery" xml:space="preserve">
+    <value>اختر صورة من المعرض</value>
+  </data>
+  <data name="operation_cancelled" xml:space="preserve">
+    <value>تم الإلغاء</value>
+  </data>
+  <data name="image_upload_failed" xml:space="preserve">
+    <value>فشل تحميل الصورة</value>
+  </data>
 </root>

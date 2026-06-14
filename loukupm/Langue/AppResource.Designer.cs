@@ -772,6 +772,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Das Bild wurde erfolgreich hochgeladen.
+        /// </summary>
+        internal static string image_upload_completed_success {
+            get {
+                return ResourceManager.GetString("image_upload_completed_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bild konnte nicht hochgeladen werden.
+        /// </summary>
+        internal static string image_upload_failed {
+            get {
+                return ResourceManager.GetString("image_upload_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profilbild.
         /// </summary>
         internal static string imegpesonaly {
@@ -1029,6 +1047,15 @@ namespace loukupm.Langue {
         internal static string ONENUMBER {
             get {
                 return ResourceManager.GetString("ONENUMBER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to action_cancelled.
+        /// </summary>
+        internal static string operation_cancelled {
+            get {
+                return ResourceManager.GetString("operation_cancelled", resourceCulture);
             }
         }
         
@@ -2059,6 +2086,15 @@ namespace loukupm.Langue {
         internal static string scertey {
             get {
                 return ResourceManager.GetString("scertey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wähle ein Bild aus der Galerie.
+        /// </summary>
+        internal static string select_image_from_gallery {
+            get {
+                return ResourceManager.GetString("select_image_from_gallery", resourceCulture);
             }
         }
         
