@@ -330,24 +330,46 @@ HasShadow="False">
                     <Frame HeightRequest="56" Margin="6,0,0,0"
              WidthRequest="110"
              CornerRadius="16" 
+              Padding="0"              
              BackgroundColor="#444444"
              sk:Skeleton.IsBusy="{Binding Isloadday}" 
              sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-             BorderColor="#444444" />
+             BorderColor="#444444">
+                        <Label Text="9:30" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center" 
+                               TextColor="White" 
+                               FontFamily="Oswald" />
+
+                    </Frame>
                     <Frame HeightRequest="56" Margin="6,0,0,0"
              WidthRequest="110"
              CornerRadius="16" 
+              Padding="0"            
              BackgroundColor="#444444"
              sk:Skeleton.IsBusy="{Binding Isloadday}" 
              sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-             BorderColor="#444444" />
+             BorderColor="#444444" >
+                        <Label Text="10:00" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center" 
+                               TextColor="White" 
+                               FontFamily="Oswald" />
+                    </Frame>
                     <Frame HeightRequest="56" Margin="6,0,0,0"
              WidthRequest="110"
              CornerRadius="16" 
+                           Padding="0"
              BackgroundColor="#444444"
              sk:Skeleton.IsBusy="{Binding Isloadday}" 
              sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
-             BorderColor="#444444" />
+             BorderColor="#444444" >
+                        <Label Text="10:30" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center" 
+                               TextColor="White" 
+                               FontFamily="Oswald" />
+                    </Frame>
                 </HorizontalStackLayout>
                 <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" Margin="10" Padding="16">
                     <VerticalStackLayout Spacing="10">

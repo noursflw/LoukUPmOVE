@@ -358,7 +358,7 @@
     <value>Karteninhaber</value>
   </data>
   <data name="PhoneNumber" xml:space="preserve">
-    <value>Telefonnummer</value>
+    <value>Handynummer</value>
   </data>
   <data name="pleaseselectoneservice" xml:space="preserve">
     <value>Bitte wählen Sie mindestens einen Dienst aus, bevor Sie fortfahren.</value>

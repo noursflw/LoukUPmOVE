@@ -76,7 +76,7 @@
                             <Label Text="Email"/>
                             <Label Text="{Binding Email}"  TextColor="#999999" FontSize="14"  FontFamily="Oswald"   />
                             <BoxView BackgroundColor="#999999"  HeightRequest="1"  />
-                            <Label Text="Telephone"/>
+                            <Label Text="{Loc:Translate Name=PhoneNumber}"/>
                             <Label Text="{Binding Phone}" TextColor="#999999" FontSize="14"  FontFamily="Oswald" />
 
                         </VerticalStackLayout>

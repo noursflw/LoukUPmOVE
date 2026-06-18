@@ -1168,7 +1168,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Telefonnummer.
+        ///   Looks up a localized string similar to Handynummer.
         /// </summary>
         internal static string PhoneNumber {
             get {
