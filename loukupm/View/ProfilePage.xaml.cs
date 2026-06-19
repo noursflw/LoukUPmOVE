@@ -103,8 +103,5 @@ public partial class ProfilePage : ContentPage
 
     }
 
-    private void TapGestureRecognizer_Tapped_6()
-    {
-
-    }
+  
 }

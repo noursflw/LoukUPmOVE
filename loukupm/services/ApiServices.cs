@@ -242,16 +242,7 @@ namespace loukupm.Services
         }
 
 
-        public async Task<List<PolicyandPrivacyS>> GetPolicyandPrivaciesAsync()
-        {
-            var response = await _httpClient.GetAsync("https://api.example.com/policies");
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<PolicyandPrivacyS>>(json);
-            }
-            return new List<PolicyandPrivacyS>();
-        }
+       
 
 
 
@@ -729,8 +720,8 @@ namespace loukupm.Services
                     // Add phone number field (only if provided)
                     if (!string.IsNullOrWhiteSpace(phonenumber))
                     {
-                        form.Add(new StringContent(phonenumber.Trim()), "phone_number");
-                        Console.WriteLine($"📋 Field added: phone_number = '{phonenumber.Trim()}'");
+                        form.Add(new StringContent(phonenumber.Trim()), "phone");
+                        Console.WriteLine($"📋 Field added: phone = '{phonenumber.Trim()}'");
                     }
                     // Add avatar file (only if image path is valid)
                     if (!string.IsNullOrWhiteSpace(avatarImagePath) && File.Exists(avatarImagePath))
@@ -1169,6 +1160,40 @@ namespace loukupm.Services
         /// <summary>
         /// Get Impressum (Legal Information) content from CMS API with dynamic language parameter
         /// </summary>
+        /// section OTP FOR ACEPTE PHONE NUMBER
+        public async Task<bool> SendPhoneOtpAsync(string phone)
+        {
+            var request = new
+            {
+                phone = phone
+            };
+
+            var json = JsonSerializer.Serialize(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(
+                "https://test.center-yazan.com/api/auth/send-phone-otp",
+                content);
+
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<bool> VerifyPhoneOtpAsync(string phone, string otp)
+        {
+            var request = new
+            {
+                phone = phone,
+                otp = otp
+            };
+
+            var json = JsonSerializer.Serialize(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(
+                "https://test.center-yazan.com/api/auth/verify-phone-otp",
+                content);
+
+            return response.IsSuccessStatusCode;
+        }
         public async Task<ImpressumResponse> GetImpressumAsync()
         {
             try

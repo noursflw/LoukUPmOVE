@@ -376,7 +376,10 @@
     <value>Erfolg</value>
   </data>
   <data name="SaveChangFoeMyAccount" xml:space="preserve">
-    <value>Änderungen speichern</value>
+    <value>Profilbild ändern</value>
+  </data>
+  <data name="SaveChangFoeMyAccount1" xml:space="preserve">
+    <value>Profilbild ändern</value>
   </data>
   <data name="sendotp" xml:space="preserve">
     <value>Code wurde gesendet</value>
@@ -1019,5 +1022,38 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   </data>
   <data name="password_number_required " xml:space="preserve">
     <value>Mindestens 1 Zahl</value>
+  </data>
+  <data name="RemoveMyAccount" xml:space="preserve">
+    <value>Konto löschen </value>
+  </data>
+  <data name="RemoveMyAccount1" xml:space="preserve">
+    <value>Konto löschen </value>
+  </data>
+  <data name="AcepetPhoneNumber" xml:space="preserve">
+    <value>Telefonnummer ändern</value>
+  </data>
+  <data name="AcepetPhoneNumber1" xml:space="preserve">
+    <value>Telefonnummer ändern</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="ServicesPage" xml:space="preserve">
+    <value>Leistungen</value>
+  </data>
+  <data name="BookingPage" xml:space="preserve">
+    <value>Termine</value>
+  </data>
+  <data name="ProfilePage" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="NotFoundPhoneNumber" xml:space="preserve">
+    <value>Handynummer nicht gefunden</value>
+  </data>
+  <data name="completesendotppone" xml:space="preserve">
+    <value>Bestätigungscode wurde gesendet</value>
+  </data>
+  <data name="Failedtosendotp" xml:space="preserve">
+    <value>Senden fehlgeschlagen</value>
   </data>
 </root>

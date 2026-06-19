@@ -106,6 +106,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Telefonnummer ändern.
+        /// </summary>
+        internal static string AcepetPhoneNumber {
+            get {
+                return ResourceManager.GetString("AcepetPhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telefonnummer ändern.
+        /// </summary>
+        internal static string AcepetPhoneNumber1 {
+            get {
+                return ResourceManager.GetString("AcepetPhoneNumber1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ihr Passwort wurde erfolgreich zurückgesetzt..
         /// </summary>
         internal static string AcsepPassword {
@@ -246,6 +264,15 @@ namespace loukupm.Langue {
         internal static string bookingNow {
             get {
                 return ResourceManager.GetString("bookingNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Termine.
+        /// </summary>
+        internal static string BookingPage {
+            get {
+                return ResourceManager.GetString("BookingPage", resourceCulture);
             }
         }
         
@@ -399,6 +426,15 @@ namespace loukupm.Langue {
         internal static string CompletedSendEmaileSucsees {
             get {
                 return ResourceManager.GetString("CompletedSendEmaileSucsees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bestätigungscode wurde gesendet.
+        /// </summary>
+        internal static string completesendotppone {
+            get {
+                return ResourceManager.GetString("completesendotppone", resourceCulture);
             }
         }
         
@@ -709,6 +745,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Senden fehlgeschlagen.
+        /// </summary>
+        internal static string Failedtosendotp {
+            get {
+                return ResourceManager.GetString("Failedtosendotp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aktualisierung des Passworts fehlgeschlagen..
         /// </summary>
         internal static string Failedtoupdatethepassword {
@@ -759,6 +804,15 @@ namespace loukupm.Langue {
         internal static string historey {
             get {
                 return ResourceManager.GetString("historey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        internal static string HomePage {
+            get {
+                return ResourceManager.GetString("HomePage", resourceCulture);
             }
         }
         
@@ -984,6 +1038,15 @@ namespace loukupm.Langue {
         internal static string notfoundapement {
             get {
                 return ResourceManager.GetString("notfoundapement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handynummer nicht gefunden.
+        /// </summary>
+        internal static string NotFoundPhoneNumber {
+            get {
+                return ResourceManager.GetString("NotFoundPhoneNumber", resourceCulture);
             }
         }
         
@@ -2045,11 +2108,38 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profil.
+        /// </summary>
+        internal static string ProfilePage {
+            get {
+                return ResourceManager.GetString("ProfilePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string Remindersentsuccessfully {
             get {
                 return ResourceManager.GetString("Remindersentsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konto löschen .
+        /// </summary>
+        internal static string RemoveMyAccount {
+            get {
+                return ResourceManager.GetString("RemoveMyAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Konto löschen .
+        /// </summary>
+        internal static string RemoveMyAccount1 {
+            get {
+                return ResourceManager.GetString("RemoveMyAccount1", resourceCulture);
             }
         }
         
@@ -2081,11 +2171,20 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Änderungen speichern.
+        ///   Looks up a localized string similar to Profilbild ändern.
         /// </summary>
         internal static string SaveChangFoeMyAccount {
             get {
                 return ResourceManager.GetString("SaveChangFoeMyAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profilbild ändern.
+        /// </summary>
+        internal static string SaveChangFoeMyAccount1 {
+            get {
+                return ResourceManager.GetString("SaveChangFoeMyAccount1", resourceCulture);
             }
         }
         
@@ -2122,6 +2221,15 @@ namespace loukupm.Langue {
         internal static string serviceremoved {
             get {
                 return ResourceManager.GetString("serviceremoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leistungen.
+        /// </summary>
+        internal static string ServicesPage {
+            get {
+                return ResourceManager.GetString("ServicesPage", resourceCulture);
             }
         }
         

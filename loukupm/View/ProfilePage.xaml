@@ -69,7 +69,7 @@
 
                     <Frame BackgroundColor="#181c21" BorderColor="#181c21" Margin="20,50,20,0" >
                         <VerticalStackLayout Spacing="5">
-                            <Label Text="Name"/>
+                            <Label Text="{Loc:Translate Name=NameUser}"/>
                             <Label Text="{Binding FullName}" FontSize="14" TextColor="#999999" FontFamily="Oswald"  />
                             <BoxView BackgroundColor="#999999" HeightRequest="1" HorizontalOptions="Fill"
              VerticalOptions="Center"   />
@@ -77,7 +77,27 @@
                             <Label Text="{Binding Email}"  TextColor="#999999" FontSize="14"  FontFamily="Oswald"   />
                             <BoxView BackgroundColor="#999999"  HeightRequest="1"  />
                             <Label Text="{Loc:Translate Name=PhoneNumber}"/>
-                            <Label Text="{Binding Phone}" TextColor="#999999" FontSize="14"  FontFamily="Oswald" />
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <Label Grid.Column="0"
+                                   Text="{Binding Phone}"
+                                    TextColor="#999999"
+                                    FontSize="14"
+                                    FontFamily="Oswald"
+                                    HorizontalOptions="Start" />
+
+                                <Button Grid.Column="1"
+        Text="{Loc:Translate Name=AcepetPhoneNumber}"
+        TextColor="#D4AF37"
+        FontSize="14"
+        BackgroundColor="Transparent"
+        HorizontalOptions="End"
+        Padding="0"
+        BorderWidth="0"
+        Command="{Binding SendOtpCommand }"/>
+
+
+                            </Grid>
 
                         </VerticalStackLayout>
                     </Frame>

@@ -375,6 +375,9 @@
   <data name="SaveChangFoeMyAccount" xml:space="preserve">
     <value>حفظ التغييرات</value>
   </data>
+  <data name="SaveChangFoeMyAccount1" xml:space="preserve">
+    <value>حفظ التغييرات</value>
+  </data>
   <data name="sendotp" xml:space="preserve">
     <value>تم إرسال الرمز</value>
   </data>
@@ -1017,5 +1020,38 @@
   </data>
   <data name="password_number_required " xml:space="preserve">
     <value>على الأقل رقم واحد</value>
+  </data>
+  <data name="RemoveMyAccount" xml:space="preserve">
+    <value>حذف حسابي</value>
+  </data>
+  <data name="RemoveMyAccount1" xml:space="preserve">
+    <value>حذف حسابي</value>
+  </data>
+  <data name="AcepetPhoneNumber" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="AcepetPhoneNumber1" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>الرئيسية</value>
+  </data>
+  <data name="ServicesPage" xml:space="preserve">
+    <value>خدماتنا</value>
+  </data>
+  <data name="BookingPage" xml:space="preserve">
+    <value>حجوزاتي</value>
+  </data>
+  <data name="ProfilePage" xml:space="preserve">
+    <value>حسابي</value>
+  </data>
+  <data name="NotFoundPhoneNumber" xml:space="preserve">
+    <value>رقم الهاتف غير موجود</value>
+  </data>
+  <data name="completesendotppone" xml:space="preserve">
+    <value>تم إرسال رمز التحقق</value>
+  </data>
+  <data name="Failedtosendotp" xml:space="preserve">
+    <value>فشل في الإرسال</value>
   </data>
 </root>

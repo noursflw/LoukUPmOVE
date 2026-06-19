@@ -2,14 +2,14 @@
 using FFImageLoading.Maui;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
-using Microsoft.Extensions.Configuration;
-using  Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.Logging;
-using The49.Maui.BottomSheet;
-using UraniumUI.Blurs;
-using UraniumUI;
-using OneSignalSDK.DotNet;
 using loukupm.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.LifecycleEvents;
+using OneSignalSDK.DotNet;
+using The49.Maui.BottomSheet;
+using UraniumUI;
+using UraniumUI.Blurs;
 
 namespace loukupm;
 
@@ -39,10 +39,35 @@ public static class MauiProgram
             .UseUraniumUIBlurs()
             .UseFFImageLoading();
 
+        // 🖤 Global Theme (Android + iOS)
+        builder.ConfigureLifecycleEvents(events =>
+        {
+#if ANDROID
+            events.AddAndroid(android => android.OnResume(activity =>
+            {
+                var black = Android.Graphics.Color.Black;
+
+                activity.Window.SetNavigationBarColor(black);
+                activity.Window.SetStatusBarColor(black);
+            }));
+#endif
+
+#if IOS
+            events.AddiOS(ios => ios.FinishedLaunching((app, options) =>
+            {
+                // iOS does not fully allow status bar color control
+                // so we keep system appearance clean via Info.plist
+
+                return true;
+            }));
+#endif
+        });
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
 
+        // 📦 Load Firebase config
         var configPath = GetConfigurationFilePath();
         var config = new ConfigurationBuilder()
             .AddJsonFile(configPath, optional: false, reloadOnChange: true)
@@ -65,18 +90,15 @@ public static class MauiProgram
 
         return builder.Build();
     }
-  
+
     private static string GetConfigurationFilePath()
     {
 #if __ANDROID__
         var documentsPath = FileSystem.AppDataDirectory;
         var configPath = Path.Combine(documentsPath, "appsettings.json");
 
-        // If the file doesn't exist in AppDataDirectory, try to read from assets
         if (!File.Exists(configPath))
         {
-            // For Android, the file should be in the assets directory
-            // We'll copy it from assets to the app data directory
             using var stream = FileSystem.OpenAppPackageFileAsync("appsettings.json").Result;
             using var fileStream = File.Create(configPath);
             stream.CopyTo(fileStream);
@@ -88,4 +110,3 @@ public static class MauiProgram
 #endif
     }
 }
-

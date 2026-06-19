@@ -94,6 +94,8 @@ namespace loukupm.ViewModel
 
         [ObservableProperty]
         private AboutUsViewModel aboutUsVM;
+        [ObservableProperty]
+        private PhoneOtpViewModel phoneOtpVM;
 
         [ObservableProperty]
         private HomeSliderViewModel homeSliderVM;
@@ -121,6 +123,8 @@ namespace loukupm.ViewModel
             LoadData();
             AboutUsVM = new AboutUsViewModel();
             HomeSliderVM = new HomeSliderViewModel();
+            phoneOtpVM=new PhoneOtpViewModel(_apiServices);
+           
             // ✅ Do NOT create new HttpClient here - use static instance
 
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
@@ -1925,9 +1929,70 @@ namespace loukupm.ViewModel
                 await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
             }
         }
-
       
-        
+
+        [ObservableProperty]
+        private string otp;
+
+        [ObservableProperty]
+        private bool otpSent;
+
+        [ObservableProperty]
+        private bool isVerified;
+
+        [ObservableProperty]
+        private bool isBusy;
+
+        [ObservableProperty]
+        private string message;
+
+        // ========================
+        // 🚀 Commands
+        // ========================
+
+        [RelayCommand]
+        private async Task SendOtp()
+        {
+          
+            if (IsBusy) return;
+
+            try
+            {
+                IsBusy = true;
+                
+
+                if (string.IsNullOrWhiteSpace(Phone))
+                {
+                    Toast.Make(AppResource.NotFoundPhoneNumber).Show();
+                    return;
+                }
+
+                var result = await _apiServices.SendPhoneOtpAsync(Phone);
+
+                if (result)
+                {
+                    OtpSent = true;
+                    Toast.Make(AppResource.completesendotppone).Show();
+                    await NavigationService.NavigateToPage(
+               NavigationService.ROUTE_OTP_PHONE_NUMBER);
+
+                }
+                else
+                {
+                    Toast.Make(AppResource.Failedtosendotp).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+
     }
 }
 

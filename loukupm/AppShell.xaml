@@ -13,11 +13,11 @@
     Shell.TabBarBackgroundColor="#151821"
     Shell.TabBarForegroundColor="#A8883C"
     Shell.FlyoutBackgroundColor="#121416"
+    Shell.UnselectedColor="Black"
+    Shell.DisabledColor="Black"
     Title="loukupm">
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- CUSTOM ITEM TEMPLATE - Controls all Flyout item appearance      -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
+    
     <Shell.ItemTemplate>
         
         <DataTemplate>
@@ -148,22 +148,23 @@
         
         <ShellContent
             Icon="nhome.png"
-            Title="Home"
+            Title="{Loc:Translate Name=HomePage}"
             ContentTemplate="{DataTemplate view:HomePage}"
             Route="HomePage" />
         <ShellContent
             Icon="nbarber.png"
-            Title="Services"
+            Title="{Loc:Translate Name=ServicesPage}"
             ContentTemplate="{DataTemplate view:ServicesPage}"
             Route="ServicesPage" />
         <ShellContent
             Icon="calendar.png"
-            Title="Booking"
+            Title="{Loc:Translate Name=BookingPage}"
             ContentTemplate="{DataTemplate view:BookingPage}"
             Route="BookingPage" />
         <ShellContent
             Icon="nprofil.png"
-            Title="Profile"
+            Title="{Loc:Translate Name=ProfilePage
+            }"
             ContentTemplate="{DataTemplate view:ProfilePage}"
             Route="ProfilePage" />
     </TabBar>

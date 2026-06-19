@@ -39,6 +39,7 @@ public static class NavigationService
     public const string ROUTE_ABOUT_US = "AboutUS";
     public const string ROUTE_NOTIFICATION = "NotifictionPage";
     public const string ROUTE_SETTING = "SettingPage";
+    public const string ROUTE_OTP_PHONE_NUMBER = "OTPPoneNumper";
 
     // ?????????????????????????????????????????????
     // SETS
@@ -80,13 +81,10 @@ public static class NavigationService
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
-        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,ROUTE_TermsAndConditions_Athun,
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,ROUTE_TermsAndConditions_Athun,ROUTE_OTP_PHONE_NUMBER,
     };
 
-    // ?????????????????????????????????????????????
-    // PUBLIC HELPERS
-    // ?????????????????????????????????????????????
-
+    
     /// <summary>Returns true if <paramref name="route"/> is one of the four TabBar pages.</summary>
     public static bool IsTabBarPage(string route) => TabBarPages.Contains(route);
 
@@ -141,6 +139,7 @@ public static class NavigationService
             ROUTE_NOTIFICATION => new NotifictionPage(),
             ROUTE_IMPRESSUM => new ImpressumPage(),
             ROUTE_SETTING => new SettingPage(),
+            ROUTE_OTP_PHONE_NUMBER => new OTPPoneNumper(),
             _ => throw new InvalidOperationException($"Unknown route: {route}")
         };
     }
@@ -325,35 +324,6 @@ public static class NavigationService
         }
     }
 
-    //public static async Task NavigateToLoginAndClear()
-    //{
-    //    try
-    //    {
-    //        await Shell.Current.GoToAsync("LoginPage", animate: false);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine($"[Navigation] Logout navigation error: {ex.Message}");
-    //        throw;
-    //    }
-    //}
-
-
-    //public static async Task ForceNavigateToLogin()
-    //{
-    //    try
-    //    {
-    //        Shell.Current.FlyoutIsPresented = false;
-
-    //        await Shell.Current.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine($"[Navigation] Force login error: {ex.Message}");
-    //    }
-    //}
-
-
     public static async Task NavigateToHomeAndClear()
     {
         try
@@ -367,9 +337,6 @@ public static class NavigationService
         }
     }
 
-    // ?????????????????????????????????????????????
-    // DIAGNOSTICS
-    // ?????????????????????????????????????????????
 
     /// <summary>
     /// Returns the raw Shell location string (e.g. "//HomePage/NotifictionPage").

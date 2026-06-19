@@ -13,12 +13,17 @@
              Title=" "
              xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              xmlns:vm="clr-namespace:loukupm.ViewModel"
+            
              BackgroundColor="#0A0A0A">
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Black" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,0">
 

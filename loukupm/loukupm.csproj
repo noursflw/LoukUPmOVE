@@ -69,7 +69,7 @@
 
 	<ItemGroup>
 	
-		<MauiSplashScreen Include="Resources\Splash\mmm.svg"  Color="#000000" />
+		<MauiSplashScreen Include="Resources\Splash\mmm.svg" Color="#000000" />
 	</ItemGroup>	
 
 
@@ -118,6 +118,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="View\LoadingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\OTPPoneNumper.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\PolicyandPrivacyPageatAthun.xaml">

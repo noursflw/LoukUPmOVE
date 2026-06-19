@@ -52,13 +52,13 @@
                         <Frame Margin="20" BackgroundColor="#181c21" CornerRadius="20" >
                             <VerticalStackLayout>
                                 <Label FontFamily="OpenSansRegular" Text="{Loc:Translate Name=NameUser}" Margin="0,0,0,0"  TextColor="White" FontSize="16"/>
-                                <Entry FontFamily="OpenSansRegular" Text="{Binding UserFirstName, Mode=TwoWay}"  Margin="0,0,0,0" HeightRequest="50"  />
+                                <Entry FontFamily="OpenSansRegular" Text="{Binding UserFirstName, Mode=TwoWay}"  Margin="0,0,0,0" HeightRequest="50" TextColor="White" />
                                 <BoxView BackgroundColor="#999999"  HeightRequest="2" CornerRadius="10" Margin="0,-9,0,0"  />
                                 <Label Text="{Loc:Translate Name=EMail}" Margin="0,3,0,0"  TextColor="White" FontSize="16"/>
                                 <Entry FontFamily="OpenSansRegular" IsEnabled="False" Text="{Binding Email}"  Margin="0,0,0,0" HeightRequest="50"  />
                                 <BoxView BackgroundColor="#999999"  HeightRequest="3" CornerRadius="10" Margin="0,-9,0,0"  />
                                 <Label Text="{Loc:Translate Name=PhoneNumber}" Margin="0,0,0,0"  TextColor="White"  FontSize="16"/>
-                                <Entry FontFamily="OpenSansRegular" Text="{Binding Phone}"  Margin="0,0,0,0" HeightRequest="50"  />
+                                <Entry FontFamily="OpenSansRegular" Text="{Binding Phone}"  Margin="0,0,0,0" HeightRequest="50" TextColor="White" />
                                 <BoxView BackgroundColor="#999999"  HeightRequest="3" CornerRadius="10" Margin="0,-9,0,0"  />
 
 
@@ -173,7 +173,7 @@
                         <Button Command="{Binding UpdateUserCommand}" 
 IsEnabled="{Binding IsLoadUser, Converter={StaticResource InverseBoolConverter}}"
 Text="{Loc:Translate Name= SaveChangFoeMyAccount}" FontSize="22" HeightRequest="50" FontFamily="georgia-bold" Margin="25" TextColor="Black" />
-                        <Button BackgroundColor="Transparent" Clicked="Button_Clicked_9" Text="Remove My Account" ImageSource="exite.png" BorderColor="#FF4C4C" BorderWidth="1" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24" CornerRadius="16" HeightRequest="56"  />
+                        <Button BackgroundColor="Transparent" Clicked="Button_Clicked_9" Text="{Loc:Translate Name=RemoveMyAccount}" ImageSource="exite.png" BorderColor="#FF4C4C" BorderWidth="1" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24" CornerRadius="16" HeightRequest="56"  />
                     </VerticalStackLayout>
                 </ScrollView>
             </VerticalStackLayout>

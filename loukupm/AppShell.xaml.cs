@@ -124,6 +124,7 @@ namespace loukupm
                     (NavigationService.ROUTE_TERM_BOOKING, typeof(TerminbuchenPage)),
                     (NavigationService.ROUTE_PAYMENT, typeof(Paymentgetway)),
 
+
                   
                     (NavigationService.ROUTE_POLICY_PRIVACY, typeof(PolicyandPrivacyPage)),
                     (NavigationService.ROUTE_REST_PASSWORD, typeof(RestPassword)),
@@ -137,6 +138,7 @@ namespace loukupm
                     (NavigationService.ROUTE_ABOUT_US, typeof(AboutUS)),
                     (NavigationService.ROUTE_NOTIFICATION, typeof(NotifictionPage)),
                     (NavigationService.ROUTE_SETTING, typeof(SettingPage)),
+                    (NavigationService.ROUTE_OTP_PHONE_NUMBER,typeof(OTPPoneNumper)),
 
                    
                     (NavigationService.ROUTE_HOME, typeof(HomePage)),
