@@ -763,6 +763,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OTP-Verifizierung fehlgeschlagen.
+        /// </summary>
+        internal static string FailedToVerifyOtp {
+            get {
+                return ResourceManager.GetString("FailedToVerifyOtp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Das Aktualisieren des Passworts ist fehlgeschlagen.
         /// </summary>
         internal static string FeildUpdatePassord {
@@ -867,6 +876,15 @@ namespace loukupm.Langue {
         internal static string Invaliddata {
             get {
                 return ResourceManager.GetString("Invaliddata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ungültiger OTP-Code..
+        /// </summary>
+        internal static string InvalidOTP {
+            get {
+                return ResourceManager.GetString("InvalidOTP", resourceCulture);
             }
         }
         
@@ -1114,6 +1132,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OTP wurde erfolgreich verifiziert..
+        /// </summary>
+        internal static string OTPverifiedsuccessfully {
+            get {
+                return ResourceManager.GetString("OTPverifiedsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Das Passwort muss mehr als 6 Zeichen enthalten.
         /// </summary>
         internal static string pasl {
@@ -1240,6 +1267,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Die Telefonnummer ist bereits verifiziert.
+        /// </summary>
+        internal static string PhoneNumberAlreadyVerified {
+            get {
+                return ResourceManager.GetString("PhoneNumberAlreadyVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bitte geben Sie das aktuelle Passwort ein.
         /// </summary>
         internal static string Pleaseenterthecurrentpassword {
@@ -1263,6 +1299,15 @@ namespace loukupm.Langue {
         internal static string Pleaseenterthenewpasswordinbothfields {
             get {
                 return ResourceManager.GetString("Pleaseenterthenewpasswordinbothfields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie den OTP-Code ein..
+        /// </summary>
+        internal static string Pleaseentertheotp {
+            get {
+                return ResourceManager.GetString("Pleaseentertheotp", resourceCulture);
             }
         }
         

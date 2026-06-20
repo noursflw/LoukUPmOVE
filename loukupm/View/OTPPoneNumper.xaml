@@ -19,7 +19,7 @@
   x:Name="OtpField"
   Keyboard="Numeric"
   
-  Text="{Binding OtpCode, Mode=TwoWay}"
+  Text="{Binding Otp, Mode=TwoWay}"
   Margin="0,50,0,0"
   HorizontalOptions="Center"
   WidthRequest="200"/>

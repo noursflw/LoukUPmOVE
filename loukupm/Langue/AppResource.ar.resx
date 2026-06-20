@@ -1054,4 +1054,19 @@
   <data name="Failedtosendotp" xml:space="preserve">
     <value>فشل في الإرسال</value>
   </data>
+  <data name="Pleaseentertheotp" xml:space="preserve">
+    <value>الرجاء إدخال رمز OTP.</value>
+  </data>
+  <data name="OTPverifiedsuccessfully" xml:space="preserve">
+    <value>تم التحقق من رمز OTP بنجاح.</value>
+  </data>
+  <data name="InvalidOTP" xml:space="preserve">
+    <value>رمز OTP غير صالح.</value>
+  </data>
+  <data name="PhoneNumberAlreadyVerified" xml:space="preserve">
+    <value>رقم الهاتف مُؤكَّد بالفعل</value>
+  </data>
+  <data name="FailedToVerifyOtp" xml:space="preserve">
+    <value>فشل التحقق من رمز التحقق</value>
+  </data>
 </root>

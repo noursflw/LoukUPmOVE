@@ -7,6 +7,6 @@ public partial class OTPPoneNumper : ContentPage
 	public OTPPoneNumper()
 	{
 		InitializeComponent();
-        BindingContext = AppViewModel.Instance.PhoneOtpVM;
+		BindingContext = AppViewModel.Instance;
     }
 }

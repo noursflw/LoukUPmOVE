@@ -1953,38 +1953,170 @@ namespace loukupm.ViewModel
         [RelayCommand]
         private async Task SendOtp()
         {
-          
             if (IsBusy) return;
 
             try
             {
                 IsBusy = true;
-                
+                Message = string.Empty;
 
+                // ✅ Validate input
                 if (string.IsNullOrWhiteSpace(Phone))
                 {
                     Toast.Make(AppResource.NotFoundPhoneNumber).Show();
                     return;
                 }
 
-                var result = await _apiServices.SendPhoneOtpAsync(Phone);
+                // ✅ Call API method with structured response
+                var (success, statusCode, errorMessage, retryAfter) = 
+                    await _apiServices.SendPhoneOtpAsync(Phone);
 
-                if (result)
+                // ========================
+                // 🟢 SUCCESS CASE (200)
+                // ========================
+                if (success)
                 {
                     OtpSent = true;
                     Toast.Make(AppResource.completesendotppone).Show();
-                    await NavigationService.NavigateToPage(
-               NavigationService.ROUTE_OTP_PHONE_NUMBER);
 
+                    // Navigate to OTP verification page
+                    await NavigationService.NavigateToPage(
+                        NavigationService.ROUTE_OTP_PHONE_NUMBER);
+
+                    return;
                 }
+
+                // ========================
+                // 🔴 ERROR HANDLING
+                // ========================
+
+                Console.WriteLine($"❌ Send OTP failed: Status={statusCode}, Error={errorMessage}");
+
+                // HTTP 400 - Validation errors / Already verified
+                if (statusCode == 400)
+                {
+                    // Check if phone is already verified
+                    if (errorMessage?.ToLower().Contains("verified") == true || 
+                        errorMessage?.ToLower().Contains("already") == true)
+                    {
+                        Toast.Make(AppResource.PhoneNumberAlreadyVerified).Show();
+                        OtpSent = true; // Consider it as sent since already verified
+                    }
+                    else
+                    {
+                        // Generic validation error
+                        Toast.Make(errorMessage ?? AppResource.Failedtosendotp).Show();
+                    }
+                    return;
+                }
+
+                // HTTP 429 - Too Many Requests (Rate Limit)
+                if (statusCode == 429)
+                {
+                    Console.WriteLine($"⏳ Rate limited. Retry after {retryAfter} seconds");
+
+                    Message = retryAfter.HasValue 
+                        ? $"Please wait {retryAfter} seconds before retrying"
+                        : "Too many attempts. Please wait before retrying.";
+
+                    Toast.Make("Too many attempts").Show();
+
+                    return;
+                }
+
+                // Other HTTP errors
+                Toast.Make(AppResource.Failedtosendotp).Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Unexpected error during send OTP: {ex.Message}\n{ex.StackTrace}");
+                Toast.Make("Error sending OTP").Show();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        [RelayCommand]
+        private async Task VerifyOtp()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsBusy = true;
+                Message = string.Empty;
+
+                // تحقق من الصيغة
+                if (string.IsNullOrWhiteSpace(Otp))
+                {
+                    Toast.Make(AppResource.Pleaseentertheotp).Show();
+                    return;
+                }
+
+                // استدعاء API
+                var (success, statusCode, errorMessage, retryAfter) = 
+                    await _apiServices.VerifyPhoneOtpAsync(Phone, Otp);
+
+                // نجاح - 200
+                if (success)
+                {
+                    IsVerified = true;
+                    Otp = string.Empty;
+                    Toast.Make(AppResource.OTPverifiedsuccessfully).Show();
+                }
+                // خطأ - 400
+                else if (statusCode == 400)
+                {
+                    Toast.Make(AppResource.PhoneNumberAlreadyVerified).Show();
+                    IsVerified = true;
+                }
+                // أي خطأ آخر
                 else
                 {
-                    Toast.Make(AppResource.Failedtosendotp).Show();
+                    Toast.Make(AppResource.FailedToVerifyOtp).Show();
                 }
             }
             catch (Exception ex)
             {
-                Message = ex.Message;
+                Toast.Make("حدث خطأ").Show();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        // ========================
+        // 🔁 Resend OTP
+        // ========================
+
+        [RelayCommand]
+        private async Task ResendOtp()
+        {
+            if (IsBusy) return;
+
+            try
+            {
+                IsBusy = true;
+                Message = string.Empty;
+
+                // Call API method with structured response
+                var (success, statusCode, errorMessage, retryAfter) = 
+                    await _apiServices.SendPhoneOtpAsync(Phone);
+
+                if (success)
+                {
+                    Message = "تم إعادة إرسال الرمز";
+                }
+                else
+                {
+                    Message = errorMessage ?? "فشل إعادة الإرسال";
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = "حدث خطأ";
             }
             finally
             {

@@ -1054,4 +1054,19 @@ Beginnt hier
   <data name="Failedtosendotp" xml:space="preserve">
     <value>Senden fehlgeschlagen</value>
   </data>
+  <data name="Pleaseentertheotp" xml:space="preserve">
+    <value>Bitte geben Sie den OTP-Code ein.</value>
+  </data>
+  <data name="OTPverifiedsuccessfully" xml:space="preserve">
+    <value>OTP wurde erfolgreich verifiziert.</value>
+  </data>
+  <data name="InvalidOTP" xml:space="preserve">
+    <value>Ungültiger OTP-Code.</value>
+  </data>
+  <data name="PhoneNumberAlreadyVerified" xml:space="preserve">
+    <value>Die Telefonnummer ist bereits verifiziert</value>
+  </data>
+  <data name="FailedToVerifyOtp" xml:space="preserve">
+    <value>OTP-Verifizierung fehlgeschlagen</value>
+  </data>
 </root>

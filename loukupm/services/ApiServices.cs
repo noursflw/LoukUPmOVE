@@ -1,4 +1,5 @@
-﻿using loukupm.Model;
+﻿
+using loukupm.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1161,38 +1162,255 @@ namespace loukupm.Services
         /// Get Impressum (Legal Information) content from CMS API with dynamic language parameter
         /// </summary>
         /// section OTP FOR ACEPTE PHONE NUMBER
-        public async Task<bool> SendPhoneOtpAsync(string phone)
+        /// <summary>
+        /// Send OTP to phone number with comprehensive error handling.
+        /// Returns (success, statusCode, errorMessage, retryAfter)
+        /// - success: true if OTP was sent successfully
+        /// - statusCode: HTTP status code from the API
+        /// - errorMessage: Detailed error message from API or generic message
+        /// - retryAfter: Seconds to wait before retry (from header or response body)
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string ErrorMessage, int? RetryAfter)> SendPhoneOtpAsync(
+            string phone)
         {
-            var request = new
+            try
             {
-                phone = phone
-            };
+                await SetAuthorizationHeaderAsync();
 
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                if (string.IsNullOrWhiteSpace(phone))
+                {
+                    return (false, 400, "Phone number is required", null);
+                }
 
-            var response = await _httpClient.PostAsync(
-                "https://test.center-yazan.com/api/auth/send-phone-otp",
-                content);
+                var request = new
+                {
+                    phone = phone
+                };
 
-            return response.IsSuccessStatusCode;
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(
+                    "https://test.center-yazan.com/api/profile/phone/send-otp",
+                    content);
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"📤 Send OTP Response ({response.StatusCode}): {responseContent}");
+
+                // Success case (200-299)
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, (int)response.StatusCode, null, null);
+                }
+
+                // Extract retry-after from header if present
+                int? retryAfter = null;
+                if (response.Headers.TryGetValues("Retry-After", out var retryValues))
+                {
+                    if (int.TryParse(retryValues.FirstOrDefault(), out var retrySeconds))
+                    {
+                        retryAfter = retrySeconds;
+                    }
+                }
+
+                // HTTP 429 - Too Many Requests (Rate Limit)
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    return (false, 429, "Too Many Attempts", retryAfter ?? 60);
+                }
+
+                // HTTP 400/422 - Bad Request or Validation Error
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                    response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+                {
+                    string errorMessage = ParseErrorMessage(responseContent);
+                    return (false, (int)response.StatusCode, errorMessage, retryAfter);
+                }
+
+                // HTTP 403 - Forbidden
+                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    string errorMessage = ParseErrorMessage(responseContent);
+                    return (false, 403, errorMessage ?? "Phone verification failed", retryAfter);
+                }
+
+                // Other HTTP errors
+                string genericError = ParseErrorMessage(responseContent);
+                return (false, (int)response.StatusCode, genericError ?? "Failed to send OTP", retryAfter);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"❌ Network error during send OTP: {ex.Message}");
+                return (false, 0, "Network connection error", null);
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"❌ Timeout during send OTP: {ex.Message}");
+                return (false, 0, "Request timeout", null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Unexpected error during send OTP: {ex.Message}");
+                return (false, 0, $"Unexpected error: {ex.Message}", null);
+            }
         }
-        public async Task<bool> VerifyPhoneOtpAsync(string phone, string otp)
+        /// <summary>
+        /// Verify phone OTP with comprehensive error handling.
+        /// Returns (success, statusCode, errorMessage, retryAfter)
+        /// - success: true if OTP verification succeeded
+        /// - statusCode: HTTP status code from the API (200, 400, 429, etc.)
+        /// - errorMessage: Detailed error message from API or generic message
+        /// - retryAfter: Seconds to wait before retry (from header or response body)
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string ErrorMessage, int? RetryAfter)> VerifyPhoneOtpAsync(
+            string phone, 
+            string otp)
         {
-            var request = new
+            try
             {
-                phone = phone,
-                otp = otp
-            };
+                await SetAuthorizationHeaderAsync();
 
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(otp))
+                {
+                    return (false, 400, "Phone and OTP are required", null);
+                }
 
-            var response = await _httpClient.PostAsync(
-                "https://test.center-yazan.com/api/auth/verify-phone-otp",
-                content);
+                var request = new
+                {
+                    phone = phone,
+                    otp = otp
+                };
 
-            return response.IsSuccessStatusCode;
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(
+                    "https://test.center-yazan.com/api/profile/phone/verify-otp",
+                    content);
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"🔐 Phone OTP Verification Response ({response.StatusCode}): {responseContent}");
+
+                // Success case (200-299)
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, (int)response.StatusCode, null, null);
+                }
+
+                // Extract retry-after from header if present
+                int? retryAfter = null;
+                if (response.Headers.TryGetValues("Retry-After", out var retryValues))
+                {
+                    if (int.TryParse(retryValues.FirstOrDefault(), out var retrySeconds))
+                    {
+                        retryAfter = retrySeconds;
+                    }
+                }
+
+                // HTTP 429 - Too Many Requests (Rate Limit)
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    return (false, 429, "Too Many Attempts", retryAfter ?? 60);
+                }
+
+                // HTTP 400/422 - Bad Request or Validation Error
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                    response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+                {
+                    // Try to parse structured error response
+                    string errorMessage = ParseErrorMessage(responseContent);
+                    return (false, (int)response.StatusCode, errorMessage, retryAfter);
+                }
+
+                // HTTP 403 - Forbidden (Throttled, Account issues)
+                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    string errorMessage = ParseErrorMessage(responseContent);
+                    return (false, 403, errorMessage ?? "Account verification failed or OTP expired", retryAfter);
+                }
+
+                // Other HTTP errors
+                string genericError = ParseErrorMessage(responseContent);
+                return (false, (int)response.StatusCode, genericError ?? "Verification failed", retryAfter);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"❌ Network error during phone OTP verification: {ex.Message}");
+                return (false, 0, "Network connection error", null);
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"❌ Timeout during phone OTP verification: {ex.Message}");
+                return (false, 0, "Request timeout", null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Unexpected error during phone OTP verification: {ex.Message}");
+                return (false, 0, $"Unexpected error: {ex.Message}", null);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to extract error messages from various API response formats.
+        /// Handles common formats: { message }, { error }, { errors[] }, etc.
+        /// </summary>
+        private string ParseErrorMessage(string responseContent)
+        {
+            if (string.IsNullOrWhiteSpace(responseContent))
+                return null;
+
+            try
+            {
+                using (JsonDocument doc = JsonDocument.Parse(responseContent))
+                {
+                    var root = doc.RootElement;
+
+                    // Try to get message field
+                    if (root.TryGetProperty("message", out var messageProp))
+                    {
+                        return messageProp.GetString();
+                    }
+
+                    // Try to get error field
+                    if (root.TryGetProperty("error", out var errorProp))
+                    {
+                        if (errorProp.ValueKind == JsonValueKind.String)
+                        {
+                            return errorProp.GetString();
+                        }
+
+                        if (errorProp.TryGetProperty("message", out var errorMessageProp))
+                        {
+                            return errorMessageProp.GetString();
+                        }
+                    }
+
+                    // Try to get errors array (first item's message)
+                    if (root.TryGetProperty("errors", out var errorsProp))
+                    {
+                        if (errorsProp.ValueKind == JsonValueKind.Array && errorsProp.GetArrayLength() > 0)
+                        {
+                            var firstError = errorsProp[0];
+                            if (firstError.TryGetProperty("message", out var firstErrorMsg))
+                            {
+                                return firstErrorMsg.GetString();
+                            }
+                            if (firstError.ValueKind == JsonValueKind.String)
+                            {
+                                return firstError.GetString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"⚠️ Failed to parse error message: {ex.Message}");
+            }
+
+            return null;
         }
         public async Task<ImpressumResponse> GetImpressumAsync()
         {
