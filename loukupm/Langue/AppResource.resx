@@ -1071,4 +1071,31 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   <data name="FailedToVerifyOtp" xml:space="preserve">
     <value>OTP-Verifizierung fehlgeschlagen</value>
   </data>
+  <data name="PhoneNumberNotVerified" xml:space="preserve">
+    <value>Handynummer nicht verifiziert</value>
+  </data>
+  <data name="SMSNotifications" xml:space="preserve">
+    <value>SMS-Benachrichtigungen</value>
+  </data>
+  <data name="EmailNotifications" xml:space="preserve">
+    <value>Termin-Erinnerungen per E-Mail</value>
+  </data>
+  <data name="SettingLang" xml:space="preserve">
+    <value>Spracheinstellungen</value>
+  </data>
+  <data name="SettingLang1" xml:space="preserve">
+    <value>Spracheinstellungen</value>
+  </data>
+  <data name="SettingNottivcation" xml:space="preserve">
+    <value>Benachrichtigungseinstellungen</value>
+  </data>
+  <data name="DesNotfction" xml:space="preserve">
+    <value>Benachrichtigungen über Angebote und Termine erhalten</value>
+  </data>
+  <data name="DesSms" xml:space="preserve">
+    <value>Vor Ihrem Termin eine SMS-Erinnerung erhalten</value>
+  </data>
+  <data name="DesEmai" xml:space="preserve">
+    <value>Vor Ihrem Termin eine Erinnerung per E-Mail erhalten</value>
+  </data>
 </root>

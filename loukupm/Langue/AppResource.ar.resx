@@ -1069,4 +1069,31 @@
   <data name="FailedToVerifyOtp" xml:space="preserve">
     <value>فشل التحقق من رمز التحقق</value>
   </data>
+  <data name="PhoneNumberNotVerified" xml:space="preserve">
+    <value>لم يتم التحقق من رقم الجوال</value>
+  </data>
+  <data name="SMSNotifications" xml:space="preserve">
+    <value>تذكيرات المواعيد عبر الرسائل النصية</value>
+  </data>
+  <data name="EmailNotifications" xml:space="preserve">
+    <value>تذكيرات المواعيد عبر البريد الإلكتروني</value>
+  </data>
+  <data name="SettingLang" xml:space="preserve">
+    <value>إعدادات اللغة</value>
+  </data>
+  <data name="SettingLang1" xml:space="preserve">
+    <value>إعدادات اللغة</value>
+  </data>
+  <data name="SettingNottivcation" xml:space="preserve">
+    <value>إعدادات الإشعارات</value>
+  </data>
+  <data name="DesNotfction" xml:space="preserve">
+    <value>استلام إشعارات العروض والمواعيد</value>
+  </data>
+  <data name="DesSms" xml:space="preserve">
+    <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
+  </data>
+  <data name="DesEmai" xml:space="preserve">
+    <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
+  </data>
 </root>

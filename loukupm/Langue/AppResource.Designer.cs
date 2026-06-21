@@ -547,11 +547,38 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vor Ihrem Termin eine Erinnerung per E-Mail erhalten.
+        /// </summary>
+        internal static string DesEmai {
+            get {
+                return ResourceManager.GetString("DesEmai", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Benachrichtigungen über Angebote und Termine erhalten.
+        /// </summary>
+        internal static string DesNotfction {
+            get {
+                return ResourceManager.GetString("DesNotfction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sie erhalten in Kürze eine E-Mail mit einem Code, um ein neues Passwort einzurichten..
         /// </summary>
         internal static string desRestPass {
             get {
                 return ResourceManager.GetString("desRestPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vor Ihrem Termin eine SMS-Erinnerung erhalten.
+        /// </summary>
+        internal static string DesSms {
+            get {
+                return ResourceManager.GetString("DesSms", resourceCulture);
             }
         }
         
@@ -615,6 +642,15 @@ namespace loukupm.Langue {
         internal static string Emailisrequired {
             get {
                 return ResourceManager.GetString("Emailisrequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Termin-Erinnerungen per E-Mail.
+        /// </summary>
+        internal static string EmailNotifications {
+            get {
+                return ResourceManager.GetString("EmailNotifications", resourceCulture);
             }
         }
         
@@ -1272,6 +1308,15 @@ namespace loukupm.Langue {
         internal static string PhoneNumberAlreadyVerified {
             get {
                 return ResourceManager.GetString("PhoneNumberAlreadyVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handynummer nicht verifiziert.
+        /// </summary>
+        internal static string PhoneNumberNotVerified {
+            get {
+                return ResourceManager.GetString("PhoneNumberNotVerified", resourceCulture);
             }
         }
         
@@ -2288,11 +2333,47 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spracheinstellungen.
+        /// </summary>
+        internal static string SettingLang {
+            get {
+                return ResourceManager.GetString("SettingLang", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spracheinstellungen.
+        /// </summary>
+        internal static string SettingLang1 {
+            get {
+                return ResourceManager.GetString("SettingLang1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Benachrichtigungseinstellungen.
+        /// </summary>
+        internal static string SettingNottivcation {
+            get {
+                return ResourceManager.GetString("SettingNottivcation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Registrieren.
         /// </summary>
         internal static string Singin {
             get {
                 return ResourceManager.GetString("Singin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMS-Benachrichtigungen.
+        /// </summary>
+        internal static string SMSNotifications {
+            get {
+                return ResourceManager.GetString("SMSNotifications", resourceCulture);
             }
         }
         

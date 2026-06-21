@@ -44,6 +44,8 @@ namespace loukupm.Model
 
         [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; }
+        [JsonPropertyName("phone_verified")]
+        public bool PhoneVerified { get; set; }
     }
 
 

@@ -871,6 +871,47 @@ namespace loukupm.Services
             };
         }
 
+        public async Task<List<SettingItem>> GetSettingsAsync()
+        {
+            await SetAuthorizationHeaderAsync();
+
+            var response = await _httpClient.GetAsync(
+                "https://test.center-yazan.com/api/settings"
+            );
+
+            if (!response.IsSuccessStatusCode)
+                return new List<SettingItem>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            
+
+            var result = JsonSerializer.Deserialize<SettingsResponse>(
+                json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            return result?.Data ?? new List<SettingItem>();
+        }
+        public async Task<bool> UpdateSettingAsync(string key, bool value)
+        {
+            await SetAuthorizationHeaderAsync();
+
+            var payload = new
+            {
+                value = value
+            };
+
+            var json = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PatchAsync(
+                $"https://test.center-yazan.com/api/settings/{key}",
+                content
+            );
+
+            return response.IsSuccessStatusCode;
+        }
+
         /// <summary>
         /// Cancel a booking/appointment by ID
         /// </summary>
@@ -1158,18 +1199,7 @@ namespace loukupm.Services
             }
         }
 
-        /// <summary>
-        /// Get Impressum (Legal Information) content from CMS API with dynamic language parameter
-        /// </summary>
-        /// section OTP FOR ACEPTE PHONE NUMBER
-        /// <summary>
-        /// Send OTP to phone number with comprehensive error handling.
-        /// Returns (success, statusCode, errorMessage, retryAfter)
-        /// - success: true if OTP was sent successfully
-        /// - statusCode: HTTP status code from the API
-        /// - errorMessage: Detailed error message from API or generic message
-        /// - retryAfter: Seconds to wait before retry (from header or response body)
-        /// </summary>
+       
         public async Task<(bool Success, int StatusCode, string ErrorMessage, int? RetryAfter)> SendPhoneOtpAsync(
             string phone)
         {

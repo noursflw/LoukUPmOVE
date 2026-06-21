@@ -223,13 +223,21 @@ namespace loukupm.ViewModel
             PerformServiceSearch(value);
         }
 
-        
+
         partial void OnSearchTeamTermChanged(string value)
         {
             PerformWorkTeamSearch(value);
         }
 
-      
+        /// <summary>
+        /// Handles PhoneVerified property changes to refresh computed PhoneVerificationStatus.
+        /// </summary>
+        partial void OnPhoneVerifiedChanged(bool value)
+        {
+            OnPropertyChanged(nameof(PhoneVerificationStatus));
+        }
+
+
         private void PerformServiceSearch(string searchTerm)
         {
             try
@@ -954,10 +962,26 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string email;
         [ObservableProperty] private string fullName;
         [ObservableProperty] private string phone;
+        [ObservableProperty] private bool phoneVerified = false;
 
         [ObservableProperty] private string userFirstName = string.Empty;
 
         public ICommand UpDateUserCommand { get; }
+
+        public string PhoneVerificationStatus
+        {
+            get
+            {
+                if (PhoneVerified)
+                {
+                    return AppResource.PhoneNumberAlreadyVerified ?? "Phone Verified";
+                }
+                else
+                {
+                    return  AppResource.PhoneNumberNotVerified ?? "Phone Not Verified"; 
+                }
+            }
+        }
 
         private string avatar;
         public string Avatar
@@ -989,11 +1013,12 @@ namespace loukupm.ViewModel
                     UserFirstName = currentUser.UserName ?? string.Empty;  // ✅ Initialize from API first_name
                     Email = currentUser.Email;
                     FullName = currentUser.FullName;
-                    phone = currentUser.Phone;
+                    Phone = currentUser.Phone;
+                    PhoneVerified = currentUser.PhoneVerified;
 
                     Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
 
-                    Console.WriteLine($"✅ [AppViewModel] User initialized: UserFirstName = '{UserFirstName}'");
+                    Console.WriteLine($"✅ [AppViewModel] User initialized: UserFirstName = '{UserFirstName}', PhoneVerified = {PhoneVerified}");
                 }
             }
             finally
@@ -1150,6 +1175,7 @@ namespace loukupm.ViewModel
 
                 Console.WriteLine("📤 Calling UpdateUserProfileAsync...\n");
                 var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath, Phone);
+              
 
                 Console.WriteLine("\n" + new string('=', 60));
                 Console.WriteLine("📥 RESPONSE RECEIVED FROM API");
@@ -1189,6 +1215,7 @@ namespace loukupm.ViewModel
 
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
+                    await LoadUserDataAsync();
 
                 }
                 else if (apiResponse?.Success == false)

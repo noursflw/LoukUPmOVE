@@ -5,7 +5,13 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#0A0A0A"
              xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:converters="clr-namespace:loukupm.Converter"
              Title="ProfilePage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
         <ScrollView Margin="0,0,0,30">
             <VerticalStackLayout Spacing="10" FlowDirection="LeftToRight" >
@@ -79,12 +85,19 @@
                             <Label Text="{Loc:Translate Name=PhoneNumber}"/>
                             <Grid ColumnDefinitions="*,Auto">
 
-                                <Label Grid.Column="0"
-                                   Text="{Binding Phone}"
-                                    TextColor="#999999"
-                                    FontSize="14"
-                                    FontFamily="Oswald"
-                                    HorizontalOptions="Start" />
+                                <VerticalStackLayout Spacing="10" Grid.Column="0">
+                                    <Label Grid.Column="0"
+     Text="{Binding Phone}"
+      TextColor="#999999"
+      FontSize="14"
+      FontFamily="Oswald"
+      HorizontalOptions="Start" />
+                                    <Label Grid.Column="0" Text="{Binding PhoneVerificationStatus}"
+        TextColor="#999999"
+         FontSize="14"
+        FontFamily="Oswald"
+        HorizontalOptions="Start" />
+                                </VerticalStackLayout>
 
                                 <Button Grid.Column="1"
         Text="{Loc:Translate Name=AcepetPhoneNumber}"
@@ -94,6 +107,7 @@
         HorizontalOptions="End"
         Padding="0"
         BorderWidth="0"
+        IsVisible="{Binding PhoneVerified, Converter={StaticResource InverseBoolConverter}}"
         Command="{Binding SendOtpCommand }"/>
 
 
