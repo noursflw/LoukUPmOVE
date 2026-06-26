@@ -67,7 +67,9 @@
 
                     <Switch 
             Grid.Column="1"
-            OnColor="#D4AF37"
+           OnColor="White"
+             
+ ThumbColor="#D4AF37"   
             x:Name="NotificationsSwitch"
             Toggled="OnNotificationsSwitchToggled"/>
                 </Grid>
@@ -94,7 +96,8 @@
                     </VerticalStackLayout>
 
                     <Switch Grid.Column="1"
-                            OnColor="#D4AF37"
+                          OnColor="White"
+ ThumbColor="#D4AF37"   
                 IsToggled="{Binding SmsEnabled}"/>
                 </Grid>
 
@@ -120,7 +123,8 @@ VerticalOptions="Center"/>
                     </VerticalStackLayout>
 
                     <Switch Grid.Column="1"
-                OnColor="#D4AF37"
+                OnColor="White"
+                 ThumbColor="#D4AF37"           
                 IsToggled="{Binding EmailEnabled}"/>
                 </Grid>
 

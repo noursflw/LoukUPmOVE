@@ -10,6 +10,7 @@ using OneSignalSDK.DotNet;
 using The49.Maui.BottomSheet;
 using UraniumUI;
 using UraniumUI.Blurs;
+using loukupm.View;
 
 namespace loukupm;
 
@@ -88,7 +89,16 @@ public static class MauiProgram
 
         firebaseclient = new FirebaseAuthClient(firebaseconfig);
 
+        // Register services and viewmodels (no singleton AppViewModel)
+        builder.Services.AddSingleton<loukupm.services.NotificationStateService>();
+        builder.Services.AddSingleton<loukupm.services.NotificationService>();
+        builder.Services.AddTransient<loukupm.ViewModel.NotificationViewModel>();
+        builder.Services.AddTransient<loukupm.ViewModel.AppViewModel>();
+        builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<loukupm.View.NotifictionPage>();
+
         return builder.Build();
+
     }
 
     private static string GetConfigurationFilePath()

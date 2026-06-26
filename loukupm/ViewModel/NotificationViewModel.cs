@@ -2,140 +2,192 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using loukupm.Model;
 using loukupm.services;
+using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace loukupm.ViewModel
 {
-    /// <summary>
-    /// ViewModel for the NotificationPage
-    /// Handles loading, refreshing, and displaying notifications
-    /// </summary>
     public partial class NotificationViewModel : ObservableObject
     {
-        /// <summary>
-        /// Collection of notifications to display
-        /// </summary>
+        private readonly NotificationService _notificationService;
+        private readonly NotificationStateService _notificationStateService;
+        private bool _isLoadingRequested;
+        private bool _isHandlingSelection;
+
         [ObservableProperty]
         private ObservableCollection<NotificationItem> notifications = new();
 
-        /// <summary>
-        /// Flag indicating if notifications are currently being refreshed
-        /// </summary>
         [ObservableProperty]
-        private bool isRefreshing = false;
+        private bool isLoading;
 
-        /// <summary>
-        /// Flag indicating if notifications are still loading for the first time
-        /// </summary>
         [ObservableProperty]
-        private bool isLoading = false;
+        private bool isRefreshing;
 
-        /// <summary>
-        /// Error message to display if loading fails
-        /// </summary>
         [ObservableProperty]
         private string errorMessage = string.Empty;
 
-        private readonly NotificationService _notificationService;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasNotifications))]
+        private int unreadCount;
 
-        public NotificationViewModel()
+        [ObservableProperty]
+        private NotificationItem? selectedNotification;
+
+        public bool HasNotifications => UnreadCount > 0;
+
+        public NotificationViewModel(NotificationService notificationService, NotificationStateService notificationStateService)
         {
-            _notificationService = new NotificationService();
-
-            // Load notifications automatically when ViewModel is created
-            _ = LoadNotificationsAsync();
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+            _notificationStateService = notificationStateService ?? throw new ArgumentNullException(nameof(notificationStateService));
+            UnreadCount = _notificationStateService.UnreadCount;
+            _notificationStateService.UnreadCountChanged += HandleUnreadCountChanged;
         }
 
-        /// <summary>
-        /// Load all notifications from the API
-        /// Used for both initial load and refresh
-        /// </summary>
-        [RelayCommand]
-        public async Task LoadNotifications()
+        private void HandleUnreadCountChanged(int count)
         {
+            MainThread.BeginInvokeOnMainThread(() => UnreadCount = count);
+        }
+
+        partial void OnSelectedNotificationChanged(NotificationItem? value)
+        {
+            // Called on UI thread by binding. Fire-and-wait for selection handling, but guard reentrancy.
+            _ = HandleSelectionAsync(value);
+        }
+
+        private async Task HandleSelectionAsync(NotificationItem? notification)
+        {
+            if (notification == null)
+                return;
+
+            // Prevent double handling
+            if (_isHandlingSelection)
+                return;
+
+            _isHandlingSelection = true;
+
             try
             {
-                this.IsRefreshing = true;
-                this.ErrorMessage = string.Empty;
+                Console.WriteLine($"🟣 ITEM SELECTED: {notification.Id}");
 
-                Console.WriteLine("🔄 Loading notifications...");
+                if (notification.ReadAt != null)
+                    return;
 
-                var notificationsList = await _notificationService.GetAllNotificationsAsync();
+                Console.WriteLine($"🟡 MARK AS READ CALLING: {notification.Id}");
+                var success = await _notificationService.MarkAsReadAsync(notification.Id);
 
-                // Clear existing notifications
-                this.Notifications.Clear();
-
-                // Add all notifications to the collection
-                if (notificationsList != null && notificationsList.Count > 0)
+                if (!success)
                 {
-                    foreach (var notification in notificationsList)
-                    {
-                        this.Notifications.Add(notification);
-                    }
+                    Console.WriteLine($"🔴 MARK AS READ FAILED: {notification.Id}");
+                    return;
+                }
 
-                    Console.WriteLine($"✅ Loaded {this.Notifications.Count} notifications");
-                }
-                else
+                Console.WriteLine($"🟢 MARK AS READ SUCCESS: {notification.Id}");
+
+                // Update UI state on main thread
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    Console.WriteLine("ℹ️ No notifications found");
-                }
+                    notification.ReadAt = DateTime.UtcNow;
+                    UnreadCount = Math.Max(0, UnreadCount - 1);
+                    _notificationStateService.SetUnreadCount(UnreadCount);
+
+                    // Force UI to reflect change by raising notifications collection replacement
+                    var list = new ObservableCollection<NotificationItem>(Notifications);
+                    Notifications = list;
+                });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading notifications: {ex.Message}");
-                this.ErrorMessage = $"Failed to load notifications: {ex.Message}";
-                this.Notifications.Clear();
+                Console.WriteLine($"❌ [NotificationViewModel] HandleSelectionAsync failed: {ex.Message}");
             }
             finally
             {
-                this.IsRefreshing = false;
+                // Clear selection so same item can be tapped again
+                MainThread.BeginInvokeOnMainThread(() => SelectedNotification = null);
+                _isHandlingSelection = false;
             }
         }
 
-        /// <summary>
-        /// Internal method for loading notifications (without setting IsRefreshing)
-        /// Used for initial load
-        /// </summary>
+        [RelayCommand]
         private async Task LoadNotificationsAsync()
         {
+            if (_isLoadingRequested)
+            {
+                return;
+            }
+
+            _isLoadingRequested = true;
+            IsLoading = true;
+            ErrorMessage = string.Empty;
+
+            Console.WriteLine("🔵 LOAD START");
+
             try
             {
-                this.IsLoading = true;
-                this.ErrorMessage = string.Empty;
-
-                Console.WriteLine("🔄 Initial load of notifications...");
-
-                var notificationsList = await _notificationService.GetAllNotificationsAsync();
-
-                // Clear existing notifications
-                this.Notifications.Clear();
-
-                // Add all notifications to the collection
-                if (notificationsList != null && notificationsList.Count > 0)
-                {
-                    foreach (var notification in notificationsList)
-                    {
-                        this.Notifications.Add(notification);
-                    }
-
-                    Console.WriteLine($"✅ Initially loaded {this.Notifications.Count} notifications");
-                }
-                else
-                {
-                    Console.WriteLine("ℹ️ No notifications found");
-                }
+                await LoadFromApiAsync();
+                Console.WriteLine("🟢 LOAD SUCCESS");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error loading notifications: {ex.Message}");
-                this.ErrorMessage = $"Failed to load notifications: {ex.Message}";
-                this.Notifications.Clear();
+                Console.WriteLine($"🔴 LOAD FAILED: {ex.Message}");
+                ErrorMessage = "Failed to load notifications.";
             }
             finally
             {
-                this.IsLoading = false;
+                IsLoading = false;
+                _isLoadingRequested = false;
+            }
+        }
+
+        [RelayCommand]
+        private async Task RefreshNotificationsAsync()
+        {
+            if (IsRefreshing)
+                return;
+
+            IsRefreshing = true;
+            ErrorMessage = string.Empty;
+
+            try
+            {
+                await LoadFromApiAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ [NotificationViewModel] Refresh failed: {ex.Message}");
+                ErrorMessage = "Failed to refresh notifications.";
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async Task LoadFromApiAsync()
+        {
+            try
+            {
+                var notificationsTask = _notificationService.GetNotificationsAsync();
+                var unreadCountTask = _notificationService.GetUnreadCountAsync();
+
+                await Task.WhenAll(notificationsTask, unreadCountTask);
+
+                var notifications = await notificationsTask;
+                var unreadCount = await unreadCountTask;
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Notifications = new ObservableCollection<NotificationItem>(notifications);
+                    UnreadCount = unreadCount;
+                    _notificationStateService.SetUnreadCount(unreadCount);
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ [NotificationViewModel] LoadFromApiAsync failed: {ex.Message}");
+                throw;
             }
         }
     }

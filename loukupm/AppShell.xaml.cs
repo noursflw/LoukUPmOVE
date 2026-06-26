@@ -123,9 +123,10 @@ namespace loukupm
                     (NavigationService.ROUTE_SPLASH, typeof(LoadingPage)),
                     (NavigationService.ROUTE_TERM_BOOKING, typeof(TerminbuchenPage)),
                     (NavigationService.ROUTE_PAYMENT, typeof(Paymentgetway)),
+                    (NavigationService.Route_ContactUs, typeof(ContenUs)),
 
 
-                  
+
                     (NavigationService.ROUTE_POLICY_PRIVACY, typeof(PolicyandPrivacyPage)),
                     (NavigationService.ROUTE_REST_PASSWORD, typeof(RestPassword)),
                     (NavigationService.ROUTE_TERMS_CONDITIONS, typeof(TermsAndConditions)),

@@ -1,26 +1,32 @@
 using loukupm.Model;
+using loukupm.Model.ApiResponses;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace loukupm.services
 {
-    
     public class NotificationService
     {
-        private readonly HttpClient _httpClient;
         private const string BaseUrl = "https://test.center-yazan.com/api/notifications";
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        private readonly HttpClient _httpClient;
+        private static readonly SemaphoreSlim _authLock = new(1, 1);
 
         public NotificationService()
         {
             var handler = new HttpClientHandler();
 
 #if DEBUG
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
 #endif
 
             _httpClient = new HttpClient(handler)
@@ -28,109 +34,184 @@ namespace loukupm.services
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "MAUI-App/1.0");
+            if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
+            {
+                _httpClient.DefaultRequestHeaders.Add("User-Agent", "MAUI-App/1.0");
+            }
         }
 
-       
         private async Task SetAuthorizationHeaderAsync()
         {
-            string? token = await SecureStorage.GetAsync("auth_token");
-
-            if (!string.IsNullOrEmpty(token))
+            // Serialize access to SecureStorage to avoid race on token reads
+            await _authLock.WaitAsync();
+            try
             {
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                try
+                {
+                    string? token = await SecureStorage.GetAsync("auth_token");
+                    _httpClient.DefaultRequestHeaders.Authorization = string.IsNullOrWhiteSpace(token)
+                        ? null
+                        : new AuthenticationHeaderValue("Bearer", token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ [NotificationService] Failed to read auth token: {ex.Message}");
+                    _httpClient.DefaultRequestHeaders.Authorization = null;
+                }
             }
-            else
+            finally
             {
-                _httpClient.DefaultRequestHeaders.Authorization = null;
+                _authLock.Release();
             }
         }
 
-        
-        public async Task<List<NotificationItem>> GetAllNotificationsAsync()
+        public async Task<List<NotificationItem>> GetNotificationsAsync(string? cursor = null, int perPage = 15, string status = "all")
+        {
+            Console.WriteLine("\uD83D\uDD35 LOAD START");
+
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                var safeCursor = string.IsNullOrWhiteSpace(cursor) ? string.Empty : cursor;
+                var url = $"{BaseUrl}?per_page={perPage}&cursor={Uri.EscapeDataString(safeCursor)}&status={Uri.EscapeDataString(status)}";
+
+                Console.WriteLine($"\uD83D\uDCEC [NotificationService] GET {url}");
+
+                using var response = await _httpClient.GetAsync(url);
+                var payload = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure("GetNotificationsAsync", response.StatusCode, payload);
+                    Console.WriteLine("\uD83D\uDD34 LOAD FAILED");
+                    return new List<NotificationItem>();
+                }
+
+                var apiResponse = JsonSerializer.Deserialize<NotificationApiResponse>(payload, JsonOptions);
+                if (apiResponse == null)
+                {
+                    Console.WriteLine("❌ [NotificationService] Failed to deserialize notifications response.");
+                    Console.WriteLine("\uD83D\uDD34 LOAD FAILED");
+                    return new List<NotificationItem>();
+                }
+
+                Console.WriteLine($"✅ [NotificationService] Loaded {apiResponse.Data?.Count ?? 0} notifications. Unread={apiResponse.UnreadCount}");
+                Console.WriteLine("\uD83D\uDFE2 LOAD SUCCESS");
+                return apiResponse.Data ?? new List<NotificationItem>();
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"⏱️ [NotificationService] Timeout while loading notifications: {ex.Message}");
+                Console.WriteLine("\uD83D\uDD34 LOAD FAILED");
+                return new List<NotificationItem>();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"\uD83C\uDF10 [NotificationService] Network error while loading notifications: {ex.Message}");
+                Console.WriteLine("\uD83D\uDD34 LOAD FAILED");
+                return new List<NotificationItem>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ [NotificationService] Unexpected error while loading notifications: {ex.Message}");
+                Console.WriteLine("\uD83D\uDD34 LOAD FAILED");
+                return new List<NotificationItem>();
+            }
+        }
+
+        public async Task<int> GetUnreadCountAsync()
         {
             try
             {
                 await SetAuthorizationHeaderAsync();
 
-             
-                string url = $"{BaseUrl}?per_page=15&cursor=&status=all";
+                var url = $"{BaseUrl}/unread-count";
+                Console.WriteLine($"\uD83D\uDCEC [NotificationService] GET {url}");
 
-                Console.WriteLine($"📬 Fetching notifications from: {url}");
-
-                var response = await _httpClient.GetAsync(url);
+                using var response = await _httpClient.GetAsync(url);
+                var payload = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ API error: {response.StatusCode}");
-                    Console.WriteLine($"❌ Error response: {errorContent.Substring(0, Math.Min(200, errorContent.Length))}...");
-                    return new List<NotificationItem>();
+                    LogHttpFailure("GetUnreadCountAsync", response.StatusCode, payload);
+                    return 0;
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"📬 Response preview: {json.Substring(0, Math.Min(300, json.Length))}...");
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                };
-
-             
-                var apiResponse = JsonSerializer.Deserialize<NotificationApiResponseWithItems>(json, options);
-
-                if (apiResponse?.Data == null || apiResponse.Data.Count == 0)
-                {
-                    Console.WriteLine("⚠️ No notification data in response");
-                    return new List<NotificationItem>();
-                }
-
-                Console.WriteLine($"✅ Successfully loaded {apiResponse.Data.Count} notifications");
-
-                return apiResponse.Data;
+                var apiResponse = JsonSerializer.Deserialize<NotificationUnreadCountResponse>(payload, JsonOptions);
+                var count = apiResponse?.Data?.UnreadCount ?? 0;
+                Console.WriteLine($"✅ [NotificationService] Unread count loaded: {count}");
+                return count;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"⏱️ [NotificationService] Timeout while loading unread count: {ex.Message}");
+                return 0;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"\uD83C\uDF10 [NotificationService] Network error while loading unread count: {ex.Message}");
+                return 0;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception loading notifications: {ex.Message}");
-                Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
-                return new List<NotificationItem>();
+                Console.WriteLine($"❌ [NotificationService] Unexpected error while loading unread count: {ex.Message}");
+                return 0;
             }
         }
 
-        
-        private class NotificationApiResponseWithItems
+        public async Task<bool> MarkAsReadAsync(string notificationId)
         {
-            [JsonPropertyName("success")]
-            public bool Success { get; set; }
+            if (string.IsNullOrWhiteSpace(notificationId))
+            {
+                Console.WriteLine("❌ [NotificationService] MarkAsReadAsync called with empty notificationId.");
+                return false;
+            }
 
-            [JsonPropertyName("message")]
-            public string Message { get; set; }
+            try
+            {
+                await SetAuthorizationHeaderAsync();
 
-            [JsonPropertyName("data")]
-            public List<NotificationItem> Data { get; set; } = new();
+                var url = $"{BaseUrl}/{Uri.EscapeDataString(notificationId)}/read";
+                var path = $"/api/notifications/{notificationId}/read";
+                Console.WriteLine($"📡 POST URL: {path}");
 
-            [JsonPropertyName("pagination")]
-            public NotificationPagination Pagination { get; set; }
+                using var response = await _httpClient.PostAsync(url, content: null);
+                var payload = await response.Content.ReadAsStringAsync();
 
-            [JsonPropertyName("unread_count")]
-            public int UnreadCount { get; set; }
+                Console.WriteLine($"📡 RESPONSE CODE: {(int)response.StatusCode}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure("MarkAsReadAsync", response.StatusCode, payload);
+                    return false;
+                }
+
+                Console.WriteLine($"✅ [NotificationService] Notification marked as read: {notificationId}");
+                return true;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"⏱️ [NotificationService] Timeout while marking notification as read: {ex.Message}");
+                return false;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"🌐 [NotificationService] Network error while marking notification as read: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ [NotificationService] Unexpected error while marking notification as read: {ex.Message}");
+                return false;
+            }
         }
 
-        private class NotificationPagination
+        private static void LogHttpFailure(string operation, System.Net.HttpStatusCode statusCode, string payload)
         {
-            [JsonPropertyName("per_page")]
-            public int PerPage { get; set; }
-
-            [JsonPropertyName("next_cursor")]
-            public string NextCursor { get; set; }
-
-            [JsonPropertyName("prev_cursor")]
-            public string PrevCursor { get; set; }
-
-            [JsonPropertyName("has_more_pages")]
-            public bool HasMorePages { get; set; }
+            var preview = string.IsNullOrWhiteSpace(payload) ? "<empty>" : payload[..Math.Min(500, payload.Length)];
+            Console.WriteLine($"❌ [NotificationService] {operation} failed with HTTP {(int)statusCode} ({statusCode})");
+            Console.WriteLine($"❌ [NotificationService] Response: {preview}");
         }
     }
 }

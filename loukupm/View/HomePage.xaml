@@ -33,15 +33,20 @@
         Spacing="5"
          
         IsVisible="{Binding IsLoadUser, Converter={StaticResource InverseBoolConverter}}">
+                <Grid WidthRequest="50"
+      HeightRequest="50">
 
-                <ImageButton 
-            CornerRadius="30"
-            HeightRequest="50" 
-            WidthRequest="50" 
-                   
-            Clicked="OnFlyoutMenuClicked"
-            Source="ic_menu.svg"
-            Padding="5"/>
+                    <ImageButton
+        CornerRadius="30"
+        HeightRequest="50"
+        WidthRequest="50"
+        Clicked="OnFlyoutMenuClicked"
+        Source="ic_menu.svg"
+        Padding="5"/>
+
+                
+
+                </Grid>
                 <VerticalStackLayout>
                     <HorizontalStackLayout>
 
@@ -78,15 +83,38 @@
             <!-- Spacer -->
             <BoxView Grid.Column="1" BackgroundColor="#0A0A0A" />
 
-            <!-- اليمين -->
+          
             <HorizontalStackLayout Grid.Column="2" Margin="0,0,20,0">
-                <ImageButton 
+
+                <Grid WidthRequest="40"
+          HeightRequest="40">
+
+                    <ImageButton
             CornerRadius="30"
-            HeightRequest="40" 
-            WidthRequest="40" 
-                  
-            Clicked="Button_Clicked" 
-            Source="nn1.png"/>
+            HeightRequest="40"
+            WidthRequest="40"
+            Clicked="Button_Clicked"
+            Source="nn1.png" />
+
+                    <Frame
+            IsVisible="{Binding HasNotifications}"
+            BackgroundColor="Red"
+            WidthRequest="5"
+            HeightRequest="5"
+            CornerRadius="10"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            TranslationX="6"
+            TranslationY="-6"
+            ZIndex="999"
+            Padding="0">
+
+                        
+
+                    </Frame>
+
+                </Grid>
+
             </HorizontalStackLayout>
 
         </Grid>

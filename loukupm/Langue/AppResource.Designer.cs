@@ -466,6 +466,25 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wir sind für dich da.
+        /// </summary>
+        internal static string ContactUsD {
+            get {
+                return ResourceManager.GetString("ContactUsD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hast du Fragen oder benötigst Unterstützung? 
+        ///Kontaktiere uns jederzeit. Wir helfen dir gerne weiter..
+        /// </summary>
+        internal static string ContactUsDescription {
+            get {
+                return ResourceManager.GetString("ContactUsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Noch kein Konto?.
         /// </summary>
         internal static string CreatAccount {
@@ -822,6 +841,15 @@ namespace loukupm.Langue {
         internal static string Fetchedsuccessfully {
             get {
                 return ResourceManager.GetString("Fetchedsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folge uns.
+        /// </summary>
+        internal static string FollowUs {
+            get {
+                return ResourceManager.GetString("FollowUs", resourceCulture);
             }
         }
         
@@ -2941,6 +2969,15 @@ namespace loukupm.Langue {
         internal static string wellomeonlookup {
             get {
                 return ResourceManager.GetString("wellomeonlookup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Öffnungszeiten.
+        /// </summary>
+        internal static string WorkTime {
+            get {
+                return ResourceManager.GetString("WorkTime", resourceCulture);
             }
         }
         

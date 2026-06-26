@@ -74,6 +74,58 @@ namespace loukupm.ViewModel
             }
         }
 
+        [RelayCommand]
+        public async Task OpenFacebook()
+        {
+            try
+            {
+                await Launcher.Default.OpenAsync(new Uri("https://www.facebook.com/profile.php?id=100093841434497"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error opening Facebook: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        public async Task OpenInstagram()
+        {
+            try
+            {
+                await Launcher.Default.OpenAsync(new Uri("https://www.instagram.com/lookupfriseur/"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error opening Instagram: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        public async Task OpenTikTok()
+        {
+            try
+            {
+                await Launcher.Default.OpenAsync(new Uri("https://www.tiktok.com/@lookupfriseur"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error opening TikTok: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        public async Task OpenWhatsApp()
+        {
+            try
+            {
+                await Launcher.Default.OpenAsync(new Uri("https://wa.me/4917643233977"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error opening WhatsApp: {ex.Message}");
+            }
+        }
+
         /// <summary>
         /// Get text based on current language
         /// </summary>

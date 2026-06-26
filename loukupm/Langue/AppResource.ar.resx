@@ -1096,4 +1096,18 @@
   <data name="DesEmai" xml:space="preserve">
     <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
   </data>
+  <data name="ContactUsD" xml:space="preserve">
+    <value>نحن هنا من أجلك</value>
+  </data>
+  <data name="ContactUsDescription" xml:space="preserve">
+    <value>هل لديك سؤال أو تحتاج إلى مساعدة؟ 
+تواصل معنا في أي وقت، ويسعدنا مساعدتك
+</value>
+  </data>
+  <data name="WorkTime" xml:space="preserve">
+    <value>أوقات العمل</value>
+  </data>
+  <data name="FollowUs" xml:space="preserve">
+    <value>تابعنا</value>
+  </data>
 </root>

@@ -38,7 +38,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool isLoadNotifiction;
         [ObservableProperty] private bool isLoadUser;
 
-       
+        
 
         [ObservableProperty] private ObservableCollection<Servies> services = new();
         [ObservableProperty] private ObservableCollection<Servies> filteredServices = new();
@@ -56,7 +56,9 @@ namespace loukupm.ViewModel
         [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
         [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
         [ObservableProperty] private ObservableCollection<Notification> notifications = new();
-        [ObservableProperty] private int unreadNotificationCount = 0;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasNotifications))]
+        private int unreadNotificationCount = 0;
         [ObservableProperty] private bool hasMoreNotifications = false;
         [ObservableProperty] private string nextNotificationCursor = null;
         [ObservableProperty] private ObservableCollection<Booking> viewSrves;
@@ -101,11 +103,55 @@ namespace loukupm.ViewModel
         private HomeSliderViewModel homeSliderVM;
         public IAsyncRelayCommand RefreshServicesCommand { get; }
 
-        private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel());
+        private readonly ApiServices _apiServices = new ApiServices();
+        private readonly services.NotificationStateService _notificationState;
+
+        private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel(new services.NotificationStateService(), new services.NotificationService()));
         public static AppViewModel Instance => _instance.Value;
 
-        private readonly ApiServices _apiServices = new ApiServices();
+        // Parameterless ctor for views that still call new AppViewModel()
+        // It attempts to resolve NotificationStateService and NotificationService from MAUI DI if available,
+        // otherwise it falls back to creating local instances (not recommended for shared state).
+        public AppViewModel() : this(GetNotificationStateFromServiceProvider(), GetNotificationServiceFromServiceProvider()) { }
 
+        private static services.NotificationStateService GetNotificationStateFromServiceProvider()
+        {
+            try
+            {
+                var mauiContext = Microsoft.Maui.Controls.Application.Current?.Handler?.MauiContext;
+                var svc = mauiContext?.Services.GetService(typeof(services.NotificationStateService)) as services.NotificationStateService;
+                if (svc != null) return svc;
+            }
+            catch { }
+            return new services.NotificationStateService();
+        }
+
+        private static services.NotificationService GetNotificationServiceFromServiceProvider()
+        {
+            try
+            {
+                var mauiContext = Microsoft.Maui.Controls.Application.Current?.Handler?.MauiContext;
+                var svc = mauiContext?.Services.GetService(typeof(services.NotificationService)) as services.NotificationService;
+                if (svc != null) return svc;
+            }
+            catch { }
+            return new services.NotificationService();
+        }
+        partial void OnNotificationCountChanged(int value)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AppViewModel] NotificationCount changed on VM {GetHashCode()}: {value}");
+
+            MainThread.BeginInvokeOnMainThread(() =>
+
+            {
+
+                OnPropertyChanged(nameof(HasNotifications));
+
+            });
+            Console.WriteLine($"🔥 COUNT CHANGED: {value}");
+            OnPropertyChanged(nameof(NotificationCount));
+            OnPropertyChanged(nameof(HasNotifications));
+        }
         private string _token;
         public ICommand SelectServiceButtonCommand { get; }
 
@@ -118,13 +164,32 @@ namespace loukupm.ViewModel
         public IAsyncRelayCommand EnableReminderTimerCommand { get; private set; }
         public IAsyncRelayCommand<int> CancelBookingCommand { get; private set; }
 
-        public AppViewModel()
+        public AppViewModel(services.NotificationStateService notificationState, services.NotificationService notificationService = null)
         {
+            _notificationState = notificationState ?? GetNotificationStateFromServiceProvider() ?? throw new ArgumentNullException(nameof(notificationState));
+            _notificationService = notificationService ?? GetNotificationServiceFromServiceProvider() ?? new services.NotificationService();
+
+            System.Diagnostics.Debug.WriteLine($"[AppViewModel] Created instance (DI): {GetHashCode()}");
+
+            // Subscribe to shared notification state so multiple VM instances reflect same unread count
+            _notificationState.UnreadCountChanged += (cnt) =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    UnreadNotificationCount = cnt;
+                    NotificationCount = cnt;
+                });
+            };
+
+            // Initialize local viewmodel value from shared state
+            UnreadNotificationCount = _notificationState.UnreadCount;
+            NotificationCount = _notificationState.UnreadCount;
+
             LoadData();
             AboutUsVM = new AboutUsViewModel();
             HomeSliderVM = new HomeSliderViewModel();
             phoneOtpVM=new PhoneOtpViewModel(_apiServices);
-           
+
             // ✅ Do NOT create new HttpClient here - use static instance
 
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
@@ -170,7 +235,7 @@ namespace loukupm.ViewModel
                     Console.WriteLine($"   - {s.NameServies} (Price: '{s.PriceServies}')");
             });
 
-           
+
             LoadAppointmentsCommand = new AsyncRelayCommand(LoadBookingsAsync);
             _ = InitializeAsync();
         }
@@ -967,7 +1032,9 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string userFirstName = string.Empty;
 
         public ICommand UpDateUserCommand { get; }
-
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasNotifications))]
+        private int notificationCount;
         public string PhoneVerificationStatus
         {
             get
@@ -1461,7 +1528,59 @@ namespace loukupm.ViewModel
                 await App.Current.MainPage.ShowPopupAsync(popup);
             }
         }
+        private readonly services.NotificationService _notificationService;
+        public bool HasNotifications => UnreadNotificationCount > 0;
 
+        private bool _notificationsInitialized = false;
+
+        partial void OnUnreadNotificationCountChanged(int value)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AppViewModel] UnreadNotificationCount changed on VM {GetHashCode()}: {value}");
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                // Keep both counts in sync so UI bound to NotificationCount updates
+                NotificationCount = value;
+            });
+        }
+
+        /// <summary>
+        /// Called by views to ensure the notification count is loaded before binding occurs.
+        /// Reads shared NotificationStateService first; if zero, fetches unread count from the API once.
+        /// </summary>
+        public async Task InitializeNotificationsAsync()
+        {
+            if (_notificationsInitialized) return;
+
+            try
+            {
+                int count = _notificationState?.UnreadCount ?? 0;
+
+                if (count == 0)
+                {
+                    count = await _notificationService.GetUnreadCountAsync();
+                    _notificationState?.SetUnreadCount(count);
+                }
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    UnreadNotificationCount = count;
+                    NotificationCount = count;
+                });
+                _notificationsInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeNotificationsAsync failed: {ex.Message}");
+            }
+        }
+
+        public async Task LoadNotificationCountAsync()
+        {
+            var count = await _notificationService.GetUnreadCountAsync();
+            UnreadNotificationCount = count;
+            NotificationCount = count;
+            _notificationState?.SetUnreadCount(count);
+        }
 
 
         [ObservableProperty]

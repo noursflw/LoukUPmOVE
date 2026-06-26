@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="NotificationsPage"
              x:Class="loukupm.View.NotifictionPage"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
@@ -18,17 +19,14 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="60,*" BackgroundColor="#0A0A0A">
-        <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A">
-            <!-- Title -->
             <Label Text="{Loc:Translate Name=Benachrichtigungen}"
-                 TextColor="White"
-                 Margin="24,0,0,0"
-                 FontSize="24"
-                 FontFamily="georgia-bold"
-                 VerticalOptions="Center" />
+                  TextColor="White"
+                  Margin="24,0,0,0"
+                  FontSize="24"
+                  FontFamily="georgia-bold"
+                  VerticalOptions="Center" />
 
-            <!-- Back Button -->
             <Button Grid.Column="1"
                  WidthRequest="40"
                  HeightRequest="40"
@@ -36,97 +34,101 @@
                  ImageSource="backbuttonpmg.png"
                  BackgroundColor="#0A0A0A"
                  BorderColor="#0A0A0A"
-                 Margin="0,0,10,0"            
+                 Margin="0,0,10,0"
                  BorderWidth="1"
                  HorizontalOptions="End"
                  VerticalOptions="Center"
                  Clicked="Button_Clicked" />
         </Grid>
 
-        <!-- Content Area with RefreshView -->
-        <RefreshView Grid.Row="1" 
-                     Command="{Binding LoadNotificationsCommand}"
+        <!-- RefreshView directly wraps CollectionView (no ScrollView) -->
+        <RefreshView Grid.Row="1"
+                     Command="{Binding RefreshNotificationsCommand}"
                      IsRefreshing="{Binding IsRefreshing}"
                      RefreshColor="#FFFFFF"
                      BackgroundColor="#0A0A0A">
-            <Grid RowDefinitions="*" ColumnDefinitions="*" BackgroundColor="#0A0A0A">
-                <!-- Loading Skeleton - Shows while loading notifications -->
-                <VerticalStackLayout Grid.Row="0" IsVisible="{Binding IsLoading}" Margin="16,10,16,0" Spacing="8" Padding="0">
-                    <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444" 
-                           sk:Skeleton.IsBusy="{Binding IsLoading}" 
-                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+
+            <Grid Padding="0" BackgroundColor="#0A0A0A">
+                <!-- Skeleton loader shown while IsLoading = true -->
+                <VerticalStackLayout IsVisible="{Binding IsLoading}" Margin="16,10,16,0" Spacing="8" Padding="0">
+                    <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
                            BorderColor="#444444" Margin="0,4,0,4" Padding="0" />
 
-                    <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444" 
-                           sk:Skeleton.IsBusy="{Binding IsLoading}" 
-                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                    <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
                            BorderColor="#444444" Margin="0,4,0,4" Padding="0" />
 
-                    <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444" 
-                           sk:Skeleton.IsBusy="{Binding IsLoading}" 
-                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                    <Frame HeightRequest="100" CornerRadius="12" BackgroundColor="#444444"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
                            BorderColor="#444444" Margin="0,4,0,4" Padding="0" />
                 </VerticalStackLayout>
 
-                <!-- Notifications List Container -->
-                <VerticalStackLayout Grid.Row="0" IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" 
-                                    Padding="0" Spacing="0" BackgroundColor="#0A0A0A">
+                <!-- CollectionView is only scroll container and uses SelectedItem binding to trigger VM handling -->
+                <CollectionView ItemsSource="{Binding Notifications}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedNotification, Mode=TwoWay}"
+                                BackgroundColor="#0A0A0A"
+                                Margin="0"
+                                IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
 
-                    <!-- Empty State -->
-                    <VerticalStackLayout IsVisible="{Binding Notifications.Count, Converter={converters:InverseBoolConverter}}" 
-                                        HorizontalOptions="Center" VerticalOptions="Center" Margin="20" Padding="20">
-                        <Label Text="No Notifications"
-                               TextColor="#999999" FontSize="18" HorizontalTextAlignment="Center"/>
-                        <Label Text="Pull down to refresh"
-                               TextColor="#666666" FontSize="14" HorizontalTextAlignment="Center" Margin="0,10,0,0"/>
-                    </VerticalStackLayout>
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Margin="20" Padding="20">
+                            <Label Text="No Notifications"
+                                   TextColor="#999999" FontSize="18" HorizontalTextAlignment="Center"/>
+                            <Label Text="Pull down to refresh"
+                                   TextColor="#666666" FontSize="14" HorizontalTextAlignment="Center" Margin="0,10,0,0"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
 
-                    <!-- Notifications CollectionView -->
-                    <CollectionView ItemsSource="{Binding Notifications}" 
-                                   IsVisible="{Binding Notifications.Count}"
-                                   SelectionMode="None"
-                                   Margin="0"
-                                   BackgroundColor="#0A0A0A">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame BackgroundColor="#303030" BorderColor="#404040" 
-                                       HasShadow="False" CornerRadius="12" Margin="16,8" Padding="0">
-                                    <VerticalStackLayout Spacing="6" Padding="12">
-                                        <!-- Date and Time Row -->
-                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                            <!-- Date Column -->
-                                            <Label Text="{Binding FormattedDate}" 
-                                                   TextColor="#999999" FontSize="12" Grid.Column="0"
-                                                   VerticalTextAlignment="Center"/>
-                                            <!-- Time Column --><!--
-                                            <Label Text="{Binding FormattedTime}" 
-                                                   TextColor="#999999" FontSize="12" Grid.Column="1"
-                                                   VerticalTextAlignment="Center"/>-->
-                                        </Grid>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#303030" BorderColor="#404040"
+                                   HasShadow="False" CornerRadius="12" Margin="16,8" Padding="0">
+                                <Frame.Triggers>
+                                    <DataTrigger TargetType="Frame" Binding="{Binding IsRead}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#232323" />
+                                        <Setter Property="Opacity" Value="0.82" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Frame" Binding="{Binding IsRead}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="#383838" />
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Frame.Triggers>
 
-                                        <!-- Title (Bold) -->
-                                        <Label Text="{Binding Title}" 
+                                <VerticalStackLayout Spacing="6" Padding="12">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                        <Frame WidthRequest="10" HeightRequest="10" CornerRadius="10" Padding="0"
+                                               HasShadow="False" BorderColor="Transparent" BackgroundColor="Red"
+                                               IsVisible="{Binding IsRead, Converter={StaticResource InverseBoolConverter}}" />
+                                        <Label Grid.Column="1" Text="{Binding Title}"
                                                TextColor="#FFFFFF" FontSize="16" FontFamily="georgia-bold"
-                                               LineBreakMode="TailTruncation" MaxLines="2" Margin="0,6,0,0"/>
+                                               LineBreakMode="TailTruncation" MaxLines="2" Margin="0,0,0,0" />
+                                        <Label Grid.Column="2" Text="{Binding FormattedTime}"
+                                               TextColor="#999999" FontSize="11"
+                                               VerticalTextAlignment="Center" />
+                                    </Grid>
 
-                                        <!-- Message -->
-                                        <Label Text="{Binding Message}" 
-                                               TextColor="#D3D3D3" FontSize="13" LineBreakMode="WordWrap"
-                                               Margin="0,4,0,0"/>
+                                    <Label Text="{Binding Message}"
+                                           TextColor="#D3D3D3" FontSize="13" LineBreakMode="WordWrap"
+                                           Margin="0,4,0,0" />
 
-                                        <!-- Relative Time and Read Status -->
-                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,6,0,0">
-                                            <Label Text="" 
-                                                   TextColor="#777777" FontSize="11" Grid.Column="0"
-                                                   VerticalTextAlignment="Center"/>
-                                           
-                                        </Grid>
-                                    </VerticalStackLayout>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,6,0,0">
+                                        <Label Text="{Binding FormattedDate}"
+                                               TextColor="#777777" FontSize="11" Grid.Column="0"
+                                               VerticalTextAlignment="Center" />
+                                        <Label Grid.Column="1" Text="{Binding ReadStatus}"
+                                               TextColor="#B8963F" FontSize="11"
+                                               IsVisible="{Binding IsRead}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </Grid>
         </RefreshView>
     </Grid>

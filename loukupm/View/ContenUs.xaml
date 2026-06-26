@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.ContenUs"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             
+             xmlns:converters="clr-namespace:loukupm.Converter"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             xmlns:Convert="clr-namespace:loukupm.Converter"
+              
+             BackgroundColor="#0A0A0A">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsEnabled="True" IsVisible="True" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Convert:MultiLanguageConverter x:Key="MultiLanguageConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView BackgroundColor="#0A0A0A" >
+        <VerticalStackLayout BackgroundColor="#0A0A0A" >
+            <Label HorizontalOptions="Center"
+                    Text="{Loc:Translate Name=Callmy}"
+                    FontSize="24"
+                    Margin="20"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+            <HorizontalStackLayout Margin="10" Spacing="10">
+                <Border
+    WidthRequest="100"
+    HeightRequest="100"
+    StrokeThickness="0"
+    StrokeShape="RoundRectangle 50">
+
+                    <Image
+        Source="contact_us_icon.png"
+        Aspect="AspectFill" />
+                </Border>
+                <VerticalStackLayout>
+                    <Label Text="{Loc:Translate Name=ContactUsD}" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           TextColor="White" />
+                    <Label Text="{Loc:Translate Name=ContactUsDescription}"
+                           FontSize="14" 
+                           TextColor="White" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+            <VerticalStackLayout Spacing="8" IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"  >
+                <Border 
+                  sk:Skeleton.IsBusy="{Binding IsLoading}" IsVisible="{Binding IsLoading}" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                  Stroke="#0e1012"
+                  HeightRequest="50"  
+                   Margin="20,0,20,0" 
+                   BackgroundColor="#444444"     
+                  StrokeThickness="1"
+                  Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                </Border>
+                <Border 
+   sk:Skeleton.IsBusy="{Binding IsLoading}" IsVisible="{Binding IsLoading}" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+   Stroke="#0e1012"
+   HeightRequest="50"  
+    Margin="20,0,20,0" 
+    BackgroundColor="#444444"     
+   StrokeThickness="1"
+   Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                </Border>
+                <Border 
+   sk:Skeleton.IsBusy="{Binding IsLoading}" IsVisible="{Binding IsLoading}" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+   Stroke="#0e1012"
+   HeightRequest="50"  
+    Margin="20,0,20,0" 
+    BackgroundColor="#444444"     
+   StrokeThickness="1"
+   Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                </Border>
+
+            </VerticalStackLayout>
+            <VerticalStackLayout>
+                <Border
+Margin="20,0,20,0"
+BackgroundColor="#0e1012"
+StrokeThickness="0"
+StrokeShape="RoundRectangle 15">
+
+                    <HorizontalStackLayout
+    HeightRequest="70"
+    Padding="10,0"
+    Spacing="6">
+
+                        <Image Source="loctiony.png"
+           VerticalOptions="Center" />
+
+                        <VerticalStackLayout VerticalOptions="Center">
+
+                            <Label
+            Text="{Binding AboutUsData.Contact.Address.Label, Converter={StaticResource MultiLanguageConverter}}"
+            FontSize="14"
+            TextColor="#EBD750" />
+
+                            <Label
+            Text="{Binding AboutUsData.Contact.Address.Value}"
+            FontSize="13"
+            Margin="10"
+            LineBreakMode="WordWrap"
+            TextColor="#999999" />
+
+                        </VerticalStackLayout>
+
+                    </HorizontalStackLayout>
+
+                </Border>
+                <Border
+             Margin="20,10,20,0"
+
+Padding="12"
+BackgroundColor="#0e1012"
+StrokeThickness="0"
+StrokeShape="RoundRectangle 15">
+
+                    <HorizontalStackLayout Spacing="10">
+
+
+
+                        <Image Source="phoney.png"
+               Aspect="AspectFill"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+
+
+                        <VerticalStackLayout Spacing="4"
+                         VerticalOptions="Center">
+
+                            <Label Text="{Binding AboutUsData.Contact.Phone.Label, Converter={StaticResource MultiLanguageConverter}}"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#EBD750"/>
+
+                            <Label Text="{Binding AboutUsData.Contact.Phone.Value}"
+               FontSize="13"
+               FlowDirection="LeftToRight"
+               TextColor="#999999"/>
+
+                        </VerticalStackLayout>
+
+                    </HorizontalStackLayout>
+
+                </Border>
+                <Border
+ Margin="20,10,20,0"
+Padding="10"
+BackgroundColor="#0e1012"
+StrokeThickness="0"
+StrokeShape="RoundRectangle 15">
+
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Image Source="emaily.png"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"/>
+
+                        <VerticalStackLayout Spacing="4">
+
+                            <Label Text="{Binding EmailLabel, Converter={StaticResource MultiLanguageConverter}}"
+               FontSize="14"
+               TextColor="#EBD750"/>
+
+                            <Label Text="{Binding AboutUsData.Contact.Email}"
+               FontSize="13"
+               LineBreakMode="WordWrap"
+               TextColor="#999999"/>
+
+                        </VerticalStackLayout>
+
+                    </HorizontalStackLayout>
+
+                </Border>
+                <Border
+ Margin="20,10,20,0"
+Padding="10"
+BackgroundColor="#0e1012"
+StrokeThickness="0"
+StrokeShape="RoundRectangle 15">
+
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Image Source="timery.png"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"/>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Loc:Translate Name=WorkTime}"
+                          FontSize="13"
+                          TextColor="#EBD750"/>
+
+                            <Label Text="{Binding AboutUsData.Contact.OpeningHours, Converter={StaticResource MultiLanguageConverter}}"
+               FontSize="14"
+               TextColor="#999999"/>
+
+                            <!-- إذا عندك قيمة ساعات فعلية ضيفها هون -->
+
+
+                        </VerticalStackLayout>
+
+                    </HorizontalStackLayout>
+
+                </Border>
+                <!-- Social Media Section -->
+                <Label Text="{Loc:Translate Name=FollowUs}" 
+                        FontSize="16" 
+                        FontAttributes="Bold" 
+                        TextColor="#EBD750"
+                        HorizontalOptions="Center"
+                        Margin="20,20,20,10" />
+                <Grid Margin="20,0,20,10" ColumnSpacing="10" RowSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Facebook Button -->
+                    <Border Grid.Column="0" Grid.Row="0"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="1"
+                            Stroke="#1a1a1a"
+                            StrokeShape="RoundRectangle 15"
+                            Padding="15">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenFacebookCommand}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="facebook.png"/>
+                            <Label Text="Facebook" 
+                                    FontSize="12" 
+                                    TextColor="#999999"
+                                    HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Instagram Button -->
+                    <Border Grid.Column="1" Grid.Row="0"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="1"
+                            Stroke="#1a1a1a"
+                            StrokeShape="RoundRectangle 15"
+                            Padding="15">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenInstagramCommand}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="instgram.png"/>
+                            <Label Text="Instagram" 
+                                    FontSize="12" 
+                                    TextColor="#999999"
+                                    HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- TikTok Button -->
+                    <Border Grid.Column="0" Grid.Row="1"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="1"
+                            Stroke="#1a1a1a"
+                            StrokeShape="RoundRectangle 15"
+                            Padding="15">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenTikTokCommand}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="titok.png"/>
+                            <Label Text="TikTok" 
+                                    FontSize="12" 
+                                    TextColor="#999999"
+                                    HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- WhatsApp Button -->
+                    <Border Grid.Column="1" Grid.Row="1"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="1"
+                            Stroke="#1a1a1a"
+                            StrokeShape="RoundRectangle 15"
+                            Padding="15">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenWhatsAppCommand}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="whatsapp.png"/>
+                            <Label Text="WhatsApp" 
+                                    FontSize="12" 
+                                    TextColor="#999999"
+                                    HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout> 
+    </ScrollView>
+</ContentPage>

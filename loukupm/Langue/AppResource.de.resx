@@ -1096,4 +1096,17 @@ Beginnt hier
   <data name="DesEmai" xml:space="preserve">
     <value>Vor Ihrem Termin eine Erinnerung per E-Mail erhalten</value>
   </data>
+  <data name="ContactUsD" xml:space="preserve">
+    <value>Wir sind für dich da</value>
+  </data>
+  <data name="ContactUsDescription" xml:space="preserve">
+    <value>Hast du Fragen oder benötigst Unterstützung? 
+Kontaktiere uns jederzeit. Wir helfen dir gerne weiter.</value>
+  </data>
+  <data name="WorkTime" xml:space="preserve">
+    <value>Öffnungszeiten</value>
+  </data>
+  <data name="FollowUs" xml:space="preserve">
+    <value>Folge uns</value>
+  </data>
 </root>

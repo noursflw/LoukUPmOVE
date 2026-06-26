@@ -1,67 +1,50 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
     /// <summary>
-    /// NotificationItem model representing a single notification from the API
-    /// With support for nullable read_at timestamp
+    /// Notification item returned by the backend API.
     /// </summary>
-    public class NotificationItem
+    public partial class NotificationItem : ObservableObject
     {
-        /// <summary>
-        /// Unique identifier for the notification (string)
-        /// </summary>
-        public string Id { get; set; } = string.Empty;
+        [ObservableProperty]
+        [JsonPropertyName("id")]
+        private string id = string.Empty;
 
-        /// <summary>
-        /// Notification title
-        /// </summary>
-        public string Title { get; set; } = string.Empty;
+        [ObservableProperty]
+        [JsonPropertyName("title")]
+        private string title = string.Empty;
 
-        /// <summary>
-        /// Notification message content
-        /// </summary>
-        public string Message { get; set; } = string.Empty;
+        [ObservableProperty]
+        [JsonPropertyName("message")]
+        private string message = string.Empty;
 
-        /// <summary>
-        /// UTC timestamp when notification was read (nullable)
-        /// Null if notification has not been read yet
-        /// </summary>
-        public DateTime? ReadAt { get; set; }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsRead))]
+        [NotifyPropertyChangedFor(nameof(ReadStatus))]
+        [JsonPropertyName("read_at")]
+        private DateTime? readAt;
 
-        /// <summary>
-        /// UTC timestamp when notification was created
-        /// </summary>
-        public DateTime CreatedAt { get; set; }
+        [ObservableProperty]
+        [JsonPropertyName("created_at")]
+        private DateTime createdAt;
 
-        /// <summary>
-        /// Whether the notification has been read
-        /// </summary>
-        public bool IsRead => ReadAt.HasValue;
+        public bool IsRead => ReadAt != null;
 
-        /// <summary>
-        /// Formatted date and time display (e.g., "25/11/2024 14:30")
-        /// </summary>
-        public string FormattedDateTime => CreatedAt.ToString("dd/MM/yyyy HH:mm");
+        public string FormattedDateTime => CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
 
-        /// <summary>
-        /// Formatted date only (e.g., "25/11/2024")
-        /// </summary>
-        public string FormattedDate => CreatedAt.ToString("dd/MM/yyyy");
+        public string FormattedDate => CreatedAt.ToLocalTime().ToString("dd/MM/yyyy");
 
-        /// <summary>
-        /// Formatted time only (e.g., "14:30")
-        /// </summary>
-        public string FormattedTime => CreatedAt.ToString("HH:mm");
+        public string FormattedTime => CreatedAt.ToLocalTime().ToString("HH:mm");
 
-        /// <summary>
-        /// Relative time display (e.g., "2 hours ago")
-        /// </summary>
         public string RelativeTime
         {
             get
             {
-                var diff = DateTime.UtcNow - CreatedAt;
+                var createdAtUtc = CreatedAt.Kind == DateTimeKind.Utc ? CreatedAt : CreatedAt.ToUniversalTime();
+                var diff = DateTime.UtcNow - createdAtUtc;
 
                 if (diff.TotalSeconds < 60)
                     return "just now";
@@ -76,9 +59,6 @@ namespace loukupm.Model
             }
         }
 
-        /// <summary>
-        /// Read status display
-        /// </summary>
         public string ReadStatus => IsRead ? "Read" : "Unread";
     }
 }

@@ -313,9 +313,18 @@ namespace loukupm.Services
                     return (new List<Notification>(), 0, false);
                 }
 
-                Console.WriteLine($"✅ Loaded {apiResponse.Data.Count} notifications, Unread: {apiResponse.UnreadCount}, HasMore: {apiResponse.Pagination?.HasMorePages}");
+                var notifications = apiResponse.Data.Select(notification => new Notification
+                {
+                    Id = 0,
+                    Title = notification.Title,
+                    Message = notification.Message,
+                    CreatedAt = notification.CreatedAt,
+                    IsRead = notification.IsRead
+                }).ToList();
 
-                return (apiResponse.Data, apiResponse.UnreadCount, apiResponse.Pagination?.HasMorePages ?? false);
+                Console.WriteLine($"✅ Loaded {notifications.Count} notifications, Unread: {apiResponse.UnreadCount}, HasMore: {apiResponse.Pagination?.HasMorePages}");
+
+                return (notifications, apiResponse.UnreadCount, apiResponse.Pagination?.HasMorePages ?? false);
             }
             catch (Exception ex)
             {

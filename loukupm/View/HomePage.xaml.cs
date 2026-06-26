@@ -3,37 +3,62 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using FFImageLoading.Maui;
 using loukupm.Model;
-using loukupm.ViewModel;
+using loukupm.services;
 using loukupm.Services;
+using loukupm.ViewModel;
+using Microsoft.Maui.Controls;
 using System.Globalization;
 using System.Windows.Input;
-using Microsoft.Maui.Controls;
+
+using System.ComponentModel;
 
 public partial class HomePage : ContentPage
 {
-	
-
 	public HomePage()
 	{
 		InitializeComponent();
-		this.BindingContext= new AppViewModel();
-
-		
 		this.InitializeLanguageTracking();
 	}
 
-	protected override void OnAppearing()
+	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
 
-		// Explicitly trigger AboutUs data loading when page appears
-		if (BindingContext is AppViewModel appVM && appVM.AboutUsVM?.LoadAboutUsDataCommand.CanExecute(null) == true)
+		try
+		{
+			// Resolve a ViewModel instance from DI if available; fallback to parameterless construction
+			var mauiContext = Handler?.MauiContext ?? Application.Current?.Handler?.MauiContext;
+			var vm = mauiContext?.Services.GetService(typeof(ViewModel.AppViewModel)) as ViewModel.AppViewModel;
+			if (vm == null)
+			{
+				vm = new ViewModel.AppViewModel();
+			}
+
+			// If BindingContext is already set to same instance, no-op
+			if (BindingContext == vm)
+			{
+				System.Diagnostics.Debug.WriteLine($"HomePage.OnAppearing - existing BindingContext hash: {BindingContext?.GetHashCode()}");
+			}
+			else
+			{
+				// Ensure notifications are loaded before setting BindingContext so UI shows correct values immediately
+				await vm.InitializeNotificationsAsync();
+				this.BindingContext = vm;
+				System.Diagnostics.Debug.WriteLine($"HomePage.OnAppearing - set BindingContext to VM hash: {vm.GetHashCode()} with NotificationCount={vm.NotificationCount}");
+			}
+		}
+		catch (Exception ex)
+		{
+			System.Diagnostics.Debug.WriteLine($"HomePage.OnAppearing error resolving VM: {ex.Message}");
+		}
+
+		// Explicitly trigger AboutUs and HomeSlider data loading after BindingContext established
+		if (BindingContext is ViewModel.AppViewModel appVM && appVM.AboutUsVM?.LoadAboutUsDataCommand.CanExecute(null) == true)
 		{
 			appVM.AboutUsVM.LoadAboutUsDataCommand.Execute(null);
 		}
 
-		// Trigger Home Sliders data loading when page appears
-		if (BindingContext is AppViewModel appVm && appVm.HomeSliderVM?.LoadSlidersCommand.CanExecute(null) == true)
+		if (BindingContext is ViewModel.AppViewModel appVm && appVm.HomeSliderVM?.LoadSlidersCommand.CanExecute(null) == true)
 		{
 			appVm.HomeSliderVM.LoadSlidersCommand.Execute(null);
 		}
@@ -76,9 +101,11 @@ public partial class HomePage : ContentPage
             command.Execute(service);
             await NavigationService.NavigateToPage(NavigationService.ROUTE_TERM_BOOKING);
         }
+        _ = vm.LoadNotificationCountAsync();
     }
 
     private DateTime _lastBackPressed = DateTime.MinValue;
+  
     protected override bool OnBackButtonPressed()
     {
         var currentTime = DateTime.Now;
@@ -102,9 +129,11 @@ public partial class HomePage : ContentPage
         await toast.Show();
     }
 
- 
+    private readonly NotificationService _notificationService = new();
 
+   
     
+
 
     private void Button_Clicked_2(object sender, EventArgs e)
     {

@@ -182,8 +182,8 @@
     </FlyoutItem>
     <FlyoutItem Title="{Loc:Translate Name=Callmy}" Icon="callme.svg">
         <ShellContent
-      ContentTemplate="{DataTemplate view:PolicyandPrivacyPage}"
-      Route="PolicyandPrivacyPage" />
+      ContentTemplate="{DataTemplate view:ContenUs}"
+      Route="ContenUs" />
     </FlyoutItem>
     <FlyoutItem Title="{Loc:Translate Name=setting}" Icon="sittingy.svg">
         <ShellContent

@@ -13,7 +13,7 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-
+        
         try
         {
             OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
