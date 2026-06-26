@@ -863,6 +863,52 @@ namespace loukupm.Services
             }
         }
 
+        public async Task<bool> DeleteCurrentUserProfileAsync()
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                var token = await SecureStorage.GetAsync("auth_token");
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    Console.WriteLine("❌ Delete profile aborted: no auth token found");
+                    return false;
+                }
+
+                Console.WriteLine("📤 Sending delete profile request to API:");
+                Console.WriteLine("   URL: https://test.center-yazan.com/api/profile");
+                Console.WriteLine("   Method: DELETE");
+                Console.WriteLine("   Authorization: Bearer [token]");
+
+                var httpResponse = await _httpClient.DeleteAsync("https://test.center-yazan.com/api/profile");
+                var responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"📊 Delete profile response: {httpResponse.StatusCode}");
+                Console.WriteLine($"📄 Delete profile body: {responseBody}");
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+
+                if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine("❌ Delete profile unauthorized (401)");
+                    return false;
+                }
+
+                Console.WriteLine($"❌ Delete profile failed: {httpResponse.StatusCode}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Delete profile exception: {ex.Message}");
+                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                return false;
+            }
+        }
+
         /// <summary>
         /// Detect MIME type based on file extension
         /// </summary>

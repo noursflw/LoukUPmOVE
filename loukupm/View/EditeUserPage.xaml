@@ -171,9 +171,9 @@
                         </Frame>
 
                         <Button Command="{Binding UpdateUserCommand}" 
-IsEnabled="{Binding IsLoadUser, Converter={StaticResource InverseBoolConverter}}"
+IsEnabled="{Binding CanUpdateUser}"
 Text="{Loc:Translate Name= SaveChangFoeMyAccount}" FontSize="22" HeightRequest="50" FontFamily="georgia-bold" Margin="25" TextColor="Black" />
-                        <Button BackgroundColor="Transparent" Clicked="Button_Clicked_9" Text="{Loc:Translate Name=RemoveMyAccount}" ImageSource="exite.png" BorderColor="#FF4C4C" BorderWidth="1" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24" CornerRadius="16" HeightRequest="56"  />
+                        <Button BackgroundColor="Transparent" Command="{Binding DeleteAccountCommand}" Text="{Loc:Translate Name=RemoveMyAccount}" ImageSource="exite.png" BorderColor="#FF4C4C" BorderWidth="1" TextColor="#FF4C4C" FontSize="18" FontFamily="georgia" Margin="24" CornerRadius="16" HeightRequest="56"  />
                     </VerticalStackLayout>
                 </ScrollView>
             </VerticalStackLayout>

@@ -2,18 +2,20 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.HomePage" 
+             x:Name="RootPage"
              xmlns:converters="clr-namespace:loukupm.Converter"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:views="clr-namespace:loukupm.View"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="True"       
              FlowDirection="LeftToRight"      
              Title=" "
              xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              xmlns:vm="clr-namespace:loukupm.ViewModel"
-            
+
              BackgroundColor="#0A0A0A">
     
     <ContentPage.Resources>
@@ -86,7 +88,7 @@
           
             <HorizontalStackLayout Grid.Column="2" Margin="0,0,20,0">
 
-                <Grid WidthRequest="40"
+                <Grid WidthRequest="40" FlowDirection="LeftToRight"
           HeightRequest="40">
 
                     <ImageButton
@@ -96,22 +98,7 @@
             Clicked="Button_Clicked"
             Source="nn1.png" />
 
-                    <Frame
-            IsVisible="{Binding HasNotifications}"
-            BackgroundColor="Red"
-            WidthRequest="5"
-            HeightRequest="5"
-            CornerRadius="10"
-            HorizontalOptions="End"
-            VerticalOptions="Start"
-            TranslationX="6"
-            TranslationY="-6"
-            ZIndex="999"
-            Padding="0">
-
-                        
-
-                    </Frame>
+                    <views:NotificationBadgeView />
 
                 </Grid>
 

@@ -57,7 +57,6 @@ namespace loukupm.ViewModel
         [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
         [ObservableProperty] private ObservableCollection<Notification> notifications = new();
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasNotifications))]
         private int unreadNotificationCount = 0;
         [ObservableProperty] private bool hasMoreNotifications = false;
         [ObservableProperty] private string nextNotificationCursor = null;
@@ -142,15 +141,11 @@ namespace loukupm.ViewModel
             System.Diagnostics.Debug.WriteLine($"[AppViewModel] NotificationCount changed on VM {GetHashCode()}: {value}");
 
             MainThread.BeginInvokeOnMainThread(() =>
-
             {
-
-                OnPropertyChanged(nameof(HasNotifications));
-
+                OnPropertyChanged(nameof(NotificationCount));
             });
+
             Console.WriteLine($"🔥 COUNT CHANGED: {value}");
-            OnPropertyChanged(nameof(NotificationCount));
-            OnPropertyChanged(nameof(HasNotifications));
         }
         private string _token;
         public ICommand SelectServiceButtonCommand { get; }
@@ -1029,11 +1024,33 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string phone;
         [ObservableProperty] private bool phoneVerified = false;
 
+        partial void OnIsLoadUserChanged(bool value)
+        {
+            OnPropertyChanged(nameof(CanUpdateUser));
+        }
+
         [ObservableProperty] private string userFirstName = string.Empty;
+
+        partial void OnUserFirstNameChanged(string value)
+        {
+            RefreshUserEditState();
+            OnPropertyChanged(nameof(CanUpdateUser));
+        }
+
+        partial void OnPhoneChanged(string value)
+        {
+            RefreshUserEditState();
+            OnPropertyChanged(nameof(CanUpdateUser));
+        }
+
+        partial void OnSelectedImagePathChanged(string value)
+        {
+            RefreshUserEditState();
+            OnPropertyChanged(nameof(CanUpdateUser));
+        }
 
         public ICommand UpDateUserCommand { get; }
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasNotifications))]
         private int notificationCount;
         public string PhoneVerificationStatus
         {
@@ -1051,6 +1068,47 @@ namespace loukupm.ViewModel
         }
 
         private string avatar;
+        private string originalUserFirstName = string.Empty;
+        private string originalPhone = string.Empty;
+        private string originalAvatar = string.Empty;
+        private string originalSelectedImagePath = string.Empty;
+        private bool hasUserProfileChanges;
+
+        public bool HasUserProfileChanges
+        {
+            get => hasUserProfileChanges;
+            private set
+            {
+                if (hasUserProfileChanges != value)
+                {
+                    hasUserProfileChanges = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CanUpdateUser));
+                }
+            }
+        }
+
+        public bool CanUpdateUser => !IsLoadUser && HasUserProfileChanges;
+
+        private void CaptureUserEditSnapshot()
+        {
+            originalUserFirstName = UserFirstName ?? string.Empty;
+            originalPhone = Phone ?? string.Empty;
+            originalAvatar = Avatar ?? string.Empty;
+            originalSelectedImagePath = SelectedImagePath ?? string.Empty;
+            HasUserProfileChanges = false;
+            OnPropertyChanged(nameof(CanUpdateUser));
+        }
+
+        private void RefreshUserEditState()
+        {
+            HasUserProfileChanges =
+                !string.Equals(UserFirstName ?? string.Empty, originalUserFirstName, StringComparison.Ordinal) ||
+                !string.Equals(Phone ?? string.Empty, originalPhone, StringComparison.Ordinal) ||
+                !string.Equals(Avatar ?? string.Empty, originalAvatar, StringComparison.Ordinal) ||
+                !string.Equals(SelectedImagePath ?? string.Empty, originalSelectedImagePath, StringComparison.Ordinal);
+        }
+
         public string Avatar
         {
             get => avatar;
@@ -1060,6 +1118,8 @@ namespace loukupm.ViewModel
                 {
                     avatar = value;
                     OnPropertyChanged();
+                    RefreshUserEditState();
+                    OnPropertyChanged(nameof(CanUpdateUser));
                 }
             }
         }
@@ -1084,6 +1144,7 @@ namespace loukupm.ViewModel
                     PhoneVerified = currentUser.PhoneVerified;
 
                     Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                    CaptureUserEditSnapshot();
 
                     Console.WriteLine($"✅ [AppViewModel] User initialized: UserFirstName = '{UserFirstName}', PhoneVerified = {PhoneVerified}");
                 }
@@ -1091,6 +1152,7 @@ namespace loukupm.ViewModel
             finally
             {
                 IsLoadUser = false;
+                OnPropertyChanged(nameof(CanUpdateUser));
             }
         }
 
@@ -1099,6 +1161,7 @@ namespace loukupm.ViewModel
             try
             {
                 IsLoadUser = true;
+                OnPropertyChanged(nameof(CanUpdateUser));
 
                 Console.WriteLine("📥 [AppViewModel] Starting LoadUserDataAsync");
 
@@ -1181,6 +1244,8 @@ namespace loukupm.ViewModel
                     {
                         Console.WriteLine($"ℹ️ [AppViewModel] UserFirstName already set ('{UserFirstName}'), skipping API override to preserve user edits");
                     }
+
+                    CaptureUserEditSnapshot();
                 }
                 catch (Exception ex)
                 {
@@ -1205,6 +1270,7 @@ namespace loukupm.ViewModel
             finally
             {
                 IsLoadUser = false;
+                OnPropertyChanged(nameof(CanUpdateUser));
                 Console.WriteLine("ℹ️ [AppViewModel] LoadUserDataAsync finished (IsLoadUser = false)");
             }
         }
@@ -1280,9 +1346,11 @@ namespace loukupm.ViewModel
                         Console.WriteLine($"✅ Profile image updated from API: {apiResponse.Data.ProfileImageUrl}");
                     }
 
+                    SelectedImagePath = string.Empty;
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
                     await LoadUserDataAsync();
+                    CaptureUserEditSnapshot();
 
                 }
                 else if (apiResponse?.Success == false)
@@ -1312,8 +1380,10 @@ namespace loukupm.ViewModel
                         Console.WriteLine($"✅ Profile image updated from API: {apiResponse.Data.ProfileImageUrl}");
                     }
 
+                    SelectedImagePath = string.Empty;
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
+                    CaptureUserEditSnapshot();
                 }
                 else
                 {
@@ -1355,8 +1425,10 @@ namespace loukupm.ViewModel
             {
                 OneSignalService.Logout();
                 SecureStorage.RemoveAll();
+                Preferences.Clear();
+                App.ResetAuthenticationCheck();
                 ResetUser();
-                await NavigationService.NavigateToLoginAndClear();
+                await ShellNavigationManager.NavigateToLoginAndClear();
             }
             catch (Exception ex)
             {
@@ -1498,38 +1570,25 @@ namespace loukupm.ViewModel
         public ICommand DeleteAccountCommand { get; }
         private async Task DeleteAccountAsync()
         {
-            using var client = new HttpClient { BaseAddress = new Uri("https/eee/RemoveUser") };
-            if (!string.IsNullOrWhiteSpace(_token))
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-
             try
             {
-                var response = await client.DeleteAsync("users/me"); // غيّر المسار حسب الباك ايند
-                if (!response.IsSuccessStatusCode)
+                var deleted = await _apiServices.DeleteCurrentUserProfileAsync();
+                if (!deleted)
                 {
                     var popup = new ErorRemoveMyAccount();
-
                     await App.Current.MainPage.ShowPopupAsync(popup);
                     return;
                 }
 
-
-                
-                SecureStorage.RemoveAll();
-                Preferences.Clear();
-
-              
-                await ShellNavigationManager.NavigateToLoginAndClear();
+                await Logout();
             }
             catch (Exception)
             {
                 var popup = new ErorRemoveMyAccount();
-
                 await App.Current.MainPage.ShowPopupAsync(popup);
             }
         }
         private readonly services.NotificationService _notificationService;
-        public bool HasNotifications => UnreadNotificationCount > 0;
 
         private bool _notificationsInitialized = false;
 

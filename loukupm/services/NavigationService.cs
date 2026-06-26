@@ -4,6 +4,7 @@ using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 namespace loukupm.Services;
 
@@ -207,6 +208,7 @@ public static class NavigationService
                     var page = GetPageForRoute(route);
                     if (page != null)
                     {
+                        ApplyFallbackParameters(page, parameter);
                         await navPage.PushAsync(page);
                         Console.WriteLine($"[Navigation] Successfully navigated to {route} with param using NavigationPage");
                     }
@@ -220,6 +222,40 @@ public static class NavigationService
         catch (Exception ex)
         {
             Console.WriteLine($"[Navigation] Error navigating to {route}: {ex.Message}");
+        }
+    }
+
+    private static void ApplyFallbackParameters(Page page, object parameter)
+    {
+        if (page is not NotifictionPage notificationPage || parameter == null)
+            return;
+
+        try
+        {
+            var json = JsonSerializer.Serialize(parameter);
+            var encodedJson = Uri.EscapeDataString(json);
+            notificationPage.Data = encodedJson;
+
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return;
+
+            string? id = null;
+            if (doc.RootElement.TryGetProperty("notificationId", out var p1))
+                id = p1.GetString();
+            else if (doc.RootElement.TryGetProperty("id", out var p2))
+                id = p2.GetString();
+            else if (doc.RootElement.TryGetProperty("notification_id", out var p3))
+                id = p3.GetString();
+
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                notificationPage.NotificationId = id;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Failed to apply fallback parameters: {ex.Message}");
         }
     }
 

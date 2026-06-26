@@ -57,14 +57,18 @@ namespace loukupm.Services
             }
         }
 
-       
-
-      
-        public static async Task HandleNotificationTapped()
+        public static async Task HandleNotificationTapped(string? notificationId = null)
         {
             try
             {
-                await NavigateToNotificationPageAsync();
+                if (!string.IsNullOrWhiteSpace(notificationId))
+                {
+                    await NavigateToNotificationPageAsync(notificationId);
+                }
+                else
+                {
+                    await NavigateToNotificationPageAsync(null);
+                }
             }
             catch (Exception ex)
             {
@@ -73,17 +77,24 @@ namespace loukupm.Services
         }
 
 
-        private static async Task NavigateToNotificationPageAsync()
+        private static async Task NavigateToNotificationPageAsync(string? notificationId)
         {
             try
             {
-
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     try
                     {
-                        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
-                        Console.WriteLine("📍 Navigated to NotificationPage");
+                        if (!string.IsNullOrWhiteSpace(notificationId))
+                        {
+                            await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION, new { notificationId = notificationId });
+                            Console.WriteLine($"📍 Navigated to NotificationPage with id={notificationId}");
+                        }
+                        else
+                        {
+                            await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
+                            Console.WriteLine("📍 Navigated to NotificationPage");
+                        }
                     }
                     catch (Exception navEx)
                     {

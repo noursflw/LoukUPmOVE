@@ -221,6 +221,7 @@
                                 Text="{Loc:Translate Name=CancelBooking}"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CancelBookingCommand}"
                                 CommandParameter="{Binding Id}"
+                                IsVisible="{Binding CanCancel}"
                                 IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsCancelingBooking, Converter={StaticResource InverseBoolConverter}}"/>
 
                     </VerticalStackLayout>

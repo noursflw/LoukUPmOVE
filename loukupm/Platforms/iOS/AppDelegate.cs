@@ -1,4 +1,5 @@
 ﻿using Foundation;
+using System.Text.Json;
 using UserNotifications;
 using UIKit;
 using loukupm.Services;
@@ -46,10 +47,21 @@ namespace loukupm
                                     // Wait for app and Shell initialization
                                     await Task.Delay(1000);
 
+                                    // Attempt to extract notificationId from payload and navigate with it
+                                    string? nid = null;
+                                    try
+                                    {
+                                        nid = ExtractNotificationId(notification);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine($"❌ [iOS] Failed extracting notificationId: {ex.Message}");
+                                    }
+
                                     // DEFENSIVE: Check Shell is ready
                                     if (Shell.Current != null)
                                     {
-                                        await OneSignalService.HandleNotificationTapped();
+                                        await OneSignalService.HandleNotificationTapped(nid);
                                         Console.WriteLine("✅ [iOS] Cold start notification navigation completed");
                                     }
                                     else
@@ -90,6 +102,7 @@ namespace loukupm
             {
                 Console.WriteLine("🔔 [iOS] Notification tapped while app is running");
 
+                string? nid = null;
                 if (response?.Notification?.Request?.Content != null)
                 {
                     var userInfo = response.Notification.Request.Content.UserInfo;
@@ -97,6 +110,14 @@ namespace loukupm
                     {
                         var keyCount = userInfo.Keys.Length;
                         Console.WriteLine($"   Notification data: {keyCount} items");
+                        try
+                        {
+                            nid = ExtractNotificationId(userInfo);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"❌ [iOS] Failed extracting notificationId: {ex.Message}");
+                        }
                     }
                 }
 
@@ -110,7 +131,7 @@ namespace loukupm
                         // DEFENSIVE: Check Shell is ready
                         if (Shell.Current != null)
                         {
-                            await OneSignalService.HandleNotificationTapped();
+                            await OneSignalService.HandleNotificationTapped(nid);
                             Console.WriteLine("✅ [iOS] Notification navigation completed");
                         }
                         else
@@ -132,6 +153,99 @@ namespace loukupm
                 Console.WriteLine($"❌ [iOS] Error in DidReceiveNotificationResponse: {ex.Message}");
                 completionHandler();
             }
+        }
+
+        private static string? ExtractNotificationId(NSDictionary payload)
+        {
+            if (payload == null || payload.Count == 0)
+                return null;
+
+            string? directId = GetValueIgnoreCase(payload, "notificationId", "notification_id", "id");
+            if (!string.IsNullOrWhiteSpace(directId))
+                return directId;
+
+            var customJson = GetValueIgnoreCase(payload, "custom");
+            var fromCustom = ExtractFromJson(customJson);
+            if (!string.IsNullOrWhiteSpace(fromCustom))
+                return fromCustom;
+
+            var dataJson = GetValueIgnoreCase(payload, "data");
+            var fromData = ExtractFromJson(dataJson);
+            if (!string.IsNullOrWhiteSpace(fromData))
+                return fromData;
+
+            return null;
+        }
+
+        private static string? GetValueIgnoreCase(NSDictionary payload, params string[] keys)
+        {
+            foreach (var keyObject in payload.Keys)
+            {
+                var keyText = keyObject?.ToString();
+                if (string.IsNullOrWhiteSpace(keyText))
+                    continue;
+
+                foreach (var wanted in keys)
+                {
+                    if (!string.Equals(keyText, wanted, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var valueObject = payload.ObjectForKey(keyObject);
+                    return valueObject?.ToString();
+                }
+            }
+
+            return null;
+        }
+
+        private static string? ExtractFromJson(string? json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+                return null;
+
+            try
+            {
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+                if (root.ValueKind != JsonValueKind.Object)
+                    return null;
+
+                if (TryGetString(root, "notificationId", out var id) ||
+                    TryGetString(root, "notification_id", out id) ||
+                    TryGetString(root, "id", out id))
+                {
+                    return id;
+                }
+
+                if (root.TryGetProperty("a", out var additional) && additional.ValueKind == JsonValueKind.Object)
+                {
+                    if (TryGetString(additional, "notificationId", out id) ||
+                        TryGetString(additional, "notification_id", out id) ||
+                        TryGetString(additional, "id", out id))
+                    {
+                        return id;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ [iOS] Failed parsing notification payload JSON: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private static bool TryGetString(JsonElement element, string propertyName, out string? value)
+        {
+            value = null;
+            if (!element.TryGetProperty(propertyName, out var property))
+                return false;
+
+            value = property.ValueKind == JsonValueKind.String
+                ? property.GetString()
+                : property.ToString();
+
+            return !string.IsNullOrWhiteSpace(value);
         }
 
         // ─────────────────────────────────────────────────────────────

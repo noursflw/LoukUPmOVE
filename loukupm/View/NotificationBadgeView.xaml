@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="loukupm.View.NotificationBadgeView"
+    BackgroundColor="Transparent">
+
+    <Grid WidthRequest="40" HeightRequest="40">
+        <ImageButton
+            x:Name="IconButton"
+            Source="nn1.png"
+            CornerRadius="20"
+            HeightRequest="40"
+            WidthRequest="40"
+            BackgroundColor="Transparent"
+            Clicked="OnIconClicked" />
+
+        <!-- Red badge: Border used instead of Frame per requirements -->
+        <Border
+            BackgroundColor="Red"
+            WidthRequest="10"
+            HeightRequest="10"
+            StrokeShape="RoundRectangle 10"
+            IsVisible="{Binding HasUnread}"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            TranslationX="6"
+            TranslationY="-6"
+            Padding="0" />
+    </Grid>
+</ContentView>

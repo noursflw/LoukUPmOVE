@@ -51,7 +51,7 @@
                                      Icon="search.svg" 
                                      Title="search"    
                                      HeightRequest="56"
-                                     Text="{Binding SearchServiceTerm}" />
+                                     TextChanged="OnSearchTextChanged" />
 
                 <ScrollView Orientation="Horizontal" >
                     <HorizontalStackLayout Spacing="10"  >
@@ -114,7 +114,7 @@ Margin="0,10,10,10">
                                    sk:Skeleton.IsBusy="{Binding IsServicesLoad}" 
                                    sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
                                    BorderColor="#444444" />
-                            <CollectionView ItemsSource="{Binding FilteredServices}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
+                            <CollectionView ItemsSource="{Binding Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}, Path=LocalFilteredServices}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <VerticalStackLayout Margin="20,0,20,15" Spacing="0">

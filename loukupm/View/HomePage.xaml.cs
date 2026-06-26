@@ -26,41 +26,39 @@ public partial class HomePage : ContentPage
 
 		try
 		{
-			// Resolve a ViewModel instance from DI if available; fallback to parameterless construction
-			var mauiContext = Handler?.MauiContext ?? Application.Current?.Handler?.MauiContext;
-			var vm = mauiContext?.Services.GetService(typeof(ViewModel.AppViewModel)) as ViewModel.AppViewModel;
-			if (vm == null)
-			{
-				vm = new ViewModel.AppViewModel();
-			}
+			// ? ?????? Singleton Instance ?????? - ???? ????? ??? ?? ???????
+			var vm = AppViewModel.Instance;
 
-			// If BindingContext is already set to same instance, no-op
+			Console.WriteLine($"?? [HomePage] OnAppearing - Using Singleton Instance: {vm.GetHashCode()}");
+
+			// ??? ???? BindingContext ??? ???? ??????
 			if (BindingContext == vm)
 			{
-				System.Diagnostics.Debug.WriteLine($"HomePage.OnAppearing - existing BindingContext hash: {BindingContext?.GetHashCode()}");
+				System.Diagnostics.Debug.WriteLine($"?? HomePage.OnAppearing - BindingContext already set to Instance: {vm.GetHashCode()}");
 			}
 			else
 			{
-				// Ensure notifications are loaded before setting BindingContext so UI shows correct values immediately
+				// ????? ???????? ??? ?????
 				await vm.InitializeNotificationsAsync();
 				this.BindingContext = vm;
-				System.Diagnostics.Debug.WriteLine($"HomePage.OnAppearing - set BindingContext to VM hash: {vm.GetHashCode()} with NotificationCount={vm.NotificationCount}");
+				System.Diagnostics.Debug.WriteLine($"? HomePage.OnAppearing - set BindingContext to Singleton Instance: {vm.GetHashCode()} with NotificationCount={vm.NotificationCount}");
+			}
+
+			// ????? ???????? ????????
+			if (vm.AboutUsVM?.LoadAboutUsDataCommand.CanExecute(null) == true)
+			{
+				vm.AboutUsVM.LoadAboutUsDataCommand.Execute(null);
+			}
+
+			if (vm.HomeSliderVM?.LoadSlidersCommand.CanExecute(null) == true)
+			{
+				vm.HomeSliderVM.LoadSlidersCommand.Execute(null);
 			}
 		}
 		catch (Exception ex)
 		{
-			System.Diagnostics.Debug.WriteLine($"HomePage.OnAppearing error resolving VM: {ex.Message}");
-		}
-
-		// Explicitly trigger AboutUs and HomeSlider data loading after BindingContext established
-		if (BindingContext is ViewModel.AppViewModel appVM && appVM.AboutUsVM?.LoadAboutUsDataCommand.CanExecute(null) == true)
-		{
-			appVM.AboutUsVM.LoadAboutUsDataCommand.Execute(null);
-		}
-
-		if (BindingContext is ViewModel.AppViewModel appVm && appVm.HomeSliderVM?.LoadSlidersCommand.CanExecute(null) == true)
-		{
-			appVm.HomeSliderVM.LoadSlidersCommand.Execute(null);
+			System.Diagnostics.Debug.WriteLine($"? HomePage.OnAppearing error: {ex.Message}");
+			Console.WriteLine($"? [HomePage] Error: {ex.StackTrace}");
 		}
 	}
 

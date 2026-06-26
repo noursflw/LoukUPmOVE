@@ -96,6 +96,7 @@ public static class MauiProgram
         builder.Services.AddTransient<loukupm.ViewModel.AppViewModel>();
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<loukupm.View.NotifictionPage>();
+        builder.Services.AddTransient<loukupm.View.NotificationBadgeView>();
 
         return builder.Build();
 

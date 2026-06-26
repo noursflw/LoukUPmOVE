@@ -6,16 +6,21 @@ using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Threading;
+using System.Linq;
 
 namespace loukupm.ViewModel
 {
-    public partial class NotificationViewModel : ObservableObject
+    /// <summary>
+    /// Notification ViewModel: handles loading notifications and marking them as read.
+    /// NOTE: This ViewModel must not hold or expose badge state; NotificationStateService is the single source of truth.
+    /// </summary>
+    public partial class NotificationViewModel : ObservableObject, IDisposable
     {
         private readonly NotificationService _notificationService;
         private readonly NotificationStateService _notificationStateService;
         private bool _isLoadingRequested;
         private bool _isHandlingSelection;
+        private bool _disposed;
 
         [ObservableProperty]
         private ObservableCollection<NotificationItem> notifications = new();
@@ -30,30 +35,18 @@ namespace loukupm.ViewModel
         private string errorMessage = string.Empty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasNotifications))]
-        private int unreadCount;
-
-        [ObservableProperty]
         private NotificationItem? selectedNotification;
-
-        public bool HasNotifications => UnreadCount > 0;
 
         public NotificationViewModel(NotificationService notificationService, NotificationStateService notificationStateService)
         {
             _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
             _notificationStateService = notificationStateService ?? throw new ArgumentNullException(nameof(notificationStateService));
-            UnreadCount = _notificationStateService.UnreadCount;
-            _notificationStateService.UnreadCountChanged += HandleUnreadCountChanged;
-        }
-
-        private void HandleUnreadCountChanged(int count)
-        {
-            MainThread.BeginInvokeOnMainThread(() => UnreadCount = count);
         }
 
         partial void OnSelectedNotificationChanged(NotificationItem? value)
         {
-            // Called on UI thread by binding. Fire-and-wait for selection handling, but guard reentrancy.
+            // NOTE: This is no longer used since SelectionMode is now "None" in XAML.
+            // Notifications are marked as read and deleted via SwipeView (swipe left).
             _ = HandleSelectionAsync(value);
         }
 
@@ -86,16 +79,16 @@ namespace loukupm.ViewModel
 
                 Console.WriteLine($"🟢 MARK AS READ SUCCESS: {notification.Id}");
 
-                // Update UI state on main thread
+                // After marking as read on server, fetch authoritative unread count and push into NotificationStateService
+                var count = await _notificationService.GetUnreadCountAsync();
+                _notificationStateService.SetUnreadCount(count);
+
+                // Update local UI (mark item read) on main thread
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     notification.ReadAt = DateTime.UtcNow;
-                    UnreadCount = Math.Max(0, UnreadCount - 1);
-                    _notificationStateService.SetUnreadCount(UnreadCount);
-
-                    // Force UI to reflect change by raising notifications collection replacement
-                    var list = new ObservableCollection<NotificationItem>(Notifications);
-                    Notifications = list;
+                    // Force UI to reflect change by replacing collection reference
+                    Notifications = new ObservableCollection<NotificationItem>(Notifications);
                 });
             }
             catch (Exception ex)
@@ -144,20 +137,29 @@ namespace loukupm.ViewModel
         [RelayCommand]
         private async Task RefreshNotificationsAsync()
         {
-            if (IsRefreshing)
+            if (!IsRefreshing)
+            {
+                Console.WriteLine("⏳ Already refreshing, skipping duplicate request");
                 return;
+            }
 
             IsRefreshing = true;
             ErrorMessage = string.Empty;
 
             try
             {
+                Console.WriteLine("🔄 Starting refresh of notifications...");
                 await LoadFromApiAsync();
+                Console.WriteLine("✅ Notifications refreshed successfully");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ [NotificationViewModel] Refresh failed: {ex.Message}");
                 ErrorMessage = "Failed to refresh notifications.";
+
+                // Log full exception for debugging
+                Console.WriteLine($"Exception type: {ex.GetType().Name}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
             }
             finally
             {
@@ -169,6 +171,8 @@ namespace loukupm.ViewModel
         {
             try
             {
+                Console.WriteLine("📥 Loading notifications from API...");
+
                 var notificationsTask = _notificationService.GetNotificationsAsync();
                 var unreadCountTask = _notificationService.GetUnreadCountAsync();
 
@@ -177,18 +181,149 @@ namespace loukupm.ViewModel
                 var notifications = await notificationsTask;
                 var unreadCount = await unreadCountTask;
 
+                if (notifications == null)
+                {
+                    Console.WriteLine("⚠️ API returned null notifications list");
+                    notifications = new List<NotificationItem>();
+                }
+
+                Console.WriteLine($"📊 Loaded {notifications.Count()} notifications, Unread: {unreadCount}");
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     Notifications = new ObservableCollection<NotificationItem>(notifications);
-                    UnreadCount = unreadCount;
-                    _notificationStateService.SetUnreadCount(unreadCount);
+                    Console.WriteLine("✅ UI updated with new notifications");
                 });
+
+                // Push authoritative unread count into the shared state service (no local math)
+                _notificationStateService.SetUnreadCount(unreadCount);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ [NotificationViewModel] LoadFromApiAsync failed: {ex.Message}");
+                Console.WriteLine($"Exception type: {ex.GetType().Name}");
+                Console.WriteLine($"Stack: {ex.StackTrace}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Mark a specific notification as read (used when opening page via notification tap).
+        /// Calls the API then refreshes authoritative unread count from server into NotificationStateService.
+        /// </summary>
+        public async Task MarkNotificationAsReadAsync(string notificationId)
+        {
+            if (string.IsNullOrWhiteSpace(notificationId))
+                return;
+
+            try
+            {
+                var success = await _notificationService.MarkAsReadAsync(notificationId);
+                if (!success)
+                {
+                    Console.WriteLine($"🔴 MarkNotificationAsReadAsync failed for {notificationId}");
+                    return;
+                }
+
+                // Fetch authoritative unread count and push into shared state service
+                var count = await _notificationService.GetUnreadCountAsync();
+                _notificationStateService.SetUnreadCount(count);
+
+                // Update local list item as read if present
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    var item = Notifications.FirstOrDefault(n => n.Id == notificationId);
+                    if (item != null)
+                    {
+                        item.ReadAt = DateTime.UtcNow;
+                        Notifications = new ObservableCollection<NotificationItem>(Notifications);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ MarkNotificationAsReadAsync error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Delete notification by ID only (swipe right - no mark as read).
+        /// </summary>
+        [RelayCommand]
+        private async Task DeleteNotificationAsync(NotificationItem? notification)
+        {
+            if (notification == null || string.IsNullOrWhiteSpace(notification.Id))
+                return;
+
+            try
+            {
+                Console.WriteLine($"🗑️ Deleting notification (right swipe): {notification.Id}");
+
+                // Remove from local collection on main thread (no need to mark as read)
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    var item = Notifications.FirstOrDefault(n => n.Id == notification.Id);
+                    if (item != null)
+                    {
+                        Notifications.Remove(item);
+                        Console.WriteLine($"✅ Notification deleted from local list: {notification.Id}");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ DeleteNotificationAsync error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Mark notification as read and delete it (swipe left).
+        /// </summary>
+        [RelayCommand]
+        private async Task MarkAsReadAndDeleteAsync(NotificationItem? notification)
+        {
+            if (notification == null || string.IsNullOrWhiteSpace(notification.Id))
+                return;
+
+            try
+            {
+                Console.WriteLine($"✉️ Mark as read & delete notification (left swipe): {notification.Id}");
+
+                // Mark as read on server
+                var success = await _notificationService.MarkAsReadAsync(notification.Id);
+                if (!success)
+                {
+                    Console.WriteLine($"🔴 Failed to mark notification as read: {notification.Id}");
+                    return;
+                }
+
+                // Remove from local collection on main thread
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    var item = Notifications.FirstOrDefault(n => n.Id == notification.Id);
+                    if (item != null)
+                    {
+                        item.ReadAt = DateTime.UtcNow;
+                        Notifications.Remove(item);
+                        Console.WriteLine($"✅ Notification marked as read and deleted: {notification.Id}");
+                    }
+                });
+
+                // Refresh unread count
+                var count = await _notificationService.GetUnreadCountAsync();
+                _notificationStateService.SetUnreadCount(count);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ MarkAsReadAndDeleteAsync error: {ex.Message}");
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            // No persistent subscriptions held by this VM to the state service; if added, unsubscribe here.
+            _disposed = true;
         }
     }
 }

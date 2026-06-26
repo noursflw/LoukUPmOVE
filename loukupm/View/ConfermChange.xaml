@@ -4,7 +4,7 @@
              x:Class="loukupm.View.ConfermChange"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
-    <Frame
+    <Frame x:Name="PopupCard"
   BackgroundColor="#444444"
   CornerRadius="20"
   HasShadow="True"
@@ -12,7 +12,9 @@
   BorderColor="#444444"
   WidthRequest="320"
   HorizontalOptions="Center"
-  VerticalOptions="Center">
+  VerticalOptions="Center"
+  Opacity="0"
+  Scale="0.92">
         <VerticalStackLayout>
             <Frame CornerRadius="20" Margin="0,-8,0,0" Opacity="0.66" BackgroundColor="Transparent" BorderColor="Transparent" >
 
@@ -33,7 +35,7 @@
               HorizontalTextAlignment="Center" />
 
             </VerticalStackLayout>
-            <Button FontFamily="georgia-bold" FontSize="19"  BackgroundColor="#EBD750"  Margin="10"  BorderWidth="1" Clicked="CancelClicked" TextColor="Black"  Text="{Loc:Translate Name=yes}"/>
+            
         </VerticalStackLayout>
 
     </Frame>
