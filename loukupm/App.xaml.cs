@@ -13,7 +13,7 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-        
+
         try
         {
             OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
@@ -33,7 +33,6 @@ public partial class App : Application
         }
 
         var savedLang = Preferences.Get("AppLanguage", string.Empty);
-
         var direction = Microsoft.Maui.FlowDirection.LeftToRight;
 
         if (!string.IsNullOrEmpty(savedLang))
@@ -46,44 +45,19 @@ public partial class App : Application
                 : Microsoft.Maui.FlowDirection.LeftToRight;
         }
 
-        // ⭐ IMPORTANT: The application MUST start from LoadingPage only.
-        // LoadingPage is the single bootstrap entry point and will perform
-        // authentication checks and decide final MainPage.
-        MainPage = new LoadingPage()
-        {
-            FlowDirection = direction
-        };
-    }
-
-    private async Task HandleStartNavigation()
-    {
+        string? token = null;
         try
         {
-            await Task.Delay(800); // يعطي وقت لتجهيز الـ UI
-
-            var token = await SecureStorage.GetAsync("auth_token");
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                if (string.IsNullOrWhiteSpace(token))
-                {
-                    MainPage = new NavigationPage(new LoginPage());
-                }
-                else
-                {
-                    MainPage = new NavigationPage(new AppShell());
-                }
-            });
+            token = SecureStorage.GetAsync("auth_token").GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Auth error: {ex.Message}");
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                MainPage = new NavigationPage(new LoginPage());
-            });
+            Console.WriteLine($"Auth token read failed: {ex.Message}");
         }
+
+        MainPage = string.IsNullOrWhiteSpace(token)
+            ? new NavigationPage(new LoginPage { FlowDirection = direction })
+            : new AppShell { FlowDirection = direction };
     }
 
     protected override void OnStart() { }

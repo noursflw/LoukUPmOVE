@@ -113,14 +113,13 @@ namespace loukupm
               
                 var routesToRegister = new[]
                 {
-                    
+
                     (NavigationService.ROUTE_MAIN_PAGE, typeof(MainPage)),
                     (NavigationService.ROUTE_LOGIN, typeof(LoginPage)),
                     (NavigationService.ROUTE_SIGNIN, typeof(SinginPage)),
                     (NavigationService.ROUTE_OTP, typeof(OTPSINGIN)),
                     (NavigationService.ROUTE_POLICY_PRIVACY_AUTH, typeof(PolicyandPrivacyPageatAthun)),
                     (NavigationService.ROUTE_TermsAndConditions_Athun, typeof(TermsAndConditionsAthun)),
-                    (NavigationService.ROUTE_SPLASH, typeof(LoadingPage)),
                     (NavigationService.ROUTE_TERM_BOOKING, typeof(TerminbuchenPage)),
                     (NavigationService.ROUTE_PAYMENT, typeof(Paymentgetway)),
                     (NavigationService.Route_ContactUs, typeof(ContenUs)),

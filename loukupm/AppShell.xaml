@@ -6,7 +6,7 @@
     xmlns:view="clr-namespace:loukupm.View"
     xmlns:Loc="clr-namespace:loukupm.Langue"
     Shell.FlyoutBehavior="Flyout"
-    Shell.BackgroundColor="Black"
+    Shell.BackgroundColor="#151821"
     Shell.TabBarTitleColor="#A8883C"
     Shell.TabBarUnselectedColor="Gray"
     Shell.TabBarDisabledColor="#151821"

@@ -21,15 +21,15 @@ public partial class ConfermChange : Popup
         _autoDismissStarted = true;
 
         await Task.WhenAll(
-            PopupCard.FadeTo(1, 180, Easing.CubicOut),
-            PopupCard.ScaleTo(1, 180, Easing.CubicOut)
+            PopupCard.FadeTo(1, 120, Easing.CubicOut),
+            PopupCard.ScaleTo(1, 120, Easing.CubicOut)
         );
 
-        await Task.Delay(1500);
+        await Task.Delay(1000);
 
         await Task.WhenAll(
-            PopupCard.ScaleTo(0.92, 150, Easing.CubicIn),
-            PopupCard.FadeTo(0, 150, Easing.CubicIn)
+            PopupCard.FadeTo(0, 120, Easing.CubicIn),
+            PopupCard.ScaleTo(0.95, 120, Easing.CubicIn)
         );
 
         Close(null);
