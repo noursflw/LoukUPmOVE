@@ -26,7 +26,7 @@ namespace loukupm.ViewModel
 {
     public partial class AppViewModel : ObservableObject
     {
-        
+
         [ObservableProperty] private bool isCouselLoad;
         [ObservableProperty] private bool isWorkTeamLoad;
         [ObservableProperty] private bool isServicesLoad;
@@ -38,7 +38,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool isLoadNotifiction;
         [ObservableProperty] private bool isLoadUser;
 
-        
+
 
         [ObservableProperty] private ObservableCollection<Servies> services = new();
         [ObservableProperty] private ObservableCollection<Servies> filteredServices = new();
@@ -65,27 +65,27 @@ namespace loukupm.ViewModel
 
         [ObservableProperty]
         private ObservableCollection<Servies> selectedServices = new();
-        
-        
+
+
         [ObservableProperty]
         private decimal totalPrice = 0m;
 
-       
+
         [ObservableProperty]
         private string searchServiceTerm = string.Empty;
 
-        
+
         [ObservableProperty]
         private string searchTeamTerm = string.Empty;
 
-       
+
         [ObservableProperty]
         private string reminderMinutes = "60";
 
         [ObservableProperty]
         private TimeSpan reminderTime = new TimeSpan(1, 0, 0);
 
-       
+
         [ObservableProperty]
         private string selectedImagePath = string.Empty;
 
@@ -183,7 +183,7 @@ namespace loukupm.ViewModel
             LoadData();
             AboutUsVM = new AboutUsViewModel();
             HomeSliderVM = new HomeSliderViewModel();
-            phoneOtpVM=new PhoneOtpViewModel(_apiServices);
+            phoneOtpVM = new PhoneOtpViewModel(_apiServices);
 
             // ✅ Do NOT create new HttpClient here - use static instance
 
@@ -208,7 +208,7 @@ namespace loukupm.ViewModel
                 if (!exists)
                 {
                     service.IsSelected = true;  // تحديث حالة الخدمة
-                    SelectedServices.Add(service);  
+                    SelectedServices.Add(service);
                     CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
 
                     await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
@@ -240,26 +240,35 @@ namespace loukupm.ViewModel
             try
             {
                 await LoadUser();
+
                 _token = await SecureStorage.GetAsync("auth_token") ?? string.Empty;
+
                 await LoadBookingsAsync();
 
-                // Use Task.WhenAll for concurrent, exception-safe loading
+                // 🚀 باقي التحميلات المتوازية
+                var homeSliderTask = Task.CompletedTask;
+
+                if (HomeSliderVM.Items.Count == 0)
+                {
+                    homeSliderTask = HomeSliderVM.LoadSlidersAsync();
+                }
+
                 await Task.WhenAll(
                     LoadNotificationsAsync(),
                     LoadWorkTeamsAsync(),
-                    LoadServicesAsync()
+                    LoadServicesAsync(),
+                    homeSliderTask
                 );
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ [AppViewModel] Initialization error: {ex.Message}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
+                Console.WriteLine(ex);
             }
         }
 
         private async Task SetAuthorizationHeaderAsync()
         {
-            
+
             string? token = await SecureStorage.GetAsync("auth_token");
 
             if (!string.IsNullOrEmpty(token))
@@ -270,14 +279,14 @@ namespace loukupm.ViewModel
             }
             else
             {
-               
+
                 _httpClient.DefaultRequestHeaders.Authorization = null;
             }
 
 
         }
 
-      
+
         partial void OnSearchServiceTermChanged(string value)
         {
             PerformServiceSearch(value);
@@ -371,10 +380,10 @@ namespace loukupm.ViewModel
             SearchTeamTerm = string.Empty;
             FilteredServices = new ObservableCollection<Servies>(Services);
             FilteredWorkTeams = new ObservableCollection<WorkTeam>(WorkTeams);
-          
+
         }
 
-        
+
         private void LoadData()
         {
             IsCouselLoad = true;
@@ -418,7 +427,7 @@ namespace loukupm.ViewModel
                 {
                     Appointments.Add(item);
 
-                   
+
                     if (item.Status == "USER_CANCELLED" || item.IsCancelled)
                     {
                         CanceledAppointments.Add(item);
@@ -433,7 +442,7 @@ namespace loukupm.ViewModel
                     }
                     else
                     {
-                        
+
                         UpcomingAppointments.Add(item);
                     }
                 }
@@ -451,7 +460,7 @@ namespace loukupm.ViewModel
             {
                 IsLoadNotifiction = true;
 
-                
+
                 var (notificationList, unreadCount, hasMore) = await _apiServices.GetNotificationsAsync(cursor: null, perPage: 15);
 
                 Notifications.Clear();
@@ -466,13 +475,13 @@ namespace loukupm.ViewModel
 
                 UnreadNotificationCount = unreadCount;
                 HasMoreNotifications = hasMore;
-                NextNotificationCursor = null; 
+                NextNotificationCursor = null;
 
-              
+
             }
             catch (Exception ex)
             {
-               
+
                 Notifications.Clear();
             }
             finally
@@ -485,7 +494,7 @@ namespace loukupm.ViewModel
         {
             if (!HasMoreNotifications || string.IsNullOrEmpty(NextNotificationCursor))
             {
-                
+
                 return;
             }
 
@@ -502,11 +511,11 @@ namespace loukupm.ViewModel
                 }
 
                 HasMoreNotifications = hasMore;
-              
+
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 
@@ -534,11 +543,11 @@ namespace loukupm.ViewModel
 
                 IsWorkTeamLoad = false;
 
-                
+
             }
             catch (Exception ex)
             {
-               
+
             }
             finally
             {
@@ -559,15 +568,15 @@ namespace loukupm.ViewModel
             provider.BorderColor = "#FFD700";
             SelectedProvider = provider;
 
-          
 
-           
+
+
             var previousSelectedServices = new List<Servies>(SelectedServices);
 
-           
+
             await LoadProviderServicesAsync(provider.Id);
 
-           
+
             if (previousSelectedServices.Count > 0 && FilteredServices.Count > 0)
             {
                 SelectedServices.Clear();
@@ -575,27 +584,27 @@ namespace loukupm.ViewModel
 
                 foreach (var service in previousSelectedServices)
                 {
-                    
+
                     if (FilteredServices.Any(s => s.Id == service.Id))
                     {
                         SelectedServices.Add(service);
                         CurrentBooking.SelectedServices.Add(service);
-                       
+
                     }
                     else
                     {
-                       return;
+                        return;
                     }
                 }
             }
             else
             {
-               
+
                 SelectedServices.Clear();
                 CurrentBooking.SelectedServices.Clear();
             }
 
-           
+
             if (SelectedDate != default)
                 await LoadAvailableSlotsAsync();
         }
@@ -604,26 +613,26 @@ namespace loukupm.ViewModel
         {
             try
             {
-                
-                
-                
+
+
+
                 var providerServices = await _apiServices.GetProviderServicesAsync(providerId);
 
                 if (providerServices != null && providerServices.Count > 0)
                 {
-                   
+
                     FilteredServices = new ObservableCollection<Servies>(providerServices);
-                  
+
                 }
                 else
                 {
-                  
+
                     FilteredServices = new ObservableCollection<Servies>(Services);
                 }
             }
             catch (Exception ex)
             {
-              
+
                 FilteredServices = new ObservableCollection<Servies>(Services);
             }
         }
@@ -661,7 +670,7 @@ namespace loukupm.ViewModel
                 foreach (var cat in uniqueCategories)
                     Categories.Add(cat);
 
-              
+
                 SelectedCategory = null;
             }
             finally
@@ -703,7 +712,7 @@ namespace loukupm.ViewModel
 
 
         public string NewPassword { get; set; }
-       
+
 
         public ICommand ChangePasswordCommand { get; }
 
@@ -760,16 +769,16 @@ namespace loukupm.ViewModel
 
         public ICommand PostBookingCommand { get; }
 
-       
+
         public async Task PostBookingAsync()
         {
             try
             {
-                
+
                 if (!ValidateBookingInputs())
                     return;
 
-               
+
                 var (services, totalEndTime) = BuildServicesArray();
                 if (services == null || services.Count == 0)
                 {
@@ -777,21 +786,21 @@ namespace loukupm.ViewModel
                     return;
                 }
 
-               
+
                 decimal totalAmount = CalculateTotalPrice();
 
-                
+
                 string notes = string.IsNullOrWhiteSpace(BookingNotes) ? "ok" : BookingNotes;
 
-              
+
                 var bookingData = BuildBookingRequest(services, totalAmount, notes);
 
-              
+
                 await SendBookingRequest(bookingData, totalEndTime);
             }
             catch (Exception ex)
             {
-               return;
+                return;
             }
         }
 
@@ -830,14 +839,14 @@ namespace loukupm.ViewModel
             {
                 string serviceList = string.Join(", ", unavailableServices.Select(s => s.NameServies));
                 Toast.Make($"الخدمات غير متاحة من {SelectedProvider.Name}: {serviceList}", ToastDuration.Long).Show();
-              
+
                 return false;
             }
 
             return true;
         }
 
-        
+
         private (List<object> services, TimeSpan totalEndTime) BuildServicesArray()
         {
             var services = new List<object>();
@@ -845,14 +854,14 @@ namespace loukupm.ViewModel
 
             foreach (var service in SelectedServices)
             {
-                
+
                 int serviceDuration = GetServiceDuration(service);
                 if (serviceDuration <= 0)
                     serviceDuration = 30;
 
                 TimeSpan endTime = currentStartTime.Add(TimeSpan.FromMinutes(serviceDuration));
 
-               
+
                 services.Add(new
                 {
                     service_id = service.Id,
@@ -860,14 +869,14 @@ namespace loukupm.ViewModel
                     start_time = currentStartTime.ToString(@"hh\:mm")
                 });
 
-           
+
                 currentStartTime = endTime;
             }
 
             return (services, currentStartTime);
         }
 
-        
+
         private int GetServiceDuration(Servies service)
         {
             if (service == null)
@@ -876,20 +885,20 @@ namespace loukupm.ViewModel
             int duration = service.TimeServies;
             if (duration <= 0)
             {
-              
+
                 return 30;
             }
 
-            if (duration > 480) 
+            if (duration > 480)
             {
-               
+
                 return 480;
             }
 
             return duration;
         }
 
-        
+
         private decimal CalculateTotalPrice()
         {
             return SelectedServices.Sum(s =>
@@ -905,7 +914,7 @@ namespace loukupm.ViewModel
                     System.Globalization.CultureInfo.InvariantCulture, out var price))
                     return price;
 
-             
+
                 return 0m;
             });
         }
@@ -920,13 +929,13 @@ namespace loukupm.ViewModel
                 services = services
             };
 
-           
+
             return bookingData;
         }
 
-        
-       
-        
+
+
+
         private async Task SendBookingRequest(object bookingData, TimeSpan totalEndTime)
         {
             await SetAuthorizationHeaderAsync();
@@ -944,7 +953,7 @@ namespace loukupm.ViewModel
 
                 if (response.IsSuccessStatusCode)
                 {
-                  
+
                     await Toast.Make(AppResource.Bookingsuccessful).Show();
 
                     ClearBookingData();
@@ -953,28 +962,28 @@ namespace loukupm.ViewModel
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                   
+
                     await Toast.Make(AppResource.Bookingfailed).Show();
                 }
             }
             catch (Exception ex)
             {
-              
+
                 await Toast.Make(AppResource.Connectionerror).Show();
             }
         }
 
-       
+
         private TimeSpan ParseTimeString(string timeString)
         {
             if (string.IsNullOrWhiteSpace(timeString))
                 return TimeSpan.Zero;
 
-           
+
             if (TimeSpan.TryParse(timeString, out var result))
                 return result;
 
-           
+
             var parts = timeString.Split(':');
             if (parts.Length >= 2 && int.TryParse(parts[0], out var hours) && int.TryParse(parts[1], out var minutes))
             {
@@ -985,36 +994,36 @@ namespace loukupm.ViewModel
             return TimeSpan.Zero;
         }
 
-        
+
         private void ClearBookingData()
         {
-            
+
             SelectedServices.Clear();
             CurrentBooking.SelectedServices.Clear();
 
-            
+
             foreach (var p in WorkTeams)
                 p.BorderColor = "#202020";
             SelectedProvider = null;
 
-          
+
             SelectedDate = default;
             foreach (var d in ProviderDays)
                 d.BorderColor = "#444444";
 
-         
+
             foreach (var slot in AvailableSlots)
                 slot.IsSelected = false;
             SelectedSlot = null;
 
-            
+
             AvailableSlots.Clear();
 
-          
+
             UpdateTotalPrice();
         }
 
-       
+
         [ObservableProperty] private string userName;
         [ObservableProperty] private string password;
         [ObservableProperty] private string confirmPassword;
@@ -1062,7 +1071,7 @@ namespace loukupm.ViewModel
                 }
                 else
                 {
-                    return  AppResource.PhoneNumberNotVerified ?? "Phone Not Verified"; 
+                    return AppResource.PhoneNumberNotVerified ?? "Phone Not Verified";
                 }
             }
         }
@@ -1287,7 +1296,7 @@ namespace loukupm.ViewModel
         {
             try
             {
-                
+
 
                 if (!string.IsNullOrWhiteSpace(SelectedImagePath))
                 {
@@ -1308,7 +1317,7 @@ namespace loukupm.ViewModel
 
                 Console.WriteLine("📤 Calling UpdateUserProfileAsync...\n");
                 var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath, Phone);
-              
+
 
                 Console.WriteLine("\n" + new string('=', 60));
                 Console.WriteLine("📥 RESPONSE RECEIVED FROM API");
@@ -1396,7 +1405,7 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-               
+
                 await Toast.Make(AppResource.Anunexpectederroroccurred, ToastDuration.Short).Show();
 
                 var popup = new NoConfermChange();
@@ -1440,16 +1449,16 @@ namespace loukupm.ViewModel
 
         public ICommand ChangePasswordUserCommand { get; }
         private string currentPassword = string.Empty;
-        
+
         public string CurrentPassword
         {
             get => currentPassword;
             set => currentPassword = value;
         }
-        
+
         private async Task ChangeUserPasswordAsync()
         {
-           
+
             if (string.IsNullOrWhiteSpace(CurrentPassword))
             {
                 await Toast.Make(AppResource.Pleaseenterthecurrentpassword).Show();
@@ -1491,21 +1500,21 @@ namespace loukupm.ViewModel
                 };
 
                 var json = JsonSerializer.Serialize(passwordChangeData);
-             
+
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(
                     "https://test.center-yazan.com/api/profile/change-password",
                     content);
 
-              
+
 
                 var responseBody = await response.Content.ReadAsStringAsync();
-            
+
 
                 if (response.IsSuccessStatusCode)
                 {
-                  
+
                     CurrentPassword = string.Empty;
                     Password = string.Empty;
                     ConfirmPassword = string.Empty;
@@ -1514,16 +1523,16 @@ namespace loukupm.ViewModel
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
                 {
-                 
-                    
+
+
                     try
                     {
                         var errorOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                         var errorResponse = JsonSerializer.Deserialize<Auth.ErrorResponse>(responseBody, errorOptions);
-                        
+
                         if (errorResponse?.Errors != null)
                         {
-                            var errorMessages = string.Join("\n", 
+                            var errorMessages = string.Join("\n",
                                 errorResponse.Errors.Values.SelectMany(e => e));
                             await Toast.Make(AppResource.Invaliddata).Show();
                         }
@@ -1543,24 +1552,24 @@ namespace loukupm.ViewModel
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                   
+
                     await Toast.Make(AppResource.Thecurrentpasswordisincorrect).Show();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
-                   
+
                     await Toast.Make(AppResource.InvalidrequestPleasechecktheentereddata).Show();
                 }
                 else
                 {
-                    
-                   
+
+
                     await Toast.Make(AppResource.Failedtochangethepassword).Show();
                 }
             }
             catch (Exception ex)
             {
-                
+
                 await Toast.Make(AppResource.Connectionerror).Show();
             }
         }
@@ -1659,7 +1668,7 @@ namespace loukupm.ViewModel
 
             var today = DateTime.Today;
 
-            
+
             for (int i = 0; i < 7; i++)
             {
                 var date = today.AddDays(i);
@@ -1684,25 +1693,25 @@ namespace loukupm.ViewModel
             SelectedDate = day.FullDate;
 
             if (SelectedProvider != null)
-                await LoadAvailableSlotsAsync(); 
+                await LoadAvailableSlotsAsync();
         }
 
-       
+
         private void OnSelectSlot(SlotItem slot)
         {
             if (slot == null) return;
 
             try
             {
-                
+
                 foreach (var s in AvailableSlots)
                     s.IsSelected = false;
 
-               
+
                 slot.IsSelected = true;
                 SelectedSlot = slot;
 
-                
+
                 if (TimeSpan.TryParse(slot.StartTime, out var parsedTime))
                 {
                     SelectedTime = parsedTime;
@@ -1710,7 +1719,7 @@ namespace loukupm.ViewModel
                 }
                 else
                 {
-                 
+
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         await Toast.Make(AppResource.Errorreadingthetime, ToastDuration.Short).Show();
@@ -1723,11 +1732,11 @@ namespace loukupm.ViewModel
                 if (SelectedProvider != null)
                     CurrentBooking.ProviderId = SelectedProvider.Id.ToString();
 
-               
+
             }
             catch (Exception ex)
             {
-                
+
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
@@ -1741,10 +1750,10 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private AvailabilityData currentAvailability;
 
-       
+
         public bool HasNoAvailableSlots => AvailableSlots?.Count == 0;
 
-       
+
         [ObservableProperty]
         private bool hasAvailabilityError = false;
 
@@ -1752,67 +1761,67 @@ namespace loukupm.ViewModel
         {
             if (SelectedProvider == null || SelectedDate == default)
             {
-                
+
                 return;
             }
 
             try
             {
                 Isloadday = true;
-                HasAvailabilityError = false; 
+                HasAvailabilityError = false;
                 await SetAuthorizationHeaderAsync();
 
-                
+
                 var selectedService = SelectedServices.FirstOrDefault();
-                
+
                 if (selectedService == null)
                 {
-                   
+
                     selectedService = FilteredServices.FirstOrDefault();
-                    
+
                     if (selectedService == null)
                     {
-                       
+
                         await Toast.Make(AppResource.Pleaseselectaservice).Show();
                         return;
                     }
-                    
-                    
+
+
                 }
 
-                
+
                 int providerId = SelectedProvider.Id;
                 int serviceId = selectedService.Id;
                 string dateStr = SelectedDate.ToString("yyyy-MM-dd");
 
-               
 
-              
+
+
                 string url = $"https://test.center-yazan.com/api/availability/provider" +
                     $"?provider_id={providerId}" +
                     $"&service_id={serviceId}" +
                     $"&date={dateStr}" +
                     $"&branch_id=1";
 
-              
+
 
                 var response = await _httpClient.GetAsync(url);
 
-               
+
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
-                   
+
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     var availabilityResponse = JsonSerializer.Deserialize<AvailabilityResponse>(responseBody, options);
 
                     if (availabilityResponse?.Success == true && availabilityResponse.Data?.AvailableSlots != null)
                     {
-                       
+
                         CurrentAvailability = availabilityResponse.Data;
 
-                       
+
                         AvailableSlots.Clear();
                         foreach (var slot in availabilityResponse.Data.AvailableSlots)
                         {
@@ -1830,20 +1839,20 @@ namespace loukupm.ViewModel
                     }
                     else
                     {
-                       
-                        AvailableSlots.Clear(); 
-                        HasAvailabilityError = true; 
+
+                        AvailableSlots.Clear();
+                        HasAvailabilityError = true;
                         await Toast.Make(AppResource.Noavailabletimes).Show();
                     }
                 }
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                  
+
                     AvailableSlots.Clear();
                     HasAvailabilityError = true;
-                    
-                   
+
+
                     try
                     {
                         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -1858,12 +1867,12 @@ namespace loukupm.ViewModel
             }
             catch (Exception ex)
             {
-               
-                
-                
+
+
+
                 AvailableSlots.Clear();
                 HasAvailabilityError = true;
-                
+
                 await Toast.Make($"خطأ: {ex.Message}").Show();
             }
             finally
@@ -1885,7 +1894,7 @@ namespace loukupm.ViewModel
                 SelectedServices.Add(service);
                 CurrentBooking.SelectedServices.Add(service);
                 UpdateTotalPrice();
-                
+
             }
         }
 
@@ -1918,7 +1927,7 @@ namespace loukupm.ViewModel
 
                 if (!confirmed)
                 {
-                   
+
                     return;
                 }
 
@@ -1928,20 +1937,20 @@ namespace loukupm.ViewModel
 
                 if (success)
                 {
-                   
+
                     await Toast.Make(AppResource.Bookingcanceledsuccessfully, ToastDuration.Short).Show();
 
                     await LoadBookingsAsync();
                 }
                 else
                 {
-                   
+
                     await Toast.Make(AppResource.Failedtocancelthebooking, ToastDuration.Short).Show();
                 }
             }
             catch (Exception ex)
             {
-               
+
                 await Toast.Make($"خطأ: {ex.Message}", ToastDuration.Short).Show();
             }
             finally
@@ -1957,7 +1966,7 @@ namespace loukupm.ViewModel
             SelectedServices.Clear();
             CurrentBooking.SelectedServices.Clear();
             UpdateTotalPrice();
-           
+
         }
 
         public int GetSelectedServicesCount() => SelectedServices.Count;
@@ -1966,21 +1975,21 @@ namespace loukupm.ViewModel
         public bool HasSelectedServices() => SelectedServices.Count > 0;
 
 
-        
+
         private void UpdateTotalPrice()
         {
             TotalPrice = SelectedServices.Sum(s =>
             {
                 if (string.IsNullOrWhiteSpace(s?.PriceServies))
                 {
-                   
+
                     return 0m;
                 }
 
-              
+
                 string priceStr = s.PriceServies.Trim();
-                
-               
+
+
                 if (priceStr.Contains(','))
                     priceStr = priceStr.Replace(',', '.');
 
@@ -1996,13 +2005,13 @@ namespace loukupm.ViewModel
             Console.WriteLine($"💰 Total Price Updated: {TotalPrice:F2} (Total items: {SelectedServices.Count})");
         }
 
-       
+
         public decimal GetTotalPrice()
         {
             return TotalPrice;
         }
 
-      
+
         public int GetTotalDuration()
         {
             return SelectedServices.Sum(s => s.TimeServies);
@@ -2099,7 +2108,7 @@ namespace loukupm.ViewModel
             {
                 await SetAuthorizationHeaderAsync();
 
-               
+
                 var reminderData = new
                 {
                     appointment_id = appointment.Id,
@@ -2109,7 +2118,7 @@ namespace loukupm.ViewModel
                 var json = JsonSerializer.Serialize(reminderData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                
+
 
                 var response = await _httpClient.PostAsync(
                     "https://test.center-yazan.com/api/appointments/reminders",
@@ -2118,23 +2127,23 @@ namespace loukupm.ViewModel
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
-                  
+
                     await Toast.Make(AppResource.Remindersentsuccessfully, ToastDuration.Short).Show();
                 }
                 else
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
-                   
+
                     await Toast.Make(AppResource.Failedtosend, ToastDuration.Short).Show();
                 }
             }
             catch (Exception ex)
             {
-              
+
                 await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
             }
         }
-      
+
 
         [ObservableProperty]
         private string otp;
@@ -2173,7 +2182,7 @@ namespace loukupm.ViewModel
                 }
 
                 // ✅ Call API method with structured response
-                var (success, statusCode, errorMessage, retryAfter) = 
+                var (success, statusCode, errorMessage, retryAfter) =
                     await _apiServices.SendPhoneOtpAsync(Phone);
 
                 // ========================
@@ -2201,7 +2210,7 @@ namespace loukupm.ViewModel
                 if (statusCode == 400)
                 {
                     // Check if phone is already verified
-                    if (errorMessage?.ToLower().Contains("verified") == true || 
+                    if (errorMessage?.ToLower().Contains("verified") == true ||
                         errorMessage?.ToLower().Contains("already") == true)
                     {
                         Toast.Make(AppResource.PhoneNumberAlreadyVerified).Show();
@@ -2220,7 +2229,7 @@ namespace loukupm.ViewModel
                 {
                     Console.WriteLine($"⏳ Rate limited. Retry after {retryAfter} seconds");
 
-                    Message = retryAfter.HasValue 
+                    Message = retryAfter.HasValue
                         ? $"Please wait {retryAfter} seconds before retrying"
                         : "Too many attempts. Please wait before retrying.";
 
@@ -2260,7 +2269,7 @@ namespace loukupm.ViewModel
                 }
 
                 // استدعاء API
-                var (success, statusCode, errorMessage, retryAfter) = 
+                var (success, statusCode, errorMessage, retryAfter) =
                     await _apiServices.VerifyPhoneOtpAsync(Phone, Otp);
 
                 // نجاح - 200
@@ -2307,7 +2316,7 @@ namespace loukupm.ViewModel
                 Message = string.Empty;
 
                 // Call API method with structured response
-                var (success, statusCode, errorMessage, retryAfter) = 
+                var (success, statusCode, errorMessage, retryAfter) =
                     await _apiServices.SendPhoneOtpAsync(Phone);
 
                 if (success)
