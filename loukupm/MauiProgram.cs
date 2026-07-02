@@ -98,7 +98,38 @@ public static class MauiProgram
         builder.Services.AddTransient<loukupm.View.NotifictionPage>();
         builder.Services.AddTransient<loukupm.View.NotificationBadgeView>();
 
-        return builder.Build();
+        var mauiApp = builder.Build();
+
+        // Preload unread notification count as early as possible so the badge reflects state before HomePage appears.
+        try
+        {
+            var provider = mauiApp.Services;
+            var notificationService = provider.GetService(typeof(loukupm.services.NotificationService)) as loukupm.services.NotificationService;
+            var notificationState = provider.GetService(typeof(loukupm.services.NotificationStateService)) as loukupm.services.NotificationStateService;
+
+if (notificationService != null && notificationState != null)
+            {
+                _ = System.Threading.Tasks.Task.Run(async () =>
+                {
+                    try
+                    {
+                        var count = await notificationService.GetUnreadCountAsync();
+                        notificationState.SetUnreadCount(count);
+                        Console.WriteLine($"[MauiProgram] Preloaded unread count: {count}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[MauiProgram] Preload unread failed: {ex}");
+                    }
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MauiProgram] Preload step failed: {ex}");
+        }
+
+        return mauiApp;
 
     }
 

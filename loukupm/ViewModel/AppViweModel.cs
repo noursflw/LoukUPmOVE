@@ -105,7 +105,7 @@ namespace loukupm.ViewModel
         private readonly ApiServices _apiServices = new ApiServices();
         private readonly services.NotificationStateService _notificationState;
 
-        private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel(new services.NotificationStateService(), new services.NotificationService()));
+        private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel(GetNotificationStateFromServiceProvider(), GetNotificationServiceFromServiceProvider()));
         public static AppViewModel Instance => _instance.Value;
 
         // Parameterless ctor for views that still call new AppViewModel()
@@ -245,7 +245,7 @@ namespace loukupm.ViewModel
 
                 await LoadBookingsAsync();
 
-                // 🚀 باقي التحميلات المتوازية
+                
                 var homeSliderTask = Task.CompletedTask;
 
                 if (HomeSliderVM.Items.Count == 0)

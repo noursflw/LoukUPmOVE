@@ -7,7 +7,7 @@ namespace loukupm.View
 {
     public partial class NotificationBadgeView : ContentView
     {
-        private readonly NotificationStateService _notificationStateService;
+        private NotificationStateService _notificationStateService;
 
         // Primary constructor - DI will inject the singleton service when view is resolved from DI
         public NotificationBadgeView(NotificationStateService notificationStateService)
@@ -17,10 +17,36 @@ namespace loukupm.View
             BindingContext = _notificationStateService; // bind directly to the service (single source of truth)
         }
 
-        // Parameterless ctor for XAML fallback - resolve from MAUI service provider if possible
-        public NotificationBadgeView() : this(ResolveService()) { }
+        // Parameterless ctor for XAML fallback - resolve when handler is available
+        public NotificationBadgeView()
+        {
+            InitializeComponent();
 
-        private static NotificationStateService ResolveService()
+            // Try immediate resolution (may fail during XAML inflate). If unavailable, wait for handler to be set.
+            var svc = TryResolveService();
+            if (svc != null)
+            {
+                _notificationStateService = svc;
+                BindingContext = _notificationStateService;
+            }
+            else
+            {
+                this.HandlerChanged += NotificationBadgeView_HandlerChanged;
+            }
+        }
+
+        private void NotificationBadgeView_HandlerChanged(object sender, EventArgs e)
+        {
+            this.HandlerChanged -= NotificationBadgeView_HandlerChanged;
+            var svc = TryResolveService();
+            if (svc != null)
+            {
+                _notificationStateService = svc;
+                BindingContext = _notificationStateService;
+            }
+        }
+
+        private static NotificationStateService TryResolveService()
         {
             try
             {
@@ -29,9 +55,7 @@ namespace loukupm.View
                 if (svc != null) return svc;
             }
             catch { }
-
-            // As a last resort, create a local instance (should not happen when DI is configured)
-            return new NotificationStateService();
+            return null;
         }
 
         private async void OnIconClicked(object sender, EventArgs e)
