@@ -53,7 +53,15 @@ namespace loukupm.ViewModel
         [RelayCommand]
         public async Task LoadDataAsync()
         {
+            // Prevent duplicate concurrent loads
             if (IsBusy) return;
+
+            // If we already loaded settings once, skip reloading to preserve UI state across page navigations.
+            if (_settingsCache != null && _settingsCache.Count > 0)
+            {
+                System.Diagnostics.Debug.WriteLine("[SettingsViewModel] LoadDataAsync skipped - already loaded");
+                return;
+            }
 
             try
             {

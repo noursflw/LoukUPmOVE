@@ -117,6 +117,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="View\Areyousuredeletyouraccountpage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\ContenUs.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

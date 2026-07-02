@@ -30,19 +30,19 @@ public partial class TermsAndConditions : ContentPage
     {
         base.OnAppearing();
 
-        try
-        {
-            // Load Terms and Conditions from CMS API
-            if (_viewModel != null)
-            {
-                Console.WriteLine("📄 TermsAndConditions page appearing - triggering data load");
-                await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ Error in OnAppearing: {ex.Message}");
-        }
+                    try
+                    {
+                        // Load Terms and Conditions from CMS API only if not already loaded
+                        if (_viewModel != null && _viewModel.CmsData == null)
+                        {
+                            Console.WriteLine("📄 TermsAndConditions page appearing - triggering data load");
+                            await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌ Error in OnAppearing: {ex.Message}");
+                    }
     }
 
     /// <summary>

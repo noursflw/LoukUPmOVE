@@ -43,6 +43,7 @@ public static class NavigationService
     public const string ROUTE_SETTING = "SettingPage";
     public const string ROUTE_OTP_PHONE_NUMBER = "OTPPoneNumper";
     public const string Route_ContactUs = "ContenUs";
+    public const string ROUTE_Delet_Acount = "Areyousuredeletyouraccountpage";
     // ?????????????????????????????????????????????
     // SETS
     // ?????????????????????????????????????????????
@@ -83,7 +84,7 @@ public static class NavigationService
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
-        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,ROUTE_TermsAndConditions_Athun,ROUTE_OTP_PHONE_NUMBER,Route_ContactUs,
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,ROUTE_TermsAndConditions_Athun,ROUTE_OTP_PHONE_NUMBER,Route_ContactUs,ROUTE_Delet_Acount,
     };
 
     
@@ -143,6 +144,7 @@ public static class NavigationService
             ROUTE_SETTING => new SettingPage(),
             ROUTE_OTP_PHONE_NUMBER => new OTPPoneNumper(),
             Route_ContactUs=> new ContenUs(),
+            ROUTE_Delet_Acount => new Areyousuredeletyouraccountpage(),
             _ => throw new InvalidOperationException($"Unknown route: {route}")
         };
     }

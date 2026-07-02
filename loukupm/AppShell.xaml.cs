@@ -123,6 +123,7 @@ namespace loukupm
                     (NavigationService.ROUTE_TERM_BOOKING, typeof(TerminbuchenPage)),
                     (NavigationService.ROUTE_PAYMENT, typeof(Paymentgetway)),
                     (NavigationService.Route_ContactUs, typeof(ContenUs)),
+                    (NavigationService.ROUTE_Delet_Acount, typeof(Areyousuredeletyouraccountpage)),
 
 
 

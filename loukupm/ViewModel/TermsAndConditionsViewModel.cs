@@ -62,6 +62,13 @@ namespace loukupm.ViewModel
         [RelayCommand]
         public async Task LoadTermsAndConditions()
         {
+            // Skip if already loaded to avoid redundant requests on navigation
+            if (CmsData != null)
+            {
+                System.Diagnostics.Debug.WriteLine("[TermsAndConditionsViewModel] LoadTermsAndConditions skipped - already loaded");
+                return;
+            }
+
             try
             {
                 IsLoading = true;
@@ -109,11 +116,13 @@ namespace loukupm.ViewModel
 
         /// <summary>
         /// Retry loading Terms and Conditions
+        /// Force reload by clearing cached data first.
         /// </summary>
         [RelayCommand]
         public async Task RetryLoadTermsAndConditions()
         {
             Console.WriteLine("🔄 Retrying Terms and Conditions load...");
+            ClearData();
             await LoadTermsAndConditionsCommand.ExecuteAsync(null);
         }
 

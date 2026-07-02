@@ -54,6 +54,7 @@ public partial class SettingPage : ContentPage, INotifyPropertyChanged
             bool isNotificationsEnabled = Preferences.Get("NotificationsEnabled", true);
             NotificationsSwitch.IsToggled = isNotificationsEnabled;
 
+            // Load settings once via the VM; VM will skip reload if already loaded.
             await _vm.LoadDataCommand.ExecuteAsync(null);
 
             Console.WriteLine($"🔔 Loaded notification preference: {isNotificationsEnabled}");

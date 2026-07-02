@@ -35,8 +35,8 @@ public partial class PolicyandPrivacyPage : ContentPage
         base.OnAppearing();
         Console.WriteLine($"📄 Privacy Policy page appearing");
 
-        // Load privacy policy content from CMS
-        if (_viewModel != null)
+        // Load privacy policy content from CMS only if not already loaded
+        if (_viewModel != null && _viewModel.CmsData == null)
         {
             await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
         }

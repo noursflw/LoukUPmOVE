@@ -15,7 +15,7 @@
             BackgroundColor="Transparent"
             Clicked="OnIconClicked" />
 
-        <!-- Red badge: Border used instead of Frame per requirements -->
+       
         <Border
             BackgroundColor="Red"
             WidthRequest="10"
@@ -24,8 +24,8 @@
             IsVisible="{Binding HasUnread}"
             HorizontalOptions="End"
             VerticalOptions="Start"
-            TranslationX="6"
-            TranslationY="-6"
+            TranslationX="2"
+            TranslationY="-3"
             Padding="0" />
     </Grid>
 </ContentView>

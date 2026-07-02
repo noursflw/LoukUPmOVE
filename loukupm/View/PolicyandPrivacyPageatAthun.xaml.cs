@@ -32,7 +32,11 @@ public partial class PolicyandPrivacyPageatAthun : ContentPage
 
         await Task.Yield(); // 🔥 أهم سطر هنا
 
-        await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
+        // Load only if not already loaded
+        if (_viewModel != null && _viewModel.CmsData == null)
+        {
+            await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
+        }
     }
 
     /// <summary>

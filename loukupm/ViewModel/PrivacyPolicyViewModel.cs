@@ -58,10 +58,18 @@ namespace loukupm.ViewModel
 
         /// <summary>
         /// Load Privacy Policy content from CMS API
+        /// Skips loading if data already present to avoid redundant network calls on navigation.
         /// </summary>
         [RelayCommand]
         public async Task LoadPrivacyPolicy()
         {
+            // Skip if already loaded
+            if (CmsData != null)
+            {
+                System.Diagnostics.Debug.WriteLine("[PrivacyPolicyViewModel] LoadPrivacyPolicy skipped - already loaded");
+                return;
+            }
+
             try
             {
                 IsLoading = true;
@@ -100,12 +108,28 @@ namespace loukupm.ViewModel
 
         /// <summary>
         /// Retry loading Privacy Policy content after an error
+        /// Force reload by clearing cached data first.
         /// </summary>
         [RelayCommand]
         public async Task RetryLoadPrivacyPolicy()
         {
             Console.WriteLine($"🔄 Retrying Privacy Policy load...");
+            // Clear existing data to force reload
+            CmsData = null;
             await LoadPrivacyPolicyCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>
+        /// Clear loaded data and reset state (useful before forcing a reload)
+        /// </summary>
+        public void ClearData()
+        {
+            CmsData = null;
+            IsLoading = false;
+            HasError = false;
+            ErrorMessage = string.Empty;
+            PageDirection = "ltr";
+            ContentFlowDirection = FlowDirection.LeftToRight;
         }
     }
 }
