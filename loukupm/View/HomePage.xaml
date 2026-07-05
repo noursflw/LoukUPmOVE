@@ -93,8 +93,9 @@
 
                     <ImageButton
             CornerRadius="30"
-            HeightRequest="40"
-            WidthRequest="40"
+            HeightRequest="20"
+            WidthRequest="20"
+             Aspect="Center"           
             Clicked="Button_Clicked"
             Source="nn1.png" />
 

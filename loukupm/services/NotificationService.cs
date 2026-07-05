@@ -12,7 +12,8 @@ namespace loukupm.services
 {
     public class NotificationService
     {
-        private const string BaseUrl = "https://test.center-yazan.com/api/notifications";
+        private const string NotificationsBaseUrl = "https://test.center-yazan.com/api/notifications";
+        private const string UnreadNotificationsUrl = "https://test.center-yazan.com/api/notifications/unread";
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true
@@ -74,7 +75,7 @@ namespace loukupm.services
                 await SetAuthorizationHeaderAsync();
 
                 var safeCursor = string.IsNullOrWhiteSpace(cursor) ? string.Empty : cursor;
-                var url = $"{BaseUrl}?per_page={perPage}&cursor={Uri.EscapeDataString(safeCursor)}&status={Uri.EscapeDataString(status)}";
+                var url = $"{UnreadNotificationsUrl}?per_page={perPage}&cursor={Uri.EscapeDataString(safeCursor)}&status={Uri.EscapeDataString(status)}";
 
                 Console.WriteLine($"\uD83D\uDCEC [NotificationService] GET {url}");
 
@@ -126,7 +127,7 @@ namespace loukupm.services
             {
                 await SetAuthorizationHeaderAsync();
 
-                var url = $"{BaseUrl}/unread-count";
+                var url = $"{NotificationsBaseUrl}/unread-count";
                 Console.WriteLine($"\uD83D\uDCEC [NotificationService] GET {url}");
 
                 using var response = await _httpClient.GetAsync(url);
@@ -172,7 +173,7 @@ namespace loukupm.services
             {
                 await SetAuthorizationHeaderAsync();
 
-                var url = $"{BaseUrl}/{Uri.EscapeDataString(notificationId)}/read";
+                var url = $"{NotificationsBaseUrl}/{Uri.EscapeDataString(notificationId)}/read";
                 var path = $"/api/notifications/{notificationId}/read";
                 Console.WriteLine($"📡 POST URL: {path}");
 

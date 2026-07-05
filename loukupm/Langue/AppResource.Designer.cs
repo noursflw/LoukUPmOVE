@@ -394,6 +394,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Schließen .
+        /// </summary>
+        internal static string close {
+            get {
+                return ResourceManager.GetString("close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schließen .
+        /// </summary>
+        internal static string close1 {
+            get {
+                return ResourceManager.GetString("close1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der Code ist ungültig. Bitte versuchen Sie es erneut.
         /// </summary>
         internal static string CodeNotIncorrect {
@@ -444,6 +462,24 @@ namespace loukupm.Langue {
         internal static string ConfermUpateChane {
             get {
                 return ResourceManager.GetString("ConfermUpateChane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Termin stornieren?.
+        /// </summary>
+        internal static string ConfirmCancelBooking {
+            get {
+                return ResourceManager.GetString("ConfirmCancelBooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bist du sicher, dass du diesen Termin stornieren möchtest?.
+        /// </summary>
+        internal static string ConfirmCancelBookingMessage {
+            get {
+                return ResourceManager.GetString("ConfirmCancelBookingMessage", resourceCulture);
             }
         }
         
@@ -1097,6 +1133,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abbrechen.
+        /// </summary>
+        internal static string Noo {
+            get {
+                return ResourceManager.GetString("Noo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abbrechen.
+        /// </summary>
+        internal static string Noo1 {
+            get {
+                return ResourceManager.GetString("Noo1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Es wurde keine Antwort vom Server erhalten.
         /// </summary>
         internal static string noresponseserver {
@@ -1106,7 +1160,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Falsche E-Mail oder falsches Passwort.
+        ///   Looks up a localized string similar to Die eingegebenen Anmeldedaten sind nicht korrek.
         /// </summary>
         internal static string NOTEqlalepor {
             get {
@@ -2987,6 +3041,15 @@ namespace loukupm.Langue {
         internal static string yes {
             get {
                 return ResourceManager.GetString("yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Termin stornieren.
+        /// </summary>
+        internal static string Yess {
+            get {
+                return ResourceManager.GetString("Yess", resourceCulture);
             }
         }
         

@@ -1919,10 +1919,10 @@ namespace loukupm.ViewModel
             try
             {
                 bool confirmed = await App.Current.MainPage.DisplayAlert(
-                    "تأكيد الإلغاء",
-                    "هل تريد بالفعل إلغاء هذا الحجز؟",
-                    "نعم",
-                    "لا"
+                   AppResource.ConfirmCancelBooking,
+                    AppResource.ConfirmCancelBookingMessage,
+                    AppResource.Yess,
+                    AppResource.Noo
                 );
 
                 if (!confirmed)

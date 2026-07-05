@@ -268,7 +268,7 @@
     <value>Bitte geben Sie eine gültige E-Mail-Adresse ein.</value>
   </data>
   <data name="ErorlogIn" xml:space="preserve">
-    <value>خطأ في تسجيل الدخول</value>
+    <value>Anmeldung fehlgeschlagen</value>
   </data>
   <data name="FeildUpdatePassord" xml:space="preserve">
     <value>Das Aktualisieren des Passworts ist fehlgeschlagen</value>
@@ -325,7 +325,7 @@
     <value>Es wurde keine Antwort vom Server erhalten</value>
   </data>
   <data name="NOTEqlalepor" xml:space="preserve">
-    <value>Falsche E-Mail oder falsches Passwort</value>
+    <value>Die eingegebenen Anmeldedaten sind nicht korrek</value>
   </data>
   <data name="NPasswordOnLogin" xml:space="preserve">
     <value>Passwort vergessen?</value>
@@ -1108,5 +1108,27 @@ Kontaktiere uns jederzeit. Wir helfen dir gerne weiter.</value>
   </data>
   <data name="FollowUs" xml:space="preserve">
     <value>Folge uns</value>
+  </data>
+  <data name="ConfirmCancelBooking" xml:space="preserve">
+    <value>Termin stornieren?</value>
+  </data>
+  <data name="ConfirmCancelBookingMessage" xml:space="preserve">
+    <value>Bist du sicher, dass du diesen Termin stornieren möchtest?
+Diese Aktion kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="Yess" xml:space="preserve">
+    <value>Termin stornieren</value>
+  </data>
+  <data name="Noo" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="Noo1" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Schließen </value>
+  </data>
+  <data name="close1" xml:space="preserve">
+    <value>Schließen </value>
   </data>
 </root>

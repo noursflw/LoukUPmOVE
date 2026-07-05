@@ -368,7 +368,18 @@ public static class NavigationService
     {
         try
         {
-            await Shell.Current.GoToAsync($"//{ROUTE_HOME}", animate: false);
+            if (Shell.Current == null && Application.Current?.MainPage is NavigationPage)
+            {
+                Application.Current.MainPage = new AppShell();
+                await Task.Delay(50);
+            }
+
+            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            if (shell == null)
+                throw new InvalidOperationException("Shell context is not available");
+
+            shell.FlyoutIsPresented = false;
+            await shell.GoToAsync($"//{ROUTE_HOME}", animate: false);
         }
         catch (Exception ex)
         {

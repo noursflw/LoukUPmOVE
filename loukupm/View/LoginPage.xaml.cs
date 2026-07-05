@@ -117,7 +117,7 @@ public partial class LoginPage : ContentPage
                     var loginResponse = JsonSerializer.Deserialize<LoginResponse>(result,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // حفظ التوكن
+                   
                     if (!string.IsNullOrEmpty(loginResponse?.Token))
                         await SecureStorage.SetAsync("auth_token", loginResponse.Token);
 
@@ -126,10 +126,10 @@ public partial class LoginPage : ContentPage
                     var popup = new CompletedLogin();
                     await this.ShowPopupAsync(popup);
 
-                    // ⭐ تحميل بيانات المستخدم قبل التنقل
+                   
                     await AppViewModel.Instance.LoadUserDataAsync();
 
-                    // Clear the navigation stack and navigate to HomePage using the navigation service
+                   
                     await ShellNavigationManager.NavigateToHomeAndClear();
 
                     // ⭐ هنا تعريف اليوزر ل OneSignal

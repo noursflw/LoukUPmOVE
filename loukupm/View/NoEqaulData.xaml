@@ -3,9 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:Loc="clr-namespace:loukupm.Langue"  
-             x:Class="loukupm.View.NoEqaulData"
-           
-               >
+             x:Class="loukupm.View.NoEqaulData" >
     <Frame
    BackgroundColor="#444444"
    CornerRadius="20"
@@ -40,7 +38,7 @@
                HorizontalTextAlignment="Center" />
 
             </VerticalStackLayout>
-            <Button FontFamily="georgia-bold" FontSize="19"  BackgroundColor="#EBD750" Margin="10" TextColor="Black" BorderWidth="1" Clicked="CancelClicked"   Text="{Loc:Translate Name=yes}"/>
+            <Button FontFamily="georgia-bold" FontSize="19"  BackgroundColor="#EBD750" Margin="10" TextColor="Black" BorderWidth="1" Clicked="CancelClicked"   Text="{Loc:Translate Name=close}"/>
         </VerticalStackLayout>
 
     </Frame>

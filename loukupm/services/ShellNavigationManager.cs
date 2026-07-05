@@ -110,21 +110,21 @@ namespace loukupm.Services
             {
                 Console.WriteLine($"🔄 [Navigation] Logging in and navigating to home");
 
-                // Verify Shell.Current is available
+                if (Shell.Current == null && Application.Current?.MainPage is NavigationPage)
+                {
+                    Console.WriteLine("🔄 [Navigation] Switching from NavigationPage to AppShell for post-login navigation");
+                    Application.Current.MainPage = new AppShell();
+                    await Task.Delay(50);
+                }
+
                 var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
                 if (shell == null)
                 {
-                    Console.WriteLine($"❌ [Navigation] Shell context is null - fallback to NavigationPage for HomePage");
-                    if (Application.Current?.MainPage is NavigationPage nav)
-                    {
-                        await nav.PopToRootAsync(false);
-                        return;
-                    }
                     throw new InvalidOperationException("Shell context is not available");
                 }
 
-                // Use absolute route for TabBar pages
-                await shell.GoToAsync("//HomePage", animate: false);
+                shell.FlyoutIsPresented = false;
+                await shell.GoToAsync($"//{NavigationService.ROUTE_HOME}", animate: false);
 
                 Console.WriteLine($"✅ [Navigation] Successfully logged in to HomePage");
             }

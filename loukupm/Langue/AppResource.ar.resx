@@ -268,7 +268,7 @@
     <value>يرجى إدخال بريد إلكتروني صحيح</value>
   </data>
   <data name="ErorlogIn" xml:space="preserve">
-    <value>Anmeldefehler</value>
+    <value>تعذر تسجيل الدخول</value>
   </data>
   <data name="FeildUpdatePassord" xml:space="preserve">
     <value>فشل تحديث كلمة المرور</value>
@@ -325,7 +325,7 @@
     <value>لم يتم الحصول على استجابة من الخادم</value>
   </data>
   <data name="NOTEqlalepor" xml:space="preserve">
-    <value>البريد الإلكتروني أو كلمة المرور غير صحيحة</value>
+    <value>بيانات تسجيل الدخول غير صحيحة</value>
   </data>
   <data name="NPasswordOnLogin" xml:space="preserve">
     <value>نسيت كلمة السر؟</value>
@@ -1109,5 +1109,27 @@
   </data>
   <data name="FollowUs" xml:space="preserve">
     <value>تابعنا</value>
+  </data>
+  <data name="ConfirmCancelBooking" xml:space="preserve">
+    <value>إلغاء الموعد؟</value>
+  </data>
+  <data name="ConfirmCancelBookingMessage" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد إلغاء هذا الموعد؟
+لا يمكن التراجع عن هذا الإجراء</value>
+  </data>
+  <data name="Yess" xml:space="preserve">
+    <value>إلغاء الموعد</value>
+  </data>
+  <data name="Noo" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="Noo1" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="close1" xml:space="preserve">
+    <value>إغلاق</value>
   </data>
 </root>
