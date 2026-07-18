@@ -7,12 +7,13 @@ namespace loukupm.View;
 public partial class ContenUs : ContentPage
 {
     private AboutUsViewModel _viewModel;
-    public ContenUs()
+	public ContenUs()
 	{
 		InitializeComponent();
-        _viewModel = new AboutUsViewModel();
-        BindingContext = _viewModel;
-    }
+		this.InitializeLanguageTracking();
+		_viewModel = new AboutUsViewModel();
+		BindingContext = _viewModel;
+	}
 
     protected override async void OnAppearing()
     {

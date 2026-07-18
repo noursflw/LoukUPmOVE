@@ -27,6 +27,7 @@ public partial class ServicesPage : ContentPage
     public ServicesPage()
     {
         InitializeComponent();
+        this.InitializeLanguageTracking();
         // ✅ استخدم Instance
         var vm = AppViewModel.Instance;
 

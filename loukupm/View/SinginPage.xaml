@@ -6,8 +6,7 @@
              Shell.TabBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-             BackgroundImageSource="baackgroundpage.png"
-             FlowDirection="LeftToRight">
+             BackgroundImageSource="baackgroundpage.png">
     <ScrollView Orientation="Vertical">
         <StackLayout>
             <Grid RowDefinitions="20*,80*">
@@ -23,7 +22,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:TextField TextChanged="RegisterNameEntry_TextChanged" x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="Name" />
+                <material:TextField TextChanged="RegisterNameEntry_TextChanged" x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="{loc:Translate Name=NameUser}" />
                 <Label
                   x:Name="ErorNameInput"
                   TextColor="Red"
@@ -182,7 +181,7 @@
                    VerticalTextAlignment="Center"/>
                         </Frame>
 
-                        <Label Text="{loc:Translate Name=password_number_required}"
+                        <Label Text="{loc:Translate Name=password_number_required2}"
                TextColor="White"
                VerticalOptions="Center"/>
                     </HorizontalStackLayout>
@@ -270,7 +269,6 @@
             HorizontalOptions="Center"/>
             </Frame>
             <HorizontalStackLayout
-    FlowDirection="LeftToRight"
     VerticalOptions="Center"
     HorizontalOptions="Center"
     Margin="20,0,20,20"
@@ -316,6 +314,7 @@
         Color="#A8883C"
         VerticalOptions="Center"/>
             </HorizontalStackLayout>
+            <BoxView BackgroundColor="Transparent" HeightRequest="100"/>
         </StackLayout>
     </ScrollView>
 </ContentPage>

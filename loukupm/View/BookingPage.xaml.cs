@@ -13,6 +13,7 @@ public partial class BookingPage : ContentPage
 	public BookingPage()
 	{
 		InitializeComponent();
+		this.InitializeLanguageTracking();
 		this.BindingContext = AppViewModel.Instance;
 	}
 

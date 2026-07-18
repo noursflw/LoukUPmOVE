@@ -1432,11 +1432,11 @@ namespace loukupm.ViewModel
         {
             try
             {
+                ResetUser();
                 OneSignalService.Logout();
                 SecureStorage.RemoveAll();
                 Preferences.Clear();
                 App.ResetAuthenticationCheck();
-                ResetUser();
                 await ShellNavigationManager.NavigateToLoginAndClear();
             }
             catch (Exception ex)

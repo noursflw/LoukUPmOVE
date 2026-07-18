@@ -16,14 +16,11 @@ public partial class MassegBoxLogout : Popup
     private async void Button_Clicked(object sender, EventArgs e)
     {
         Close(true);
-        
-        // Õ–› Ã„Ì⁄ «·’›Õ«  „‰ «·„ﬂœ” Ê«·–Â«» „»«‘—… ·’›Õ…  ”ÃÌ· «·œŒÊ·
-        // Add a small delay to ensure popup closes first
+      
         await Task.Delay(300);
         
         try
         {
-            // Use the ShellNavigationManager to properly clear the stack
             await ShellNavigationManager.NavigateToLoginAndClear();
         }
         catch (Exception ex)

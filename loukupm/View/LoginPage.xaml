@@ -4,7 +4,6 @@
              x:Class="loukupm.View.LoginPage"
                Shell.NavBarIsVisible="False"
                Shell.TabBarIsVisible="False"
-               FlowDirection="LeftToRight"
               xmlns:loc="clr-namespace:loukupm.Langue"
                BackgroundColor="#202020"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
@@ -106,7 +105,7 @@
                             <material:TextFieldPasswordShowHideAttachment />
                         </material:TextField.Attachments>
                     </material:TextField>
-                    <Label FontSize="16" FlowDirection="RightToLeft" Margin="20,8,30,0">
+                    <Label FontSize="16" Margin="20,8,30,0">
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="{loc:Translate Name=NPasswordOnLogin}" 
@@ -170,7 +169,6 @@
 
                     </HorizontalStackLayout>
                     <HorizontalStackLayout
-    FlowDirection="LeftToRight"
     HorizontalOptions="Center"
     VerticalOptions="Center"
     Spacing="5">
@@ -211,6 +209,7 @@
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Grid>
+            <BoxView BackgroundColor="Transparent" HeightRequest="150"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

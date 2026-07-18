@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
-             FlowDirection="LeftToRight"
              Title="MainPage"
              xmlns:loc="clr-namespace:loukupm.Langue"
-               BackgroundImageSource="startpage.png"
+                BackgroundImageSource="startpage.png"
              x:Class="loukupm.MainPage">
 
     <ScrollView>

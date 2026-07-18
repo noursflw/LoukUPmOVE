@@ -58,14 +58,93 @@ namespace loukupm.ViewModel
 
         /// <summary>
         /// Load Terms and Conditions content from CMS API
-        /// </summary>
-        [RelayCommand]
+        ///// </summary>
+        //[RelayCommand]
+        //public async Task LoadTermsAndConditions()
+        //{
+        //    // Skip if already loaded to avoid redundant requests on navigation
+        //    if (CmsData != null)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("[TermsAndConditionsViewModel] LoadTermsAndConditions skipped - already loaded");
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        IsLoading = true;
+        //        HasError = false;
+        //        ErrorMessage = string.Empty;
+
+        //        // Run API call on thread pool to avoid blocking UI
+        //        var response = await Task.Run(async () => 
+        //            await _apiServices.GetTermsAndConditionsAsync()
+        //        );
+
+        //        // Yield control back to UI thread
+        //        await Task.Delay(10);
+
+        //        // Check only response.Data != null (remove Success flag dependency)
+        //        // The API may have inconsistent Success values, but if Data is present, use it
+        //        if (response?.Data != null)
+        //        {
+        //            CmsData = response.Data;
+
+        //            // Set flow direction based on API response
+        //            PageDirection = response.Data.Direction?.ToLower() ?? "ltr";
+        //            ContentFlowDirection = PageDirection == "rtl" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+
+        //            Console.WriteLine($"✅ Terms & Conditions loaded successfully");
+        //            Console.WriteLine($"   Language: {CmsData.Language}");
+        //            Console.WriteLine($"   Direction: {PageDirection}");
+        //            Console.WriteLine($"   Blocks: {CmsData.Blocks?.Count ?? 0}");
+        //        }
+        //        else
+        //        {
+        //            HasError = true;
+        //            ErrorMessage = response?.Message ?? "Failed to load Terms and Conditions";
+        //            Console.WriteLine($"❌ Terms & Conditions API returned error: {ErrorMessage}");
+        //            Console.WriteLine($"   Response Success: {response?.Success}");
+        //            Console.WriteLine($"   Response Data: {(response?.Data == null ? "null" : "not null")}");
+        //        }
+        //    }
+        //    catch (TaskCanceledException ex)
+        //    {
+        //        HasError = true;
+        //        ErrorMessage = "Request timed out. Please check your internet connection.";
+        //        Console.WriteLine($"⏱️ Timeout in LoadTermsAndConditions: {ex.Message}");
+        //    }
+        //    catch (HttpRequestException ex)
+        //    {
+        //        HasError = true;
+        //        ErrorMessage = "Network error. Please check your internet connection.";
+        //        Console.WriteLine($"🌐 Network error in LoadTermsAndConditions: {ex.Message}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        HasError = true;
+        //        ErrorMessage = "An unexpected error occurred while loading Terms and Conditions";
+        //        Console.WriteLine($"❌ Exception in LoadTermsAndConditions: {ex.Message}");
+        //        Console.WriteLine($"   StackTrace: {ex.StackTrace}");
+        //    }
+        //    finally
+        //    {
+        //        IsLoading = false;
+        //    }
+        //}
+        [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task LoadTermsAndConditions()
         {
-            // Skip if already loaded to avoid redundant requests on navigation
+            // Prevent multiple simultaneous requests
+            if (IsLoading)
+            {
+                Console.WriteLine("⏳ LoadTermsAndConditions skipped - already loading");
+                return;
+            }
+
+            // Skip if data already exists
             if (CmsData != null)
             {
-                System.Diagnostics.Debug.WriteLine("[TermsAndConditionsViewModel] LoadTermsAndConditions skipped - already loaded");
+                Console.WriteLine("📄 LoadTermsAndConditions skipped - already loaded");
                 return;
             }
 
@@ -75,55 +154,84 @@ namespace loukupm.ViewModel
                 HasError = false;
                 ErrorMessage = string.Empty;
 
+                Console.WriteLine("📥 Loading Terms & Conditions...");
+
+                // Execute API request
                 var response = await _apiServices.GetTermsAndConditionsAsync();
 
-                // Check only response.Data != null (remove Success flag dependency)
-                // The API may have inconsistent Success values, but if Data is present, use it
                 if (response?.Data != null)
                 {
                     CmsData = response.Data;
 
-                    // Set flow direction based on API response
+                    // Set FlowDirection
                     PageDirection = response.Data.Direction?.ToLower() ?? "ltr";
-                    ContentFlowDirection = PageDirection == "rtl" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+                    ContentFlowDirection =
+                        PageDirection == "rtl"
+                        ? FlowDirection.RightToLeft
+                        : FlowDirection.LeftToRight;
 
-                    Console.WriteLine($"✅ Terms & Conditions loaded successfully");
-                    Console.WriteLine($"   Language: {CmsData.Language}");
+                    Console.WriteLine("✅ Terms & Conditions loaded successfully");
+                    Console.WriteLine($"   Language : {CmsData.Language}");
                     Console.WriteLine($"   Direction: {PageDirection}");
-                    Console.WriteLine($"   Blocks: {CmsData.Blocks?.Count ?? 0}");
+                    Console.WriteLine($"   Blocks   : {CmsData.Blocks?.Count ?? 0}");
                 }
                 else
                 {
                     HasError = true;
                     ErrorMessage = response?.Message ?? "Failed to load Terms and Conditions";
-                    Console.WriteLine($"❌ Terms & Conditions API returned error: {ErrorMessage}");
-                    Console.WriteLine($"   Response Success: {response?.Success}");
-                    Console.WriteLine($"   Response Data: {(response?.Data == null ? "null" : "not null")}");
+
+                    Console.WriteLine("❌ Terms & Conditions API returned invalid response");
+                    Console.WriteLine($"   Success : {response?.Success}");
+                    Console.WriteLine($"   Message : {response?.Message}");
+                    Console.WriteLine($"   Data    : {(response?.Data == null ? "NULL" : "NOT NULL")}");
                 }
+            }
+            catch (TaskCanceledException ex)
+            {
+                HasError = true;
+                ErrorMessage = "Request timed out. Please check your internet connection.";
+
+                Console.WriteLine($"⏱️ Timeout: {ex.Message}");
+            }
+            catch (HttpRequestException ex)
+            {
+                HasError = true;
+                ErrorMessage = "Network error. Please check your internet connection.";
+
+                Console.WriteLine($"🌐 Network error: {ex.Message}");
             }
             catch (Exception ex)
             {
                 HasError = true;
-                ErrorMessage = "An unexpected error occurred while loading Terms and Conditions";
-                Console.WriteLine($"❌ Exception in LoadTermsAndConditions: {ex.Message}");
-                Console.WriteLine($"   StackTrace: {ex.StackTrace}");
+                ErrorMessage = "An unexpected error occurred while loading Terms and Conditions.";
+
+                Console.WriteLine($"❌ Exception: {ex}");
             }
             finally
             {
                 IsLoading = false;
             }
         }
-
         /// <summary>
         /// Retry loading Terms and Conditions
         /// Force reload by clearing cached data first.
         /// </summary>
-        [RelayCommand]
+        [ObservableProperty]
+        private bool isRefreshing;
+        [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task RetryLoadTermsAndConditions()
         {
-            Console.WriteLine("🔄 Retrying Terms and Conditions load...");
-            ClearData();
-            await LoadTermsAndConditionsCommand.ExecuteAsync(null);
+            IsRefreshing = true;
+
+            try
+            {
+                ClearData();
+                await LoadTermsAndConditions();
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>

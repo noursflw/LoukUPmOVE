@@ -1132,4 +1132,13 @@
   <data name="close1" xml:space="preserve">
     <value>إغلاق</value>
   </data>
+  <data name="Titelotpphone" xml:space="preserve">
+    <value>تأكيد رقم الهاتف </value>
+  </data>
+  <data name="desotppnone" xml:space="preserve">
+    <value>سيصلك خلال لحظات رمز تحقق عبر رسالة نصية لتأكيد رقم هاتفك</value>
+  </data>
+  <data name="password_number_required2" xml:space="preserve">
+    <value>على الأقل رقم واحد</value>
+  </data>
 </root>

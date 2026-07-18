@@ -47,6 +47,7 @@ public partial class OTPSINGIN : ContentPage
 		try
 		{
 			InitializeComponent();
+			this.InitializeLanguageTracking();
 			Console.WriteLine("✅ [OTPSINGIN] Page initialized successfully");
 		}
 		catch (Exception ex)
@@ -436,20 +437,12 @@ public partial class OTPSINGIN : ContentPage
 			// Cancel any ongoing timer
 			_timerCancellation?.Cancel();
 
-			// Navigate back
+			// Navigate back using NavigationService
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				try
 				{
-					if (Shell.Current?.Navigation?.NavigationStack != null && Shell.Current.Navigation.NavigationStack.Count > 1)
-					{
-						await NavigationService.NavigateUpOrToLogin();
-					}
-					else
-					{
-						// If no previous page, go to login via ShellNavigationManager
-						await ShellNavigationManager.NavigateToLoginAndClear();
-					}
+					await NavigationService.HandleBackButton(NavigationService.ROUTE_OTP);
 				}
 				catch (Exception ex)
 				{

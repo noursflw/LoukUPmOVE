@@ -4,7 +4,6 @@
              x:Class="loukupm.View.EditeUserPage"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
-             FlowDirection="LeftToRight"
                 xmlns:Loc="clr-namespace:loukupm.Langue"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:converters="clr-namespace:loukupm.Converter"
@@ -132,7 +131,7 @@
 
                         </Label>
                         <Label Text="{Loc:Translate Name=scertey}" Margin="30,0,0,0" />
-                        <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,10,24,0" >
+                        <Frame CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,10,24,0" >
                             <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#181c21">
 
                                 <HorizontalStackLayout>

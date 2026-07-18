@@ -69,6 +69,7 @@ public partial class NotifictionPage : ContentPage
 	public NotifictionPage()
 	{
 		InitializeComponent();
+		this.InitializeLanguageTracking();
 		BindingContext = ResolveViewModel();
 	}
 

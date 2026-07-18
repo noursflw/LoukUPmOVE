@@ -15,6 +15,7 @@ public partial class SettingPage : ContentPage, INotifyPropertyChanged
     public SettingPage()
     {
         InitializeComponent();
+        this.InitializeLanguageTracking();
 
         var vm = new SettingsViewModel(new ApiServices());
 

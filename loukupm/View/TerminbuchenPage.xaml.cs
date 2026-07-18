@@ -18,8 +18,7 @@ public partial class TerminbuchenPage : ContentPage
 	public TerminbuchenPage()
 	{
 		InitializeComponent();
-
-
+		this.InitializeLanguageTracking();
 
 		this.BindingContext= AppViewModel.Instance;    
 		MonthYearLabel.Text = DateTime.Now.ToString("MMMM yyyy"); 

@@ -7,6 +7,7 @@ namespace loukupm
         public MainPage()
         {
             InitializeComponent();
+            this.InitializeLanguageTracking();
             Shell.SetNavBarIsVisible(this, false);
         }
 

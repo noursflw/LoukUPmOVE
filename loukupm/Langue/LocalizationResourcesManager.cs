@@ -85,7 +85,14 @@
                 {
                     var newDirection = GetFlowDirection();
 
-                    // تحديث AppShell
+                    // تحديث الصفحة الرئيسية الحالية بغض النظر عن نوعها (Shell / NavigationPage / ContentPage)
+                    if (Application.Current?.MainPage is Page rootPage)
+                    {
+                        rootPage.FlowDirection = newDirection;
+                        Console.WriteLine($"✅ MainPage Flow Direction Updated to {newDirection}");
+                    }
+
+                    // تحديث AppShell بشكل صريح عند استخدام Shell
                     if (Application.Current?.MainPage is AppShell appShell)
                     {
                         appShell.FlowDirection = newDirection;

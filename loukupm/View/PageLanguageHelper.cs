@@ -17,8 +17,8 @@ public static class PageLanguageHelper
     {
         if (page == null) return;
 
-        // الاشتراك في حدث تغيير اللغة
-        LocalizationResourcesManager.Instanse.LanguageChanged += (culture) =>
+        // إنشء handler محلي للاشتراك والإلغاء
+        Action<CultureInfo> languageChangeHandler = (culture) =>
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -26,8 +26,18 @@ public static class PageLanguageHelper
             });
         };
 
+        // الاشتراك في حدث تغيير اللغة
+        LocalizationResourcesManager.Instanse.LanguageChanged += languageChangeHandler;
+
         // تحديث الاتجاه الأولي
         UpdatePageFlowDirection(page, LocalizationResourcesManager.Instanse.CurrentCulture);
+
+        // إلغاء الاشتراك عند إغلاق الصفحة (CRITICAL!)
+        page.Unloaded += (s, e) =>
+        {
+            LocalizationResourcesManager.Instanse.LanguageChanged -= languageChangeHandler;
+            Console.WriteLine($"🧹 Language tracking cleaned up for {page.GetType().Name}");
+        };
     }
 
     /// <summary>
@@ -38,7 +48,7 @@ public static class PageLanguageHelper
         if (page == null || culture == null) return;
 
         string languageCode = culture.TwoLetterISOLanguageName.ToLower();
-        
+
         page.FlowDirection = languageCode == "ar" 
             ? FlowDirection.RightToLeft 
             : FlowDirection.LeftToRight;
@@ -46,3 +56,4 @@ public static class PageLanguageHelper
         Console.WriteLine($"✅ {page.GetType().Name} FlowDirection Updated to {page.FlowDirection}");
     }
 }
+

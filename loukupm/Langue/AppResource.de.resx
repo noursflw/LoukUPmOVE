@@ -1131,4 +1131,13 @@ Diese Aktion kann nicht rückgängig gemacht werden.</value>
   <data name="close1" xml:space="preserve">
     <value>Schließen </value>
   </data>
+  <data name="Titelotpphone" xml:space="preserve">
+    <value>Telefonnummer bestätigen</value>
+  </data>
+  <data name="desotppnone" xml:space="preserve">
+    <value>Sie erhalten in Kürze eine SMS mit einem Code zur Bestätigung Ihrer Telefonnummer.</value>
+  </data>
+  <data name="password_number_required2" xml:space="preserve">
+    <value>Mindestens 1 Zahl</value>
+  </data>
 </root>

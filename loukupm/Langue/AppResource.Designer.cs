@@ -620,6 +620,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sie erhalten in Kürze eine SMS mit einem Code, um ein neues Passwort einzurichten..
+        /// </summary>
+        internal static string desotppnone {
+            get {
+                return ResourceManager.GetString("desotppnone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sie erhalten in Kürze eine E-Mail mit einem Code, um ein neues Passwort einzurichten..
         /// </summary>
         internal static string desRestPass {
@@ -1291,6 +1300,15 @@ namespace loukupm.Langue {
         internal static string password_number_required_ {
             get {
                 return ResourceManager.GetString("password_number_required ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindestens 1 Zahl.
+        /// </summary>
+        internal static string password_number_required2 {
+            get {
+                return ResourceManager.GetString("password_number_required2", resourceCulture);
             }
         }
         
@@ -2960,6 +2978,15 @@ namespace loukupm.Langue {
         internal static string timetosphelstel {
             get {
                 return ResourceManager.GetString("timetosphelstel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telefonnummer bestätigen.
+        /// </summary>
+        internal static string Titelotpphone {
+            get {
+                return ResourceManager.GetString("Titelotpphone", resourceCulture);
             }
         }
         

@@ -12,8 +12,8 @@
             <Grid>
                 <Image Grid.Row="0" Margin="0,100,0,0" WidthRequest="300" HeightRequest="100" Source="slogo.svg"/>
             </Grid>
-            <Label Text="{loc:Translate Name=sendotp}" FontFamily="georgia-bold" HorizontalOptions="Center" Margin="20,10,0,0" FontSize="32" TextColor="#D3D3D3" />
-            <Label Text="{loc:Translate Name=desRestPass}" FontFamily="georgia-bold" HorizontalOptions="Center" WidthRequest="250" Margin="20,10,0,0" FontSize="16" TextColor="#999999" />
+            <Label Text="{loc:Translate Name=Titelotpphone}" FontFamily="georgia-bold" HorizontalOptions="Center" Margin="20,10,0,0" FontSize="32" TextColor="#D3D3D3" />
+            <Label Text="{loc:Translate Name=desotppnone}" FontFamily="georgia-bold" HorizontalOptions="Center" WidthRequest="250" Margin="20,10,0,0" FontSize="16" TextColor="#999999" />
             <HorizontalStackLayout Margin="0,50,0,0" x:Name="PinLayout" Spacing="20" HorizontalOptions="Center">
                 <material:TextField
   x:Name="OtpField"

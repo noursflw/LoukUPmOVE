@@ -8,7 +8,6 @@
              xmlns:converters="clr-namespace:loukupm.Converter"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
-             FlowDirection="LeftToRight"
              xmlns:vm="clr-namespace:loukupm.ViewModel"
              xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              Title="ServicesPage">

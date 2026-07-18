@@ -14,7 +14,7 @@
     </ContentPage.Resources>
     <Grid>
         <ScrollView Margin="0,0,0,30">
-            <VerticalStackLayout Spacing="10" FlowDirection="LeftToRight" >
+            <VerticalStackLayout Spacing="10">
                 <Grid ColumnDefinitions="*,Auto" HeightRequest="180" BackgroundColor="#0A0A0A">
 
                     <Label Text="{Loc:Translate Name=TitlwMyPrefile}"
@@ -115,15 +115,15 @@
 
                         </VerticalStackLayout>
                     </Frame>
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,0,24,0" >
+                    <Frame CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,0,24,0" >
                         <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#181c21">
 
                             <HorizontalStackLayout>
                                 <Image Source="notification.png" Margin="20,0,0,0" />
                                 <Label Text="{Loc:Translate Name=Benachrichtigungen}"
                                        TextColor="White"
-                                       Margin="24,0,0,0"
-                                       FontSize="16" VerticalOptions="Center" />
+                                        Margin="24,0,0,0"
+                                        FontSize="16" VerticalOptions="Center" />
                             </HorizontalStackLayout>
 
 
@@ -134,7 +134,7 @@
                                     ImageSource="backbuttonpmg.png"
                                     BackgroundColor="#181c21"
                                     Padding="0" 
-                                   
+
                                    Margin="0,5,10,0"            
                                    BorderWidth="1"
                                     BorderColor="#181c21"
@@ -153,7 +153,7 @@
                         </Frame.GestureRecognizers>
                     </Frame>
 
-                    <Frame FlowDirection="LeftToRight" CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,0,24,0" >
+                    <Frame CornerRadius="16" Padding="0" BackgroundColor="#181c21" BorderColor="#181c21" Margin="24,0,24,0" >
                         <Grid ColumnDefinitions="*,Auto" HeightRequest="56"  Margin="0,0,3,0" BackgroundColor="#181c21">
 
                             <HorizontalStackLayout>
@@ -168,7 +168,7 @@
                             <Button Grid.Column="1"
                           WidthRequest="40"
                           HeightRequest="40"
-                         
+
                           CornerRadius="12"
                           ImageSource="backbuttonpmg.png"
                           BackgroundColor="#181c21"

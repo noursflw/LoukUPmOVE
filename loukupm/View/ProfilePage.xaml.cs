@@ -13,6 +13,7 @@ public partial class ProfilePage : ContentPage
     public ProfilePage()
     {
         InitializeComponent();
+        this.InitializeLanguageTracking();
         this.BindingContext = AppViewModel.Instance;
         Shell.SetNavBarIsVisible(this, false);
     }

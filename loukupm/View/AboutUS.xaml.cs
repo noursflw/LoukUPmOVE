@@ -15,6 +15,7 @@ public partial class AboutUS : ContentPage
 	public AboutUS()
 	{
 		InitializeComponent();
+		this.InitializeLanguageTracking();
 		_viewModel = new AboutUsViewModel();
 		BindingContext = _viewModel;
 	}

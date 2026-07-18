@@ -50,7 +50,7 @@
             <!-- RefreshView for Pull-to-Refresh + Content -->
             <RefreshView x:Name="RefreshView"
                          Command="{Binding RetryLoadTermsAndConditionsCommand}"
-                         IsRefreshing="{Binding IsLoading}"
+                         IsRefreshing="{Binding IsRefreshing}"
                          RefreshColor="#EBD750"
                          BackgroundColor="#0A0A0A"
                          IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}, ConverterParameter=false}">

@@ -7,33 +7,29 @@ using loukupm.ViewModel;
 
 public partial class TermsAndConditionsAthun : ContentPage
 {
-    private TermsAndConditionsViewModel _viewModel;
-    public TermsAndConditionsAthun()
+	private TermsAndConditionsViewModel _viewModel;
+	public TermsAndConditionsAthun()
 	{
-		InitializeComponent();
+        Console.WriteLine("1");
+        InitializeComponent();
+        Console.WriteLine("2");
+
         this.InitializeLanguageTracking();
+        Console.WriteLine("3");
+
         _viewModel = new TermsAndConditionsViewModel();
-        this.BindingContext = _viewModel;
+        Console.WriteLine("4");
+
+        BindingContext = _viewModel;
+        Console.WriteLine("5");
     }
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        await Task.Yield();
-        
-
-        try
+        if (_viewModel?.CmsData == null)
         {
-            // Load Terms and Conditions from CMS API
-            if (_viewModel != null)
-            {
-                Console.WriteLine("📄 TermsAndConditions page appearing - triggering data load");
-                await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ Error in OnAppearing: {ex.Message}");
+            await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
         }
     }
 
@@ -54,7 +50,7 @@ public partial class TermsAndConditionsAthun : ContentPage
     {
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            await NavigationService.HandleBackButton(NavigationService.ROUTE_TERMS_CONDITIONS);
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_TermsAndConditions_Athun);
         });
         return true;
     }

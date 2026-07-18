@@ -8,31 +8,41 @@ using System.Text.Json;
 
 namespace loukupm.Services;
 
-
+/// <summary>
+/// Redesigned Navigation Service with proper architectural separation between:
+/// 1. Authentication Flow (NavigationPage - pre-login)
+/// 2. Application Flow (AppShell - post-login)
+/// 
+/// This solves the core problem: NavigationPage and Shell are mutually exclusive,
+/// so they require completely separate back button handling logic.
+/// </summary>
 public static class NavigationService
 {
-   
+    // ============================================================================
+    // ROUTE DEFINITIONS
+    // ============================================================================
 
-    // Auth pages (hidden, outside TabBar)
+    // Auth pages (NavigationPage only)
     public const string ROUTE_MAIN_PAGE = "MainPage";
     public const string ROUTE_LOGIN = "LoginPage";
     public const string ROUTE_SIGNIN = "SinginPage";
     public const string ROUTE_OTP = "OTPSINGIN";
     public const string ROUTE_POLICY_PRIVACY_AUTH = "PolicyandPrivacyPageatAthun";
     public const string ROUTE_TermsAndConditions_Athun = "TermsAndConditionsAthun";
-    // TabBar pages
+    public const string ROUTE_REST_PASSWORD = "RestPassword";
+
+    // TabBar pages (AppShell only)
     public const string ROUTE_SPLASH = "LoadingPage";
     public const string ROUTE_HOME = "HomePage";
     public const string ROUTE_SERVICES = "ServicesPage";
     public const string ROUTE_BOOKING = "BookingPage";
     public const string ROUTE_PROFILE = "ProfilePage";
 
-    // Subpages (outside TabBar � push onto the stack)
+    // Sub-pages (can be in either context)
     public const string ROUTE_TERM_BOOKING = "TerminbuchenPage";
-    public const string ROUTE_IMPRESSUM = "ImpressumPage"; 
+    public const string ROUTE_IMPRESSUM = "ImpressumPage";
     public const string ROUTE_PAYMENT = "Paymentgetway";
     public const string ROUTE_POLICY_PRIVACY = "PolicyandPrivacyPage";
-    public const string ROUTE_REST_PASSWORD = "RestPassword";
     public const string ROUTE_TERMS_CONDITIONS = "TermsAndConditions";
     public const string ROUTE_EDIT_USER = "EditeUserPage";
     public const string ROUTE_EDIT_PASSWORD = "EditePasswordPage";
@@ -44,15 +54,76 @@ public static class NavigationService
     public const string ROUTE_OTP_PHONE_NUMBER = "OTPPoneNumper";
     public const string Route_ContactUs = "ContenUs";
     public const string ROUTE_Delet_Acount = "Areyousuredeletyouraccountpage";
-    // ?????????????????????????????????????????????
-    // SETS
-    // ?????????????????????????????????????????????
-    private static readonly HashSet<string> TerminalPages = new()
-{
-    ROUTE_LOGIN,ROUTE_SPLASH
 
-};
-    /// <summary>All four TabBar pages.</summary>
+    // ============================================================================
+    // NAVIGATION CONTEXT DETECTION
+    // ============================================================================
+
+    /// <summary>
+    /// Represents the current navigation paradigm.
+    /// NavigationPage and Shell are mutually exclusive, never both active.
+    /// </summary>
+    private enum NavigationContext
+    {
+        /// <summary>No active navigation context detected.</summary>
+        Unknown,
+
+        /// <summary>Using NavigationPage for authentication flow (pre-login).</summary>
+        Authentication,
+
+        /// <summary>Using AppShell for main application flow (post-login).</summary>
+        Application
+    }
+
+    /// <summary>
+    /// Detects which navigation paradigm is currently active.
+    /// This is the KEY to solving the architectural problem.
+    /// </summary>
+    private static NavigationContext GetNavigationContext()
+    {
+        try
+        {
+            // Check if NavigationPage is active (auth flow)
+            if (Application.Current?.MainPage is NavigationPage navPage)
+            {
+                if (navPage.Navigation.NavigationStack.Count > 0)
+                {
+                    Console.WriteLine("[Navigation] Context: AUTHENTICATION (NavigationPage active)");
+                    return NavigationContext.Authentication;
+                }
+            }
+
+            // Check if AppShell is active (app flow)
+            if (Shell.Current != null)
+            {
+                Console.WriteLine("[Navigation] Context: APPLICATION (AppShell active)");
+                return NavigationContext.Application;
+            }
+
+            Console.WriteLine("[Navigation] Context: UNKNOWN (no navigation root active)");
+            return NavigationContext.Unknown;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Error detecting context: {ex.Message}");
+            return NavigationContext.Unknown;
+        }
+    }
+
+    // ============================================================================
+    // ROUTE CLASSIFICATION (immutable sets)
+    // ============================================================================
+
+    private static readonly HashSet<string> AuthPages = new()
+    {
+        ROUTE_LOGIN,
+        ROUTE_SIGNIN,
+        ROUTE_OTP,
+        ROUTE_REST_PASSWORD,
+        ROUTE_POLICY_PRIVACY_AUTH,
+        ROUTE_TermsAndConditions_Athun
+    };
+
     private static readonly HashSet<string> TabBarPages = new()
     {
         ROUTE_HOME,
@@ -61,40 +132,251 @@ public static class NavigationService
         ROUTE_PROFILE
     };
 
-    /// <summary>Flyout menu pages (About Us, Privacy Policy, Terms and Conditions).</summary>
     private static readonly HashSet<string> FlyoutPages = new()
     {
         ROUTE_ABOUT_US,
         ROUTE_POLICY_PRIVACY,
-        ROUTE_TERMS_CONDITIONS, ROUTE_SETTING,ROUTE_IMPRESSUM,Route_ContactUs
+        ROUTE_TERMS_CONDITIONS,
+        ROUTE_SETTING,
+        ROUTE_IMPRESSUM,
+        Route_ContactUs
     };
-    private static readonly HashSet<string> AuthPages = new()
-{
-    ROUTE_SIGNIN,
-    ROUTE_REST_PASSWORD,
-    ROUTE_POLICY_PRIVACY_AUTH,
-    ROUTE_TermsAndConditions_Athun,
-    ROUTE_OTP
-};
+
+    private static readonly HashSet<string> TerminalPages = new()
+    {
+        ROUTE_LOGIN,
+        ROUTE_SPLASH
+    };
 
     private static readonly HashSet<string> AllValidRoutes = new()
     {
-        ROUTE_MAIN_PAGE, ROUTE_SIGNIN, ROUTE_OTP,
+        ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN, ROUTE_OTP,
         ROUTE_HOME, ROUTE_SERVICES, ROUTE_BOOKING, ROUTE_PROFILE,
         ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
-        ROUTE_ABOUT_US, ROUTE_NOTIFICATION,ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,ROUTE_TermsAndConditions_Athun,ROUTE_OTP_PHONE_NUMBER,Route_ContactUs,ROUTE_Delet_Acount,
+        ROUTE_ABOUT_US, ROUTE_NOTIFICATION, ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,
+        ROUTE_TermsAndConditions_Athun, ROUTE_OTP_PHONE_NUMBER, Route_ContactUs, ROUTE_Delet_Acount,
     };
 
-    
-    /// <summary>Returns true if <paramref name="route"/> is one of the four TabBar pages.</summary>
-    public static bool IsTabBarPage(string route) => TabBarPages.Contains(route);
+    // ============================================================================
+    // PAGE NAME DETECTION - NOW CONTEXT-AWARE (Fixed "Unknown" problem)
+    // ============================================================================
 
-    /// <summary>Returns true if <paramref name="route"/> is one of the Flyout menu pages.</summary>
-    public static bool IsFlyoutPage(string route) => FlyoutPages.Contains(route);
+    /// <summary>
+    /// Gets the name of the currently visible page, working in BOTH navigation contexts.
+    /// This fixes the problem where GetCurrentPageName() always returned "Unknown".
+    /// </summary>
+    public static string GetCurrentPageName()
+    {
+        try
+        {
+            // AUTHENTICATION CONTEXT: Get page from NavigationPage stack
+            if (Application.Current?.MainPage is NavigationPage navPage &&
+                navPage.Navigation.NavigationStack.Count > 0)
+            {
+                var currentPage = navPage.Navigation.NavigationStack.Last();
+                var pageName = currentPage.GetType().Name;
+                Console.WriteLine($"[Navigation] Current page (Auth): {pageName}");
+                return pageName;
+            }
 
-   
+            // APPLICATION CONTEXT: Get page from Shell location
+            if (Shell.Current?.CurrentState != null)
+            {
+                var route = Shell.Current.CurrentState.Location.OriginalString;
+                var segments = route.TrimStart('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var pageName = segments.LastOrDefault() ?? "Unknown";
+                Console.WriteLine($"[Navigation] Current page (App): {pageName}");
+                return pageName;
+            }
+
+            Console.WriteLine("[Navigation] Current page: Unknown (no navigation context)");
+            return "Unknown";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Error getting current page: {ex.Message}");
+            return "Unknown";
+        }
+    }
+
+    /// <summary>
+    /// Gets the full route path (for Shell only).
+    /// </summary>
+    public static string GetCurrentRoute()
+    {
+        try
+        {
+            return Shell.Current?.CurrentState?.Location?.OriginalString ?? "Unknown";
+        }
+        catch
+        {
+            return "Unknown";
+        }
+    }
+
+    // ============================================================================
+    // BACK BUTTON HANDLING - SEPARATED BY CONTEXT
+    // ============================================================================
+
+    /// <summary>
+    /// Main entry point for back button handling.
+    /// Routes to appropriate handler based on navigation context.
+    /// This is the core fix: handle NavigationPage and Shell separately.
+    /// </summary>
+    public static async Task<bool> HandleBackButton(string currentPageName)
+    {
+        if (string.IsNullOrWhiteSpace(currentPageName))
+        {
+            Console.WriteLine("[Navigation] HandleBackButton: currentPageName is null/empty");
+            return false;
+        }
+
+        Console.WriteLine($"[Navigation] HandleBackButton called for: {currentPageName}");
+
+        try
+        {
+            var context = GetNavigationContext();
+
+            return context switch
+            {
+                NavigationContext.Authentication => await HandleAuthBackButton(currentPageName),
+                NavigationContext.Application => await HandleAppBackButton(currentPageName),
+                _ => HandleUnknownContext(currentPageName)
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] HandleBackButton error: {ex.Message}");
+            Console.WriteLine($"[Navigation] Stack trace: {ex.StackTrace}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Handles back button for AUTHENTICATION CONTEXT (NavigationPage).
+    /// Auth flow is simple: all secondary pages pop to LoginPage.
+    /// </summary>
+    private static async Task<bool> HandleAuthBackButton(string currentPageName)
+    {
+        Console.WriteLine($"[Navigation] HandleAuthBackButton: {currentPageName}");
+
+        try
+        {
+            var navPage = Application.Current?.MainPage as NavigationPage;
+            if (navPage == null)
+            {
+                Console.WriteLine("[Navigation] NavigationPage not available in auth context");
+                return false;
+            }
+
+            // ROOT PAGE (LoginPage): Allow exit
+            if (currentPageName == ROUTE_LOGIN || currentPageName == nameof(LoginPage))
+            {
+                Console.WriteLine("[Navigation] At LoginPage - allowing application exit");
+                return false; // Allow OS to handle exit
+            }
+
+            // SECONDARY PAGES: Pop back to LoginPage
+            if (navPage.Navigation.NavigationStack.Count > 1)
+            {
+                Console.WriteLine($"[Navigation] Popping from {navPage.Navigation.NavigationStack.Count} pages to root");
+                await navPage.PopToRootAsync(true);
+                return true;
+            }
+
+            Console.WriteLine("[Navigation] Stack already at root");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Auth back button error: {ex.Message}");
+            return true; // Prevent OS default behavior
+        }
+    }
+
+    /// <summary>
+    /// Handles back button for APPLICATION CONTEXT (AppShell).
+    /// App flow follows these rules:
+    /// - TabBar pages navigate between tabs (Services/Booking/Profile -> Home)
+    /// - Flyout pages (AboutUs/Settings/etc) -> Home
+    /// - Sub-pages (pushed details) -> Pop or go to Home
+    /// - Home page -> Allow exit
+    /// </summary>
+    private static async Task<bool> HandleAppBackButton(string currentPageName)
+    {
+        Console.WriteLine($"[Navigation] HandleAppBackButton: {currentPageName}");
+
+        try
+        {
+            var shell = Shell.Current;
+            if (shell == null)
+            {
+                Console.WriteLine("[Navigation] Shell not available in app context");
+                return false;
+            }
+
+            // HOME PAGE: Allow exit
+            if (currentPageName == ROUTE_HOME || currentPageName == nameof(HomePage))
+            {
+                Console.WriteLine("[Navigation] At HomePage - allowing application exit");
+                return false;
+            }
+
+            // TABBAR PAGES (non-Home): Navigate to Home
+            if (TabBarPages.Contains(currentPageName))
+            {
+                Console.WriteLine($"[Navigation] TabBar page {currentPageName} -> Home");
+                await shell.GoToAsync($"//{ROUTE_HOME}", true);
+                return true;
+            }
+
+            // FLYOUT PAGES: Navigate to Home
+            if (FlyoutPages.Contains(currentPageName))
+            {
+                Console.WriteLine($"[Navigation] Flyout page {currentPageName} -> Home");
+                await shell.GoToAsync($"//{ROUTE_HOME}", true);
+                return true;
+            }
+
+            // SUB-PAGES: Try to pop, if at root go to Home
+            if (shell.Navigation.NavigationStack.Count > 1)
+            {
+                Console.WriteLine("[Navigation] Sub-page detected - popping");
+                await shell.GoToAsync("..", true);
+                return true;
+            }
+
+            // Already at a shell root (shouldn't reach here normally)
+            Console.WriteLine("[Navigation] At shell root - navigating to Home");
+            await shell.GoToAsync($"//{ROUTE_HOME}", true);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] App back button error: {ex.Message}");
+            return true; // Prevent OS default behavior
+        }
+    }
+
+    /// <summary>
+    /// Handles edge case where no navigation context is active.
+    /// </summary>
+    private static bool HandleUnknownContext(string currentPageName)
+    {
+        Console.WriteLine($"[Navigation] Unknown context for page: {currentPageName}");
+        // SafetyFall: Don't handle, let OS handle
+        return false;
+    }
+
+    // ============================================================================
+    // FORWARD NAVIGATION (shared between both contexts)
+    // ============================================================================
+
+    /// <summary>
+    /// Navigate to a TabBar page within AppShell.
+    /// </summary>
     public static async Task NavigateToTabBarPage(string route)
     {
         if (!ValidateRoute(route) || !TabBarPages.Contains(route))
@@ -102,24 +384,184 @@ public static class NavigationService
 
         try
         {
-            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
+            var shell = Shell.Current;
             if (shell != null)
             {
+                Console.WriteLine($"[Navigation] Navigating to TabBar page: {route}");
                 await shell.GoToAsync($"//{route}", animate: true);
             }
             else
             {
-                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to tab {route}");
+                Console.WriteLine($"[Navigation] Shell not available - cannot navigate to TabBar page {route}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Navigation] Error navigating to tab {route}: {ex.Message}");
+            Console.WriteLine($"[Navigation] Error navigating to TabBar {route}: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Creates a page instance from a route name. Used for NavigationPage fallback.
+    /// Navigate to any page (auto-detects context).
+    /// </summary>
+    public static async Task NavigateToPage(string route)
+    {
+        if (!ValidateRoute(route) || TabBarPages.Contains(route))
+            return;
+
+        try
+        {
+            var context = GetNavigationContext();
+            Console.WriteLine($"[Navigation] Navigating to {route} in context: {context}");
+
+            switch (context)
+            {
+                case NavigationContext.Application:
+                    // Use Shell
+                    var shell = Shell.Current;
+                    if (shell != null)
+                    {
+                        await shell.GoToAsync(route, animate: true);
+                    }
+                    break;
+
+                case NavigationContext.Authentication:
+                    // Use NavigationPage
+                    var navPage = Application.Current?.MainPage as NavigationPage;
+                    if (navPage != null)
+                    {
+                        var page = GetPageForRoute(route);
+                        if (page != null)
+                        {
+                            await navPage.PushAsync(page);
+                        }
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine($"[Navigation] No navigation context - cannot navigate to {route}");
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Error navigating to {route}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Navigate to a page with parameters.
+    /// </summary>
+    public static async Task NavigateToPage(string route, object parameter)
+    {
+        if (!ValidateRoute(route))
+            return;
+
+        try
+        {
+            string json = JsonSerializer.Serialize(parameter);
+            string encodedJson = Uri.EscapeDataString(json);
+            string routeWithParam = $"{route}?data={encodedJson}";
+
+            var context = GetNavigationContext();
+            Console.WriteLine($"[Navigation] Navigating to {route} with params in context: {context}");
+
+            switch (context)
+            {
+                case NavigationContext.Application:
+                    var shell = Shell.Current;
+                    if (shell != null)
+                    {
+                        await shell.GoToAsync(routeWithParam, animate: true);
+                    }
+                    break;
+
+                case NavigationContext.Authentication:
+                    var navPage = Application.Current?.MainPage as NavigationPage;
+                    if (navPage != null)
+                    {
+                        var page = GetPageForRoute(route);
+                        if (page != null)
+                        {
+                            ApplyFallbackParameters(page, parameter);
+                            await navPage.PushAsync(page);
+                        }
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine($"[Navigation] No navigation context - cannot navigate to {route}");
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Error navigating to {route} with params: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Hard reset to login (used during logout).
+    /// Destroys AppShell and returns to auth flow.
+    /// </summary>
+    public static async Task NavigateToLoginAndClear()
+    {
+        try
+        {
+            Console.WriteLine("[Navigation] Hard reset - clearing to LoginPage");
+
+            // Close flyout if open
+            if (Shell.Current != null)
+                Shell.Current.FlyoutIsPresented = false;
+
+            // Replace MainPage with new NavigationPage stack
+            var loginPage = new LoginPage();
+            var navPage = new NavigationPage(loginPage);
+            Application.Current!.MainPage = navPage;
+
+            Console.WriteLine("[Navigation] Successfully reset to LoginPage");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Logout reset error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Hard reset to home app (used after login).
+    /// Destroys NavigationPage and initializes AppShell.
+    /// </summary>
+    public static async Task NavigateToHomeAndClear()
+    {
+        try
+        {
+            Console.WriteLine("[Navigation] Hard reset - initializing to HomePage");
+
+            // Replace MainPage with AppShell
+            Application.Current!.MainPage = new AppShell();
+            await Task.Delay(50); // Let Shell initialize
+
+            // Navigate to Home
+            var shell = Shell.Current;
+            if (shell != null)
+            {
+                shell.FlyoutIsPresented = false;
+                await shell.GoToAsync($"//{ROUTE_HOME}", animate: false);
+                Console.WriteLine("[Navigation] Successfully reset to AppShell - Home");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Home reset error: {ex.Message}");
+        }
+    }
+
+    // ============================================================================
+    // HELPER METHODS
+    // ============================================================================
+
+    /// <summary>
+    /// Creates a page instance from a route (for NavigationPage fallback).
     /// </summary>
     private static Page GetPageForRoute(string route)
     {
@@ -143,324 +585,50 @@ public static class NavigationService
             ROUTE_IMPRESSUM => new ImpressumPage(),
             ROUTE_SETTING => new SettingPage(),
             ROUTE_OTP_PHONE_NUMBER => new OTPPoneNumper(),
-            Route_ContactUs=> new ContenUs(),
+            Route_ContactUs => new ContenUs(),
             ROUTE_Delet_Acount => new Areyousuredeletyouraccountpage(),
             _ => throw new InvalidOperationException($"Unknown route: {route}")
         };
     }
 
-    public static async Task NavigateToPage(string route)
-    {
-        if (!ValidateRoute(route) || TabBarPages.Contains(route))
-            return;
-
-        try
-        {
-            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-            if (shell != null)
-            {
-                await shell.GoToAsync(route, animate: true);
-            }
-            else
-            {
-                // Fallback: Use NavigationPage if Shell is not available (e.g., during auth flow)
-                var navPage = Application.Current?.MainPage as NavigationPage;
-                if (navPage != null)
-                {
-                    var page = GetPageForRoute(route);
-                    if (page != null)
-                    {
-                        await navPage.PushAsync(page);
-                        Console.WriteLine($"[Navigation] Successfully navigated to {route} using NavigationPage");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"[Navigation] Shell and NavigationPage not available - cannot navigate to page {route}");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Error navigating to {route}: {ex.Message}");
-        }
-    }
-    public static async Task NavigateToPage(string route, object parameter)
-    {
-        if (!ValidateRoute(route))
-            return;
-
-        try
-        {
-            string json = System.Text.Json.JsonSerializer.Serialize(parameter);
-            string encodedJson = Uri.EscapeDataString(json);
-            string routeWithParam = $"{route}?data={encodedJson}";
-
-            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-            if (shell != null)
-            {
-                await shell.GoToAsync(routeWithParam, animate: true);
-            }
-            else
-            {
-                // Fallback: Use NavigationPage if Shell is not available
-                var navPage = Application.Current?.MainPage as NavigationPage;
-                if (navPage != null)
-                {
-                    var page = GetPageForRoute(route);
-                    if (page != null)
-                    {
-                        ApplyFallbackParameters(page, parameter);
-                        await navPage.PushAsync(page);
-                        Console.WriteLine($"[Navigation] Successfully navigated to {route} with param using NavigationPage");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"[Navigation] Shell and NavigationPage not available - cannot navigate to page {route} with param");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Error navigating to {route}: {ex.Message}");
-        }
-    }
-
+    /// <summary>
+    /// Applies parameters to pages that support them (fallback for NavigationPage).
+    /// </summary>
     private static void ApplyFallbackParameters(Page page, object parameter)
     {
-        if (page is not NotifictionPage notificationPage || parameter == null)
-            return;
-
-        try
+        if (page is NotifictionPage notificationPage && parameter != null)
         {
-            var json = JsonSerializer.Serialize(parameter);
-            var encodedJson = Uri.EscapeDataString(json);
-            notificationPage.Data = encodedJson;
-
-            using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-                return;
-
-            string? id = null;
-            if (doc.RootElement.TryGetProperty("notificationId", out var p1))
-                id = p1.GetString();
-            else if (doc.RootElement.TryGetProperty("id", out var p2))
-                id = p2.GetString();
-            else if (doc.RootElement.TryGetProperty("notification_id", out var p3))
-                id = p3.GetString();
-
-            if (!string.IsNullOrWhiteSpace(id))
+            try
             {
-                notificationPage.NotificationId = id;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Failed to apply fallback parameters: {ex.Message}");
-        }
-    }
+                var json = JsonSerializer.Serialize(parameter);
+                var encodedJson = Uri.EscapeDataString(json);
+                notificationPage.Data = encodedJson;
 
-    /// </summary>
-    /// <param name="currentPage">The simple route name of the visible page (e.g. "ServicesPage").</param>
-    /// <returns>true if the event was handled; false to let the OS handle it (exit).</returns>
-    public static async Task<bool> HandleBackButton(string currentPage)
-    {
-        if (string.IsNullOrWhiteSpace(currentPage))
-            return false;
-
-        try
-        {
-            // Add null check for Shell.Current at the start
-            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-            if (shell == null)
-            {
-                Console.WriteLine($"[Navigation] Shell context is null - cannot handle back button from {currentPage}");
-                return false;
-            }
-
-            if (TerminalPages.Contains(currentPage))
-            {
-                
-                bool shouldAllowExit = !BackButtonTracker.RegisterBackPress(currentPage);
-                return !shouldAllowExit; 
-            }
-
-            // 📌 Auth pages
-            if (AuthPages.Contains(currentPage))
-            {
-                var navPage = Application.Current?.MainPage as NavigationPage;
-
-                if (navPage != null)
+                using var doc = JsonDocument.Parse(json);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object)
                 {
-                    // LoginPage موجودة تحتها بالـ Stack
-                    if (navPage.Navigation.NavigationStack.Count > 1)
-                    {
-                        await navPage.PopAsync(true);
-                        return true;
-                    }
+                    string? id = null;
+                    if (doc.RootElement.TryGetProperty("notificationId", out var p1))
+                        id = p1.GetString();
+                    else if (doc.RootElement.TryGetProperty("id", out var p2))
+                        id = p2.GetString();
+                    else if (doc.RootElement.TryGetProperty("notification_id", out var p3))
+                        id = p3.GetString();
+
+                    if (!string.IsNullOrWhiteSpace(id))
+                        notificationPage.NotificationId = id;
                 }
-
-                // fallback
-                if (shell != null)
-                {
-                    await shell.GoToAsync($"//{ROUTE_LOGIN}", animate: true);
-                    return true;
-                }
-
-                return true;
             }
-            // 📌 Tab pages
-            if (TabBarPages.Contains(currentPage))
+            catch (Exception ex)
             {
-                if (currentPage == ROUTE_HOME)
-                    return false;
-
-                await shell.GoToAsync($"//{ROUTE_HOME}", animate: true);
-                return true;
+                Console.WriteLine($"[Navigation] Failed to apply parameters: {ex.Message}");
             }
-
-            // 📌 Flyout pages
-            if (FlyoutPages.Contains(currentPage))
-            {
-                await shell.GoToAsync($"//{ROUTE_HOME}", animate: true);
-                return true;
-            }
-
-            // 📌 Sub pages
-            // Sub pages: navigate up one level
-            await shell.GoToAsync("..", animate: true);
-            return true;
-
-            return false;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Back button error from {currentPage}: {ex.Message}");
-            Console.WriteLine($"[Navigation] Stack trace: {ex.StackTrace}");
-            return false;
         }
     }
-    public static async Task NavigateToLoginAndClear()
-    {
-        try
-        {
-         
-            if (Shell.Current != null)
-                Shell.Current.FlyoutIsPresented = false;
-
-           
-            Application.Current!.MainPage = new AppShell();
-
-         
-            await Task.Delay(50);
-
-           
-            await Shell.Current.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Logout hard reset error: {ex.Message}");
-        }
-    }
-
-    public static async Task NavigateToHomeAndClear()
-    {
-        try
-        {
-            if (Shell.Current == null && Application.Current?.MainPage is NavigationPage)
-            {
-                Application.Current.MainPage = new AppShell();
-                await Task.Delay(50);
-            }
-
-            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-            if (shell == null)
-                throw new InvalidOperationException("Shell context is not available");
-
-            shell.FlyoutIsPresented = false;
-            await shell.GoToAsync($"//{ROUTE_HOME}", animate: false);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] Login navigation error: {ex.Message}");
-            throw;
-        }
-    }
-
 
     /// <summary>
-    /// Returns the raw Shell location string (e.g. "//HomePage/NotifictionPage").
-    /// Use <see cref="GetCurrentPageName"/> to get just the last segment.
+    /// Validates that a route is registered.
     /// </summary>
-    public static string GetCurrentRoute()
-    {
-        try
-        {
-            return Shell.Current?.CurrentState?.Location?.OriginalString ?? "Unknown";
-        }
-        catch
-        {
-            return "Unknown";
-        }
-    }
-
-    public static string GetCurrentPageName()
-    {
-        var route = GetCurrentRoute();
-        var segments = route.TrimStart('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
-        return segments.LastOrDefault() ?? string.Empty;
-    }
-
-    public static bool ValidateRoutes()
-    {
-        if (Shell.Current == null)
-        {
-            Console.WriteLine("[Navigation] Shell.Current is null � validation skipped");
-            return false;
-        }
-        Console.WriteLine("[Navigation] Route validation OK");
-        return true;
-    }
-
- 
-    public static async Task NavigateUpOrToLogin()
-    {
-        try
-        {
-            var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-            if (shell != null)
-            {
-                if (shell.Navigation.NavigationStack.Count > 1)
-                {
-                    await shell.GoToAsync("..", animate: true);
-                    return;
-                }
-
-                await shell.GoToAsync($"//{ROUTE_LOGIN}", animate: false);
-                return;
-            }
-
-            if (Application.Current?.MainPage is NavigationPage nav)
-            {
-                if (nav.Navigation.NavigationStack.Count > 1)
-                {
-                    await nav.PopAsync(true);
-                    return;
-                }
-
-                await nav.PopToRootAsync(false);
-                await nav.PushAsync(new LoginPage(), false);
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] NavigateUpOrToLogin error: {ex.Message}");
-        }
-    }
-
-
     private static bool ValidateRoute(string route)
     {
         if (string.IsNullOrWhiteSpace(route) || !AllValidRoutes.Contains(route))
@@ -468,6 +636,30 @@ public static class NavigationService
             Console.WriteLine($"[Navigation] Invalid route: '{route}'");
             return false;
         }
+        return true;
+    }
+
+    /// <summary>
+    /// Public helper to check if a route is a TabBar page.
+    /// </summary>
+    public static bool IsTabBarPage(string route) => TabBarPages.Contains(route);
+
+    /// <summary>
+    /// Public helper to check if a route is a Flyout page.
+    /// </summary>
+    public static bool IsFlyoutPage(string route) => FlyoutPages.Contains(route);
+
+    /// <summary>
+    /// Validates navigation routes are registered in Shell.
+    /// </summary>
+    public static bool ValidateRoutes()
+    {
+        if (Shell.Current == null)
+        {
+            Console.WriteLine("[Navigation] Shell.Current is null - validation skipped");
+            return false;
+        }
+        Console.WriteLine("[Navigation] Route validation OK");
         return true;
     }
 }

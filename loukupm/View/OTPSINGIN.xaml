@@ -4,7 +4,6 @@
              x:Class="loukupm.View.OTPSINGIN"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
-             FlowDirection="LeftToRight"
              BackgroundColor="#202020"
              BackgroundImageSource="baackgroundpage.png"
              Title="OTP Verification">

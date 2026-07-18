@@ -28,9 +28,10 @@ public partial class LoginPage : ContentPage
     public LoginPage()
     {
         InitializeComponent();
+        this.InitializeLanguageTracking();
         webView.Navigated += WebView_Navigated;
         webView.UserAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012)";
-      
+
 
     }
     private void WebView_Navigated(object sender, WebNavigatedEventArgs e)

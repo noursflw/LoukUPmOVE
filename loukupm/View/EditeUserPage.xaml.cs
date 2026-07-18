@@ -14,6 +14,7 @@ public partial class EditeUserPage : ContentPage
     public EditeUserPage()
     {
         InitializeComponent();
+        this.InitializeLanguageTracking();
         this.BindingContext = AppViewModel.Instance;
     }
 

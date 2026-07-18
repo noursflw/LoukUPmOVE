@@ -84,7 +84,7 @@ namespace loukupm.Services
                 }
 
                 // Use relative route for LoginPage (global route)
-                await shell.GoToAsync("LoginPage", animate: false);
+                await shell.GoToAsync($"//{NavigationService.ROUTE_LOGIN}", animate: false);
 
                 Console.WriteLine($"✅ [Navigation] Successfully logged out to LoginPage");
             }

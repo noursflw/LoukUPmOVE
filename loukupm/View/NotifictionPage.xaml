@@ -9,7 +9,6 @@
              xmlns:converters="clr-namespace:loukupm.Converter"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
              BackgroundColor="#0A0A0A"
-             FlowDirection="LeftToRight"
              Title="NotifictionPage">
 
     <ContentPage.Resources>
