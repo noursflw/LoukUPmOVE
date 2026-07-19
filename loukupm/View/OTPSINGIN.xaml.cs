@@ -268,6 +268,8 @@ public partial class OTPSINGIN : ContentPage
 				Console.WriteLine("🏠 [OTPSINGIN] Navigating to Home...");
 				try
 				{
+					// Ensure logout flag is cleared (we are logging in)
+					NavigationService.ResetLogoutFlag();
 					await ShellNavigationManager.NavigateToHomeAndClear();
 				}
 				catch (Exception ex)

@@ -131,27 +131,38 @@ namespace loukupm.Services
             }
         }
 
+        // Non-blocking logout. Runs OneSignal SDK calls on a background thread so the UI thread is not blocked.
+        public static Task LogoutAsync()
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    // The SDK may perform network or heavy work internally; run it off the main thread.
+                    OneSignal.Logout();
+
+                    OneSignal.User.RemoveTag("user_id");
+                    OneSignal.User.RemoveTag("user_no");
+                    OneSignal.User.RemoveTag("email");
+                    OneSignal.User.RemoveTag("name");
+                    OneSignal.User.RemoveTag("signup_type");
+                    OneSignal.User.RemoveTag("login_type");
+                    OneSignal.User.RemoveTag("signup_date");
+                    OneSignal.User.RemoveTag("display_name");
+
+                    Console.WriteLine("✅ OneSignal logout completed (background)");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ OneSignal logout failed: {ex.Message}");
+                }
+            });
+        }
+
+        // Backwards-compatible synchronous wrapper that triggers the async implementation without blocking.
         public static void Logout()
         {
-            try
-            {
-                OneSignal.Logout();
-
-                OneSignal.User.RemoveTag("user_id");
-                OneSignal.User.RemoveTag("user_no");
-                OneSignal.User.RemoveTag("email");
-                OneSignal.User.RemoveTag("name");
-                OneSignal.User.RemoveTag("signup_type");
-                OneSignal.User.RemoveTag("login_type");
-                OneSignal.User.RemoveTag("signup_date");
-                OneSignal.User.RemoveTag("display_name");
-
-                Console.WriteLine("✅ OneSignal logout completed");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ OneSignal logout failed: {ex.Message}");
-            }
+            _ = LogoutAsync();
         }
 
         public static void AddTag(string key, string value)

@@ -2,138 +2,168 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="loukupm.View.LoginPage"
-               Shell.NavBarIsVisible="False"
-               Shell.TabBarIsVisible="False"
-              xmlns:loc="clr-namespace:loukupm.Langue"
-               BackgroundColor="#202020"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             Shell.BackgroundColor="Transparent"
+             Shell.NavBarHasShadow="False"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             ios:Page.UseSafeArea="False"
+             xmlns:loc="clr-namespace:loukupm.Langue"
+             BackgroundColor="#202020"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-              BackgroundImageSource="baackgroundpage.png"
-             >
+             BackgroundImageSource="baackgroundpage.png">
+
     <ScrollView>
-        <VerticalStackLayout>
-            <Grid RowDefinitions="40*,60*">
+        <!-- تم إضافة Padding سفلي بمقدار 100 لترك مسافة أمان مريحة في أسفل الشاشة -->
+        <VerticalStackLayout Padding="0,0,0,100">
+            <Grid>
+                <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
 
-                <Image Grid.Row="0" Margin="0,-100,0,0" WidthRequest="200" HeightRequest="130" Source="slogo.svg"/>
-                <BoxView HeightRequest="3" Margin="0,70,0,0"  WidthRequest="250" Color="#A8883C" />
+                    <!-- 1. اللوغو: مظهر أنيق ومحمي من شريط ساعة النظام العلوية -->
+                    <Image Source="slogo.svg" 
+                           WidthRequest="200" 
+                           HeightRequest="130" 
+                           Aspect="AspectFit"
+                           Margin="0,50,0,0"/>
 
-                <Label Grid.Row="0" Margin="25,150,0,25" FontSize="32" FontFamily="georgia-bold"
-                         Text="{loc:Translate Name=Login}" TextColor="#A8883C"
-                          VerticalOptions="Center" 
-                          HorizontalOptions="Center" />
-                <StackLayout>
-                     
-                    
-                    <Grid Margin="25,300,25,0" HeightRequest="60">
-                        <Button
-                           BackgroundColor="Transparent"
-                           FontFamily="Oswald"
-                           TextColor="White"
-                           BorderColor="#A8883C"
-                           ImageSource="google.png"
-                           Clicked="GoogleButton_Clicked"
-                           BorderWidth="1"
-                           x:Name="GoogleButton"
-                           CornerRadius="18"
-                           Text="{ loc:Translate Name=GoogleLogin}"
-                           VerticalOptions="Fill"
-                           HorizontalOptions="Fill" />
+                    <!-- 2. الخط الأصفر: أسفل اللوغو مباشرة بدون تداخل -->
+                    <BoxView HeightRequest="3" 
+                             WidthRequest="250" 
+                             Color="#A8883C" 
+                             Margin="0,10,0,0" />
 
-                        <ActivityIndicator x:Name="GoogleLoadingIndicator"
-                                           IsVisible="False"
-                                           IsRunning="False"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Center"
-                                           Color="White"
-                                           Scale="1.0"/>
-                    </Grid>
-                    <!-- WebView مخفي -->
-                    <Frame Margin="15" BackgroundColor="#252525" ZIndex="1" x:Name="fg"  IsVisible="False" >
-                        <WebView x:Name="webView" 
-                                BackgroundColor="#AA000000"
-                                IsVisible="False"
-                                HeightRequest="600"
-                                WidthRequest="300"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"/>
-                    </Frame>
-                    <Image Grid.Row="0" Margin="25,10,25,0" Source="or.svg" HeightRequest="24"/>
-                </StackLayout>
+                    <!-- 3. عنوان تسجيل الدخول -->
+                    <Label FontSize="32" 
+                           FontFamily="georgia-bold"
+                           Text="{loc:Translate Name=Login}" 
+                           TextColor="#A8883C"
+                           HorizontalOptions="Center" 
+                           Margin="0,20,0,20" />
 
+                    <!-- 4. حاوية الأزرار والـ WebView وبقية عناصر تسجيل الدخول عبر جوجل -->
+                    <StackLayout WidthRequest="380">
+                        <!-- زر جوجل -->
+                        <Grid Margin="25,10,25,0" HeightRequest="60">
+                            <Button BackgroundColor="Transparent"
+                                    FontFamily="Oswald"
+                                    TextColor="White"
+                                    BorderColor="#A8883C"
+                                    ImageSource="google.png"
+                                    Clicked="GoogleButton_Clicked"
+                                    BorderWidth="1"
+                                    x:Name="GoogleButton"
+                                    CornerRadius="18"
+                                    Text="{ loc:Translate Name=GoogleLogin}"
+                                    VerticalOptions="Fill"
+                                    HorizontalOptions="Fill" />
 
-                <VerticalStackLayout Grid.Row="1" x:Name="fglogin">
-                    <Label FontSize="16" Margin="20,5,0,0">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{loc:Translate Name=EMail}" TextColor="White"/>
-                                <Span Text=" *" TextColor="Red" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                    <material:TextField
-                        x:Name="EmailEntry"
-                        TextColor="#A8883C"
-                        AccentColor="#A8883C"
-                        Margin="25,0,25,0"
-                        InputBackgroundColor="Transparent"
-                        CornerRadius="16"
-                        Icon="email.png" 
-                        TextChanged="OnEmailTextChanged"
-                        HeightRequest="50"
-                        Title="E-Mail" />
-                    <Label
-                       x:Name="LiveErrorLabel"
-                       TextColor="Red"
-                       FontSize="12"
-                       Margin="25,10,25,0"
-                       IsVisible="False"/>
-                    <Label FontSize="16" Margin="12,24,0,0" Padding="10">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{loc:Translate Name=Password}" TextColor="White"/>
-                                <Span Text=" *" TextColor="Red" FontSize="14"/>
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                    <material:TextField 
-                        x:Name="PasswordEntry"
-                        Title="Password"  
-                        CornerRadius="16"  
-                        InputBackgroundColor="Transparent" 
-                        IsPassword="True"  
-                        Margin="25,0,25,0" >
-                        <material:TextField.Attachments>
-                            <material:TextFieldPasswordShowHideAttachment />
-                        </material:TextField.Attachments>
-                    </material:TextField>
-                    <Label FontSize="16" Margin="20,8,30,0">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{loc:Translate Name=NPasswordOnLogin}" 
-                                    TextDecorations="Underline" 
-                                    TextColor="#A8883C">
-                                    <Span.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
-                                    </Span.GestureRecognizers>
-                                </Span>
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                            <ActivityIndicator x:Name="GoogleLoadingIndicator"
+                                               IsVisible="False"
+                                               IsRunning="False"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"
+                                               Color="White"
+                                               Scale="1.0"/>
+                        </Grid>
 
-                    <Button  
-                       
-                        TextColor="#1F1B04" 
-                        FontSize="22" 
-                        FontFamily="georgia-bold"
-                        BorderWidth="1" 
-                        Text="{loc:Translate Name=Login}" 
-                        x:Name="RegisterButton"
-                        Clicked="OnLoginClicked"
-                        CornerRadius="16"
-                        HeightRequest="60" 
-                        Margin="25"  />
-                   
-                    <ActivityIndicator 
-                     x:Name="LoadingIndicator"
+                        <!-- WebView مخفي -->
+                        <Frame Margin="15" BackgroundColor="#252525" ZIndex="1" x:Name="fg" IsVisible="False" >
+                            <WebView x:Name="webView" 
+                                     BackgroundColor="#AA000000"
+                                     IsVisible="False"
+                                     HeightRequest="700"
+                                     WidthRequest="380"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"/>
+                        </Frame>
+
+                        <!-- خط الفصل (or) -->
+                        <Image Margin="25,15,25,0" Source="or.svg" HeightRequest="24"/>
+                    </StackLayout>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- حقول الإدخال وباقي معلومات تسجيل الدخول بالحساب المباشر -->
+            <VerticalStackLayout x:Name="fglogin" Margin="0,15,0,0">
+                <Label FontSize="16" Margin="20,5,0,0">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=EMail}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <material:TextField
+                    x:Name="EmailEntry"
+                    TextColor="#A8883C"
+                    AccentColor="#A8883C"
+                    Margin="25,10,25,0"
+                    InputBackgroundColor="Transparent"
+                    CornerRadius="16"
+                    Icon="email.png" 
+                    TextChanged="OnEmailTextChanged"
+                    HeightRequest="50"
+                    Title="{loc:Translate Name=EMail}" />
+
+                <Label
+                   x:Name="LiveErrorLabel"
+                   TextColor="Red"
+                   FontSize="12"
+                   Margin="25,10,25,0"
+                   IsVisible="False"/>
+
+                <Label FontSize="16" Margin="12,24,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=Password}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <material:TextField 
+                     TextColor="#A8883C"
+ AccentColor="#A8883C"
+                    x:Name="PasswordEntry"
+                   Title="{loc:Translate Name=Password}"
+                    CornerRadius="16"  
+                    InputBackgroundColor="Transparent" 
+                    IsPassword="True"  
+                    Margin="25,0,25,0" >
+                    <material:TextField.Attachments>
+                        <material:TextFieldPasswordShowHideAttachment />
+                    </material:TextField.Attachments>
+                </material:TextField>
+
+                <Label FontSize="16" Margin="20,8,30,0">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=NPasswordOnLogin}" 
+                                  TextDecorations="Underline" 
+                                  TextColor="#A8883C">
+                                <Span.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                                </Span.GestureRecognizers>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Button  
+                    TextColor="#1F1B04" 
+                    FontSize="22" 
+                    FontFamily="georgia-bold"
+                    BorderWidth="1" 
+                    Text="{loc:Translate Name=Login}" 
+                    x:Name="RegisterButton"
+                    Clicked="OnLoginClicked"
+                    CornerRadius="16"
+                    HeightRequest="60" 
+                    Margin="25"  />
+
+                <ActivityIndicator 
+                    x:Name="LoadingIndicator"
                     Margin="20"
                     IsRunning="False"
                     IsVisible="False"
@@ -141,75 +171,52 @@
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
                     Scale="1.4" />
-                    <HorizontalStackLayout
-    Margin="0,4,0,0"
-    HorizontalOptions="Center"
-    VerticalOptions="Center"
-    Spacing="3">
 
-                        <Label Text="{loc:Translate Name=CreatAccount}"
-           FontSize="18"
-           TextColor="White"
-           VerticalTextAlignment="Center"/>
+                <!-- إنشاء حساب جديد -->
+                <HorizontalStackLayout Margin="0,4,0,0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="3">
+                    <Label Text="{loc:Translate Name=CreatAccount}" FontSize="18" TextColor="White" VerticalTextAlignment="Center"/>
+                    <Label FontSize="18" VerticalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{loc:Translate Name=Singin}" TextDecorations="Underline" TextColor="#A8883C">
+                                    <Span.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3" />
+                                    </Span.GestureRecognizers>
+                                </Span>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </HorizontalStackLayout>
 
-                        <Label FontSize="18"
-           VerticalTextAlignment="Center">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="{loc:Translate Name=Singin}"
-                      TextDecorations="Underline"
-                      TextColor="#A8883C">
-                                        <Span.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3" />
-                                        </Span.GestureRecognizers>
-                                    </Span>
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
+                <!-- الشروط والأحكام وسياسة الخصوصية -->
+                <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                    <Label VerticalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{loc:Translate Name=TermsandConditions}" TextDecorations="Underline" TextColor="#A8883C">
+                                    <Span.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                    </Span.GestureRecognizers>
+                                </Span>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout
-    HorizontalOptions="Center"
-    VerticalOptions="Center"
-    Spacing="5">
+                    <Label Text="{loc:Translate Name=AND}" TextColor="White" FontSize="19" VerticalOptions="Center"/>
 
-                        <Label VerticalOptions="Center">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="{loc:Translate Name=TermsandConditions}"
-                      TextDecorations="Underline"
-                      TextColor="#A8883C">
-                                        <Span.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                                        </Span.GestureRecognizers>
-                                    </Span>
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-
-                        <Label Text="{loc:Translate Name=AND}"
-           TextColor="White"
-           FontSize="19"
-           VerticalOptions="Center"/>
-
-                        <Label VerticalOptions="Center">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="{loc:Translate Name=PolicyandPrivacy}"
-                      TextDecorations="Underline"
-                      TextColor="#A8883C">
-                                        <Span.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
-                                        </Span.GestureRecognizers>
-                                    </Span>
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Grid>
-            <BoxView BackgroundColor="Transparent" HeightRequest="150"/>
+                    <Label VerticalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{loc:Translate Name=PolicyandPrivacy}" TextDecorations="Underline" TextColor="#A8883C">
+                                    <Span.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
+                                    </Span.GestureRecognizers>
+                                </Span>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -1,6 +1,7 @@
 using loukupm.View;
 using loukupm.ViewModel;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,28 @@ namespace loukupm.Services;
 /// </summary>
 public static class NavigationService
 {
+    // Prevent late navigation calls from overriding an active logout sequence.
+    private static volatile bool _logoutInProgress = false;
+
+    /// <summary>
+    /// Clear the internal logout-in-progress flag. Call this before navigating to home after a successful login.
+    /// </summary>
+    public static void ResetLogoutFlag()
+    {
+        _logoutInProgress = false;
+        Console.WriteLine("[Navigation] ResetLogoutFlag called - logoutInProgress cleared");
+    }
+
+    /// <summary>
+    /// Mark navigation system as being in a logout transition.
+    /// This prevents other callers from navigating to Home while logout is executing.
+    /// </summary>
+    public static void BeginLogout()
+    {
+        _logoutInProgress = true;
+        Console.WriteLine("[Navigation] BeginLogout called - logoutInProgress set");
+    }
+
     // ============================================================================
     // ROUTE DEFINITIONS
     // ============================================================================
@@ -502,28 +525,67 @@ public static class NavigationService
 
     /// <summary>
     /// Hard reset to login (used during logout).
-    /// Destroys AppShell and returns to auth flow.
+    /// Destroys AppShell and returns to auth flow safely.
     /// </summary>
     public static async Task NavigateToLoginAndClear()
     {
         try
         {
-            Console.WriteLine("[Navigation] Hard reset - clearing to LoginPage");
+            Console.WriteLine("[Navigation] NavigateToLoginAndClear START");
 
-            // Close flyout if open
-            if (Shell.Current != null)
-                Shell.Current.FlyoutIsPresented = false;
 
-            // Replace MainPage with new NavigationPage stack
-            var loginPage = new LoginPage();
-            var navPage = new NavigationPage(loginPage);
-            Application.Current!.MainPage = navPage;
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                var lang = Preferences.Get("AppLanguage", "de-DE");
 
-            Console.WriteLine("[Navigation] Successfully reset to LoginPage");
+
+                var direction =
+                    lang.StartsWith("ar")
+                    ? FlowDirection.RightToLeft
+                    : FlowDirection.LeftToRight;
+
+
+
+                var loginPage = new LoginPage
+                {
+                    FlowDirection = direction
+                };
+
+
+                var navigationPage = new NavigationPage(loginPage)
+                {
+                    FlowDirection = direction
+                };
+
+
+
+                if (Application.Current?.Windows.Count > 0)
+                {
+                    Application.Current.Windows[0].Page = navigationPage;
+                }
+                else
+                {
+                    Application.Current!.MainPage = navigationPage;
+                }
+
+
+
+                Console.WriteLine(
+                    $"[Navigation] New Root Page: {navigationPage.GetType().Name}"
+                );
+
+            });
+
+
+
+            Console.WriteLine("[Navigation] NavigateToLoginAndClear END");
+
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Navigation] Logout reset error: {ex.Message}");
+            Console.WriteLine(
+                $"[Navigation] NavigateToLoginAndClear ERROR: {ex}"
+            );
         }
     }
 
@@ -535,24 +597,119 @@ public static class NavigationService
     {
         try
         {
-            Console.WriteLine("[Navigation] Hard reset - initializing to HomePage");
-
-            // Replace MainPage with AppShell
-            Application.Current!.MainPage = new AppShell();
-            await Task.Delay(50); // Let Shell initialize
-
-            // Navigate to Home
-            var shell = Shell.Current;
-            if (shell != null)
+            if (_logoutInProgress)
             {
-                shell.FlyoutIsPresented = false;
-                await shell.GoToAsync($"//{ROUTE_HOME}", animate: false);
-                Console.WriteLine("[Navigation] Successfully reset to AppShell - Home");
+                Console.WriteLine("[Navigation] NavigateToHomeAndClear ignored because logout is in progress");
+                return;
             }
+
+
+            Console.WriteLine("[Navigation] Hard reset - creating AppShell");
+
+
+            var app = Application.Current;
+
+            if (app == null)
+            {
+                Console.WriteLine("[Navigation] Application.Current is null");
+                return;
+            }
+
+
+            AppShell? shellPage = null;
+
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                try
+                {
+                    // Final safety check
+                    if (_logoutInProgress)
+                    {
+                        Console.WriteLine("[Navigation] Home navigation blocked - logout detected");
+                        return;
+                    }
+
+
+                    Console.WriteLine("[Navigation] Creating new AppShell instance");
+
+
+                    shellPage = new AppShell();
+
+
+                    var oldMain = app.MainPage;
+
+
+                    app.MainPage = shellPage;
+
+
+                    Console.WriteLine(
+                        $"[Navigation] MainPage replaced: {oldMain?.GetType().Name} -> {shellPage.GetType().Name}"
+                    );
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"[Navigation] Failed creating AppShell: {ex}"
+                    );
+
+                    throw;
+                }
+            });
+
+
+
+            if (shellPage == null)
+            {
+                Console.WriteLine("[Navigation] Shell creation failed");
+                return;
+            }
+
+
+
+            // Give MAUI time to attach native platform view
+            await Task.Delay(200);
+
+
+
+            if (_logoutInProgress)
+            {
+                Console.WriteLine("[Navigation] Home navigation cancelled - logout started");
+                return;
+            }
+
+
+
+            try
+            {
+                shellPage.FlyoutIsPresented = false;
+
+
+                await shellPage.GoToAsync(
+                    $"//{ROUTE_HOME}",
+                    animate: false
+                );
+
+
+                Console.WriteLine(
+                    "[Navigation] Successfully navigated to HomePage"
+                );
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"[Navigation] Failed navigating inside Shell: {ex}"
+                );
+            }
+
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Navigation] Home reset error: {ex.Message}");
+            Console.WriteLine(
+                $"[Navigation] Home reset error: {ex}"
+            );
         }
     }
 

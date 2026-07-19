@@ -79,11 +79,12 @@
         /// </summary>
         public void UpdateApplicationFlowDirection()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
                 try
                 {
                     var newDirection = GetFlowDirection();
+                    Console.WriteLine($"🔄 Updating FlowDirection to {newDirection} for culture {CurrentCulture.DisplayName}");
 
                     // تحديث الصفحة الرئيسية الحالية بغض النظر عن نوعها (Shell / NavigationPage / ContentPage)
                     if (Application.Current?.MainPage is Page rootPage)
@@ -128,6 +129,9 @@
                     }
 
                     Console.WriteLine($"✅ Application Flow Direction Updated to {newDirection}");
+
+                    // Small delay to ensure UI updates propagate
+                    await Task.Delay(50);
                 }
                 catch (Exception ex)
                 {

@@ -61,50 +61,37 @@
     </Shell.MenuItemTemplate>
 
     <Shell.FlyoutHeader>
-        <Grid RowDefinitions="Auto" 
-              Margin="10" 
-              ColumnDefinitions="Auto,*,Auto" 
-              Padding="20"  
-              BackgroundColor="Transparent" 
-              ColumnSpacing="15" 
-              RowSpacing="5">
-            
+        <!-- قمنا بتغيير الخلفية إلى لون رمادي داكن متناسق وحذفنا المارجن لملء الفراغات الصفراء -->
+        <Grid
+            BackgroundColor="#151515"
+            RowDefinitions="Auto"
+            ColumnDefinitions="Auto,*,Auto"
+            Padding="20,25,20,20"
+            ColumnSpacing="15"
+            RowSpacing="5">
+
+            <!-- User Avatar -->
             <Frame Grid.Column="0"
-       HeightRequest="80"
-       WidthRequest="80"
-       CornerRadius="40"
-       Margin="0,10,0,0"
-       Padding="0"
-       IsClippedToBounds="True"
-       BackgroundColor="#A8883C"
-       BorderColor="#A8883C"
-       HasShadow="False"
-       HorizontalOptions="Start"
-       VerticalOptions="Center">
+                   HeightRequest="80"
+                   WidthRequest="80"
+                   CornerRadius="40"
+                   Padding="0"
+                   IsClippedToBounds="True"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent"
+                   HasShadow="False"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center">
 
                 <Image Source="{Binding Avatar}"
-           Aspect="AspectFill"/>
+                       Aspect="AspectFill"/>
             </Frame>
 
-            <Frame Grid.Column="0"
-       HeightRequest="80"
-       WidthRequest="80"
-       CornerRadius="40"
-       Margin="0,10,0,0"
-       Padding="0"
-       IsClippedToBounds="True"
-       BackgroundColor="#A8883C"
-       BorderColor="#A8883C"
-       HasShadow="False"
-       HorizontalOptions="Start"
-       VerticalOptions="Center">
-
-                <Image Source="{Binding Avatar}"
-           Aspect="AspectFill"/>
-            </Frame>
-            <VerticalStackLayout Grid.Column="1" 
-                                 Spacing="4" 
+            <!-- User Info -->
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="4"
                                  VerticalOptions="Center">
+
                 <Label Text="{Binding UserName}"
                        FontSize="24"
                        FontAttributes="Bold"
@@ -112,6 +99,7 @@
                        TextColor="White"
                        LineBreakMode="TailTruncation"
                        MaxLines="1"/>
+
                 <Label Text="{Loc:Translate Name=wellomeonlookup}"
                        FontSize="13"
                        FontFamily="Oswald"
@@ -119,9 +107,10 @@
                        LineBreakMode="TailTruncation"
                        MaxLines="1"/>
             </VerticalStackLayout>
+
         </Grid>
     </Shell.FlyoutHeader>
-    
+
     <ShellContent Route="MainPage"
                   ContentTemplate="{DataTemplate local:MainPage}"
                   IsVisible="False" />
@@ -222,13 +211,30 @@
     <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False" />
     <MenuFlyoutItem Text="{Loc:Translate Name=other}" IsEnabled="False"  />
 
-   
 
-    <FlyoutItem Title="Logout" Icon="logouty.svg">
-        <ShellContent
-            ContentTemplate="{DataTemplate view:LoginPage}"
-            Route="LoginPage" />
-    </FlyoutItem>
+    <MenuItem Command="{Binding LogoutCommand}">
+        <Shell.MenuItemTemplate>
+            <DataTemplate>
+                <!-- حاوية أفقية لترتيب الأيقونة والنص بشكل متناسق ومطابق للـ FlyoutItem -->
+                <HorizontalStackLayout Padding="15, 12" Spacing="20" VerticalOptions="Center">
+
+                    <!-- الأيقونة بدقتها الأصلية -->
+                    <Image Source="logouty.svg"
+                       WidthRequest="24"
+                       HeightRequest="24"
+                       VerticalOptions="Center" />
+
+                    <!-- النص بلون أبيض ناصع وحجم متناسق -->
+                    <Label Text="Logout"
+                       TextColor="White"
+                       FontSize="16"
+                       FontFamily="Oswald"
+                       VerticalOptions="Center" />
+
+                </HorizontalStackLayout>
+            </DataTemplate>
+        </Shell.MenuItemTemplate>
+    </MenuItem>
     <MenuFlyoutItem Text="──────────────────────────" IsEnabled="False"/>
         <!-- Deep link routes for Stripe Checkout -->
     <ShellContent Route="checkout/success"

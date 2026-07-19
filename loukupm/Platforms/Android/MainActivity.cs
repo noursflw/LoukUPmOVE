@@ -3,7 +3,9 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using AndroidX.Activity;
+using AndroidX.Core.View;
 using loukupm.Services;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 
 namespace loukupm
 {
@@ -24,13 +26,27 @@ namespace loukupm
         {
             base.OnCreate(savedInstanceState);
 
-            // تحديد لون شريط الحالة
-            Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#000000"));
+            if (Window != null)
+            {
+                // 1. تعيين اللون الأسود لشريط الحالة
+                Window.SetStatusBarColor(Android.Graphics.Color.ParseColor("#000000"));
 
+                // 2. استخدام المظهر الداكن لشريط الحالة (لتصبح الأيقونات بيضاء)
+                // نستخدم WindowCompat مباشرة لإحضار المتحكم
+                var insetsController = WindowCompat.GetInsetsController(Window, Window.DecorView);
+                if (insetsController != null)
+                {
+                    // false تعني أيقونات بيضاء (تناسب الخلفية السوداء)
+                    insetsController.AppearanceLightStatusBars = false;
+                }
+
+                // 3. إجبار التطبيق على احترام أبعاد شريط الحالة وعدم التمدد خلفه إجبارياً في أندرويد 15+
+                WindowCompat.SetDecorFitsSystemWindows(Window, true);
+            }
 
             OnBackPressedDispatcher.AddCallback(this, new AppBackPressedCallback(this));
         }
-        
+
 
 
 

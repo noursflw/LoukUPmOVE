@@ -34,16 +34,37 @@ public partial class App : Application
 
         var savedLang = Preferences.Get("AppLanguage", string.Empty);
         var direction = Microsoft.Maui.FlowDirection.LeftToRight;
+        CultureInfo initialCulture;
 
         if (!string.IsNullOrEmpty(savedLang))
         {
-            var culture = new CultureInfo(savedLang);
-            Langue.LocalizationResourcesManager.Instanse.SetCulture(culture);
+            // Use saved language
+            initialCulture = new CultureInfo(savedLang);
+            Langue.LocalizationResourcesManager.Instanse.SetCulture(initialCulture);
 
-            direction = culture.TwoLetterISOLanguageName == "ar"
-                ? Microsoft.Maui.FlowDirection.RightToLeft
-                : Microsoft.Maui.FlowDirection.LeftToRight;
+            Console.WriteLine($"🌍 Loaded saved language: {initialCulture.DisplayName}");
         }
+        else
+        {
+            // First run: Use system language
+            initialCulture = CultureInfo.CurrentCulture;
+
+            // Support Arabic from system, otherwise default to German
+            string langCode = initialCulture.TwoLetterISOLanguageName.ToLower();
+            if (langCode != "ar")
+            {
+                initialCulture = new CultureInfo("de-DE");
+            }
+
+            Langue.LocalizationResourcesManager.Instanse.SetCulture(initialCulture);
+            Preferences.Set("AppLanguage", initialCulture.Name);
+
+            Console.WriteLine($"🌍 First run: System language detected, set to {initialCulture.DisplayName}");
+        }
+
+        direction = initialCulture.TwoLetterISOLanguageName == "ar"
+            ? Microsoft.Maui.FlowDirection.RightToLeft
+            : Microsoft.Maui.FlowDirection.LeftToRight;
 
         string? token = null;
         try

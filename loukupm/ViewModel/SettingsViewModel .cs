@@ -155,7 +155,18 @@ namespace loukupm.ViewModel
         private void LoadSavedLanguage()
         {
             var saved = Preferences.Get("AppLanguage", "de-DE");
-            SelectedLanguage = Languages.FirstOrDefault(x => x.CultureName == saved);
+
+            // Handle both "ar" and "ar-*" formats
+            if (saved.StartsWith("ar"))
+            {
+                SelectedLanguage = Languages.FirstOrDefault(x => x.CultureName == "ar");
+            }
+            else
+            {
+                SelectedLanguage = Languages.FirstOrDefault(x => x.CultureName == saved);
+            }
+
+            Console.WriteLine($"🌍 LoadSavedLanguage: Loaded {SelectedLanguage?.Name} ({saved})");
         }
 
         private void ChangeLanguage(string cultureName)
@@ -165,13 +176,16 @@ namespace loukupm.ViewModel
                 var culture = new CultureInfo(cultureName);
 
                 Preferences.Set("AppLanguage", culture.Name);
+                Console.WriteLine($"💾 AppLanguage saved as: {culture.Name}");
+
                 LocalizationResourcesManager.Instanse.SetCulture(culture);
 
-                System.Diagnostics.Debug.WriteLine($"🌍 Language changed to {culture.DisplayName}");
+                Console.WriteLine($"🌍 Language changed to {culture.DisplayName} (Code: {culture.TwoLetterISOLanguageName})");
+                Console.WriteLine($"↔️ Flow Direction: {LocalizationResourcesManager.Instanse.GetFlowDirection()}");
             }
             catch (System.Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Console.WriteLine($"❌ Error changing language: {ex.Message}");
             }
         }
     }

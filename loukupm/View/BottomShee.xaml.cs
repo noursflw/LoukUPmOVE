@@ -48,6 +48,7 @@ public partial class BottomShee : BottomSheet
             booking.PaymentMethod = "Cash";
 
             await Application.Current.MainPage.DisplayAlert("Payment Method", "You selected Cash payment.", "OK");
+            NavigationService.ResetLogoutFlag();
             await ShellNavigationManager.NavigateToHomeAndClear();
             await this.DismissAsync();
         }

@@ -37,6 +37,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool isloadBooking;
         [ObservableProperty] private bool isLoadNotifiction;
         [ObservableProperty] private bool isLoadUser;
+        [ObservableProperty] private bool isLoggingOut;
 
 
 
@@ -1413,6 +1414,39 @@ namespace loukupm.ViewModel
             }
         }
 
+
+        [RelayCommand]
+        private async Task Logout()
+        {
+            try
+            {
+                Console.WriteLine("[Logout] START");
+
+
+                NavigationService.BeginLogout();
+
+
+
+                ResetUser();
+                OneSignalService.Logout();
+                SecureStorage.RemoveAll();
+                Preferences.Clear();
+                App.ResetAuthenticationCheck();
+                await NavigationService.NavigateToLoginAndClear();
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Logout] ERROR {ex}");
+            }
+            finally
+            {
+                NavigationService.ResetLogoutFlag();
+            }
+        }
+
+        // قمنا بفصلها وتسميتها لتوضيح الهدف: تنظيف واجهة المستخدم
         public void ResetUser()
         {
             currentUser = null;
@@ -1426,26 +1460,8 @@ namespace loukupm.ViewModel
 
             IsLoadUser = false;
         }
-        public ICommand LogoutCommand => new Command(async () => await Logout());
-
-        private async Task Logout()
-        {
-            try
-            {
-                ResetUser();
-                OneSignalService.Logout();
-                SecureStorage.RemoveAll();
-                Preferences.Clear();
-                App.ResetAuthenticationCheck();
-                await ShellNavigationManager.NavigateToLoginAndClear();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
         public event PropertyChangedEventHandler PropertyChanged;
-
+       
 
         public ICommand ChangePasswordUserCommand { get; }
         private string currentPassword = string.Empty;
@@ -1600,6 +1616,79 @@ namespace loukupm.ViewModel
         private readonly services.NotificationService _notificationService;
 
         private bool _notificationsInitialized = false;
+
+        // App-level cancellation token used to cancel running user-scoped tasks on logout
+        private static CancellationTokenSource _appCancellation = new CancellationTokenSource();
+        public static CancellationToken AppCancellationToken => _appCancellation.Token;
+
+        /// <summary>
+        /// Cancel running tasks related to the current user session and recreate the token source.
+        /// Call during logout to stop long-running operations.
+        /// </summary>
+        public void CancelRunningTasks()
+        {
+            try
+            {
+                Console.WriteLine("[AppViewModel] Cancelling running tasks...");
+                try { _appCancellation.Cancel(); } catch { }
+                try { _appCancellation.Dispose(); } catch { }
+                _appCancellation = new CancellationTokenSource();
+                Console.WriteLine("[AppViewModel] Cancellation token recreated");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AppViewModel] CancelRunningTasks error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Clears all user-scoped in-memory state so the app is clean before navigating to login.
+        /// </summary>
+        public void ClearViewModelState()
+        {
+            try
+            {
+                Console.WriteLine("[AppViewModel] Clearing in-memory viewmodel state...");
+
+                // Clear observable collections
+                Services?.Clear();
+                FilteredServices?.Clear();
+                Bookings?.Clear();
+                Appointments?.Clear();
+                UpcomingAppointments?.Clear();
+                PreviousAppointments?.Clear();
+                CanceledAppointments?.Clear();
+                SelectedServices?.Clear();
+                WorkTeams?.Clear();
+                FilteredWorkTeams?.Clear();
+                Notifications?.Clear();
+                ProviderDays?.Clear();
+                AvailableSlots?.Clear();
+
+                // Reset simple properties
+                currentUser = null;
+                UserName = string.Empty;
+                UserFirstName = string.Empty;
+                Email = string.Empty;
+                FullName = string.Empty;
+                Phone = string.Empty;
+                Avatar = null;
+
+                // Stop any app-level timers or services if accessible
+                try
+                {
+                    // If any ReminderService or similar global timers exist, attempt to stop them via DI or static access.
+                    // No-op if not available.
+                }
+                catch { }
+
+                Console.WriteLine("[AppViewModel] In-memory state cleared");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AppViewModel] ClearViewModelState error: {ex.Message}");
+            }
+        }
 
         partial void OnUnreadNotificationCountChanged(int value)
         {

@@ -63,40 +63,21 @@ namespace loukupm.Services
         /// <summary>
         /// Navigate to LoginPage and clear the entire stack (for logout scenarios).
         /// </summary>
+        /// <summary>
+        /// Navigate to LoginPage and clear the entire stack (for logout scenarios).
+        /// </summary>
         public static async Task NavigateToLoginAndClear()
         {
             try
             {
-                Console.WriteLine($"🔄 [Navigation] Logging out and clearing stack");
+                Console.WriteLine($"🔄 [NavigationManager] Initiating hard logout sequence");
 
-                // Verify Shell.Current is available
-                var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-                if (shell == null)
-                {
-                    Console.WriteLine($"❌ [Navigation] Shell context is null - fallback to NavigationPage for LoginPage");
-                    if (Application.Current?.MainPage is NavigationPage nav)
-                    {
-                        await nav.PopToRootAsync(false);
-                        await nav.PushAsync(new LoginPage(), false);
-                        return;
-                    }
-                    throw new InvalidOperationException("Shell context is not available");
-                }
-
-                // Use relative route for LoginPage (global route)
-                await shell.GoToAsync($"//{NavigationService.ROUTE_LOGIN}", animate: false);
-
-                Console.WriteLine($"✅ [Navigation] Successfully logged out to LoginPage");
-            }
-            catch (InvalidOperationException iex)
-            {
-                Console.WriteLine($"❌ [Navigation] Invalid operation during logout: {iex.Message}");
-                throw;
+                // تحويل التحكم مباشرة إلى الخدمة المركزية التي تقوم بتدمير الـ Shell وبناء الـ NavigationPage الجديد
+                await NavigationService.NavigateToLoginAndClear();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ [Navigation] Error during logout navigation: {ex.Message}");
-                Console.WriteLine($"   Type: {ex.GetType().Name}");
+                Console.WriteLine($"❌ [NavigationManager] Error during logout navigation: {ex.Message}");
                 throw;
             }
         }
@@ -108,36 +89,13 @@ namespace loukupm.Services
         {
             try
             {
-                Console.WriteLine($"🔄 [Navigation] Logging in and navigating to home");
-
-                if (Shell.Current == null && Application.Current?.MainPage is NavigationPage)
-                {
-                    Console.WriteLine("🔄 [Navigation] Switching from NavigationPage to AppShell for post-login navigation");
-                    Application.Current.MainPage = new AppShell();
-                    await Task.Delay(50);
-                }
-
-                var shell = Shell.Current ?? Application.Current?.MainPage as Shell;
-                if (shell == null)
-                {
-                    throw new InvalidOperationException("Shell context is not available");
-                }
-
-                shell.FlyoutIsPresented = false;
-                await shell.GoToAsync($"//{NavigationService.ROUTE_HOME}", animate: false);
-
-                Console.WriteLine($"✅ [Navigation] Successfully logged in to HomePage");
-            }
-            catch (InvalidOperationException iex)
-            {
-                Console.WriteLine($"❌ [Navigation] Invalid operation during login navigation: {iex.Message}");
-                throw;
+                Console.WriteLine($"🔄 [NavigationManager] Delegating NavigateToHomeAndClear to NavigationService");
+                await NavigationService.NavigateToHomeAndClear();
+                Console.WriteLine($"✅ [NavigationManager] NavigationService completed NavigateToHomeAndClear");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ [Navigation] Error during login navigation: {ex.Message}");
-                Console.WriteLine($"   Type: {ex.GetType().Name}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
+                Console.WriteLine($"❌ [NavigationManager] Error during NavigateToHomeAndClear delegation: {ex.Message}");
                 throw;
             }
         }

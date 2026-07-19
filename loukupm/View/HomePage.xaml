@@ -185,7 +185,18 @@
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
-                <material:TextField  HeightRequest="50"  Margin="25,20,25,0" InputBackgroundColor="#1C1F24" InputTransparent="False" CornerRadius="16" Icon="search.svg" Title="search"  Text="{Binding SearchServiceTerm}" />
+              <material:TextField
+    HeightRequest="50"
+   TextColor="#A8883C"
+    AccentColor="#A8883C"
+    Margin="25,30,25,0"
+    InputBackgroundColor="#1C1F24"
+    CornerRadius="16"
+    Icon="search.svg"
+    Title="search"
+    Text="{Binding SearchServiceTerm}"
+    BorderColor="Transparent"
+    />
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Text="{ Loc:Translate Name=chosesservies}"  FontFamily="georgia" TextColor="White" FontSize="24" Margin="15" HorizontalOptions="Start" />
                     <Label 

@@ -149,10 +149,12 @@ public partial class EditeUserPage : ContentPage
         }
     }
 
-    private async void Button_Clicked_9(object sender, EventArgs e)
+        private async void Button_Clicked_9(object sender, EventArgs e)
     {
         var popup = new RemoveUserPopup();
-        OneSignalService.Logout();
+
+        // Trigger OneSignal logout in background to avoid blocking the UI thread.
+        _ = OneSignalService.LogoutAsync();
         App.ResetAuthenticationCheck();
 
         await this.ShowPopupAsync(popup);

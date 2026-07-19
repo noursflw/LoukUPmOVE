@@ -980,8 +980,8 @@ public partial class SinginPage : ContentPage
 
                 await AppViewModel.Instance.LoadUserDataAsync();
 
-
-
+                // Clear logout flag that may have been set previously
+                NavigationService.ResetLogoutFlag();
                 await ShellNavigationManager.NavigateToHomeAndClear();
 
             }

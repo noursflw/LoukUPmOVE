@@ -90,7 +90,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <SwipeView BackgroundColor="#0A0A0A" Threshold="50">
-                                <!-- Left Swipe: Mark as Read + Delete -->
+
                                 <SwipeView.LeftItems>
                                     <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
                                         <SwipeItem BackgroundColor="#4CAF50" 
@@ -100,13 +100,11 @@
                                         </SwipeItem>
                                     </SwipeItems>
                                 </SwipeView.LeftItems>
-
-                                <!-- Right Swipe: Delete Only -->
                                 <SwipeView.RightItems>
                                     <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
                                         <SwipeItem BackgroundColor="#FF5252" 
                                                   Text="Delete"
-                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteNotificationCommand}"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MarkAsReadAndDeleteCommand}"
                                                   CommandParameter="{Binding .}">
                                         </SwipeItem>
                                     </SwipeItems>
