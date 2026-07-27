@@ -1141,4 +1141,16 @@ Kontaktiere uns jederzeit. Wir helfen dir gerne weiter.</value>
   <data name="password_number_required2" xml:space="preserve">
     <value>Mindestens 1 Zahl</value>
   </data>
+  <data name="YOUSHEDACIPTNUMBERPHONE" xml:space="preserve">
+    <value>Terminbuchung derzeit nicht möglich</value>
+  </data>
+  <data name="YOUSHEDACIPTNUMBERPHONE2" xml:space="preserve">
+    <value>Bitte bestätige deine Telefonnummer, um Termine buchen zu können.</value>
+  </data>
+  <data name="ACPITINGPHONENMBER" xml:space="preserve">
+    <value>bestätigen</value>
+  </data>
+  <data name="Notrightnow" xml:space="preserve">
+    <value>Jetzt nicht</value>
+  </data>
 </root>

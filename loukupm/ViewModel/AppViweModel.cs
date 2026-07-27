@@ -776,7 +776,7 @@ namespace loukupm.ViewModel
             try
             {
 
-                if (!ValidateBookingInputs())
+                if (!await ValidateBookingInputs())
                     return;
 
 
@@ -805,41 +805,37 @@ namespace loukupm.ViewModel
             }
         }
 
-        private bool ValidateBookingInputs()
+        private async Task<bool> ValidateBookingInputs()
         {
-            if (SelectedServices?.Count == 0)
+            if (SelectedServices == null || SelectedServices.Count == 0)
             {
-                Toast.Make(AppResource.Pleaseselectatleastoneservice).Show();
+                await Toast.Make(AppResource.Pleaseselectatleastoneservice).Show();
                 return false;
             }
 
             if (SelectedProvider == null)
             {
-                Toast.Make(AppResource.Pleaseselectaserviceprovider).Show();
+                await Toast.Make(AppResource.Pleaseselectaserviceprovider).Show();
                 return false;
             }
 
             if (SelectedDate == default)
             {
-                Toast.Make(AppResource.Pleaseselectadate).Show();
+                await Toast.Make(AppResource.Pleaseselectadate).Show();
                 return false;
             }
 
             if (SelectedSlot == null)
             {
-                Toast.Make(AppResource.Pleaseselectatime).Show();
+                await Toast.Make(AppResource.Pleaseselectatime).Show();
                 return false;
             }
 
-            // Verify all services are available from selected provider
-            var unavailableServices = SelectedServices
-                .Where(s => !FilteredServices.Any(fs => fs.Id == s.Id))
-                .ToList();
-
-            if (unavailableServices.Count > 0)
+            if (!PhoneVerified)
             {
-                string serviceList = string.Join(", ", unavailableServices.Select(s => s.NameServies));
-                Toast.Make($"الخدمات غير متاحة من {SelectedProvider.Name}: {serviceList}", ToastDuration.Long).Show();
+                var popup = new CanyouAcpetPhonenumber();
+
+                await App.Current.MainPage.ShowPopupAsync(popup);
 
                 return false;
             }
@@ -996,7 +992,7 @@ namespace loukupm.ViewModel
         }
 
 
-        private void ClearBookingData()
+        public void ClearBookingData()
         {
 
             SelectedServices.Clear();

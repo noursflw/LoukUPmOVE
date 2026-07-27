@@ -124,6 +124,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to bestätigen.
+        /// </summary>
+        internal static string ACPITINGPHONENMBER {
+            get {
+                return ResourceManager.GetString("ACPITINGPHONENMBER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ihr Passwort wurde erfolgreich zurückgesetzt..
         /// </summary>
         internal static string AcsepPassword {
@@ -1201,6 +1210,15 @@ namespace loukupm.Langue {
         internal static string notfoundtime {
             get {
                 return ResourceManager.GetString("notfoundtime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jetzt nicht.
+        /// </summary>
+        internal static string Notrightnow {
+            get {
+                return ResourceManager.GetString("Notrightnow", resourceCulture);
             }
         }
         
@@ -3104,6 +3122,24 @@ namespace loukupm.Langue {
         internal static string yourstylestatuphere {
             get {
                 return ResourceManager.GetString("yourstylestatuphere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminbuchung derzeit nicht möglich.
+        /// </summary>
+        internal static string YOUSHEDACIPTNUMBERPHONE {
+            get {
+                return ResourceManager.GetString("YOUSHEDACIPTNUMBERPHONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte bestätige deine Telefonnummer, um Termine buchen zu können..
+        /// </summary>
+        internal static string YOUSHEDACIPTNUMBERPHONE2 {
+            get {
+                return ResourceManager.GetString("YOUSHEDACIPTNUMBERPHONE2", resourceCulture);
             }
         }
     }

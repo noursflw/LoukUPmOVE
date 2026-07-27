@@ -12,7 +12,7 @@ namespace loukupm.ViewModel
         public PhoneOtpViewModel(ApiServices api)
         {
             _api = api;
-            System.Diagnostics.Debug.WriteLine("OTP VM CREATED");
+           
         }
 
         // ========================

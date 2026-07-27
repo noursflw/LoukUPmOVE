@@ -1141,4 +1141,16 @@
   <data name="password_number_required2" xml:space="preserve">
     <value>على الأقل رقم واحد</value>
   </data>
+  <data name="YOUSHEDACIPTNUMBERPHONE" xml:space="preserve">
+    <value>لا يمكنك حجز موعد حالياً</value>
+  </data>
+  <data name="YOUSHEDACIPTNUMBERPHONE2" xml:space="preserve">
+    <value>يجب تأكيد رقم هاتفك قبل أن تتمكن من حجز المواعيد</value>
+  </data>
+  <data name="ACPITINGPHONENMBER" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="Notrightnow" xml:space="preserve">
+    <value>ليس الآن</value>
+  </data>
 </root>

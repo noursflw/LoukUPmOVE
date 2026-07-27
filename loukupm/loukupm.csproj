@@ -131,6 +131,9 @@
 	  <MauiXaml Update="View\ContenUs.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\MassgingApp\CanyouAcpetPhonenumber.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\NotificationBadgeView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
