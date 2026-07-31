@@ -247,7 +247,7 @@
     <value>تحرير تفاصيل الحساب</value>
   </data>
   <data name="EMail" xml:space="preserve">
-    <value>اسم المستخدم </value>
+    <value>البريد الإلكتروني</value>
   </data>
   <data name="EnterEmailOrPassword" xml:space="preserve">
     <value>يرجى إدخال البريد الإلكتروني وكلمة المرور</value>
@@ -1152,5 +1152,32 @@
   </data>
   <data name="Notrightnow" xml:space="preserve">
     <value>ليس الآن</value>
+  </data>
+  <data name="AppointmentReminder" xml:space="preserve">
+    <value>تذكير بالموعد</value>
+  </data>
+  <data name="SelectReminderTime" xml:space="preserve">
+    <value>اختر وقت التذكير قبل الموعد</value>
+  </data>
+  <data name="EnableReminderTimer" xml:space="preserve">
+    <value>تفعيل التذكير بالموعد</value>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>اختيار</value>
+  </data>
+  <data name="Isthisyourcurrentphonenumber" xml:space="preserve">
+    <value>هل هذا هو رقم هاتفك الحالي؟</value>
+  </data>
+  <data name="Wewillsendtheverificationcodetothefollowingphonenumber" xml:space="preserve">
+    <value>سنرسل رمز التحقق إلى رقم الهاتف التالي</value>
+  </data>
+  <data name="Pleasemakesureitiscorrect" xml:space="preserve">
+    <value>يرجى التأكد من أنه صحيح</value>
+  </data>
+  <data name="Yesthenumberiscorrect" xml:space="preserve">
+    <value>نعم، الرقم صحيح</value>
+  </data>
+  <data name="newPhoneNumber" xml:space="preserve">
+    <value>تعديل الرقم</value>
   </data>
 </root>

@@ -223,6 +223,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Appointment Reminder.
+        /// </summary>
+        internal static string AppointmentReminder {
+            get {
+                return ResourceManager.GetString("AppointmentReminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string Availabletime {
@@ -381,6 +390,15 @@ namespace loukupm.Langue {
         internal static string changvaldechen {
             get {
                 return ResourceManager.GetString("changvaldechen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auswählen.
+        /// </summary>
+        internal static string Choose {
+            get {
+                return ResourceManager.GetString("Choose", resourceCulture);
             }
         }
         
@@ -728,6 +746,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Reminder Time.
+        /// </summary>
+        internal static string EnableReminderTimer {
+            get {
+                return ResourceManager.GetString("EnableReminderTimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein..
         /// </summary>
         internal static string EnterEmailOrPassword {
@@ -1025,6 +1052,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ist das deine aktuelle Telefonnummer?.
+        /// </summary>
+        internal static string Isthisyourcurrentphonenumber {
+            get {
+                return ResourceManager.GetString("Isthisyourcurrentphonenumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Die E-Mail-Adresse ist im System nicht registriert..
         /// </summary>
         internal static string IsYourEmailNotREGSTER {
@@ -1102,6 +1138,15 @@ namespace loukupm.Langue {
         internal static string NewMyPassord {
             get {
                 return ResourceManager.GetString("NewMyPassord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string newPhoneNumber {
+            get {
+                return ResourceManager.GetString("newPhoneNumber", resourceCulture);
             }
         }
         
@@ -1480,6 +1525,15 @@ namespace loukupm.Langue {
         internal static string Pleaseenterthepasswordinbothfields {
             get {
                 return ResourceManager.GetString("Pleaseenterthepasswordinbothfields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte überprüfe, ob sie korrekt ist..
+        /// </summary>
+        internal static string Pleasemakesureitiscorrect {
+            get {
+                return ResourceManager.GetString("Pleasemakesureitiscorrect", resourceCulture);
             }
         }
         
@@ -2415,6 +2469,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select reminder time before appointment.
+        /// </summary>
+        internal static string SelectReminderTime {
+            get {
+                return ResourceManager.GetString("SelectReminderTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code wurde gesendet.
         /// </summary>
         internal static string sendotp {
@@ -3072,6 +3135,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An diese Telefonnummer senden wir den Bestätigungscode. .
+        /// </summary>
+        internal static string Wewillsendtheverificationcodetothefollowingphonenumber {
+            get {
+                return ResourceManager.GetString("Wewillsendtheverificationcodetothefollowingphonenumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Öffnungszeiten.
         /// </summary>
         internal static string WorkTime {
@@ -3095,6 +3167,15 @@ namespace loukupm.Langue {
         internal static string Yess {
             get {
                 return ResourceManager.GetString("Yess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ja, Nummer bestätigen.
+        /// </summary>
+        internal static string Yesthenumberiscorrect {
+            get {
+                return ResourceManager.GetString("Yesthenumberiscorrect", resourceCulture);
             }
         }
         

@@ -387,13 +387,13 @@ BorderColor="#444444" >
                 </HorizontalStackLayout>
                 <Frame BorderColor="#444444" BackgroundColor="#444444" CornerRadius="16" Margin="10" Padding="16">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="Appointment Reminder" 
+                        <Label Text="{Loc:Translate Name=AppointmentReminder}" 
                                FontSize="16" 
                                TextColor="White" 
                                FontFamily="Oswald" 
                                FontAttributes="Bold" />
 
-                        <Label Text="Select reminder time before appointment" 
+                        <Label Text="{Loc:Translate Name=SelectReminderTime}" 
                                FontSize="12" 
                                TextColor="#D3D3D3" 
                                FontFamily="Oswald" />
@@ -403,7 +403,7 @@ BorderColor="#444444" >
                                     FontFamily="Oswald"
                                     FontSize="14" />
 
-                        <Button Text="Enable Reminder Timer" 
+                        <Button Text="{Loc:Translate Name=EnableReminderTimer}" 
                                 TextColor="Black" 
                                 
                                 FontFamily="Oswald" 
@@ -414,37 +414,42 @@ BorderColor="#444444" >
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>
-            <Grid ColumnDefinitions="*,Auto" HeightRequest="60">
-              
-                <VerticalStackLayout Margin="40,0,0,0" VerticalOptions="Center">
+            <Grid ColumnDefinitions="*,Auto"
+      HeightRequest="70"
+      Padding="20,0">
+
+                <VerticalStackLayout 
+        Grid.Column="0"
+        VerticalOptions="Center">
+
                     <Label Text="{Loc:Translate Name=invoic}"
-                     TextColor="#D3D3D3"
-                    Margin="20,0,0,0"
-                    FontSize="18"
-                   WidthRequest="200"
-                   VerticalOptions="Center" />
-                    
+               TextColor="#D3D3D3"
+               FontSize="{OnIdiom Phone=16, Tablet=18}"
+               VerticalOptions="Center"/>
+
                     <Label Text="{Binding TotalPrice, StringFormat='{0:F2} EUR'}"
-                           TextColor="#FFD700"
-                           Margin="0,0,10,20"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           VerticalOptions="Center" />
+               TextColor="#FFD700"
+               FontSize="{OnIdiom Phone=16, Tablet=18}"
+               FontAttributes="Bold"
+               VerticalOptions="Center"/>
+
                 </VerticalStackLayout>
-              
+
+
                 <Button Grid.Column="1"
-           WidthRequest="192"
-           HeightRequest="56"
-           FontSize="22"
+            Text="{Loc:Translate Name=bookingNow}"
             TextColor="Black"
-           Text="{Loc:Translate Name=bookingNow}"
-           CornerRadius="12"
-           Margin="0,0,10,10"       
-           FontFamily="georgia-bold"
-           BorderWidth="1"
-            Command="{Binding PostBookingCommand}"            
-           HorizontalOptions="End"
-           VerticalOptions="Center"/>
+            FontSize="{OnIdiom Phone=16, Tablet=22}"
+            CornerRadius="12"
+            Padding="20,0"
+            MinimumWidthRequest="120"
+            HeightRequest="50"
+            FontFamily="georgia-bold"
+            BorderWidth="1"
+            Command="{Binding PostBookingCommand}"
+            HorizontalOptions="End"
+            VerticalOptions="Center"/>
+
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

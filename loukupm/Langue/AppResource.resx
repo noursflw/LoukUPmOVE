@@ -1153,4 +1153,32 @@ Kontaktiere uns jederzeit. Wir helfen dir gerne weiter.</value>
   <data name="Notrightnow" xml:space="preserve">
     <value>Jetzt nicht</value>
   </data>
+  <data name="AppointmentReminder" xml:space="preserve">
+    <value>Appointment Reminder</value>
+  </data>
+  <data name="SelectReminderTime" xml:space="preserve">
+    <value>Select reminder time before appointment</value>
+  </data>
+  <data name="EnableReminderTimer" xml:space="preserve">
+    <value>Enable Reminder Time</value>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>Auswählen</value>
+    <comment>Auswählen</comment>
+  </data>
+  <data name="Isthisyourcurrentphonenumber" xml:space="preserve">
+    <value>Ist das deine aktuelle Telefonnummer?</value>
+  </data>
+  <data name="Wewillsendtheverificationcodetothefollowingphonenumber" xml:space="preserve">
+    <value>An diese Telefonnummer senden wir den Bestätigungscode. </value>
+  </data>
+  <data name="Pleasemakesureitiscorrect" xml:space="preserve">
+    <value>Bitte überprüfe, ob sie korrekt ist.</value>
+  </data>
+  <data name="Yesthenumberiscorrect" xml:space="preserve">
+    <value>Ja, Nummer bestätigen</value>
+  </data>
+  <data name="newPhoneNumber" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -107,8 +107,7 @@
         HorizontalOptions="End"
         Padding="0"
         BorderWidth="0"
-        IsVisible="{Binding PhoneVerified, Converter={StaticResource InverseBoolConverter}}"
-        Command="{Binding SendOtpCommand }"/>
+        IsVisible="{Binding PhoneVerified, Converter={StaticResource InverseBoolConverter}}" Clicked="Button_Clicked_9"/>
 
 
                             </Grid>

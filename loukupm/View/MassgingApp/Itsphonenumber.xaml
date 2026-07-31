@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:Loc="clr-namespace:loukupm.Langue"
+               Color="Transparent"
+               x:Class="loukupm.View.MassgingApp.Itsphonenumber">
+    <Frame
+      BackgroundColor="Black"
+      CornerRadius="20"
+      HasShadow="True"
+      Padding="0"
+      BorderColor="#444444"
+      HorizontalOptions="Center"
+      VerticalOptions="Center">
+
+        <VerticalStackLayout
+          Padding="20"
+          Spacing="18"
+          HorizontalOptions="Center"
+          WidthRequest="320"
+          VerticalOptions="Center">
+           
+            <Image
+      Source="iconok.svg"
+      HeightRequest="120"
+      WidthRequest="200"  
+      Aspect="AspectFit"
+      HorizontalOptions="Center" />
+
+            <Label
+Text="{Loc:Translate Name=Isthisyourcurrentphonenumber}"
+FontAttributes="Bold"
+ FontSize="20"               
+HorizontalOptions="Center"
+TextColor="White"
+HorizontalTextAlignment="Center" />
+
+
+            <Label
+Text="{Loc:Translate Name=Wewillsendtheverificationcodetothefollowingphonenumber}"
+HorizontalOptions="Center"
+TextColor="White"
+HorizontalTextAlignment="Center" />
+
+            <Frame
+                HeightRequest="70"
+                BorderColor="#272728"
+                BackgroundColor="#272728" >
+                <VerticalStackLayout
+                    HorizontalOptions="Center">
+                    <Label
+                        Text="{Binding Phone}"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        TextColor="White"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Frame>
+            <HorizontalStackLayout  HorizontalOptions="Center" Spacing="10" >
+
+                <Button
+Text="{Loc:Translate Name=newPhoneNumber}"
+BorderWidth="1"
+TextColor="#d4ab37"
+ BackgroundColor="Black"                   
+CornerRadius="10"
+HeightRequest="44"
+FontFamily="georgia"                        
+Clicked="Button_Clicked_1" />
+                <Button
+Text="{Loc:Translate Name=Yesthenumberiscorrect}"
+BorderWidth="1"
+TextColor="Black"
+CornerRadius="10"
+HeightRequest="44"
+                    
+FontFamily="georgia"      
+                    Clicked="Button_Clicked"
+Command="{Binding SendOtpCommand}" />
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>
+
