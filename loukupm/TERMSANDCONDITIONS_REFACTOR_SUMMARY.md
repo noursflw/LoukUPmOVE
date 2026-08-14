@@ -42,7 +42,7 @@ Successfully refactored the **TermsAndConditions** feature from hardcoded static
 public async Task<TermsConditionsResponse> GetTermsAndConditionsAsync()
 ```
 
-**Endpoint**: `https://test.center-yazan.com/api/pages/terms-conditions`
+**Endpoint**: `https://lookupfriseur.com/api/pages/terms-conditions`
 
 **Behavior**:
 - Makes HTTP GET request to CMS API
@@ -262,7 +262,7 @@ Loading State Flow:
 
 ### Request
 ```
-GET https://test.center-yazan.com/api/pages/terms-conditions
+GET https://lookupfriseur.com/api/pages/terms-conditions
 ```
 
 ### Expected Response

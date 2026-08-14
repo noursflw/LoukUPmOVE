@@ -232,7 +232,7 @@ loukupm/
 
 ### Endpoint
 ```
-GET https://test.center-yazan.com/api/pages/terms-conditions
+GET https://lookupfriseur.com/api/pages/terms-conditions
 ```
 
 ### Expected Response

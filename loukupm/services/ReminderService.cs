@@ -15,7 +15,7 @@ namespace loukupm.services
         private readonly HttpClient _httpClient;
         private System.Timers.Timer _reminderTimer;
         private int _reminderIntervalMinutes = 60;
-        private const string REMINDER_API_URL = "https://test.center-yazan.com/api/appointments/reminders";
+        private const string REMINDER_API_URL = "https://lookupfriseur.com/api/appointments/reminders";
 
         public ReminderService(HttpClient httpClient)
         {

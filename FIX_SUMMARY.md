@@ -97,7 +97,7 @@ Console.WriteLine($"{appointmentDate:yyyy-MM-dd HH:mm:ss}"); // No escape needed
    - Check: Time is BEFORE appointment time
 
 3. **System sends to API**
-   - Endpoint: `https://test.center-yazan.com/api/appointments/reminders`
+   - Endpoint: `https://lookupfriseur.com/api/appointments/reminders`
    - Payload: `{ "appointment_id": 1, "remind_at": "2026-03-27T14:30:00" }`
 
 4. **API handles scheduling**

@@ -28,7 +28,7 @@ The TermsAndConditions page now loads content **dynamically from a CMS API** ins
    ↓
 5. ApiServices.GetTermsAndConditionsAsync() called
    ↓
-6. HTTP GET to: https://test.center-yazan.com/api/pages/terms-conditions
+6. HTTP GET to: https://lookupfriseur.com/api/pages/terms-conditions
    ↓
 7. JSON response deserialized into TermsConditionsData
    ↓

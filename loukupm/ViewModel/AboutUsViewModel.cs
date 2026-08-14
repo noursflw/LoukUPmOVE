@@ -27,12 +27,19 @@ namespace loukupm.ViewModel
         private string currentLanguage = "en";
 
         [ObservableProperty]
-        private MultiLanguageText emailLabel = new MultiLanguageText
-        {
-            Arabic = "البريد الإلكتروني",
-            English = "Email",
-            German = "E-Mail"
-        };
+        private string emailLabel = "Email";
+
+        /// <summary>
+        /// Localized hero subtitle text property for XAML binding.
+        /// Returns the subtitle in the current UI culture language.
+        /// </summary>
+        public string HeroSubtitle => AboutUsData?.Hero?.Subtitle?.GetText();
+
+        /// <summary>
+        /// Localized hero description text property for XAML binding.
+        /// Returns the description in the current UI culture language.
+        /// </summary>
+        public string HeroDescription => AboutUsData?.Hero?.Description?.GetText();
 
         public AboutUsViewModel()
         {
@@ -53,6 +60,11 @@ namespace loukupm.ViewModel
                 if (response?.Success == true && response.Data != null)
                 {
                     AboutUsData = response.Data;
+
+                    // Notify UI about the new localized text properties
+                    OnPropertyChanged(nameof(HeroSubtitle));
+                    OnPropertyChanged(nameof(HeroDescription));
+
                     Console.WriteLine($"✅ AboutUs data loaded successfully");
                 }
                 else
@@ -127,12 +139,14 @@ namespace loukupm.ViewModel
         }
 
         /// <summary>
-        /// Get text based on current language
+        /// Get text from either a MultiLanguageText or a plain string. Returns localized text when MultiLanguageText is supplied.
         /// </summary>
-        public string GetText(MultiLanguageText multiText)
+        public string GetText(object value)
         {
-            if (multiText == null) return string.Empty;
-            return multiText.GetText(CurrentLanguage);
+            if (value == null) return string.Empty;
+            if (value is MultiLanguageText multiText) return multiText.GetText(CurrentLanguage);
+            if (value is string s) return s;
+            return value.ToString();
         }
 
         /// <summary>
@@ -142,6 +156,8 @@ namespace loukupm.ViewModel
         {
             CurrentLanguage = languageCode;
             OnPropertyChanged(nameof(AboutUsData));
+            OnPropertyChanged(nameof(HeroSubtitle));
+            OnPropertyChanged(nameof(HeroDescription));
         }
 
         /// <summary>

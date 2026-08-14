@@ -10,8 +10,8 @@
 
 ### 1. **URL Encoding للحروف الخاصة** ⭐ الأهم
 ```
-❌ قبل: https://test.center-yazan.com/storage/services/Men's_Haircut.png
-✅ بعد:  https://test.center-yazan.com/storage/services/Men%27s_Haircut.png
+❌ قبل: https://lookupfriseur.com/storage/services/Men's_Haircut.png
+✅ بعد:  https://lookupfriseur.com/storage/services/Men%27s_Haircut.png
 ```
 المتصفح يحتاج `%27` بدلاً من `'`
 

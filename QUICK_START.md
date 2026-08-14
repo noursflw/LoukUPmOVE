@@ -155,7 +155,7 @@ var appointmentNotifications =
 ## 🔍 Troubleshooting
 
 ### No Data Shows
-1. Check API endpoint: `https://test.center-yazan.com/api/notifications`
+1. Check API endpoint: `https://lookupfriseur.com/api/notifications`
 2. Verify auth token is valid
 3. Check console for error messages
 4. Verify API response structure matches `NotificationApiResponse`
@@ -177,7 +177,7 @@ var appointmentNotifications =
 
 ## 📊 API Reference
 
-**Endpoint**: `https://test.center-yazan.com/api/notifications`
+**Endpoint**: `https://lookupfriseur.com/api/notifications`
 
 **Parameters**:
 - `per_page`: 15 (default)

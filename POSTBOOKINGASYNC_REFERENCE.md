@@ -262,7 +262,7 @@ private async Task SendBookingRequest(object bookingData, TimeSpan totalEndTime)
     try
     {
         var response = await _httpClient.PostAsync(
-            "https://test.center-yazan.com/api/bookings",
+            "https://lookupfriseur.com/api/bookings",
             content);
 
         if (response.IsSuccessStatusCode)

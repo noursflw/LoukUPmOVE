@@ -12,8 +12,8 @@ namespace loukupm.services
 {
     public class NotificationService
     {
-        private const string NotificationsBaseUrl = "https://test.center-yazan.com/api/notifications";
-        private const string UnreadNotificationsUrl = "https://test.center-yazan.com/api/notifications/unread";
+        private const string NotificationsBaseUrl = "https://lookupfriseur.com/api/notifications";
+        private const string UnreadNotificationsUrl = "https://lookupfriseur.com/api/notifications/unread";
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true

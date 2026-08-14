@@ -16,7 +16,7 @@
 ### 1. **Updated NotificationService** 
 - ✅ Now uses the existing working `Notification` model from AppViewModel
 - ✅ Maps `Notification` objects to `NotificationItem` objects
-- ✅ Uses correct API endpoint: `https://test.center-yazan.com/api/notifications?per_page=1000`
+- ✅ Uses correct API endpoint: `https://lookupfriseur.com/api/notifications?per_page=1000`
 - ✅ Added comprehensive error logging for API responses
 - ✅ Uses `NotificationApiResponse` wrapper that already exists
 
@@ -86,7 +86,7 @@ The page should now:
 ### Initial Load (Auto-loading)
 1. User opens NotificationPage
 2. `IsLoading = true` → Skeleton animation shows
-3. API call: `GET https://test.center-yazan.com/api/notifications?per_page=1000`
+3. API call: `GET https://lookupfriseur.com/api/notifications?per_page=1000`
 4. Notifications populate from response
 5. `IsLoading = false` → Notifications list displays
 
@@ -149,7 +149,7 @@ Open `loukupm\ViewModel\NotificationViewModel.cs` and add breakpoints on:
 
 ### Test with Postman
 ```
-GET https://test.center-yazan.com/api/notifications?per_page=1000
+GET https://lookupfriseur.com/api/notifications?per_page=1000
 Authorization: Bearer {your_token}
 ```
 

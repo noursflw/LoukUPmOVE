@@ -1,4 +1,4 @@
-﻿
+
 using loukupm.Model;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,7 @@ namespace loukupm.Services
                     Console.WriteLine($"⚠️ [DEBUG] Certificate validation bypassed: {errors}");
                     Console.WriteLine($"   Subject: {cert?.Subject}");
                     // Only accept specific test certificates, not any certificate
-                    if (cert?.Subject?.Contains("test.center-yazan.com") == true ||
+                    if (cert?.Subject?.Contains("https://lookupfriseur.com") == true ||
                         cert?.Subject?.Contains("test-23def.web.app") == true)
                     {
                         return true;
@@ -133,7 +133,7 @@ namespace loukupm.Services
                 var json = JsonSerializer.Serialize(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/verify-otp", content);
+                var response = await _httpClient.PostAsync("https://lookupfriseur.com/api/auth/verify-otp", content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 Console.WriteLine($"🔐 OTP Verification Response ({response.StatusCode}): {responseContent}");
@@ -200,7 +200,7 @@ namespace loukupm.Services
                 var json = JsonSerializer.Serialize(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/resend-verification-otp", content);
+                var response = await _httpClient.PostAsync("https://lookupfriseur.com/api/auth/resend-verification-otp", content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 Console.WriteLine($"📤 Resend OTP Response ({response.StatusCode}): {responseContent}");
@@ -253,7 +253,7 @@ namespace loukupm.Services
             {
                 await SetAuthorizationHeaderAsync();
 
-                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/providers?search=&branch_id=1&service_id=&sort_by=first_name&sort_direction=asc&per_page=15");
+                var response = await _httpClient.GetAsync("https://lookupfriseur.com/api/providers?search=&branch_id=1&service_id=&sort_by=first_name&sort_direction=asc&per_page=15");
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"❌ API error: {response.StatusCode}");
@@ -291,7 +291,7 @@ namespace loukupm.Services
                 await SetAuthorizationHeaderAsync();
 
                 // Build URL with pagination support
-                string url = $"https://test.center-yazan.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all";
+                string url = $"https://lookupfriseur.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all";
 
                 var response = await _httpClient.GetAsync(url);
 
@@ -349,7 +349,7 @@ namespace loukupm.Services
                 throw new Exception("المستخدم غير صالح أو لا يحتوي على رقم معرف (Id).");
 
             // رابط الطلب مع user_id و status فقط
-            string url = $"https://test.center-yazan.com/api/appointments?user_id={user.Id}&status={status}";
+            string url = $"https://lookupfriseur.com/api/appointments?user_id={user.Id}&status={status}";
 
             try
             {
@@ -392,7 +392,7 @@ namespace loukupm.Services
         {
             await SetAuthorizationHeaderAsync();
 
-            var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/profile");
+            var response = await _httpClient.GetAsync("https://lookupfriseur.com/api/profile");
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -416,8 +416,15 @@ namespace loukupm.Services
             try
             {
                 await SetAuthorizationHeaderAsync();
+                // Step 1: Read saved application language preference
+                string savedCulture = Preferences.Get("AppLanguage", "de-DE");
+                Console.WriteLine($"📍 [T&C API] Saved culture value: '{savedCulture}'");
 
-                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/services?category_id=&featured=&search=&sort_by=sort_order&sort_direction=asc&per_page=15");
+                // Step 2: Convert culture code to ISO language code (e.g., "de-DE" → "de", "ar-AR" → "ar")
+                string languageCode = savedCulture.Split('-')[0].ToLower();
+                Console.WriteLine($"📍 [T&C API] Generated language code: '{languageCode}'");
+                string url = $"https://lookupfriseur.com/api/services?category_id=&featured=&search=&sort_by=sort_order&sort_direction=asc&per_page=15&lang={languageCode}";
+                var response = await _httpClient.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"❌ API error: {response.StatusCode}");
@@ -456,7 +463,7 @@ namespace loukupm.Services
                 await SetAuthorizationHeaderAsync();
 
                 // محاولة أولاً: جلب خدمات البروفايدر من endpoint منفصل
-                string url = $"https://test.center-yazan.com/api/providers/{providerId}/services";
+                string url = $"https://lookupfriseur.com/api/providers/{providerId}/services";
 
                 var response = await _httpClient.GetAsync(url);
 
@@ -507,7 +514,7 @@ namespace loukupm.Services
                 var json = JsonSerializer.Serialize(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync("https://test.center-yazan.com/api/auth/refresh", content);
+                var response = await _httpClient.PostAsync("https://lookupfriseur.com/api/auth/refresh", content);
 
                 if (!response.IsSuccessStatusCode)
                     return false;
@@ -536,49 +543,51 @@ namespace loukupm.Services
             }
         }
 
-        public async Task<List<string>> GetCategoriesAsync()
-        {
-            try
-            {
+        //public async Task<List<string>> GetCategoriesAsync()
+        //{
+        //    try
+        //    {
 
-                await SetAuthorizationHeaderAsync();
+                
 
-                var url = "https://center-yazan.com/api/sandbox/categories";
+        //        await SetAuthorizationHeaderAsync();
 
-
-                var response = await _httpClient.GetAsync(url);
-
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var json = await response.Content.ReadAsStringAsync();
+        //        var url = "https://center-yazan.com/api/sandbox/categories";
 
 
-                    var result = JsonSerializer.Deserialize<CategoriesResponse>(json, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-                    var categories = result?.Categories ?? new List<string>();
+        //        var response = await _httpClient.GetAsync(url);
 
 
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            var json = await response.Content.ReadAsStringAsync();
 
-                    return categories;
-                }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
 
-                    return new List<string>();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[CATEGORIES EXCEPTION] {ex.Message}");
-                Console.WriteLine($"[CATEGORIES EXCEPTION StackTrace]: {ex.StackTrace}");
-                return new List<string>();
-            }
-        }
+        //            var result = JsonSerializer.Deserialize<CategoriesResponse>(json, new JsonSerializerOptions
+        //            {
+        //                PropertyNameCaseInsensitive = true
+        //            });
+
+        //            var categories = result?.Categories ?? new List<string>();
+
+
+
+        //            return categories;
+        //        }
+        //        else
+        //        {
+        //            var error = await response.Content.ReadAsStringAsync();
+
+        //            return new List<string>();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"[CATEGORIES EXCEPTION] {ex.Message}");
+        //        Console.WriteLine($"[CATEGORIES EXCEPTION StackTrace]: {ex.StackTrace}");
+        //        return new List<string>();
+        //    }
+        //}
         public async Task<List<string>> SearchServiessAsync(string searchTerm)
         {
             await SetAuthorizationHeaderAsync();
@@ -767,7 +776,7 @@ namespace loukupm.Services
 
                     // ✅ Log request details
                     Console.WriteLine("📤 Sending update request to API:");
-                    Console.WriteLine($"   URL: https://test.center-yazan.com/api/profile");
+                    Console.WriteLine($"   URL: https://lookupfriseur.com/api/profile");
                     Console.WriteLine($"   Method: POST");
                     Console.WriteLine($"   Content-Type: multipart/form-data");
                     Console.WriteLine($"   Authorization: Bearer [token]");
@@ -775,7 +784,7 @@ namespace loukupm.Services
 
                     // ✅ Send request
                     var httpResponse = await _httpClient.PostAsync(
-                        "https://test.center-yazan.com/api/profile",
+                        "https://lookupfriseur.com/api/profile",
                         form
                     );
 
@@ -877,11 +886,11 @@ namespace loukupm.Services
                 }
 
                 Console.WriteLine("📤 Sending delete profile request to API:");
-                Console.WriteLine("   URL: https://test.center-yazan.com/api/profile");
+                Console.WriteLine("   URL: https://lookupfriseur.com/api/profile");
                 Console.WriteLine("   Method: DELETE");
                 Console.WriteLine("   Authorization: Bearer [token]");
 
-                var httpResponse = await _httpClient.DeleteAsync("https://test.center-yazan.com/api/profile");
+                var httpResponse = await _httpClient.DeleteAsync("https://lookupfriseur.com/api/profile");
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
                 Console.WriteLine($"📊 Delete profile response: {httpResponse.StatusCode}");
@@ -931,7 +940,7 @@ namespace loukupm.Services
             await SetAuthorizationHeaderAsync();
 
             var response = await _httpClient.GetAsync(
-                "https://test.center-yazan.com/api/settings"
+                "https://lookupfriseur.com/api/settings"
             );
 
             if (!response.IsSuccessStatusCode)
@@ -960,7 +969,7 @@ namespace loukupm.Services
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PatchAsync(
-                $"https://test.center-yazan.com/api/settings/{key}",
+                $"https://lookupfriseur.com/api/settings/{key}",
                 content
             );
 
@@ -976,7 +985,7 @@ namespace loukupm.Services
 
             try
             {
-                string url = $"https://test.center-yazan.com/api/bookings/{bookingId}/cancel";
+                string url = $"https://lookupfriseur.com/api/bookings/{bookingId}/cancel";
 
                 // POST request without body (some APIs require this for cancel operations)
                 var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
@@ -1009,7 +1018,7 @@ namespace loukupm.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://test.center-yazan.com/api/about-us");
+                var response = await _httpClient.GetAsync("https://lookupfriseur.com/api/about-us");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -1051,7 +1060,7 @@ namespace loukupm.Services
                 Console.WriteLine($"📍 [HomeSliders] Generated language code: '{languageCode}'");
 
                 // Step 3: Build URL with language query parameter
-                string apiUrl = $"https://test.center-yazan.com/api/sliders/home?locale={languageCode}";
+                string apiUrl = $"https://lookupfriseur.com/api/sliders/home?locale={languageCode}";
                 Console.WriteLine($"📍 [HomeSliders] Final request URL: '{apiUrl}'");
 
                 var response = await _httpClient.GetAsync(apiUrl);
@@ -1111,7 +1120,7 @@ namespace loukupm.Services
                 Console.WriteLine($"📍 [T&C API] Generated language code: '{languageCode}'");
 
                 // Step 3: Build URL with language query parameter
-                string apiUrl = $"https://test.center-yazan.com/api/pages/terms-conditions?lang={languageCode}";
+                string apiUrl = $"https://lookupfriseur.com/api/pages/terms-conditions?lang={languageCode}";
                 Console.WriteLine($"📍 [T&C API] Final request URL: '{apiUrl}'");
 
                 var response = await _httpClient.GetAsync(apiUrl);
@@ -1210,7 +1219,7 @@ namespace loukupm.Services
                 Console.WriteLine($"📍 [PrivacyPolicy] Generated language code: '{languageCode}'");
 
                 // Step 3: Build URL with language query parameter
-                string apiUrl = $"https://test.center-yazan.com/api/pages/privacy-policy?lang={languageCode}";
+                string apiUrl = $"https://lookupfriseur.com/api/pages/privacy-policy?lang={languageCode}";
                 Console.WriteLine($"📍 [PrivacyPolicy] Final request URL: '{apiUrl}'");
 
                 var response = await _httpClient.GetAsync(apiUrl);
@@ -1276,7 +1285,7 @@ namespace loukupm.Services
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/profile/phone/send-otp",
+                    "https://lookupfriseur.com/api/profile/phone/send-otp",
                     content);
 
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -1371,7 +1380,7 @@ namespace loukupm.Services
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/profile/phone/verify-otp",
+                    "https://lookupfriseur.com/api/profile/phone/verify-otp",
                     content);
 
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -1510,7 +1519,7 @@ namespace loukupm.Services
                 Console.WriteLine($"📍 [Impressum] Generated language code: '{languageCode}'");
 
                 // Step 3: Build URL with language query parameter
-                string apiUrl = $"https://test.center-yazan.com/api/pages/impressum?lang={languageCode}";
+                string apiUrl = $"https://lookupfriseur.com/api/pages/impressum?lang={languageCode}";
                 Console.WriteLine($"📍 [Impressum] Final request URL: '{apiUrl}'");
 
                 var response = await _httpClient.GetAsync(apiUrl);

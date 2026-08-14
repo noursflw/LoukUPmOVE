@@ -137,7 +137,7 @@
 ## API Integration Testing
 
 ### API Endpoint Verification
-- [ ] Endpoint URL correct: `https://test.center-yazan.com/api/appointments/reminders`
+- [ ] Endpoint URL correct: `https://lookupfriseur.com/api/appointments/reminders`
 - [ ] Authentication header set correctly
 - [ ] Payload format correct: `{ "appointment_id": X, "remind_at": "YYYY-MM-DDTHH:mm:ss" }`
 - [ ] Response status is 200 or 201
@@ -145,7 +145,7 @@
 
 ### Example Test Request
 ```
-POST https://test.center-yazan.com/api/appointments/reminders
+POST https://lookupfriseur.com/api/appointments/reminders
 Authorization: Bearer [TOKEN]
 Content-Type: application/json
 

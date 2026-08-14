@@ -250,7 +250,7 @@ public partial class SinginPage : ContentPage
 
 
 
-    //        var response = await client.PostAsync("https://test.center-yazan.com/api/auth/register", content);
+    //        var response = await client.PostAsync("https://lookupfriseur.com/api/auth/register", content);
 
     //        var result = await response.Content.ReadAsStringAsync();
 
@@ -528,7 +528,7 @@ public partial class SinginPage : ContentPage
 
             var response = await client.PostAsync(
 
-                "https://test.center-yazan.com/api/auth/register",
+                "https://lookupfriseur.com/api/auth/register",
 
                 content);
 
@@ -916,7 +916,7 @@ public partial class SinginPage : ContentPage
 
 
 
-                    var response = await client.PostAsync("https://test.center-yazan.com/api/auth/google", content);
+                    var response = await client.PostAsync("https://lookupfriseur.com/api/auth/google", content);
 
                     var result = await response.Content.ReadAsStringAsync();
 

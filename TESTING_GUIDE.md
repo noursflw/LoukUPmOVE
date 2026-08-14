@@ -195,7 +195,7 @@ Then:
 // عند الضغط "حفظ":
 🔄 Starting user update...
 📸 Adding image: /path/to/image.jpg
-📡 Sending request to: https://test.center-yazan.com/api/users/profile/update
+📡 Sending request to: https://lookupfriseur.com/api/users/profile/update
 ✅ User updated successfully
 ✅ User loaded: محمد أحمد (الاسم الجديد)
 ```

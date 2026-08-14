@@ -117,7 +117,7 @@ public async Task<(List<Notification>, int, bool)> GetNotificationsAsync(
         await SetAuthorizationHeaderAsync();
 
         // ✅ Correct URL with pagination support
-        string url = $"https://test.center-yazan.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all";
+        string url = $"https://lookupfriseur.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all";
 
         var response = await _httpClient.GetAsync(url);
 

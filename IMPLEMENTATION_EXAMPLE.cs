@@ -94,7 +94,7 @@ namespace loukupm.ViewModel
 
                     // 🌐 إرسال الطلب إلى API
                     await SetAuthorizationHeaderAsync();
-                    string url = "https://test.center-yazan.com/api/users/profile/update";
+                    string url = "https://lookupfriseur.com/api/users/profile/update";
 
                     Console.WriteLine($"📡 Sending request to: {url}");
                     var response = await _httpClient.PostAsync(url, content);

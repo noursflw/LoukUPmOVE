@@ -34,7 +34,7 @@ Profile not updated
 
 ### Test 1A: Update First Name Only
 ```
-POST: https://test.center-yazan.com/api/profile
+POST: https://lookupfriseur.com/api/profile
 Headers:
   Authorization: Bearer [YOUR_TOKEN]
   Content-Type: multipart/form-data
@@ -49,14 +49,14 @@ Expected Response: ✅
   "data": {
     "id": 11,
     "first_name": "Nour",
-    "profile_image_url": "https://test.center-yazan.com/storage/..."
+    "profile_image_url": "https://lookupfriseur.com/storage/..."
   }
 }
 ```
 
 ### Test 1B: Update Image Only
 ```
-POST: https://test.center-yazan.com/api/profile
+POST: https://lookupfriseur.com/api/profile
 Headers:
   Authorization: Bearer [YOUR_TOKEN]
   Content-Type: multipart/form-data
@@ -71,14 +71,14 @@ Expected Response: ✅
   "data": {
     "id": 11,
     "first_name": "Nour",
-    "profile_image_url": "https://test.center-yazan.com/storage/new_image.jpg"
+    "profile_image_url": "https://lookupfriseur.com/storage/new_image.jpg"
   }
 }
 ```
 
 ### Test 1C: Update Both
 ```
-POST: https://test.center-yazan.com/api/profile
+POST: https://lookupfriseur.com/api/profile
 Headers:
   Authorization: Bearer [YOUR_TOKEN]
   Content-Type: multipart/form-data
@@ -94,7 +94,7 @@ Expected Response: ✅
   "data": {
     "id": 11,
     "first_name": "Nour",
-    "profile_image_url": "https://test.center-yazan.com/storage/new_image.jpg"
+    "profile_image_url": "https://lookupfriseur.com/storage/new_image.jpg"
   }
 }
 ```
@@ -111,7 +111,7 @@ The `UpdateUserProfileAsync` method has comprehensive logging. Look for:
 📋 Field added: first_name = 'Nour'
 📋 Field added: image = file 'photo.jpg' (size: 45332 bytes, content-type: image/jpeg)
 📤 Sending update request to API:
-   URL: https://test.center-yazan.com/api/profile
+   URL: https://lookupfriseur.com/api/profile
    Method: POST
    Content-Type: multipart/form-data
    Authorization: Bearer [token]

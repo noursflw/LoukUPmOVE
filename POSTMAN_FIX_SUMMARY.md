@@ -101,7 +101,7 @@ catch { }
 📝 Field: first_name = Ahmed
 📸 Adding image: /path/to/avatar.jpg
 🖼️ Content-Type: image/jpeg
-📡 Sending request to: https://test.center-yazan.com/api/profile
+📡 Sending request to: https://lookupfriseur.com/api/profile
 🔐 Headers: Authorization Bearer Token added
 📥 Response Status: OK
 📥 Response Body: {"success":true,"data":{"first_name":"Ahmed","avatar":"https://..."}}
@@ -128,7 +128,7 @@ catch { }
 ### Request Format (Multipart/Form-Data)
 ```
 POST /api/profile HTTP/1.1
-Host: test.center-yazan.com
+Host: https://lookupfriseur.com
 Authorization: Bearer {token}
 Content-Type: multipart/form-data; boundary=----...
 
@@ -233,7 +233,7 @@ Look for lines like:
 ### Step 3: Update API Endpoint
 If your endpoint differs:
 ```csharp
-string url = "https://test.center-yazan.com/api/profile"; // Change this
+string url = "https://lookupfriseur.com/api/profile"; // Change this
 ```
 
 ### Step 4: Check Token

@@ -57,7 +57,7 @@ Result: Nothing is sent → Nothing happens → Appears broken
 
 ```
 1. Open Postman
-2. POST to: https://test.center-yazan.com/api/profile
+2. POST to: https://lookupfriseur.com/api/profile
 3. Add header: Authorization: Bearer [YOUR_TOKEN]
 4. Body → form-data:
    - KEY: first_name | VALUE: TestName | TYPE: Text

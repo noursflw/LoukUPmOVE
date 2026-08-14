@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -38,7 +38,8 @@ namespace loukupm.ViewModel
         [ObservableProperty] private bool isLoadNotifiction;
         [ObservableProperty] private bool isLoadUser;
         [ObservableProperty] private bool isLoggingOut;
-
+        [ObservableProperty] private bool isRefreshing = false;
+        [ObservableProperty] private bool hasNoHomeData = false;
 
 
         [ObservableProperty] private ObservableCollection<Servies> services = new();
@@ -102,6 +103,7 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private HomeSliderViewModel homeSliderVM;
         public IAsyncRelayCommand RefreshServicesCommand { get; }
+        public IAsyncRelayCommand RefreshHomeCommand { get; private set; }
 
         private readonly ApiServices _apiServices = new ApiServices();
         private readonly services.NotificationStateService _notificationState;
@@ -233,6 +235,7 @@ namespace loukupm.ViewModel
 
 
             LoadAppointmentsCommand = new AsyncRelayCommand(LoadBookingsAsync);
+            RefreshHomeCommand = new AsyncRelayCommand(RefreshHomeDataAsync);
             _ = InitializeAsync();
         }
 
@@ -240,13 +243,15 @@ namespace loukupm.ViewModel
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("🔄 [InitializeAsync] Starting initial data load...");
+
                 await LoadUser();
 
                 _token = await SecureStorage.GetAsync("auth_token") ?? string.Empty;
 
                 await LoadBookingsAsync();
 
-                
+
                 var homeSliderTask = Task.CompletedTask;
 
                 if (HomeSliderVM.Items.Count == 0)
@@ -260,10 +265,20 @@ namespace loukupm.ViewModel
                     LoadServicesAsync(),
                     homeSliderTask
                 );
+
+                // Evaluate data state after initial load
+                bool hasUserData = currentUser != null && !string.IsNullOrWhiteSpace(currentUser.UserName);
+                bool hasServices = Services != null && Services.Count > 0;
+                bool hasWorkTeams = WorkTeams != null && WorkTeams.Count > 0;
+
+                HasNoHomeData = !hasUserData || (!hasServices && !hasWorkTeams);
+
+                System.Diagnostics.Debug.WriteLine($"✅ [InitializeAsync] Initialization complete. User={hasUserData}, Services={hasServices}, Teams={hasWorkTeams}, Sliders={HomeSliderVM.Items.Count}, NoData={HasNoHomeData}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                System.Diagnostics.Debug.WriteLine($"❌ [InitializeAsync] Error: {ex.Message}");
+                HasNoHomeData = true;
             }
         }
 
@@ -397,6 +412,85 @@ namespace loukupm.ViewModel
             IsloadBooking = true;
             IsLoadNotifiction = true;
         }
+
+        private async Task RefreshHomeDataAsync()
+        {
+            try
+            {
+                IsRefreshing = true;
+                HasNoHomeData = false;
+
+                // تحديث البيانات الثلاث بشكل متزامن + Home Slider
+                var sliderRefreshTask = RefreshHomeSliderAsync();
+
+                await Task.WhenAll(
+                    LoadUserAsync(),
+                    LoadServicesAsync(),
+                    LoadWorkTeamsAsync(),
+                    sliderRefreshTask
+                );
+
+                // التحقق من وجود بيانات
+                bool hasUserData = currentUser != null && !string.IsNullOrWhiteSpace(currentUser.UserName);
+                bool hasServices = Services != null && Services.Count > 0;
+                bool hasWorkTeams = WorkTeams != null && WorkTeams.Count > 0;
+
+                // يعتبر عدم وجود بيانات إذا لم تكن بيانات المستخدم موجودة أو إذا كانت كلا من الخدمات والفرق فارغة
+                // يعتبر عدم وجود بيانات إذا لم تكن أي من البيانات الثلاث موجودة
+                // أو إذا لم تكن بيانات المستخدم موجودة (بيانات حرجة)
+                HasNoHomeData = !hasUserData || (!hasServices && !hasWorkTeams);
+
+                System.Diagnostics.Debug.WriteLine($"🔄 [RefreshHomeDataAsync] Data Status: User={hasUserData}, Services={hasServices}, Teams={hasWorkTeams}, Sliders={HomeSliderVM.Items.Count}, NoData={HasNoHomeData}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ [RefreshHomeDataAsync] Error refreshing home data: {ex.Message}");
+                HasNoHomeData = true;
+            }
+            finally
+            {
+                IsRefreshing = false;
+                System.Diagnostics.Debug.WriteLine($"✅ [RefreshHomeDataAsync] Refresh complete. IsRefreshing={IsRefreshing}, HasNoHomeData={HasNoHomeData}");
+            }
+        }
+
+        /// <summary>
+        /// Refresh home slider data independently.
+        /// Failures here don't break the main HomePage loading.
+        /// </summary>
+        private async Task RefreshHomeSliderAsync()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("🔄 [RefreshHomeSliderAsync] Starting home slider refresh...");
+                await HomeSliderVM.LoadSlidersAsync();
+                System.Diagnostics.Debug.WriteLine($"✅ [RefreshHomeSliderAsync] Home slider refresh complete. Items={HomeSliderVM.Items.Count}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"⚠️ [RefreshHomeSliderAsync] Home slider refresh error (non-blocking): {ex.Message}");
+                // Error handling is done inside HomeSliderViewModel
+                // We don't rethrow to prevent breaking the entire HomePage refresh
+            }
+        }
+
+        private async Task LoadUserAsync()
+        {
+            try
+            {
+                IsLoadUser = true;
+                await LoadUser();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading user: {ex.Message}");
+            }
+            finally
+            {
+                IsLoadUser = false;
+            }
+        }
+
         public IAsyncRelayCommand LoadAppointmentsCommand { get; private set; }
         private async Task LoadBookingsAsync()
         {
@@ -530,7 +624,11 @@ namespace loukupm.ViewModel
 
 
                 if (data == null || data.Count == 0)
+                {
+                    WorkTeams.Clear();
+                    FilteredWorkTeams.Clear();
                     return;
+                }
 
 
                 WorkTeams.Clear();
@@ -540,15 +638,15 @@ namespace loukupm.ViewModel
                     WorkTeams.Add(member);
 
 
-                FilteredWorkTeams = new ObservableCollection<WorkTeam>(WorkTeams);
-
-                IsWorkTeamLoad = false;
-
+                // 🔥 Clear and repopulate FilteredWorkTeams instead of reassigning (triggers UI updates)
+                FilteredWorkTeams.Clear();
+                foreach (var team in WorkTeams)
+                    FilteredWorkTeams.Add(team);
 
             }
             catch (Exception ex)
             {
-
+                System.Diagnostics.Debug.WriteLine($"Error loading work teams: {ex.Message}");
             }
             finally
             {
@@ -649,19 +747,23 @@ namespace loukupm.ViewModel
                 IsCatogory = true;
 
                 var data = await _apiServices.GetServiesAsync();
-                if (data == null || data.Count == 0)
-                    return;
 
                 Services.Clear();
+                FilteredServices.Clear();
+                Categories.Clear();
+
+                if (data == null || data.Count == 0)
+                {
+                    SelectedCategory = null;
+                    return;
+                }
+
                 foreach (var item in data)
                     Services.Add(item);
 
                 // 🔥 مهم: لا new
-                FilteredServices.Clear();
                 foreach (var item in Services)
                     FilteredServices.Add(item);
-
-                Categories.Clear();
 
                 var uniqueCategories = Services
                     .Where(s => s.Category != null)
@@ -670,7 +772,6 @@ namespace loukupm.ViewModel
 
                 foreach (var cat in uniqueCategories)
                     Categories.Add(cat);
-
 
                 SelectedCategory = null;
             }
@@ -945,7 +1046,7 @@ namespace loukupm.ViewModel
             try
             {
                 var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/bookings",
+                    "https://lookupfriseur.com/api/bookings",
                     content);
 
                 if (response.IsSuccessStatusCode)
@@ -1516,7 +1617,7 @@ namespace loukupm.ViewModel
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/profile/change-password",
+                    "https://lookupfriseur.com/api/profile/change-password",
                     content);
 
 
@@ -1882,7 +1983,7 @@ namespace loukupm.ViewModel
 
 
 
-                string url = $"https://test.center-yazan.com/api/availability/provider" +
+                string url = $"https://lookupfriseur.com/api/availability/provider" +
                     $"?provider_id={providerId}" +
                     $"&service_id={serviceId}" +
                     $"&date={dateStr}" +
@@ -2206,7 +2307,7 @@ namespace loukupm.ViewModel
 
 
                 var response = await _httpClient.PostAsync(
-                    "https://test.center-yazan.com/api/appointments/reminders",
+                    "https://lookupfriseur.com/api/appointments/reminders",
                     content);
 
                 if (response.IsSuccessStatusCode)

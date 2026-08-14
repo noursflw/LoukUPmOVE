@@ -1,27 +1,27 @@
-# ?? ÊßÇãá OTP ãÚ Verificationpage
+# ?? ï¿½ï¿½ï¿½ï¿½ï¿½ OTP ï¿½ï¿½ Verificationpage
 
-## ?? ãÇ íÌÈ Úãáå İí Verificationpage:
+## ?? ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Verificationpage:
 
-ÚäÏãÇ íäÊŞá ÇáãÓÊÎÏã ãä RestPassword Åáì Verificationpage¡ íÌÈ Ãä:
+ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ RestPassword ï¿½ï¿½ï¿½ Verificationpageï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½:
 
-### 1. ÇÓÊŞÈÇá ÇáÈÑíÏ ÇáÅáßÊÑæäí
+### 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ```csharp
-// İí Verificationpage.xaml.cs
+// ï¿½ï¿½ Verificationpage.xaml.cs
 private string _userEmail;
 
 protected override void OnAppearing()
 {
     base.OnAppearing();
     
-    // ÇáÍÕæá Úáì ÇáÈÑíá ãä ViewModel
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ViewModel
     var viewModel = BindingContext as AppViewModel;
-    _userEmail = viewModel.Email; // ÇÓÊÎÏã äİÓ ÇáÈÑíá ÇáãÑÓá
+    _userEmail = viewModel.Email; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 ```
 
-### 2. ÇáÊÍŞŞ ãä ÑãÒ OTP
+### 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ OTP
 ```csharp
-// ÚäÏ ÅÏÎÇá ÇáÑãÒ ÇáßÇãá
+// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 private async Task VerifyOtpAsync(string code)
 {
     try
@@ -30,37 +30,37 @@ private async Task VerifyOtpAsync(string code)
         
         var payload = new 
         { 
-            email = _userEmail,      // ÇáÈÑíá ÇáãÏÎá ÓÇÈŞÇğ
-            code = code              // ÇáÑãÒ ÇáãÏÎá İí ÇáÕİÍÉ
+            email = _userEmail,      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            code = code              // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         };
         
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         
         var response = await client.PostAsync(
-            "https://test.center-yazan.com/api/auth/verify-otp",
+            "https://lookupfriseur.com/api/auth/verify-otp",
             content
         );
         
         if (response.IsSuccessStatusCode)
         {
-            // ? OTP ÕÍíÍ - ÇáÇäÊŞÇá áÅÚÇÏÉ ÊÚííä ßáãÉ ÇáãÑæÑ
+            // ? OTP ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             await Navigation.PushAsync(new ResetPasswordPage(_userEmail));
         }
         else
         {
-            // ? OTP ÛíÑ ÕÍíÍ
-            await DisplayAlert("ÎØÃ", "ÇáÑãÒ ÛíÑ ÕÍíÍ", "ÍÓäÇğ");
+            // ? OTP ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            await DisplayAlert("ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½");
         }
     }
     catch (Exception ex)
     {
-        await DisplayAlert("ÎØÃ", "İÔá ÇáÊÍŞŞ", "ÍÓäÇğ");
+        await DisplayAlert("ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½");
     }
 }
 ```
 
-### 3. ÈÚÏ ÇáÊÍŞŞ - ÅÚÇÏÉ ÊÚííä ßáãÉ ÇáãÑæÑ
+### 3. ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ```csharp
 // ResetPasswordPage.xaml.cs
 public partial class ResetPasswordPage : ContentPage
@@ -90,24 +90,24 @@ public partial class ResetPasswordPage : ContentPage
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             
             var response = await client.PostAsync(
-                "https://test.center-yazan.com/api/auth/reset-password",
+                "https://lookupfriseur.com/api/auth/reset-password",
                 content
             );
             
             if (response.IsSuccessStatusCode)
             {
-                // ? Êã ÊÍÏíË ßáãÉ ÇáãÑæÑ ÈäÌÇÍ
-                await DisplayAlert("äÌÇÍ", "Êã ÊÍÏíË ßáãÉ ÇáãÑæÑ", "ÍÓäÇğ");
+                // ? ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+                await DisplayAlert("ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½");
                 await Shell.Current.GoToAsync("//LoginPage");
             }
             else
             {
-                await DisplayAlert("ÎØÃ", "İÔá ÊÍÏíË ßáãÉ ÇáãÑæÑ", "ÍÓäÇğ");
+                await DisplayAlert("ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½");
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("ÎØÃ", "ÍÏË ÎØÃ", "ÍÓäÇğ");
+            await DisplayAlert("ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½");
         }
     }
 }
@@ -115,53 +115,53 @@ public partial class ResetPasswordPage : ContentPage
 
 ---
 
-## ?? ÎØæÇÊ ÇáÚãáíÉ ÇáßÇãáÉ:
+## ?? ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
 
 ```
 1?? RestPassword
    ?
-   ÇáãÓÊÎÏã íÏÎá ÇáÈÑíÏ ÇáÅáßÊÑæäí
+   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    ?
-   ÅÑÓÇá OTP Åáì ÇáÎÇÏã
+   ï¿½ï¿½ï¿½ï¿½ï¿½ OTP ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    ?
-   ? ÇáäÌÇÍ ? ÇáÇäÊŞÇá
+   ? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 2?? Verificationpage
    ?
-   ÇáãÓÊÎÏã íÏÎá ÑãÒ OTP ãä ÇáÈÑíÏ
+   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ OTP ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    ?
-   ÇáÊÍŞŞ ãä ÇáÑãÒ ÚÈÑ API
+   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ API
    ?
-   ? ÕÍíÍ ? ÇáÇäÊŞÇá
+   ? ï¿½ï¿½ï¿½ï¿½ ? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 3?? ResetPasswordPage
    ?
-   ÇáãÓÊÎÏã íÏÎá ßáãÉ ÇáãÑæÑ ÇáÌÏíÏÉ
+   ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    ?
-   ÍİÙ ßáãÉ ÇáãÑæÑ ÇáÌÏíÏÉ
+   ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
    ?
-   ? ÇáäÌÇÍ ? ÇáÚæÏÉ áÊÓÌíá ÇáÏÎæá
+   ? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ```
 
 ---
 
-## ?? ãÚÇííÑ Çá API:
+## ?? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ API:
 
-### **1. ØáÈ OTP**
+### **1. ï¿½ï¿½ï¿½ OTP**
 ```
 POST /api/auth/request-otp
 Body: { "email": "user@example.com" }
 Response: 200 OK
 ```
 
-### **2. ÇáÊÍŞŞ ãä OTP**
+### **2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ OTP**
 ```
 POST /api/auth/verify-otp
 Body: { "email": "user@example.com", "code": "123456" }
 Response: 200 OK
 ```
 
-### **3. ÅÚÇÏÉ ÊÚííä ßáãÉ ÇáãÑæÑ**
+### **3. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**
 ```
 POST /api/auth/reset-password
 Body: { 
@@ -174,17 +174,17 @@ Response: 200 OK
 
 ---
 
-## ? äŞÇØ ãåãÉ:
+## ? ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:
 
-? ÇÍİÙ ÇáÈÑíá İí ãÊÛíÑ ÚäÏ ÇáÇäÊŞÇá
-? ÇÓÊÎÏã äİÓ ÇáÈÑíá İí ÌãíÚ ÇáØáÈÇÊ
-? ÊÍŞŞ ãä ÇáÇÊÕÇá İí ßá ÎØæÉ
-? ÚÑøİ ÑÓÇÆá ÎØÃ æÇÖÍÉ
-? ÃÚÏ ÇáãÍÇæáÉ ÊáŞÇÆíÇğ ÚäÏ ÇáİÔá
+? ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+? ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+? ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+? ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 
 ---
 
-## ?? ÇáãáÎÕ:
+## ?? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
 
 ```
 RestPassword ??? OTP Request ??? Verificationpage

@@ -54,12 +54,12 @@
 ### المشكلة 1️⃣: URL Encoding - الحروف الخاصة
 ```
 ❌ قبل:
-https://test.center-yazan.com/storage/services/Men's_Haircut_1.png
+https://lookupfriseur.com/storage/services/Men's_Haircut_1.png
                                               ^
                                         هذا الـ ' يسبب 404
 
 ✅ بعد:
-https://test.center-yazan.com/storage/services/Men%27s_Haircut_1.png
+https://lookupfriseur.com/storage/services/Men%27s_Haircut_1.png
                                               ^^^
                                       تم تحويله إلى %27
 ```

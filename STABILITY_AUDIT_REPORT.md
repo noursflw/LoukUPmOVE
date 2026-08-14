@@ -527,7 +527,7 @@ handler.ServerCertificateCustomValidationCallback = (message, cert, chain, error
     {
         Console.WriteLine($"⚠️ Certificate validation bypassed: {errors}");
         // Only accept SPECIFIC test certificates
-        if (cert?.Subject?.Contains("test.center-yazan.com") == true ||
+        if (cert?.Subject?.Contains("https://lookupfriseur.com") == true ||
             cert?.Subject?.Contains("test-23def.web.app") == true)
         {
             return true;

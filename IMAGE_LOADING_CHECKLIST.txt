@@ -62,8 +62,8 @@
 /*
 📡 Loading work teams...
 👤 Member: Jasmine Lee
-   📷 Image URL: https://test.center-yazan.com/storage/avatars/6.jpg
-   📷 ImageSafe: https://test.center-yazan.com/storage/avatars/6.jpg
+   📷 Image URL: https://lookupfriseur.com/storage/avatars/6.jpg
+   📷 ImageSafe: https://lookupfriseur.com/storage/avatars/6.jpg
 ✅ Loaded 1 work team members
 
 // عند عرض الحجوزات:
@@ -74,7 +74,7 @@
 ✅ Loaded 1 appointments. HasNoAppointments: False
 
 // عند تحميل الصورة:
-✅ Image URL converted: https://test.center-yazan.com/storage/avatars/6.jpg
+✅ Image URL converted: https://lookupfriseur.com/storage/avatars/6.jpg
 // أو في حالة الحروف الخاصة:
-✅ URL encoded: https://test.center-yazan.com/storage/services/images/1/Men%27s_Haircut_1.png
+✅ URL encoded: https://lookupfriseur.com/storage/services/images/1/Men%27s_Haircut_1.png
 */

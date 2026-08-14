@@ -49,7 +49,7 @@ public class NotificationService
 - Properly handles authorization via SecureStorage token
 - Maps backend `Notification` (int ID) to frontend `NotificationItem` (string ID)
 - Comprehensive error logging
-- API endpoint: `https://test.center-yazan.com/api/notifications?per_page=1000`
+- API endpoint: `https://lookupfriseur.com/api/notifications?per_page=1000`
 
 ---
 
@@ -164,7 +164,7 @@ public partial class NotifictionPage : ContentPage
    ↓
 5. NotificationService.GetAllNotificationsAsync() called
    ↓
-6. API Request: GET https://test.center-yazan.com/api/notifications?per_page=1000
+6. API Request: GET https://lookupfriseur.com/api/notifications?per_page=1000
    ↓
 7. Response parsed to Notification models
    ↓

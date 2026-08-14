@@ -20,7 +20,7 @@ namespace loukupm.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ApiServices _apiServices;
-        private const string BaseApiUrl = "https://test.center-yazan.com/api/settings";
+        private const string BaseApiUrl = "https://lookupfriseur.com/api/settings";
 
         public SettingsService(HttpClient httpClient, ApiServices apiServices)
         {

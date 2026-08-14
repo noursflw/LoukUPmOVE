@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views;
 using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
 using loukupm.Services;
@@ -103,7 +103,7 @@ namespace loukupm.View
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync(
-                    "https://test.center-yazan.com/api/auth/forgot-password",
+                    "https://lookupfriseur.com/api/auth/forgot-password",
                     content
                 );
 

@@ -64,7 +64,7 @@ public async Task<(List<Notification>, int, bool)> GetNotificationsAsync(
     int perPage = 15)  // Pagination parameters
 {
     var response = await _httpClient.GetAsync(
-        "https://test.center-yazan.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all");
+        "https://lookupfriseur.com/api/notifications?per_page={perPage}&cursor={cursor ?? ""}&status=all");
 
     if (!response.IsSuccessStatusCode)
         return (new List<Notification>(), 0, false);

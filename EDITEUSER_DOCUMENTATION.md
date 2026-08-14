@@ -236,7 +236,7 @@ private async Task UpdateUserInfo()
 
 ### Endpoint:
 ```
-POST https://test.center-yazan.com/api/users/profile/update
+POST https://lookupfriseur.com/api/users/profile/update
 ```
 
 ### Request Headers:

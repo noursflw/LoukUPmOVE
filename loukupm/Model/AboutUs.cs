@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
+using loukupm.Converter;
 
 namespace loukupm.Model
 {
@@ -55,7 +56,7 @@ namespace loukupm.Model
     public partial class HeroSection : ObservableObject
     {
         [JsonPropertyName("title")]
-        public MultiLanguageText Title { get; set; }
+        public string Title { get; set; }
 
         [JsonPropertyName("subtitle")]
         public MultiLanguageText Subtitle { get; set; }
@@ -82,6 +83,7 @@ namespace loukupm.Model
     /// <summary>
     /// Multi-language text support
     /// </summary>
+    [JsonConverter(typeof(MultiLanguageTextJsonConverter))]
     public partial class MultiLanguageText : ObservableObject
     {
         [JsonPropertyName("de")]
@@ -125,7 +127,7 @@ namespace loukupm.Model
         public string Email { get; set; }
 
         [JsonPropertyName("opening_hours")]
-        public MultiLanguageText OpeningHours { get; set; }
+        public string OpeningHours { get; set; }
     }
 
     /// <summary>
@@ -137,7 +139,7 @@ namespace loukupm.Model
         public string Value { get; set; }
 
         [JsonPropertyName("label")]
-        public MultiLanguageText Label { get; set; }
+        public string Label { get; set; }
 
         [JsonPropertyName("icon")]
         public string Icon { get; set; }
@@ -149,7 +151,7 @@ namespace loukupm.Model
     public partial class SocialSection : ObservableObject
     {
         [JsonPropertyName("title")]
-        public MultiLanguageText Title { get; set; }
+        public string Title { get; set; }
 
         [JsonPropertyName("links")]
         public ObservableCollection<SocialLink> Links { get; set; }
@@ -202,7 +204,7 @@ namespace loukupm.Model
         public string Key { get; set; }
 
         [JsonPropertyName("label")]
-        public MultiLanguageText Label { get; set; }
+        public string Label { get; set; }
 
         [JsonPropertyName("url")]
         public string Url { get; set; }
@@ -217,10 +219,10 @@ namespace loukupm.Model
         public string Icon { get; set; }
 
         [JsonPropertyName("title")]
-        public MultiLanguageText Title { get; set; }
+        public string Title { get; set; }
 
         [JsonPropertyName("description")]
-        public MultiLanguageText Description { get; set; }
+        public string Description { get; set; }
 
         public string IconToImage =>
             Icon switch
@@ -238,13 +240,13 @@ namespace loukupm.Model
     public partial class TeamMember : ObservableObject
     {
         [JsonPropertyName("name")]
-        public MultiLanguageText Name { get; set; }
+        public string Name { get; set; }
 
         [JsonPropertyName("position")]
-        public MultiLanguageText Position { get; set; }
+        public string Position { get; set; }
 
         [JsonPropertyName("description")]
-        public MultiLanguageText Description { get; set; }
+        public string Description { get; set; }
 
         [JsonPropertyName("image_url")]
         public string ImageUrl { get; set; }
@@ -262,10 +264,10 @@ namespace loukupm.Model
         public bool Enabled { get; set; }
 
         [JsonPropertyName("title")]
-        public MultiLanguageText Title { get; set; }
+        public string Title { get; set; }
 
         [JsonPropertyName("description")]
-        public MultiLanguageText Description { get; set; }
+        public string Description { get; set; }
     }
 
     /// <summary>

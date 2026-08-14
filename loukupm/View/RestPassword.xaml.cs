@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using loukupm.View.MassgingApp;
@@ -142,7 +142,7 @@ public partial class RestPassword : ContentPage
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                "https://test.center-yazan.com/api/auth/request-otp",
+                "https://lookupfriseur.com/api/auth/request-otp",
                 content
             );
 

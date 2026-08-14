@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using loukupm.Langue;
@@ -116,7 +116,7 @@ public partial class LoginPage : ContentPage
             var json = JsonSerializer.Serialize(loginData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("https://test.center-yazan.com/api/auth/login", content);
+            var response = await client.PostAsync("https://lookupfriseur.com/api/auth/login", content);
             var result = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
@@ -159,8 +159,9 @@ public partial class LoginPage : ContentPage
                 await SafeShowPopupAsync(popup);
             }
         }
-        catch
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"Login failed: {ex}");
             var popup = new NoServerResponse();
             await SafeShowPopupAsync(popup);
         }
@@ -324,7 +325,7 @@ public partial class LoginPage : ContentPage
                     var json = JsonSerializer.Serialize(googleAuthData);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    var response = await client.PostAsync("https://test.center-yazan.com/api/auth/google", content);
+                    var response = await client.PostAsync("https://lookupfriseur.com/api/auth/google", content);
                     var result = await response.Content.ReadAsStringAsync();
 
                     if (response.IsSuccessStatusCode)

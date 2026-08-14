@@ -299,7 +299,7 @@ finally
 
 ## API Endpoint Reference
 
-**URL**: `https://test.center-yazan.com/api/notifications`
+**URL**: `https://lookupfriseur.com/api/notifications`
 
 **Parameters**:
 - `per_page`: Items per page (default: 15)

@@ -41,14 +41,14 @@ Make sure **at least ONE** of these is true:
 
 **Test Update Name:**
 ```
-POST https://test.center-yazan.com/api/profile
+POST https://lookupfriseur.com/api/profile
 Header: Authorization: Bearer [YOUR_TOKEN]
 Body (form-data): first_name = "Nour"
 ```
 
 **Test Update Image:**
 ```
-POST https://test.center-yazan.com/api/profile
+POST https://lookupfriseur.com/api/profile
 Header: Authorization: Bearer [YOUR_TOKEN]
 Body (form-data): image = [SELECT_IMAGE_FILE]
 ```
@@ -87,7 +87,7 @@ The app now has **detailed debug logging**. When you click Update:
 📊 Data: Present
    - Id: 11
    - FirstName: Nour
-   - ProfileImageUrl: https://test.center-yazan.com/storage/...
+   - ProfileImageUrl: https://lookupfriseur.com/storage/...
 ============================================================
 ```
 

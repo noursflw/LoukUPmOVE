@@ -69,7 +69,7 @@
 
 ### API Integration
 ```
-Endpoint: https://test.center-yazan.com/api/notifications
+Endpoint: https://lookupfriseur.com/api/notifications
 Method: GET
 Auth: Bearer token (automatic)
 Parameters: per_page, cursor, status

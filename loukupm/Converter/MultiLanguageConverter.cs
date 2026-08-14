@@ -13,15 +13,21 @@ namespace loukupm.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not MultiLanguageText multiText)
-                return string.Empty;
+            // If the API already returns a plain string, pass it through
+            if (value is string s)
+                return s;
 
-            // Use the current app culture from LocalizationResourcesManager
-            var currentCulture = LocalizationResourcesManager.Instanse.CurrentCulture;
-            string languageCode = currentCulture?.TwoLetterISOLanguageName ?? "en";
+            if (value is MultiLanguageText multiText)
+            {
+                // Use the current app culture from LocalizationResourcesManager
+                var currentCulture = LocalizationResourcesManager.Instanse.CurrentCulture;
+                string languageCode = currentCulture?.TwoLetterISOLanguageName ?? "en";
 
-            // Delegate to MultiLanguageText's GetText method for consistent fallback logic
-            return multiText.GetText(languageCode);
+                // Delegate to MultiLanguageText's GetText method for consistent fallback logic
+                return multiText.GetText(languageCode);
+            }
+
+            return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

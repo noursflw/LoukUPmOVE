@@ -8,7 +8,7 @@
 ```
 1. Open Postman
 2. Create new POST request
-3. URL: https://test.center-yazan.com/api/profile
+3. URL: https://lookupfriseur.com/api/profile
 4. Headers tab:
    - Authorization: Bearer [PASTE_YOUR_TOKEN]
 5. Body tab:
@@ -23,7 +23,7 @@
 ```
 1. Open Postman
 2. Create new POST request
-3. URL: https://test.center-yazan.com/api/profile
+3. URL: https://lookupfriseur.com/api/profile
 4. Headers tab:
    - Authorization: Bearer [PASTE_YOUR_TOKEN]
 5. Body tab:
@@ -65,7 +65,7 @@ Expected Console Output:
 ✅ Authorization: Bearer token present (length: 123)
 📋 Field added: first_name = 'TestName'
 📤 Sending update request to API:
-   URL: https://test.center-yazan.com/api/profile
+   URL: https://lookupfriseur.com/api/profile
    Method: POST
    Content-Type: multipart/form-data
    Authorization: Bearer [token]
@@ -82,10 +82,10 @@ Expected Console Output:
 📊 Data: Present
    - Id: 11
    - FirstName: TestName
-   - ProfileImageUrl: https://test.center-yazan.com/storage/...
+   - ProfileImageUrl: https://lookupfriseur.com/storage/...
 ============================================================
 
-✅ Profile image updated from API: https://test.center-yazan.com/storage/...
+✅ Profile image updated from API: https://lookupfriseur.com/storage/...
 ```
 
 #### Test Scenario B: Update Image
@@ -110,7 +110,7 @@ Expected Console Output:
 ✅ Authorization: Bearer token present (length: 123)
 📋 Field added: image = file 'image.jpg' (size: 45332 bytes, content-type: image/jpeg)
 📤 Sending update request to API:
-   URL: https://test.center-yazan.com/api/profile
+   URL: https://lookupfriseur.com/api/profile
    Method: POST
    Content-Type: multipart/form-data
    Authorization: Bearer [token]
@@ -127,10 +127,10 @@ Expected Console Output:
 📊 Data: Present
    - Id: 11
    - FirstName: Nour
-   - ProfileImageUrl: https://test.center-yazan.com/storage/new_image.jpg
+   - ProfileImageUrl: https://lookupfriseur.com/storage/new_image.jpg
 ============================================================
 
-✅ Profile image updated from API: https://test.center-yazan.com/storage/new_image.jpg
+✅ Profile image updated from API: https://lookupfriseur.com/storage/new_image.jpg
 ```
 
 ---

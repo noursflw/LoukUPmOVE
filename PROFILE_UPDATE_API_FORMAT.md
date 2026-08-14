@@ -6,7 +6,7 @@
 
 ```http
 POST /api/profile HTTP/1.1
-Host: test.center-yazan.com
+Host: https://lookupfriseur.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -29,7 +29,7 @@ form.Add(new StringContent("Nour"), "first_name");
 
 ```http
 POST /api/profile HTTP/1.1
-Host: test.center-yazan.com
+Host: https://lookupfriseur.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -55,7 +55,7 @@ form.Add(fileContent, "image", "photo.jpg");
 
 ```http
 POST /api/profile HTTP/1.1
-Host: test.center-yazan.com
+Host: https://lookupfriseur.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -96,7 +96,7 @@ form.Add(fileContent, "image", "photo.jpg");
     "email": "hala.alhashimi@gmail.com",
     "phone": "+971-50-111-1111",
     "avatar_url": null,
-    "profile_image_url": "https://test.center-yazan.com/storage/users/profile_images/11/Nour_11.jpg",
+    "profile_image_url": "https://lookupfriseur.com/storage/users/profile_images/11/Nour_11.jpg",
     "is_active": true,
     "created_at": "2026-03-24T11:04:59.000000Z",
     "updated_at": "2026-03-28T07:34:15.000000Z"
@@ -113,7 +113,7 @@ var response = JsonSerializer.Deserialize<ProfileUpdateApiResponse>(json);
 response.Success         // true ✓
 response.Message         // "Profile updated successfully" ✓
 response.Data.FirstName  // "Nour" ✓
-response.Data.ProfileImageUrl // "https://test.center-yazan.com/storage/..." ✓
+response.Data.ProfileImageUrl // "https://lookupfriseur.com/storage/..." ✓
 
 // Update ViewModel
 UserFirstName = response.Data.FirstName;
@@ -184,7 +184,7 @@ public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstN
         
         // 2. Send request
         var httpResponse = await _httpClient.PostAsync(
-            "https://test.center-yazan.com/api/profile",
+            "https://lookupfriseur.com/api/profile",
             form
         );
         

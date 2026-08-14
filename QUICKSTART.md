@@ -119,7 +119,7 @@ UpdateUserCommand = new AsyncRelayCommand(UpdateUserInfo);
 ## 🔗 API Integration
 
 ```
-📡 Endpoint: POST https://test.center-yazan.com/api/users/profile/update
+📡 Endpoint: POST https://lookupfriseur.com/api/users/profile/update
 
 📤 Request:
    - name: "اسم المستخدم" (نصي)
