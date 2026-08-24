@@ -9,6 +9,7 @@
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
+             NavigationPage.HasNavigationBar="False"
              BackgroundColor="#202020"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              BackgroundImageSource="baackgroundpage.png">

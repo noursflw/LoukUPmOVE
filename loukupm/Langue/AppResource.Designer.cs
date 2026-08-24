@@ -106,7 +106,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Telefonnummer ändern.
+        ///   Looks up a localized string similar to Jetzt bestätigen.
         /// </summary>
         internal static string AcepetPhoneNumber {
             get {
@@ -120,6 +120,15 @@ namespace loukupm.Langue {
         internal static string AcepetPhoneNumber1 {
             get {
                 return ResourceManager.GetString("AcepetPhoneNumber1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jetzt bestätigen.
+        /// </summary>
+        internal static string AcepetPhoneNumber2 {
+            get {
+                return ResourceManager.GetString("AcepetPhoneNumber2", resourceCulture);
             }
         }
         
@@ -174,6 +183,15 @@ namespace loukupm.Langue {
         internal static string addservies {
             get {
                 return ResourceManager.GetString("addservies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string all {
+            get {
+                return ResourceManager.GetString("all", resourceCulture);
             }
         }
         
@@ -273,6 +291,15 @@ namespace loukupm.Langue {
         internal static string Bookingfailed {
             get {
                 return ResourceManager.GetString("Bookingfailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deine Buchungshistorie.
+        /// </summary>
+        internal static string BookingHistory {
+            get {
+                return ResourceManager.GetString("BookingHistory", resourceCulture);
             }
         }
         
@@ -611,6 +638,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beim Löschen des Kontos ist ein Fehler aufgetreten..
+        /// </summary>
+        internal static string DeleteAccountError {
+            get {
+                return ResourceManager.GetString("DeleteAccountError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Achtung.
+        /// </summary>
+        internal static string Denger {
+            get {
+                return ResourceManager.GetString("Denger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Verfügbare Zeiten an diesem Bei LOOK UP Friseur in Landshut bieten wir Ihnen einen exklusiven Haarschnitt- und Styling-Service, der genau auf Ihre individuellen Wünsche und Bedürfnisse abgestimmt ist. Unsere erfahrenen Friseure verwenden die neuesten Techniken und hochwertige Produkte, um sicherzustellen, dass Sie bei jedem Besuch das bestmögliche Ergebnis erzielenTag.
         /// </summary>
         internal static string DescriptionAboutus {
@@ -647,7 +692,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sie erhalten in Kürze eine SMS mit einem Code, um ein neues Passwort einzurichten..
+        ///   Looks up a localized string similar to Du erhältst in Kürze eine SMS mit einem Bestätigungscode. Gib den Code ein, um deine Telefonnummer zu bestätigen..
         /// </summary>
         internal static string desotppnone {
             get {
@@ -760,6 +805,24 @@ namespace loukupm.Langue {
         internal static string EnterEmailOrPassword {
             get {
                 return ResourceManager.GetString("EnterEmailOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DeleteAccountWarning.
+        /// </summary>
+        internal static string EnterPasswordCeren {
+            get {
+                return ResourceManager.GetString("EnterPasswordCeren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aktuelles Passwort eingeben.
+        /// </summary>
+        internal static string EnterPasswordCerent {
+            get {
+                return ResourceManager.GetString("EnterPasswordCerent", resourceCulture);
             }
         }
         
@@ -1052,6 +1115,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Das Passwort ist falsch.
+        /// </summary>
+        internal static string iSPASSWORDNOTCORECED {
+            get {
+                return ResourceManager.GetString("iSPASSWORDNOTCORECED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ist das deine aktuelle Telefonnummer?.
         /// </summary>
         internal static string Isthisyourcurrentphonenumber {
@@ -1142,7 +1214,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Nummer ändern.
         /// </summary>
         internal static string newPhoneNumber {
             get {
@@ -1174,6 +1246,15 @@ namespace loukupm.Langue {
         internal static string Noavailabletimes {
             get {
                 return ResourceManager.GetString("Noavailabletimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nummer ändern.
+        /// </summary>
+        internal static string NoChange {
+            get {
+                return ResourceManager.GetString("NoChange", resourceCulture);
             }
         }
         
@@ -2370,6 +2451,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deine persönliche Daten.
+        /// </summary>
+        internal static string ProfileDetails {
+            get {
+                return ResourceManager.GetString("ProfileDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profil.
         /// </summary>
         internal static string ProfilePage {
@@ -2573,6 +2663,15 @@ namespace loukupm.Langue {
         internal static string startuphere {
             get {
                 return ResourceManager.GetString("startuphere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wenn du dein Konto löschst, werden alle deine Daten dauerhaft entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden..
+        /// </summary>
+        internal static string SubDenger {
+            get {
+                return ResourceManager.GetString("SubDenger", resourceCulture);
             }
         }
         
@@ -3063,7 +3162,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Telefonnummer bestätigen.
+        ///   Looks up a localized string similar to Handynummer   bestätigen.
         /// </summary>
         internal static string Titelotpphone {
             get {
@@ -3194,6 +3293,15 @@ namespace loukupm.Langue {
         internal static string younotapement {
             get {
                 return ResourceManager.GetString("younotapement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deine Termine.
+        /// </summary>
+        internal static string YourAppointments {
+            get {
+                return ResourceManager.GetString("YourAppointments", resourceCulture);
             }
         }
         

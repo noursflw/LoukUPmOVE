@@ -5,6 +5,7 @@
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              BackgroundColor="#202020"
+             NavigationPage.HasNavigationBar="False"
              BackgroundImageSource="baackgroundpage.png"
              Title="OTP Verification">
 

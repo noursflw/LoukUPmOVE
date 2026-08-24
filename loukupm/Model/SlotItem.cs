@@ -20,9 +20,7 @@ namespace loukupm.Model
         [JsonPropertyName("duration_minutes")]
         public int DurationMinutes { get; set; }
 
-        /// <summary>
-        /// property لتتبع إذا كان الوقت مختار
-        /// </summary>
+      
         [ObservableProperty]
         private bool isSelected = false;
     }

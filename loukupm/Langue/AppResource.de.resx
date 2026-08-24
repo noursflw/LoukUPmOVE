@@ -1028,7 +1028,10 @@ Beginnt hier
     <value>Konto löschen </value>
   </data>
   <data name="AcepetPhoneNumber" xml:space="preserve">
-    <value>Telefonnummer ändern</value>
+    <value>Jetzt bestätigen</value>
+  </data>
+  <data name="AcepetPhoneNumber2" xml:space="preserve">
+    <value>Jetzt bestätigen</value>
   </data>
   <data name="AcepetPhoneNumber1" xml:space="preserve">
     <value>Telefonnummer ändern</value>
@@ -1132,10 +1135,10 @@ Diese Aktion kann nicht rückgängig gemacht werden.</value>
     <value>Schließen </value>
   </data>
   <data name="Titelotpphone" xml:space="preserve">
-    <value>Telefonnummer bestätigen</value>
+    <value>Handynummer  bestätigen</value>
   </data>
   <data name="desotppnone" xml:space="preserve">
-    <value>Sie erhalten in Kürze eine SMS mit einem Code zur Bestätigung Ihrer Telefonnummer.</value>
+    <value>Du erhältst in Kürze eine SMS mit einem Bestätigungscode. Gib den Code ein, um deine Telefonnummer zu bestätigen.</value>
   </data>
   <data name="password_number_required2" xml:space="preserve">
     <value>Mindestens 1 Zahl</value>
@@ -1174,6 +1177,39 @@ Diese Aktion kann nicht rückgängig gemacht werden.</value>
     <value>Ja, Nummer bestätigen</value>
   </data>
   <data name="newPhoneNumber" xml:space="preserve">
+    <value>Nummer ändern</value>
+  </data>
+  <data name="all" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="EnterPasswordCerent" xml:space="preserve">
+    <value>Aktuelles Passwort eingeben</value>
+  </data>
+  <data name="ProfileDetails" xml:space="preserve">
+    <value>Deine persönliche Daten</value>
+  </data>
+  <data name="YourAppointments" xml:space="preserve">
+    <value>Deine Termine</value>
+  </data>
+  <data name="BookingHistory" xml:space="preserve">
+    <value>Deine Buchungshistorie</value>
+  </data>
+  <data name="Denger" xml:space="preserve">
+    <value>Achtung</value>
+  </data>
+  <data name="SubDenger" xml:space="preserve">
+    <value>Wenn du dein Konto löschst, werden alle deine Daten dauerhaft entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="EnterPasswordCeren" xml:space="preserve">
+    <value>Geben Sie Ihr Passwort ein</value>
+  </data>
+  <data name="iSPASSWORDNOTCORECED" xml:space="preserve">
+    <value>Das Passwort ist falsch</value>
+  </data>
+  <data name="DeleteAccountError" xml:space="preserve">
+    <value>Beim Löschen des Kontos ist ein Fehler aufgetreten.</value>
+  </data>
+  <data name="NoChange" xml:space="preserve">
     <value>Nummer ändern</value>
   </data>
 </root>

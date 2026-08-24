@@ -543,51 +543,179 @@ namespace loukupm.Services
             }
         }
 
-        //public async Task<List<string>> GetCategoriesAsync()
-        //{
-        //    try
-        //    {
+        // Base URL is configurable via Preferences. Do NOT hardcode in UI.
+        private string GetBaseUrl()
+        {
+            try
+            {
+                // Store short form like https://lookupfriseur.com in Preferences under key ApiBaseUrl
+                var baseUrl = Preferences.Get("ApiBaseUrl", "https://lookupfriseur.com");
+                if (string.IsNullOrWhiteSpace(baseUrl))
+                    baseUrl = "https://lookupfriseur.com";
+                return baseUrl.TrimEnd('/');
+            }
+            catch
+            {
+                return "https://lookupfriseur.com";
+            }
+        }
 
-                
+        private string GetLanguageCode()
+        {
+            try
+            {
+                string savedCulture = Preferences.Get("AppLanguage", "de-DE");
+                var languageCode = savedCulture.Split('-')[0].ToLower();
+                return languageCode;
+            }
+            catch
+            {
+                return "de";
+            }
+        }
 
-        //        await SetAuthorizationHeaderAsync();
+        /// <summary>
+        /// Create a booking. Returns tuple: Success, StatusCode, Message, ResponseJson
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string Message, JsonDocument ResponseJson)> CreateBookingAsync(object payload)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
 
-        //        var url = "https://center-yazan.com/api/sandbox/categories";
+                // Ensure authorization header present when calling authenticated endpoints
+                var url = $"{GetBaseUrl()}/api/bookings";
 
+                var json = JsonSerializer.Serialize(payload);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        //        var response = await _httpClient.GetAsync(url);
+                // Required headers
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
+                _httpClient.DefaultRequestHeaders.Add("Accept-Language", GetLanguageCode());
 
+                var response = await _httpClient.PostAsync(url, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
 
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            var json = await response.Content.ReadAsStringAsync();
+                JsonDocument parsed = null;
+                try { parsed = JsonDocument.Parse(responseBody); } catch { }
 
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    return (true, (int)response.StatusCode, "Created", parsed);
+                }
 
-        //            var result = JsonSerializer.Deserialize<CategoriesResponse>(json, new JsonSerializerOptions
-        //            {
-        //                PropertyNameCaseInsensitive = true
-        //            });
+                if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+                {
+                    // 422 - business rule / validation
+                    var message = "Validation error";
+                    try
+                    {
+                        if (parsed != null && parsed.RootElement.TryGetProperty("message", out var m))
+                            message = m.GetString();
+                    }
+                    catch { }
+                    return (false, (int)response.StatusCode, message, parsed);
+                }
 
-        //            var categories = result?.Categories ?? new List<string>();
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    return (false, (int)response.StatusCode, "Unauthorized", parsed);
+                }
 
+                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    var message = "Forbidden";
+                    try
+                    {
+                        if (parsed != null && parsed.RootElement.TryGetProperty("message", out var m))
+                            message = m.GetString();
+                    }
+                    catch { }
+                    return (false, (int)response.StatusCode, message, parsed);
+                }
 
+                if (response.StatusCode == (System.Net.HttpStatusCode)429)
+                {
+                    // Respect Retry-After when available
+                    var retryAfter = response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 0;
+                    var msg = "Rate limited" + (retryAfter > 0 ? $". Retry after {retryAfter} seconds." : "");
+                    return (false, (int)response.StatusCode, msg, parsed);
+                }
+                // Other errors (fallback)
+                return (false, (int)response.StatusCode, responseBody, parsed);
+            }
+            catch (HttpRequestException ex)
+            {
+                return (false, 0, ex.Message, null);
+            }
+        }
 
-        //            return categories;
-        //        }
-        //        else
-        //        {
-        //            var error = await response.Content.ReadAsStringAsync();
+        public async Task<(bool Success, int StatusCode, string Message)> CancelBookingAsync(int bookingId, string cancellationReason)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+                var url = $"{GetBaseUrl()}/api/bookings/{bookingId}/cancel";
 
-        //            return new List<string>();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"[CATEGORIES EXCEPTION] {ex.Message}");
-        //        Console.WriteLine($"[CATEGORIES EXCEPTION StackTrace]: {ex.StackTrace}");
-        //        return new List<string>();
-        //    }
-        //}
+                var payload = new { cancellation_reason = cancellationReason };
+                var json = JsonSerializer.Serialize(payload);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
+                _httpClient.DefaultRequestHeaders.Add("Accept-Language", GetLanguageCode());
+
+                var response = await _httpClient.PostAsync(url, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return (true, (int)response.StatusCode, "Cancelled");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    return (false, (int)response.StatusCode, "Unauthorized");
+
+                return (false, (int)response.StatusCode, responseBody);
+            }
+            catch (Exception ex)
+            {
+                return (false, 0, ex.Message);
+            }
+        }
+
+        public async Task<AvailabilityResponse> GetProviderAvailabilityAsync(int serviceId, int providerId, DateTime date, int? branchId = null)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+                var dateStr = date.ToString("yyyy-MM-dd");
+                var url = $"{GetBaseUrl()}/api/availability/provider?service_id={serviceId}&provider_id={providerId}&date={dateStr}";
+                if (branchId.HasValue) url += $"&branch_id={branchId.Value}";
+
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
+                _httpClient.DefaultRequestHeaders.Add("Accept-Language", GetLanguageCode());
+
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var json = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var result = JsonSerializer.Deserialize<AvailabilityResponse>(json, options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetProviderAvailabilityAsync] Error: {ex.Message}");
+                return null;
+            }
+        }
+
+       
         public async Task<List<string>> SearchServiessAsync(string searchTerm)
         {
             await SetAuthorizationHeaderAsync();
@@ -872,49 +1000,71 @@ namespace loukupm.Services
             }
         }
 
-        public async Task<bool> DeleteCurrentUserProfileAsync()
+        public async Task<string?> DeleteCurrentUserProfileAsync(string currentPassword)
         {
             try
             {
                 await SetAuthorizationHeaderAsync();
 
                 var token = await SecureStorage.GetAsync("auth_token");
+
                 if (string.IsNullOrWhiteSpace(token))
                 {
-                    Console.WriteLine("❌ Delete profile aborted: no auth token found");
-                    return false;
+                    return "NoToken";
                 }
 
-                Console.WriteLine("📤 Sending delete profile request to API:");
-                Console.WriteLine("   URL: https://lookupfriseur.com/api/profile");
-                Console.WriteLine("   Method: DELETE");
-                Console.WriteLine("   Authorization: Bearer [token]");
+                var payload = new
+                {
+                    current_password = currentPassword
+                };
 
-                var httpResponse = await _httpClient.DeleteAsync("https://lookupfriseur.com/api/profile");
+                var json = JsonSerializer.Serialize(payload);
+
+                using var content = new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json");
+
+
+                using var request = new HttpRequestMessage(
+                    HttpMethod.Delete,
+                    "https://lookupfriseur.com/api/profile");
+
+                request.Content = content;
+
+                var httpResponse = await _httpClient.SendAsync(request);
+
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
+
 
                 Console.WriteLine($"📊 Delete profile response: {httpResponse.StatusCode}");
                 Console.WriteLine($"📄 Delete profile body: {responseBody}");
 
+
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    return true;
+                    return null; // نجاح
                 }
 
-                if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+
+                if (httpResponse.StatusCode == HttpStatusCode.UnprocessableEntity)
                 {
-                    Console.WriteLine("❌ Delete profile unauthorized (401)");
-                    return false;
+                    return "WrongPassword";
                 }
 
-                Console.WriteLine($"❌ Delete profile failed: {httpResponse.StatusCode}");
-                return false;
+
+                if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return "Unauthorized";
+                }
+
+
+                return "Error";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Delete profile exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
-                return false;
+                Console.WriteLine(ex.Message);
+                return "Error";
             }
         }
 

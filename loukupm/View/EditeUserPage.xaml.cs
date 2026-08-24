@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using loukupm.Langue;
 using loukupm.Services;
+using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
 
 namespace loukupm.View;
@@ -169,7 +170,14 @@ public partial class EditeUserPage : ContentPage
         await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
     }
 
-   
+    private async Task Button_Clicked_3(object sender, EventArgs e)
+    {
+       
+    }
 
-
+    private async void Button_Clicked_4(object sender, EventArgs e)
+    {
+        var poup = new ErorRemoveMyAccount();
+        await this.ShowPopupAsync(poup);
+    }
 }

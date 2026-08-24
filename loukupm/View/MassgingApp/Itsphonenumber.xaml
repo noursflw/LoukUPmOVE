@@ -10,7 +10,7 @@
       CornerRadius="20"
       HasShadow="True"
       Padding="0"
-      BorderColor="#444444"
+      BorderColor="#F3D97A"
       HorizontalOptions="Center"
       VerticalOptions="Center">
 
@@ -58,27 +58,30 @@ HorizontalTextAlignment="Center" />
                         HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Frame>
-            <HorizontalStackLayout  HorizontalOptions="Center" Spacing="10" >
+            <HorizontalStackLayout HorizontalOptions="Center"
+                       Spacing="10">
 
                 <Button
-Text="{Loc:Translate Name=newPhoneNumber}"
-BorderWidth="1"
-TextColor="#d4ab37"
- BackgroundColor="Black"                   
-CornerRadius="10"
-HeightRequest="44"
-FontFamily="georgia"                        
-Clicked="Button_Clicked_1" />
+        WidthRequest="130"
+        Text="{Loc:Translate Name=newPhoneNumber}"
+        BorderWidth="1"
+        TextColor="#d4ab37"
+        BackgroundColor="Black"
+        CornerRadius="10"
+        HeightRequest="44"
+        FontFamily="georgia"
+        Clicked="Button_Clicked_1" />
+
                 <Button
-Text="{Loc:Translate Name=Yesthenumberiscorrect}"
-BorderWidth="1"
-TextColor="Black"
-CornerRadius="10"
-HeightRequest="44"
-                    
-FontFamily="georgia"      
-                    Clicked="Button_Clicked"
-Command="{Binding SendOtpCommand}" />
+        WidthRequest="130"
+        Text="{Loc:Translate Name=Yesthenumberiscorrect}"
+        BorderWidth="1"
+        TextColor="Black"
+        CornerRadius="10"
+        HeightRequest="44"
+        FontFamily="georgia"
+        Clicked="Button_Clicked"
+        Command="{Binding SendOtpCommand}" />
 
             </HorizontalStackLayout>
         </VerticalStackLayout>

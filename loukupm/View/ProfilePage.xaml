@@ -83,34 +83,35 @@
                             <Label Text="{Binding Email}"  TextColor="#999999" FontSize="14"  FontFamily="Oswald"   />
                             <BoxView BackgroundColor="#999999"  HeightRequest="1"  />
                             <Label Text="{Loc:Translate Name=PhoneNumber}"/>
-                            <Grid ColumnDefinitions="*,Auto">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
 
-                                <VerticalStackLayout Spacing="10" Grid.Column="0">
-                                    <Label Grid.Column="0"
-     Text="{Binding Phone}"
-      TextColor="#999999"
-      FontSize="14"
-      FontFamily="Oswald"
-      HorizontalOptions="Start" />
-                                    <Label Grid.Column="0" Text="{Binding PhoneVerificationStatus}"
-        TextColor="#999999"
-         FontSize="14"
-        FontFamily="Oswald"
-        HorizontalOptions="Start" />
-                                </VerticalStackLayout>
+                                <Label Grid.Column="0"
+           Text="{Binding Phone}"
+           TextColor="#999999"
+           FontSize="14"
+           FontFamily="Oswald"
+           VerticalOptions="Center"
+           HorizontalOptions="Start" />
 
                                 <Button Grid.Column="1"
-        Text="{Loc:Translate Name=AcepetPhoneNumber}"
-        TextColor="#D4AF37"
-        FontSize="14"
-        BackgroundColor="Transparent"
-        HorizontalOptions="End"
-        Padding="0"
-        BorderWidth="0"
-        IsVisible="{Binding PhoneVerified, Converter={StaticResource InverseBoolConverter}}" Clicked="Button_Clicked_9"/>
-
+            Text="{Loc:Translate Name=AcepetPhoneNumber}"
+            TextColor="#D4AF37"
+            FontSize="14"
+            BackgroundColor="Transparent"
+            HorizontalOptions="End"
+            VerticalOptions="Center"
+            Padding="0"
+            BorderWidth="0"
+            IsVisible="{Binding PhoneVerified, Converter={StaticResource InverseBoolConverter}}" 
+            Clicked="Button_Clicked_9"/>
 
                             </Grid>
+
+                            <Label Text="{Binding PhoneVerificationStatus}"
+       TextColor="#999999"
+       FontSize="14"
+       FontFamily="Oswald"
+       HorizontalOptions="Start" />
 
                         </VerticalStackLayout>
                     </Frame>

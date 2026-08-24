@@ -27,5 +27,33 @@ namespace loukupm.Model
         public string ExpirationDate { get; set; }    
         public string CVV { get; set; }                 
         public string StripePaymentId { get; set; }
+
+        // Convert current Booking instance into a payload matching API /api/bookings
+        // Supports multiple services. Caller must ensure SelectedServices contains distinct services
+        public object ToCreateBookingPayload()
+        {
+            var servicesPayload = new List<object>();
+
+            foreach (var s in SelectedServices)
+            {
+                // Each selected service must provide a provider id and a start time.
+                // The app-level Booking model stores ProviderId/Time at top-level for simple flows,
+                // but when multiple services are used, each service should carry its own provider and start_time.
+                // Here we assume ProviderId and Time are set on the Booking for single-service flow.
+                servicesPayload.Add(new
+                {
+                    service_id = s.Id,
+                    provider_id = int.TryParse(ProviderId, out var pid) ? pid : 0,
+                    start_time = Time.ToString("hh\\:mm")
+                });
+            }
+
+            return new
+            {
+                date = Date.ToString("yyyy-MM-dd"),
+                payment_method = string.IsNullOrWhiteSpace(PaymentMethod) ? "cash" : PaymentMethod,
+                services = servicesPayload
+            };
+        }
     }
 }

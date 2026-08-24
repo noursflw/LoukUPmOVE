@@ -18,6 +18,7 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToBackgroundColorConverter x:Key="BoolToBackgroundColorConverter" />
             <converters:BoolToTextColorConverter x:Key="BoolToTextColorConverter" />
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
    
@@ -447,10 +448,17 @@ BorderColor="#444444" >
             FontFamily="georgia-bold"
             BorderWidth="1"
             Command="{Binding PostBookingCommand}"
+            IsEnabled="{Binding IsBookingInProgress, Converter={StaticResource InverseBoolConverter}}"
             HorizontalOptions="End"
             VerticalOptions="Center"/>
 
             </Grid>
+            <!-- Booking states -->
+            <ActivityIndicator IsRunning="{Binding IsBookingInProgress}" IsVisible="{Binding IsBookingInProgress}" Color="#FFD700" HorizontalOptions="Center" />
+
+            <Label Text="{Binding BookingErrorMessage}" TextColor="#FF6666" FontFamily="Oswald" HorizontalOptions="Center" IsVisible="{Binding BookingErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Label Text="{Loc:Translate Name=BookingNumberLabel} {Binding LastBookingNumber}" TextColor="#D4AF37" FontFamily="Oswald" HorizontalOptions="Center" IsVisible="{Binding LastBookingNumber, Converter={StaticResource StringNotEmptyConverter}}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -1030,6 +1030,9 @@
   <data name="AcepetPhoneNumber" xml:space="preserve">
     <value>تأكيد رقم الهاتف</value>
   </data>
+  <data name="AcepetPhoneNumber2" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
   <data name="AcepetPhoneNumber1" xml:space="preserve">
     <value>تأكيد رقم الهاتف</value>
   </data>
@@ -1178,6 +1181,39 @@
     <value>نعم، الرقم صحيح</value>
   </data>
   <data name="newPhoneNumber" xml:space="preserve">
+    <value>تعديل الرقم</value>
+  </data>
+  <data name="all" xml:space="preserve">
+    <value>الكل </value>
+  </data>
+  <data name="EnterPasswordCerent" xml:space="preserve">
+    <value>أدخل كلمة المرور الحالية</value>
+  </data>
+  <data name="ProfileDetails" xml:space="preserve">
+    <value>بياناتك الشخصية</value>
+  </data>
+  <data name="YourAppointments" xml:space="preserve">
+    <value>مواعيدك</value>
+  </data>
+  <data name="BookingHistory" xml:space="preserve">
+    <value>سجل حجوزاتك</value>
+  </data>
+  <data name="Denger" xml:space="preserve">
+    <value>تحذير!</value>
+  </data>
+  <data name="SubDenger" xml:space="preserve">
+    <value>عند حذف حسابك، سيتم حذف جميع بياناتك نهائيا. لا يمكن التراجع عن هذا الإجراء.</value>
+  </data>
+  <data name="EnterPasswordCeren" xml:space="preserve">
+    <value>أدخل كلمة المرور</value>
+  </data>
+  <data name="iSPASSWORDNOTCORECED" xml:space="preserve">
+    <value>كلمة المرور غير صحيحة</value>
+  </data>
+  <data name="DeleteAccountError" xml:space="preserve">
+    <value>حدث خطأ أثناء حذف الحساب</value>
+  </data>
+  <data name="NoChange" xml:space="preserve">
     <value>تعديل الرقم</value>
   </data>
 </root>

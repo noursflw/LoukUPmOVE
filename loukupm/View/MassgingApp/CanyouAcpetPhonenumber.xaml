@@ -6,7 +6,7 @@
              x:Class="loukupm.View.MassgingApp.CanyouAcpetPhonenumber"
               Color="Transparent">
     <Frame
-      BackgroundColor="#444444"
+      BackgroundColor="#000000"
       CornerRadius="20"
       HasShadow="True"
       Padding="0"
@@ -21,7 +21,7 @@
           WidthRequest="320"
           VerticalOptions="Center">
             <Image
-      Source="eroref.png"
+      Source="icon2.svg"
       HeightRequest="120"
       WidthRequest="200"  
       Aspect="AspectFit"

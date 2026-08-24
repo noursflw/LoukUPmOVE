@@ -5,6 +5,7 @@
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
+             NavigationPage.HasNavigationBar="False"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              BackgroundImageSource="baackgroundpage.png">
     <ScrollView Orientation="Vertical">

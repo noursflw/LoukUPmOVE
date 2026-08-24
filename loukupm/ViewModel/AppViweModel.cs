@@ -72,6 +72,15 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private decimal totalPrice = 0m;
 
+        [ObservableProperty]
+        private bool isBookingInProgress = false;
+
+        [ObservableProperty]
+        private string bookingErrorMessage = string.Empty;
+
+        [ObservableProperty]
+        private string lastBookingNumber = string.Empty;
+
 
         [ObservableProperty]
         private string searchServiceTerm = string.Empty;
@@ -190,7 +199,8 @@ namespace loukupm.ViewModel
 
             // ✅ Do NOT create new HttpClient here - use static instance
 
-            DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
+            DeleteAccountCommand = new Command<string>(async (password) =>
+     await DeleteAccountAsync(password));
             RefreshServicesCommand = new AsyncRelayCommand(LoadServicesAsync);
             ProviderDays = new ObservableCollection<DayItem>();
             SelectDayCommand = new Command<DayItem>(OnSelectDay);
@@ -1036,38 +1046,159 @@ namespace loukupm.ViewModel
 
         private async Task SendBookingRequest(object bookingData, TimeSpan totalEndTime)
         {
-            await SetAuthorizationHeaderAsync();
-
-            var json = JsonSerializer.Serialize(bookingData);
-            Console.WriteLine($"📋 JSON: {json}");
-
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            IsBookingInProgress = true;
+            BookingErrorMessage = string.Empty;
 
             try
             {
-                var response = await _httpClient.PostAsync(
-                    "https://lookupfriseur.com/api/bookings",
-                    content);
+                // Attempt to create booking
+                var result = await _apiServices.CreateBookingAsync(bookingData);
 
-                if (response.IsSuccessStatusCode)
+                // Success (201)
+                if (result.Success && result.StatusCode == 201)
                 {
+                    string bookingNumber = string.Empty;
+                    try
+                    {
+                        if (result.ResponseJson != null && result.ResponseJson.RootElement.TryGetProperty("data", out var dataEl))
+                        {
+                            if (dataEl.TryGetProperty("booking_number", out var bn)) bookingNumber = bn.GetString();
+                            else if (dataEl.TryGetProperty("number", out var nb)) bookingNumber = nb.GetString();
+                            else if (dataEl.TryGetProperty("id", out var id)) bookingNumber = id.GetRawText();
+                        }
+                    }
+                    catch { }
 
+                    LastBookingNumber = bookingNumber;
                     await Toast.Make(AppResource.Bookingsuccessful).Show();
 
+                    // Clear draft and local booking state
+                    try { SecureStorage.Remove("booking_draft"); } catch { }
                     ClearBookingData();
+
+                    // Navigate to bookings page to show new booking
                     await NavigationService.NavigateToPage(nameof(BookingPage));
+                    return;
                 }
-                else
+
+                // Unauthorized - try refresh once
+                if (result.StatusCode == 401)
                 {
-                    var errorBody = await response.Content.ReadAsStringAsync();
+                    var refreshed = await _apiServices.RefreshTokenAsync();
+                    if (refreshed)
+                    {
+                        var retry = await _apiServices.CreateBookingAsync(bookingData);
+                        if (retry.Success && retry.StatusCode == 201)
+                        {
+                            LastBookingNumber = "";
+                            try
+                            {
+                                if (retry.ResponseJson != null && retry.ResponseJson.RootElement.TryGetProperty("data", out var dataEl))
+                                {
+                                    if (dataEl.TryGetProperty("booking_number", out var bn)) LastBookingNumber = bn.GetString();
+                                    else if (dataEl.TryGetProperty("number", out var nb)) LastBookingNumber = nb.GetString();
+                                }
+                            }
+                            catch { }
+
+                            await Toast.Make(AppResource.Bookingsuccessful).Show();
+                            ClearBookingData();
+                            await NavigationService.NavigateToPage(nameof(BookingPage));
+                            return;
+                        }
+                        result = retry; // fallthrough to handle other statuses
+                    }
+                    else
+                    {
+                        // No refresh possible: preserve draft and require login
+                        try { await SecureStorage.SetAsync("booking_draft", JsonSerializer.Serialize(bookingData)); } catch { }
+                        await ShellNavigationManager.NavigateToLoginAndClear();
+                        return;
+                    }
+                }
+
+                // Forbidden - check for OTP requirement
+                if (result.StatusCode == 403)
+                {
+                    bool requiresOtp = false;
+                    try
+                    {
+                        if (result.ResponseJson != null && result.ResponseJson.RootElement.TryGetProperty("requires_otp_verification", out var prop))
+                            requiresOtp = prop.GetBoolean();
+                    }
+                    catch { }
+
+                    if (requiresOtp)
+                    {
+                        // Preserve draft and navigate to OTP/sign-in flow
+                        try { await SecureStorage.SetAsync("booking_draft", JsonSerializer.Serialize(bookingData)); } catch { }
+                        await ShellNavigationManager.NavigateToLoginAndClear();
+                        var popup = new CanyouAcpetPhonenumber();
+                        await App.Current.MainPage.ShowPopupAsync(popup);
+                        return;
+                    }
 
                     await Toast.Make(AppResource.Bookingfailed).Show();
+                    return;
                 }
+
+                // Validation / business errors (422) - handle slot conflicts specially
+                if (result.StatusCode == 422)
+                {
+                    var userMessage = !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed;
+                    await Toast.Make(userMessage).Show();
+
+                    // Refresh provider availability for the selected date to avoid stale slots
+                    try
+                    {
+                        if (SelectedProvider != null && SelectedServices != null && SelectedServices.Count > 0)
+                        {
+                            var serviceId = SelectedServices[0].Id;
+                            var avail = await _apiServices.GetProviderAvailabilityAsync(serviceId, SelectedProvider.Id, SelectedDate);
+                            if (avail?.Data != null)
+                            {
+                                AvailableSlots.Clear();
+                                foreach (var s in avail.Data.AvailableSlots)
+                                {
+                                    AvailableSlots.Add(new SlotItem
+                                    {
+                                        StartTime = s.StartTime,
+                                        EndTime = s.EndTime,
+                                        DisplayTime = s.DisplayTime,
+                                        DurationMinutes = s.DurationMinutes
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[SendBookingRequest] Availability refresh failed: {ex.Message}");
+                    }
+
+                    return;
+                }
+
+                // Rate limited
+                if (result.StatusCode == 429)
+                {
+                    await Toast.Make(AppResource.Bookingfailed).Show();
+                    return;
+                }
+
+                // Generic failure: show friendly message
+                var fallback = !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed;
+                BookingErrorMessage = fallback;
+                await Toast.Make(fallback).Show();
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"[SendBookingRequest] Exception: {ex.Message}");
                 await Toast.Make(AppResource.Connectionerror).Show();
+            }
+            finally
+            {
+                IsBookingInProgress = false;
             }
         }
 
@@ -1362,6 +1493,15 @@ namespace loukupm.ViewModel
                 }
 
                 Console.WriteLine("✅ [AppViewModel] LoadUserDataAsync completed successfully");
+                // After loading user, try to restore any saved booking draft (preserve booking flow across login)
+                try
+                {
+                    await RestoreBookingDraftIfPresentAsync();
+                }
+                catch (Exception rex)
+                {
+                    Console.WriteLine($"[RestoreBookingDraft] Failed: {rex.Message}");
+                }
             }
             catch (NullReferenceException nex)
             {
@@ -1379,6 +1519,117 @@ namespace loukupm.ViewModel
                 IsLoadUser = false;
                 OnPropertyChanged(nameof(CanUpdateUser));
                 Console.WriteLine("ℹ️ [AppViewModel] LoadUserDataAsync finished (IsLoadUser = false)");
+            }
+        }
+
+        private async Task RestoreBookingDraftIfPresentAsync()
+        {
+            try
+            {
+                var draftJson = await SecureStorage.GetAsync("booking_draft");
+                if (string.IsNullOrWhiteSpace(draftJson))
+                    return;
+
+                Console.WriteLine("🔄 Restoring booking draft from SecureStorage");
+
+                using var doc = JsonDocument.Parse(draftJson);
+                var root = doc.RootElement;
+
+                // Parse date
+                if (root.TryGetProperty("date", out var dateEl) && DateTime.TryParse(dateEl.GetString(), out var dateVal))
+                {
+                    SelectedDate = dateVal;
+                }
+
+                // Parse services
+                if (root.TryGetProperty("services", out var servicesEl) && servicesEl.ValueKind == JsonValueKind.Array)
+                {
+                    SelectedServices.Clear();
+                    CurrentBooking.SelectedServices.Clear();
+
+                    foreach (var sEl in servicesEl.EnumerateArray())
+                    {
+                        if (sEl.TryGetProperty("service_id", out var sidEl) && sidEl.TryGetInt32(out var sid))
+                        {
+                            // Look in Services or FilteredServices
+                            var svc = Services?.FirstOrDefault(x => x.Id == sid) ?? FilteredServices?.FirstOrDefault(x => x.Id == sid);
+                            if (svc != null)
+                            {
+                                SelectedServices.Add(svc);
+                                CurrentBooking.SelectedServices.Add(svc);
+                            }
+                        }
+                    }
+                }
+
+                // Parse provider & start_time
+                int providerId = 0;
+                string startTime = null;
+                if (root.TryGetProperty("services", out var svs) && svs.ValueKind == JsonValueKind.Array)
+                {
+                    var first = svs.EnumerateArray().FirstOrDefault();
+                    if (first.ValueKind != JsonValueKind.Undefined)
+                    {
+                        if (first.TryGetProperty("provider_id", out var pidEl))
+                            providerId = pidEl.GetInt32();
+
+                        if (first.TryGetProperty("start_time", out var stEl))
+                            startTime = stEl.GetString();
+                    }
+                }
+
+                if (providerId != 0)
+                {
+                    var provider = WorkTeams?.FirstOrDefault(w => w.Id == providerId);
+                    if (provider != null)
+                    {
+                        SelectedProvider = provider;
+                    }
+                }
+
+                // Refresh available slots for selected provider/date and select the matching start time
+                if (SelectedProvider != null && SelectedDate != default)
+                {
+                    await LoadAvailableSlotsAsync();
+
+                    if (!string.IsNullOrWhiteSpace(startTime))
+                    {
+                        var slot = AvailableSlots.FirstOrDefault(s => s.StartTime == startTime || s.DisplayTime == startTime);
+                        if (slot != null)
+                        {
+                            foreach (var s in AvailableSlots) s.IsSelected = false;
+                            slot.IsSelected = true;
+                            SelectedSlot = slot;
+
+                            if (TimeSpan.TryParse(slot.StartTime, out var parsedTime))
+                            {
+                                SelectedTime = parsedTime;
+                                CurrentBooking.Time = SelectedTime;
+                            }
+                        }
+                    }
+                }
+
+                // Update CurrentBooking date/provider/service list
+                CurrentBooking.Date = SelectedDate;
+                if (SelectedProvider != null) CurrentBooking.ProviderId = SelectedProvider.Id.ToString();
+
+                // Remove draft
+                try { SecureStorage.Remove("booking_draft"); } catch { }
+
+                // Navigate to booking page to allow user to continue
+                try
+                {
+                    await NavigationService.NavigateToPage(NavigationService.ROUTE_TERM_BOOKING);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[RestoreBookingDraft] Navigation error: {ex.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[RestoreBookingDraft] Error parsing draft: {ex.Message}");
             }
         }
 
@@ -1543,7 +1794,7 @@ namespace loukupm.ViewModel
             }
         }
 
-        // قمنا بفصلها وتسميتها لتوضيح الهدف: تنظيف واجهة المستخدم
+      
         public void ResetUser()
         {
             currentUser = null;
@@ -1690,38 +1941,58 @@ namespace loukupm.ViewModel
 
 
         public ICommand DeleteAccountCommand { get; }
-        private async Task DeleteAccountAsync()
+
+        private async Task DeleteAccountAsync(string currentPassword)
         {
             try
             {
-                var deleted = await _apiServices.DeleteCurrentUserProfileAsync();
-                if (!deleted)
+                if (string.IsNullOrWhiteSpace(currentPassword))
                 {
-                    var popup = new ErorRemoveMyAccount();
-                    await App.Current.MainPage.ShowPopupAsync(popup);
+                    await App.Current.MainPage.ShowPopupAsync(
+                        new PleaseEnterCurrentPasswordPopup());
+
                     return;
                 }
 
-                await Logout();
+
+                var result = await _apiServices.DeleteCurrentUserProfileAsync(currentPassword);
+
+
+                if (result == null)
+                {
+                    await Logout();
+                    return;
+                }
+
+
+                if (result == "WrongPassword")
+                {
+                    await Toast.Make(AppResource.iSPASSWORDNOTCORECED
+                        ,
+                        ToastDuration.Short).Show();
+
+                    return;
+                }
+
+
+                await Toast.Make(
+                    AppResource.DeleteAccountError,
+                    ToastDuration.Short).Show();
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                var popup = new ErorRemoveMyAccount();
-                await App.Current.MainPage.ShowPopupAsync(popup);
+                Console.WriteLine(ex.Message);
             }
         }
         private readonly services.NotificationService _notificationService;
 
         private bool _notificationsInitialized = false;
 
-        // App-level cancellation token used to cancel running user-scoped tasks on logout
+      
         private static CancellationTokenSource _appCancellation = new CancellationTokenSource();
         public static CancellationToken AppCancellationToken => _appCancellation.Token;
 
-        /// <summary>
-        /// Cancel running tasks related to the current user session and recreate the token source.
-        /// Call during logout to stop long-running operations.
-        /// </summary>
         public void CancelRunningTasks()
         {
             try
@@ -1738,9 +2009,7 @@ namespace loukupm.ViewModel
             }
         }
 
-        /// <summary>
-        /// Clears all user-scoped in-memory state so the app is clean before navigating to login.
-        /// </summary>
+     
         public void ClearViewModelState()
         {
             try
@@ -1762,7 +2031,7 @@ namespace loukupm.ViewModel
                 ProviderDays?.Clear();
                 AvailableSlots?.Clear();
 
-                // Reset simple properties
+              
                 currentUser = null;
                 UserName = string.Empty;
                 UserFirstName = string.Empty;
@@ -1771,11 +2040,9 @@ namespace loukupm.ViewModel
                 Phone = string.Empty;
                 Avatar = null;
 
-                // Stop any app-level timers or services if accessible
+               
                 try
                 {
-                    // If any ReminderService or similar global timers exist, attempt to stop them via DI or static access.
-                    // No-op if not available.
                 }
                 catch { }
 
@@ -2021,7 +2288,7 @@ namespace loukupm.ViewModel
                         }
 
 
-                        await Toast.Make($"{AppResource.Fetchedsuccessfully} {AvailableSlots.Count} {AppResource.Availabletime}").Show();
+                       // await Toast.Make($"{AppResource.Fetchedsuccessfully} {AvailableSlots.Count} {AppResource.Availabletime}").Show();
                     }
                     else
                     {
