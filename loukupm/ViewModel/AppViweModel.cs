@@ -1070,8 +1070,9 @@ namespace loukupm.ViewModel
                     catch { }
 
                     LastBookingNumber = bookingNumber;
-                    await Toast.Make(AppResource.Bookingsuccessful).Show();
-
+                    var pouo = new SuccessfullyBookingNow();
+                    await App.Current.MainPage.ShowPopupAsync(pouo);
+          
                     // Clear draft and local booking state
                     try { SecureStorage.Remove("booking_draft"); } catch { }
                     ClearBookingData();
@@ -1100,7 +1101,7 @@ namespace loukupm.ViewModel
                                 }
                             }
                             catch { }
-
+                            //////
                             await Toast.Make(AppResource.Bookingsuccessful).Show();
                             ClearBookingData();
                             await NavigationService.NavigateToPage(nameof(BookingPage));

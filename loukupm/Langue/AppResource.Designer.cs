@@ -241,6 +241,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vielen Dank für dein Vertrauen. Wir freuen uns auf deinenvBesuch..
+        /// </summary>
+        internal static string Appointmentbookedsuccessfully {
+            get {
+                return ResourceManager.GetString("Appointmentbookedsuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Appointment Reminder.
         /// </summary>
         internal static string AppointmentReminder {
@@ -3194,6 +3203,15 @@ namespace loukupm.Langue {
         internal static string TitlwMyPrefile {
             get {
                 return ResourceManager.GetString("TitlwMyPrefile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Termin anzeigen.
+        /// </summary>
+        internal static string ViewAppointment {
+            get {
+                return ResourceManager.GetString("ViewAppointment", resourceCulture);
             }
         }
         

@@ -1212,4 +1212,10 @@ Diese Aktion kann nicht rückgängig gemacht werden.</value>
   <data name="NoChange" xml:space="preserve">
     <value>Nummer ändern</value>
   </data>
+  <data name="Appointmentbookedsuccessfully" xml:space="preserve">
+    <value>Vielen Dank für dein Vertrauen. Wir freuen uns auf deinenvBesuch.</value>
+  </data>
+  <data name="ViewAppointment" xml:space="preserve">
+    <value>Termin anzeigen</value>
+  </data>
 </root>

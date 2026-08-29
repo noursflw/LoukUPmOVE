@@ -1216,4 +1216,12 @@
   <data name="NoChange" xml:space="preserve">
     <value>تعديل الرقم</value>
   </data>
+  <data name="Appointmentbookedsuccessfully" xml:space="preserve">
+    <value>تم حجز موعدك بنجاح 
+ شكراً لثقتك بنا. نتطلع لاستقبالك. 
+</value>
+  </data>
+  <data name="ViewAppointment" xml:space="preserve">
+    <value>عرض الموعد </value>
+  </data>
 </root>
