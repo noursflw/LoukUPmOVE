@@ -376,10 +376,10 @@
     <value>Erfolg</value>
   </data>
   <data name="SaveChangFoeMyAccount" xml:space="preserve">
-    <value>Profilbild ändern</value>
+    <value>Änderungen speichern</value>
   </data>
   <data name="SaveChangFoeMyAccount1" xml:space="preserve">
-    <value>Profilbild ändern</value>
+    <value>Änderungen speichern</value>
   </data>
   <data name="sendotp" xml:space="preserve">
     <value>Code wurde gesendet</value>
@@ -1222,5 +1222,23 @@ Kontaktiere uns jederzeit. Wir helfen dir gerne weiter.</value>
   </data>
   <data name="ViewAppointment" xml:space="preserve">
     <value>Termin anzeigen</value>
+  </data>
+  <data name="DonteChangeDetails" xml:space="preserve">
+    <value>Änderungen verwerfen?</value>
+  </data>
+  <data name="DonteChangeDetails1" xml:space="preserve">
+    <value>Änderungen verwerfen?</value>
+  </data>
+  <data name="changeDe" xml:space="preserve">
+    <value>Du hast Änderungen vorgenommen, die noch nicht gespeichert wurden.</value>
+  </data>
+  <data name="changeDe2" xml:space="preserve">
+    <value>Speichere deine Änderungen, um sie zu behalten.</value>
+  </data>
+  <data name="yesnochange" xml:space="preserve">
+    <value>Ohne Speichern verlassen</value>
+  </data>
+  <data name="nochangeing" xml:space="preserve">
+    <value>Zurückbleiben &amp; Speichern</value>
   </data>
 </root>

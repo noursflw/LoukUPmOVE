@@ -1,3 +1,4 @@
+
 using CommunityToolkit.Maui.Views;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
@@ -7,10 +8,8 @@ using loukupm.services;
 using loukupm.Services;
 using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
-using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using OneSignalSDK.DotNet;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -21,6 +20,7 @@ namespace loukupm.View;
 public partial class LoginPage : ContentPage
 {
     public static bool IsLogged { get; set; } = false;
+
     private UserCredential userCredential;
     private string redirectUri;
 
@@ -39,12 +39,14 @@ public partial class LoginPage : ContentPage
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_TermsAndConditions_Athun);
+        await NavigationService.NavigateToPage(
+            NavigationService.ROUTE_TermsAndConditions_Athun);
     }
 
     private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_REST_PASSWORD);
+        await NavigationService.NavigateToPage(
+            NavigationService.ROUTE_REST_PASSWORD);
     }
 
     private async Task SafeShowPopupAsync(Popup popup)
@@ -63,10 +65,10 @@ public partial class LoginPage : ContentPage
         RegisterButton.IsEnabled = false;
 
         await Task.WhenAll(
-          RegisterButton.RotateTo(10),
-          RegisterButton.RotateTo(-10),
-          RegisterButton.ScaleTo(0.5, 100, Easing.Linear),
-          RegisterButton.ScaleTo(0, 150, Easing.CubicIn));
+            RegisterButton.RotateTo(10),
+            RegisterButton.RotateTo(-10),
+            RegisterButton.ScaleTo(0.5, 100, Easing.Linear),
+            RegisterButton.ScaleTo(0, 150, Easing.CubicIn));
 
         RegisterButton.IsVisible = false;
         LoadingIndicator.IsVisible = true;
@@ -79,7 +81,8 @@ public partial class LoginPage : ContentPage
 
         try
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(password))
             {
                 var popup = new DisplayAlretCoustm();
                 await SafeShowPopupAsync(popup);
@@ -100,57 +103,53 @@ public partial class LoginPage : ContentPage
                 return;
             }
 
-            var loginData = new LoginRequest
+            // 🔐 Use centralized AuthenticationService instead of direct HttpClient
+            var authService = App.Current?.Handler?.MauiContext?.Services.GetService<AuthenticationService>();
+
+            if (authService == null)
             {
-                Email = email,
-                Password = password,
-                RegistrationMethod = "email"
-            };
+                Console.WriteLine("❌ AuthenticationService not available");
+                var popup = new NoServerResponse();
+                await SafeShowPopupAsync(popup);
+                return;
+            }
 
-            var handler = new HttpClientHandler
+            var (success, accessToken, refreshToken, user, statusCode, errorMessage) = 
+                await authService.LoginAsync(email, password);
+
+            if (success)
             {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-            };
-
-            using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
-            var json = JsonSerializer.Serialize(loginData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync("https://lookupfriseur.com/api/auth/login", content);
-            var result = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-                var loginResponse = JsonSerializer.Deserialize<LoginResponse>(result,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                if (!string.IsNullOrEmpty(loginResponse?.Token))
-                    await SecureStorage.SetAsync("auth_token", loginResponse.Token);
-
-                if (!string.IsNullOrEmpty(loginResponse?.Refresh_Token))
-                    await SecureStorage.SetAsync("refresh_token", loginResponse.Refresh_Token);
-
-                //var popup = new CompletedLogin();
-                //await SafeShowPopupAsync(popup);
+                Console.WriteLine("✅ Login successful via AuthenticationService");
 
                 await AppViewModel.Instance.LoadUserDataAsync();
 
-                if (loginResponse?.User != null)
+                if (user != null)
                 {
-                    var userId = loginResponse.User.Id.ToString();
+                    var userId = user.Id.ToString();
+
                     OneSignal.Login(userId);
                     OneSignal.User.AddTag("user_no", userId);
                 }
 
+                IsLogged = true;
                 isNavigationSuccessful = true;
-                // Clear any previous logout-in-progress state before navigating to home
+
                 NavigationService.ResetLogoutFlag();
+
                 await ShellNavigationManager.NavigateToHomeAndClear();
+
                 return;
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+
+            if (statusCode == 401)
             {
                 var popup = new NoEqaulData();
+                await SafeShowPopupAsync(popup);
+            }
+            else if (statusCode == 0)
+            {
+                // Network error
+                var popup = new NoEnternetConacted();
                 await SafeShowPopupAsync(popup);
             }
             else
@@ -161,13 +160,16 @@ public partial class LoginPage : ContentPage
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Login failed: {ex}");
+            System.Diagnostics.Debug.WriteLine(
+                $"Login failed: {ex}");
+
             var popup = new NoServerResponse();
             await SafeShowPopupAsync(popup);
         }
         finally
         {
-            if (!isNavigationSuccessful && this.Handler?.MauiContext != null)
+            if (!isNavigationSuccessful &&
+                this.Handler?.MauiContext != null)
             {
                 LoadingIndicator.IsRunning = false;
                 LoadingIndicator.IsVisible = false;
@@ -175,13 +177,25 @@ public partial class LoginPage : ContentPage
                 RegisterButton.IsVisible = true;
                 RegisterButton.Opacity = 0;
                 RegisterButton.Scale = 0.7;
+
                 await RegisterButton.RotateTo(0);
 
                 await Task.WhenAll(
-                    RegisterButton.FadeTo(1, 200, Easing.CubicOut),
-                    RegisterButton.ScaleTo(1.1, 200, Easing.SpringOut)
+                    RegisterButton.FadeTo(
+                        1,
+                        200,
+                        Easing.CubicOut),
+
+                    RegisterButton.ScaleTo(
+                        1.1,
+                        200,
+                        Easing.SpringOut)
                 );
-                await RegisterButton.ScaleTo(1.0, 100, Easing.CubicOut);
+
+                await RegisterButton.ScaleTo(
+                    1.0,
+                    100,
+                    Easing.CubicOut);
 
                 RegisterButton.IsEnabled = true;
             }
@@ -204,20 +218,36 @@ public partial class LoginPage : ContentPage
         if (string.IsNullOrWhiteSpace(email))
             return false;
 
-        string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        string pattern =
+            @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
         return Regex.IsMatch(email, pattern);
     }
 
     bool isGoogleButtonAnimating = true;
+
     async void StartGoogleButtonAnimation()
     {
         while (isGoogleButtonAnimating)
         {
-            if (this.Handler?.MauiContext == null) break;
+            if (this.Handler?.MauiContext == null)
+                break;
 
-            await GoogleButton.RotateTo(2, 350, Easing.SinInOut);
-            await GoogleButton.RotateTo(-2, 350, Easing.SinInOut);
-            await GoogleButton.RotateTo(0, 300, Easing.SinInOut);
+            await GoogleButton.RotateTo(
+                2,
+                350,
+                Easing.SinInOut);
+
+            await GoogleButton.RotateTo(
+                -2,
+                350,
+                Easing.SinInOut);
+
+            await GoogleButton.RotateTo(
+                0,
+                300,
+                Easing.SinInOut);
+
             await Task.Delay(3000);
         }
     }
@@ -225,15 +255,20 @@ public partial class LoginPage : ContentPage
     void StopGoogleButtonAnimation()
     {
         isGoogleButtonAnimating = false;
+
         if (this.Handler?.MauiContext != null)
         {
-            GoogleButton.RotateTo(0, 300, Easing.CubicOut);
+            GoogleButton.RotateTo(
+                0,
+                300,
+                Easing.CubicOut);
         }
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
         isGoogleButtonAnimating = true;
         StartGoogleButtonAnimation();
     }
@@ -241,13 +276,17 @@ public partial class LoginPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+
         StopGoogleButtonAnimation();
     }
 
-    private async void GoogleButton_Clicked(object sender, EventArgs e)
+    private async void GoogleButton_Clicked(
+        object sender,
+        EventArgs e)
     {
         bool isGoogleNavSuccessful = false;
-        StopGoogleButtonAnimation(); // إيقاف الأنيميشن فوراً عند النقر لتوفير موارد المعالج
+
+        StopGoogleButtonAnimation();
 
         try
         {
@@ -255,160 +294,229 @@ public partial class LoginPage : ContentPage
             GoogleLoadingIndicator.IsVisible = true;
             GoogleLoadingIndicator.IsRunning = true;
 
-            if (MauiProgram.firebaseconfig == null || MauiProgram.firebaseconfig.Providers == null || MauiProgram.firebaseconfig.Providers.Length == 0)
+            if (MauiProgram.firebaseconfig == null ||
+                MauiProgram.firebaseconfig.Providers == null ||
+                MauiProgram.firebaseconfig.Providers.Length == 0)
             {
-                Console.WriteLine("Firebase configuration or providers are missing.");
-                await DisplayAlert("Configuration error", "Firebase providers not configured", "OK");
+                Console.WriteLine(
+                    "Firebase configuration or providers are missing.");
+
+                await DisplayAlert(
+                    "Configuration error",
+                    "Firebase providers not configured",
+                    "OK");
+
                 return;
             }
 
-            var providerEntry = MauiProgram.firebaseconfig.Providers[0];
-            if (providerEntry == null || providerEntry.ProviderType == null)
+            var providerEntry =
+                MauiProgram.firebaseconfig.Providers[0];
+
+            if (providerEntry == null ||
+                providerEntry.ProviderType == null)
             {
-                Console.WriteLine("Provider entry or ProviderType is null.");
-                await DisplayAlert("Configuration error", "Firebase provider invalid", "OK");
+                Console.WriteLine(
+                    "Provider entry or ProviderType is null.");
+
+                await DisplayAlert(
+                    "Configuration error",
+                    "Firebase provider invalid",
+                    "OK");
+
                 return;
             }
 
             var provider = providerEntry.ProviderType;
 
-            var signInTask = MauiProgram.firebaseclient.SignInWithRedirectAsync(provider, async uri =>
-            {
-                fglogin.IsVisible = false;
-                webView.Source = uri;
-                webView.IsVisible = true;
-                fg.IsVisible = true;
-                webView.Opacity = 1;
+            var signInTask =
+                MauiProgram.firebaseclient.SignInWithRedirectAsync(
+                    provider,
+                    async uri =>
+                    {
+                        fglogin.IsVisible = false;
 
-                try
-                {
-                    string finalUrl = await WaitForNavigationToUrlAsync("https://test-23def.web.app/__/auth/handler", TimeSpan.FromSeconds(80));
-                    return finalUrl;
-                }
-                finally
-                {
-                    // الحماية هنا: نضمن إغلاق الـ WebView وإعادة الحاوية الأصلية حتى لو حدث Timeout أو إلغاء
-                    fg.IsVisible = false;
-                    webView.IsVisible = false;
-                    webView.Source = null;
-                    fglogin.IsVisible = true;
-                }
-            });
+                        webView.Source = uri;
+                        webView.IsVisible = true;
 
-            var completed = await Task.WhenAny(signInTask, Task.Delay(TimeSpan.FromSeconds(70)));
+                        fg.IsVisible = true;
+                        webView.Opacity = 1;
+
+                        try
+                        {
+                            string finalUrl =
+                                await WaitForNavigationToUrlAsync(
+                                    "https://test-23def.web.app/__/auth/handler",
+                                    TimeSpan.FromSeconds(80));
+
+                            return finalUrl;
+                        }
+                        finally
+                        {
+                            fg.IsVisible = false;
+                            webView.IsVisible = false;
+                            webView.Source = null;
+                            fglogin.IsVisible = true;
+                        }
+                    });
+
+            var completed = await Task.WhenAny(
+                signInTask,
+                Task.Delay(TimeSpan.FromSeconds(70)));
+
             if (completed != signInTask)
-                throw new TimeoutException("Firebase sign-in timed out.");
+                throw new TimeoutException(
+                    "Firebase sign-in timed out.");
 
             userCredential = await signInTask;
 
             if (userCredential?.User != null)
             {
                 var userId = userCredential.User.Uid;
-                var idToken = await userCredential.User.GetIdTokenAsync();
 
-                var googleAuthData = new
-                {
-                    Token = idToken,
-                    UserId = userId,
-                    Email = userCredential.User.Info.Email,
-                    DisplayName = userCredential.User.Info.DisplayName
-                };
+                var idToken =
+                    await userCredential.User.GetIdTokenAsync();
 
                 try
                 {
-                    var handler = new HttpClientHandler
+                    var authService = AppServices.Get<AuthenticationService>();
+                    if (authService == null)
                     {
-                        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-                    };
-
-                    using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
-                    var json = JsonSerializer.Serialize(googleAuthData);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    var response = await client.PostAsync("https://lookupfriseur.com/api/auth/google", content);
-                    var result = await response.Content.ReadAsStringAsync();
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var googleAuthResponse = JsonSerializer.Deserialize<LoginResponse>(result,
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                        if (!string.IsNullOrEmpty(googleAuthResponse?.Token))
-                            await SecureStorage.SetAsync("auth_token", googleAuthResponse.Token);
-
-                        if (!string.IsNullOrEmpty(googleAuthResponse?.Refresh_Token))
-                            await SecureStorage.SetAsync("refresh_token", googleAuthResponse.Refresh_Token);
+                        Console.WriteLine("AuthenticationService not available");
+                        throw new Exception("Backend authentication failed.");
                     }
-                    else
+
+                    var (googleSuccess, googleAccessToken, _, _, googleStatus, googleError) =
+                        await authService.LoginWithGoogleAsync(
+                            idToken,
+                            userId,
+                            userCredential.User.Info.Email,
+                            userCredential.User.Info.DisplayName);
+
+                    if (!googleSuccess || string.IsNullOrWhiteSpace(googleAccessToken))
                     {
-                        Console.WriteLine($"Backend API error: {response.StatusCode}");
+                        throw new Exception(
+                            googleError ?? $"Backend authentication failed: {googleStatus}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error sending token to backend: {ex.Message}");
+                    Console.WriteLine(
+                        $"Error sending token to backend: {ex}");
+
+                    throw;
                 }
 
                 OneSignal.Login(userId);
-                OneSignal.User.AddTag("email", userCredential.User.Info.Email);
-                OneSignal.User.AddTag("login_type", "google");
-                OneSignal.User.AddTag("display_name", userCredential.User.Info.DisplayName);
+
+                OneSignal.User.AddTag(
+                    "email",
+                    userCredential.User.Info.Email);
+
+                OneSignal.User.AddTag(
+                    "login_type",
+                    "google");
+
+                OneSignal.User.AddTag(
+                    "display_name",
+                    userCredential.User.Info.DisplayName);
 
                 await AppViewModel.Instance.LoadUserDataAsync();
 
+                IsLogged = true;
                 isGoogleNavSuccessful = true;
+
                 NavigationService.ResetLogoutFlag();
+
                 await ShellNavigationManager.NavigateToHomeAndClear();
+
                 return;
             }
         }
         catch (FirebaseAuthHttpException fae)
         {
-            Console.WriteLine("FirebaseAuthHttpException: " + fae.ToString());
-            var msg = !string.IsNullOrEmpty(fae.Message) ? fae.Message : "Firebase HTTP error during authentication.";
-            await DisplayAlert("Authentication error", msg, "OK");
+            Console.WriteLine(
+                "FirebaseAuthHttpException: " + fae);
+
+            var msg = !string.IsNullOrEmpty(fae.Message)
+                ? fae.Message
+                : "Firebase HTTP error during authentication.";
+
+            await DisplayAlert(
+                "Authentication error",
+                msg,
+                "OK");
         }
         catch (TimeoutException tex)
         {
-            Console.WriteLine("Timeout: " + tex.Message);
-            await DisplayAlert("Timeout", "Authentication request timed out. Please try again.", "OK");
+            Console.WriteLine(
+                "Timeout: " + tex.Message);
+
+            await DisplayAlert(
+                "Timeout",
+                "Authentication request timed out. Please try again.",
+                "OK");
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Exception during Google sign-in: " + ex.ToString());
+            Console.WriteLine(
+                "Exception during Google sign-in: " + ex);
+
             var inner = ex.InnerException;
+
             string detail = ex.Message;
-            if (inner != null) detail += "\nInner: " + inner.Message + " (" + inner.GetType().FullName + ")";
-            await DisplayAlert("Sign-in failed", detail, "OK");
+
+            if (inner != null)
+            {
+                detail +=
+                    "\nInner: " +
+                    inner.Message +
+                    " (" +
+                    inner.GetType().FullName +
+                    ")";
+            }
+
+            await DisplayAlert(
+                "Sign-in failed",
+                detail,
+                "OK");
         }
         finally
         {
-            if (!isGoogleNavSuccessful && this.Handler?.MauiContext != null)
+            if (!isGoogleNavSuccessful &&
+                this.Handler?.MauiContext != null)
             {
                 GoogleLoadingIndicator.IsRunning = false;
                 GoogleLoadingIndicator.IsVisible = false;
+
                 GoogleButton.IsVisible = true;
+
                 fglogin.IsVisible = true;
                 fg.IsVisible = false;
                 webView.IsVisible = false;
 
-                // إعادة تشغيل أنيميشن الزر لأن عملية الدخول فشلت وبقينا في نفس الصفحة
                 isGoogleButtonAnimating = true;
                 StartGoogleButtonAnimation();
             }
         }
     }
 
-    private async Task<string> WaitForNavigationToUrlAsync(string targetUrl, TimeSpan timeout)
+    private async Task<string> WaitForNavigationToUrlAsync(
+        string targetUrl,
+        TimeSpan timeout)
     {
-        var tcs = new TaskCompletionSource<string>();
+        var tcs =
+            new TaskCompletionSource<string>();
+
         EventHandler<WebNavigatedEventArgs>? handler = null;
 
         handler = (s, e) =>
         {
             try
             {
-                if (!string.IsNullOrEmpty(e.Url) && e.Url.StartsWith(targetUrl, StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(e.Url) &&
+                    e.Url.StartsWith(
+                        targetUrl,
+                        StringComparison.OrdinalIgnoreCase))
                 {
                     webView.Navigated -= handler;
                     tcs.TrySetResult(e.Url);
@@ -424,26 +532,39 @@ public partial class LoginPage : ContentPage
         webView.Navigated += handler;
 
         var delayTask = Task.Delay(timeout);
-        var completed = await Task.WhenAny(tcs.Task, delayTask);
+
+        var completed = await Task.WhenAny(
+            tcs.Task,
+            delayTask);
 
         if (completed == tcs.Task)
             return await tcs.Task;
 
         webView.Navigated -= handler;
-        throw new TimeoutException("Navigation to redirect URL timed out.");
+
+        throw new TimeoutException(
+            "Navigation to redirect URL timed out.");
     }
 
-    private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
+    private async void TapGestureRecognizer_Tapped_2(
+        object sender,
+        TappedEventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_POLICY_PRIVACY_AUTH);
+        await NavigationService.NavigateToPage(
+            NavigationService.ROUTE_POLICY_PRIVACY_AUTH);
     }
 
-    private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
+    private async void TapGestureRecognizer_Tapped_3(
+        object sender,
+        TappedEventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_SIGNIN);
+        await NavigationService.NavigateToPage(
+            NavigationService.ROUTE_SIGNIN);
     }
 
-    private void OnEmailTextChanged(object sender, TextChangedEventArgs e)
+    private void OnEmailTextChanged(
+        object sender,
+        TextChangedEventArgs e)
     {
         var email = e.NewTextValue?.Trim();
 
@@ -464,14 +585,17 @@ public partial class LoginPage : ContentPage
 
     private async void ShowLiveError(string message)
     {
-        if (this.Handler?.MauiContext == null) return;
+        if (this.Handler?.MauiContext == null)
+            return;
 
         LiveErrorLabel.Text = message;
         LiveErrorLabel.TextColor = Colors.Red;
         LiveErrorLabel.IsVisible = true;
-
         LiveErrorLabel.Opacity = 0;
-        await LiveErrorLabel.FadeTo(1, 150);
+
+        await LiveErrorLabel.FadeTo(
+            1,
+            150);
     }
 
     private void HideLiveError()
@@ -479,3 +603,4 @@ public partial class LoginPage : ContentPage
         LiveErrorLabel.IsVisible = false;
     }
 }
+

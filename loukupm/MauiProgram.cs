@@ -4,6 +4,7 @@ using Firebase.Auth;
 using Firebase.Auth.Providers;
 using loukupm.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using OneSignalSDK.DotNet;
@@ -18,6 +19,7 @@ public static class MauiProgram
 {
     public static FirebaseAuthClient firebaseclient;
     public static FirebaseAuthConfig firebaseconfig;
+    public static IServiceProvider Services { get; private set; }
 
     public static MauiApp CreateMauiApp()
     {
@@ -89,6 +91,32 @@ public static class MauiProgram
 
         firebaseclient = new FirebaseAuthClient(firebaseconfig);
 
+        builder.Services.AddSingleton<loukupm.Services.TokenManager>();
+
+        builder.Services.AddHttpClient("AuthClient", client =>
+        {
+            client.BaseAddress = new Uri("https://lookupfriseur.com/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LoukUPmOVE-MAUI/1.0");
+        });
+
+        builder.Services.AddSingleton(sp =>
+        {
+            var factory = sp.GetRequiredService<IHttpClientFactory>();
+            return new loukupm.Services.AuthenticationService(
+                factory.CreateClient("AuthClient"),
+                sp.GetRequiredService<loukupm.Services.TokenManager>());
+        });
+
+        builder.Services.AddTransient<loukupm.Services.AuthenticatedHttpClientHandler>();
+
+        builder.Services.AddHttpClient("ApiClient", client =>
+        {
+            client.BaseAddress = new Uri("https://lookupfriseur.com/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LoukUPmOVE-MAUI/1.0");
+        }).AddHttpMessageHandler<loukupm.Services.AuthenticatedHttpClientHandler>();
+
         // Register services and viewmodels (no singleton AppViewModel)
         builder.Services.AddSingleton<loukupm.services.NotificationStateService>();
         builder.Services.AddSingleton<loukupm.services.NotificationService>();
@@ -99,6 +127,7 @@ public static class MauiProgram
         builder.Services.AddTransient<loukupm.View.NotificationBadgeView>();
 
         var mauiApp = builder.Build();
+        Services = mauiApp.Services;
 
         // Preload unread notification count as early as possible so the badge reflects state before HomePage appears.
         try

@@ -21,6 +21,7 @@ namespace loukupm.Model
             public string RegistrationMethod { get; set; }
 
             [JsonPropertyName("refresh_token")]
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
             public string RefreshToken { get; set; }
         }
 
@@ -30,6 +31,12 @@ namespace loukupm.Model
             public string Token { get; set; }
             [JsonPropertyName("refresh_token")]
             public string Refresh_Token { get; set; }
+
+            [JsonPropertyName("access_expires_at")]
+            public string AccessExpiresAt { get; set; }
+
+            [JsonPropertyName("refresh_expires_at")]
+            public string RefreshExpiresAt { get; set; }
 
             [JsonPropertyName("user")]
             public UserData User { get; set; }

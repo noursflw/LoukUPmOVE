@@ -18,6 +18,8 @@ using loukupm.View.MassgingApp;
 
 using loukupm.ViewModel;
 
+using OneSignalSDK.DotNet;
+
 using System.Text;
 
 using System.Text.Json;
@@ -369,292 +371,137 @@ public partial class SinginPage : ContentPage
     //}
 
     private async void OnRegisterClicked(object sender, EventArgs e)
-
     {
-
         await Task.WhenAll(
-
             RegisterButton.RotateTo(10),
-
             RegisterButton.RotateTo(-10),
-
             RegisterButton.ScaleTo(0.5, 100, Easing.Linear),
-
             RegisterButton.ScaleTo(0, 150, Easing.CubicIn));
 
-
-
         RegisterButton.IsVisible = false;
-
         LoadingIndicator.IsVisible = true;
-
         LoadingIndicator.IsRunning = true;
 
-
-
         try
-
         {
-
             string firstName = RegisterNameEntry.Text?.Trim();
-
             string lastName = RegisterLastNameEntry.Text?.Trim();
-
             string email = RegisterEmailEntry.Text?.Trim();
-
             string phone = RegisterPhoneEntry.Text?.Trim();
-
             string password = RegisterPasswordEntry.Text;
-
             string passwordConfirmation = RegisterConfirmPasswordEntry.Text;
 
-
-
             if (string.IsNullOrWhiteSpace(firstName) ||
-
                 string.IsNullOrWhiteSpace(lastName) ||
-
                 string.IsNullOrWhiteSpace(email) ||
-
                 string.IsNullOrWhiteSpace(password) ||
-
                 string.IsNullOrWhiteSpace(phone) ||
-
                 string.IsNullOrWhiteSpace(passwordConfirmation))
-
             {
-
                 await this.ShowPopupAsync(new EnterAllFailed());
-
-                ResetRegisterUI();
-
                 return;
-
             }
-
-
 
             if (!IsValidEmail(email))
-
             {
-
                 await this.ShowPopupAsync(new EroreInputEmaile());
-
-                ResetRegisterUI();
-
                 return;
-
             }
-
-
 
             if (password != passwordConfirmation)
-
             {
-
                 await this.ShowPopupAsync(new Paswordmatch());
-
-                ResetRegisterUI();
-
                 return;
-
             }
-
-
 
             if (password.Length < 6)
-
             {
-
                 await this.ShowPopupAsync(new paslen());
-
-                ResetRegisterUI();
-
                 return;
-
             }
-
-
 
             if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-
             {
-
                 await this.ShowPopupAsync(new NoEnternetConacted());
-
-                ResetRegisterUI();
-
                 return;
-
             }
 
-            var registerData = new RegisterRequest
+            // 🔐 Use centralized AuthenticationService instead of direct HttpClient
+            var authService = App.Current?.Handler?.MauiContext?.Services.GetService<AuthenticationService>();
 
+            if (authService == null)
             {
+                Console.WriteLine("❌ AuthenticationService not available");
+                await this.ShowPopupAsync(new NoServerResponse());
+                return;
+            }
 
-                FirstName = firstName,
+            var (success, accessToken, refreshToken, user, statusCode, errorMessage) = 
+                await authService.RegisterAsync(firstName, lastName, email, phone, password, passwordConfirmation);
 
-                LastName = lastName,
-
-                Email = email,
-
-                Phone = phone,
-
-                Password = password,
-
-                PasswordConfirmation = passwordConfirmation,
-
-                RegistrationMethod = string.IsNullOrWhiteSpace(email) ? "phone" : "email"
-
-            };
-
-
-
-            var json = JsonSerializer.Serialize(registerData);
-
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-
-
-            using var client = new HttpClient
-
+            if (success && !string.IsNullOrEmpty(accessToken))
             {
-
-                Timeout = TimeSpan.FromSeconds(30)
-
-            };
-
-           
-
-            var response = await client.PostAsync(
-
-                "https://lookupfriseur.com/api/auth/register",
-
-                content);
-
-            Console.WriteLine($"Register API response: {response}");
-
-            var result = await response.Content.ReadAsStringAsync();
-
-
-
-            if (response.IsSuccessStatusCode)
-
-            {
-
-                var registerResponse = JsonSerializer.Deserialize<RegisterResponse>(
-
-                    result,
-
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-
-
-                // ❌ REMOVE: NO TOKENS HERE ANYMORE
-
-
-
-                var otpContext = new OtpContext
-
+                // Registration successful and user is logged in
+                if (user != null)
                 {
+                    OneSignal.Login(user.Id.ToString());
+                    OneSignal.User.AddTag("email", user.Email);
+                    OneSignal.User.AddTag("signup_date", DateTime.Now.ToString("yyyy-MM-dd"));
+                }
 
-                    Email = email,
-
-                    Phone = phone,
-
-                    RegistrationMethod = string.IsNullOrWhiteSpace(email) ? "phone" : "email",
-
-                    MaskedDestination = registerResponse?.MaskedDestination
-
-                };
-
-
-
-                await NavigationService.NavigateToPage(
-
-                    NavigationService.ROUTE_OTP,
-
-                    otpContext);
-
-                ResetRegisterUI();
-
-
-
-                
-
+                await this.ShowPopupAsync(new CompletedLogin());
+                await AppViewModel.Instance.LoadUserDataAsync();
+                await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
             }
-
-            else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-
+            else if (success && string.IsNullOrEmpty(accessToken) && !string.IsNullOrEmpty(errorMessage))
             {
-
+                // OTP verification required
+                Console.WriteLine($"⏳ OTP verification required: {errorMessage}");
+                await this.ShowPopupAsync(new NoServerResponse());
+            }
+            else if (statusCode == 409 || statusCode == 422)
+            {
+                // Email already in use or validation error
                 await this.ShowPopupAsync(new EmaileUsed());
-
-                ResetRegisterUI();
-
             }
-
-            else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
-
-            {
-
-                await this.ShowPopupAsync(new NoServerResponse());
-
-                ResetRegisterUI();
-
-            }
-
             else
-
             {
-
                 await this.ShowPopupAsync(new NoServerResponse());
-
-                ResetRegisterUI();
-
             }
-
         }
-
         catch (Exception ex)
-
         {
-
             Console.WriteLine($"Register Error: {ex.Message}");
-
             await this.ShowPopupAsync(new NoServerResponse());
-
-            ResetRegisterUI();
-
         }
-
         finally
-
         {
+            LoadingIndicator.IsRunning = false;
+            LoadingIndicator.IsVisible = false;
+            RegisterButton.Text = AppResource.CreatAcount2;
+            RegisterButton.IsVisible = true;
+            RegisterButton.Scale = 0;
 
-            ResetRegisterUI();
-
+            await RegisterButton.RotateTo(0);
+            await RegisterButton.ScaleTo(1.1, 150, Easing.CubicOut);
+            await RegisterButton.ScaleTo(1.0, 100, Easing.Linear);
         }
-
     }
 
-    private void ResetRegisterUI()
-
-    {
-
-        LoadingIndicator.IsRunning = false;
-
-        LoadingIndicator.IsVisible = false;
 
 
 
-        RegisterButton.IsVisible = true;
 
-        RegisterButton         .Opacity = 1;
 
-        RegisterButton.Scale = 1;
+            private void ResetRegisterUI()
+            {
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
 
-        RegisterButton.Rotation = 0;
+                RegisterButton.IsVisible = true;
+                RegisterButton.Opacity = 1;
+                RegisterButton.Scale = 1;
+                RegisterButton.Rotation = 0;
 
     }
 
@@ -874,83 +721,25 @@ public partial class SinginPage : ContentPage
 
                 var idToken = await userCredential.User.GetIdTokenAsync();
 
-
-
-
-
-                var googleAuthData = new
-
-                {
-
-                    Token = idToken,
-
-                    UserId = userId,
-
-                    Email = userCredential.User.Info.Email,
-
-                    DisplayName = userCredential.User.Info.DisplayName
-
-                };
-
-
-
                 try
 
                 {
 
-                    var handler = new HttpClientHandler
+                    var authService = AppServices.Get<AuthenticationService>();
+
+                    if (authService != null)
 
                     {
 
-                        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                        await authService.LoginWithGoogleAsync(
 
-                    };
+                            idToken,
 
+                            userId,
 
+                            userCredential.User.Info.Email,
 
-                    using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
-
-                    var json = JsonSerializer.Serialize(googleAuthData);
-
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-
-
-                    var response = await client.PostAsync("https://lookupfriseur.com/api/auth/google", content);
-
-                    var result = await response.Content.ReadAsStringAsync();
-
-
-
-                    if (response.IsSuccessStatusCode)
-
-                    {
-
-                        var googleAuthResponse = JsonSerializer.Deserialize<RegisterResponse>(result,
-
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-
-
-                        // حفظ التوكن إذا حصلت عليه من Backend
-
-                        if (!string.IsNullOrEmpty(googleAuthResponse?.AccessToken))
-
-                            await SecureStorage.SetAsync("auth_token", googleAuthResponse.AccessToken);
-
-
-
-                        if (!string.IsNullOrEmpty(googleAuthResponse?.RefreshToken))
-
-                            await SecureStorage.SetAsync("refresh_token", googleAuthResponse.RefreshToken);
-
-                    }
-
-                    else
-
-                    {
-
-                        Console.WriteLine($"Backend API error: {response.StatusCode}");
+                            userCredential.User.Info.DisplayName);
 
                     }
 

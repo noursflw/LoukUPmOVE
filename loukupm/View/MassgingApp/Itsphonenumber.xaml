@@ -58,11 +58,11 @@ HorizontalTextAlignment="Center" />
                         HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Frame>
-            <HorizontalStackLayout HorizontalOptions="Center"
+            <VerticalStackLayout 
                        Spacing="10">
 
                 <Button
-        WidthRequest="130"
+       
         Text="{Loc:Translate Name=newPhoneNumber}"
         BorderWidth="1"
         TextColor="#d4ab37"
@@ -73,7 +73,7 @@ HorizontalTextAlignment="Center" />
         Clicked="Button_Clicked_1" />
 
                 <Button
-        WidthRequest="130"
+      
         Text="{Loc:Translate Name=Yesthenumberiscorrect}"
         BorderWidth="1"
         TextColor="Black"
@@ -83,7 +83,7 @@ HorizontalTextAlignment="Center" />
         Clicked="Button_Clicked"
         Command="{Binding SendOtpCommand}" />
 
-            </HorizontalStackLayout>
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </Frame>
 </toolkit:Popup>

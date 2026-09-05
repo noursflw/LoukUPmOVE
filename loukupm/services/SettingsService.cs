@@ -45,7 +45,11 @@ namespace loukupm.Services
                 // Handle 401: Unauthorized - attempt token refresh
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    if (await _apiServices.RefreshTokenAsync().ConfigureAwait(false))
+                    var authService = AppServices.Get<AuthenticationService>();
+                    var refreshed = authService != null
+                        ? await authService.RefreshTokenAsync().ConfigureAwait(false)
+                        : await _apiServices.RefreshTokenAsync().ConfigureAwait(false);
+                    if (refreshed)
                     {
                         // Retry with new token
                         await SetAuthorizationHeaderAsync().ConfigureAwait(false);
@@ -119,7 +123,11 @@ namespace loukupm.Services
                 // Handle 401: Unauthorized - attempt token refresh
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    if (await _apiServices.RefreshTokenAsync().ConfigureAwait(false))
+                    var authService = AppServices.Get<AuthenticationService>();
+                    var refreshed = authService != null
+                        ? await authService.RefreshTokenAsync().ConfigureAwait(false)
+                        : await _apiServices.RefreshTokenAsync().ConfigureAwait(false);
+                    if (refreshed)
                     {
                         // Retry with new token
                         await SetAuthorizationHeaderAsync().ConfigureAwait(false);
@@ -268,7 +276,10 @@ namespace loukupm.Services
         /// </summary>
         private async Task SetAuthorizationHeaderAsync()
         {
-            string? token = await SecureStorage.GetAsync("auth_token").ConfigureAwait(false);
+            var tokenManager = AppServices.Get<TokenManager>();
+            string? token = tokenManager != null
+                ? await tokenManager.GetAccessTokenAsync().ConfigureAwait(false)
+                : await SecureStorage.GetAsync(TokenManager.AccessTokenKey).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(token))
             {

@@ -394,6 +394,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du hast Änderungen vorgenommen, die noch nicht gespeichert wurden..
+        /// </summary>
+        internal static string changeDe {
+            get {
+                return ResourceManager.GetString("changeDe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speichere deine Änderungen, um sie zu behalten..
+        /// </summary>
+        internal static string changeDe2 {
+            get {
+                return ResourceManager.GetString("changeDe2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ändern Sie das Bild.
         /// </summary>
         internal static string ChangeImage {
@@ -769,6 +787,24 @@ namespace loukupm.Langue {
         internal static string detailesMyAccount {
             get {
                 return ResourceManager.GetString("detailesMyAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Änderungen verwerfen?.
+        /// </summary>
+        internal static string DonteChangeDetails {
+            get {
+                return ResourceManager.GetString("DonteChangeDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Änderungen verwerfen?.
+        /// </summary>
+        internal static string DonteChangeDetails1 {
+            get {
+                return ResourceManager.GetString("DonteChangeDetails1", resourceCulture);
             }
         }
         
@@ -1264,6 +1300,15 @@ namespace loukupm.Langue {
         internal static string NoChange {
             get {
                 return ResourceManager.GetString("NoChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zurückbleiben &amp; Speichern.
+        /// </summary>
+        internal static string nochangeing {
+            get {
+                return ResourceManager.GetString("nochangeing", resourceCulture);
             }
         }
         
@@ -2532,7 +2577,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profilbild ändern.
+        ///   Looks up a localized string similar to Änderungen speichern.
         /// </summary>
         internal static string SaveChangFoeMyAccount {
             get {
@@ -2541,7 +2586,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profilbild ändern.
+        ///   Looks up a localized string similar to Änderungen speichern.
         /// </summary>
         internal static string SaveChangFoeMyAccount1 {
             get {
@@ -3275,6 +3320,15 @@ namespace loukupm.Langue {
         internal static string yes {
             get {
                 return ResourceManager.GetString("yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ohne Speichern verlassen.
+        /// </summary>
+        internal static string yesnochange {
+            get {
+                return ResourceManager.GetString("yesnochange", resourceCulture);
             }
         }
         

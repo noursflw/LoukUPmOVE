@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1280" viewBox="0 0 1280 1280">
+<defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFF8A0"/>
+    <stop offset=".22" stop-color="#FFD51A"/>
+    <stop offset=".55" stop-color="#FFB400"/>
+    <stop offset=".82" stop-color="#FFE34A"/>
+    <stop offset="1" stop-color="#FFC000"/>
+  </linearGradient>
+  <linearGradient id="goldEdge" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFF27A"/>
+    <stop offset=".45" stop-color="#FFC400"/>
+    <stop offset="1" stop-color="#FF9F00"/>
+  </linearGradient>
+  <radialGradient id="badge" cx=".35" cy=".28" r=".78">
+    <stop offset="0" stop-color="#FFF88A"/>
+    <stop offset=".42" stop-color="#FFD91C"/>
+    <stop offset="1" stop-color="#F5A900"/>
+  </radialGradient>
+  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+    <feGaussianBlur stdDeviation="9" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="wideGlow" x="-80%" y="-80%" width="260%" height="260%">
+    <feGaussianBlur stdDeviation="25"/>
+  </filter>
+</defs>
+
+<!-- transparent background -->
+
+<!-- Outer ring glow -->
+<circle cx="640" cy="585" r="423" fill="none" stroke="#D9A900" stroke-width="45" opacity=".22" filter="url(#wideGlow)"/>
+<!-- Main ring -->
+<circle cx="640" cy="585" r="423" fill="none" stroke="url(#gold)" stroke-width="20" filter="url(#glow)"/>
+
+<!-- Decorative mounting dots -->
+<g fill="url(#goldEdge)" filter="url(#glow)">
+  <circle cx="393" cy="149" r="13"/>
+  <circle cx="889" cy="147" r="13"/>
+  <circle cx="187" cy="338" r="13"/>
+  <circle cx="1094" cy="359" r="13"/>
+  <circle cx="145" cy="580" r="13"/>
+  <circle cx="1129" cy="607" r="13"/>
+  <circle cx="177" cy="817" r="13"/>
+  <circle cx="1091" cy="820" r="13"/>
+  <circle cx="378" cy="1002" r="13"/>
+</g>
+
+<!-- Sparkles -->
+<g fill="url(#gold)" filter="url(#glow)">
+  <path d="M247 181 L259 216 L294 228 L259 240 L247 275 L235 240 L200 228 L235 216 Z"/>
+  <path d="M1038 183 L1050 218 L1085 230 L1050 242 L1038 277 L1026 242 L991 230 L1026 218 Z"/>
+  <path d="M244 882 L256 917 L291 929 L256 941 L244 976 L232 941 L197 929 L232 917 Z"/>
+  <path d="M1040 884 L1052 919 L1087 931 L1052 943 L1040 978 L1028 943 L993 931 L1028 919 Z"/>
+</g>
+
+<!-- Document body -->
+<path d="M395 307
+         Q395 287 416 287
+         H687
+         L807 408
+         V596
+         H770
+         V425
+         L669 324
+         H430
+         Q411 324 411 344
+         V689
+         Q411 711 432 711
+         H589
+         V750
+         H416
+         Q395 750 395 729 Z"
+      fill="#050505" stroke="url(#gold)" stroke-width="19" stroke-linejoin="round" filter="url(#glow)"/>
+
+<!-- Folded upper-right corner -->
+<path d="M687 300 V400 Q687 418 705 418 H799 Z"
+      fill="url(#goldEdge)" stroke="url(#gold)" stroke-width="15" stroke-linejoin="round"/>
+
+<!-- Document text -->
+<g fill="none" stroke="url(#gold)" stroke-linecap="round" filter="url(#glow)">
+  <path d="M476 461 H638" stroke-width="19"/>
+  <path d="M476 535 H713" stroke-width="19"/>
+  <path d="M476 609 H638" stroke-width="19"/>
+</g>
+
+<!-- Pencil: tip + dark body + golden outline -->
+<g transform="rotate(-43 738 618)" filter="url(#glow)">
+  <path d="M515 570 L438 618 L515 666 Z"
+        fill="url(#goldEdge)" stroke="url(#gold)" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M438 618 L471 598 L471 638 Z" fill="#070707"/>
+  <path d="M515 570 H772 Q793 570 793 591 V645 Q793 666 772 666 H515 Z"
+        fill="#070707" stroke="url(#gold)" stroke-width="17" stroke-linejoin="round"/>
+  <path d="M535 590 H753" stroke="#FFE84D" stroke-width="6" stroke-linecap="round" opacity=".78"/>
+  <path d="M772 570 Q812 570 812 591 V645 Q812 666 772 666 Z"
+        fill="url(#goldEdge)" stroke="url(#gold)" stroke-width="13"/>
+  <path d="M792 582 V654" stroke="#FFF06A" stroke-width="5" opacity=".65"/>
+</g>
+
+<!-- Warning badge glow -->
+<circle cx="892" cy="841" r="139" fill="#E9A900" opacity=".30" filter="url(#wideGlow)"/>
+<!-- Warning badge -->
+<circle cx="892" cy="841" r="130" fill="url(#badge)" stroke="#FFE75A" stroke-width="8" filter="url(#glow)"/>
+
+<!-- Exclamation mark -->
+<path d="M892 773 V851" stroke="#090909" stroke-width="29" stroke-linecap="round"/>
+<circle cx="892" cy="897" r="17" fill="#090909"/>
+
+</svg>

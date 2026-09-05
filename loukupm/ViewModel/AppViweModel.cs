@@ -13,6 +13,8 @@ using loukupm.View.MassgingApp;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -232,6 +234,7 @@ namespace loukupm.ViewModel
                     service.IsSelected = false;
                     SelectedServices.Remove(service);
                     CurrentBooking.SelectedServices.Remove(service);
+                    CurrentBooking.RemoveServiceSelections(service.Id);
 
                     await Toast.Make(AppResource.serviceremoved, ToastDuration.Short).Show();
                     Console.WriteLine($"✅ Service deselected: {service.NameServies}");
@@ -257,7 +260,7 @@ namespace loukupm.ViewModel
 
                 await LoadUser();
 
-                _token = await SecureStorage.GetAsync("auth_token") ?? string.Empty;
+                _token = await SecureStorage.GetAsync(TokenManager.AccessTokenKey) ?? string.Empty;
 
                 await LoadBookingsAsync();
 
@@ -295,7 +298,7 @@ namespace loukupm.ViewModel
         private async Task SetAuthorizationHeaderAsync()
         {
 
-            string? token = await SecureStorage.GetAsync("auth_token");
+            string? token = await SecureStorage.GetAsync(TokenManager.AccessTokenKey);
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -886,102 +889,179 @@ namespace loukupm.ViewModel
         {
             try
             {
+                EnsureCurrentBooking();
+                SyncCurrentBookingServices();
 
                 if (!await ValidateBookingInputs())
                     return;
 
-
                 var (services, totalEndTime) = BuildServicesArray();
-                if (services == null || services.Count == 0)
+                if (services == null || services.Count == 0 || services.Count != SelectedServices.Count)
                 {
                     await Toast.Make(AppResource.Errorbuildingtheservicelist).Show();
                     return;
                 }
 
-
-                decimal totalAmount = CalculateTotalPrice();
-
-
-                string notes = string.IsNullOrWhiteSpace(BookingNotes) ? "ok" : BookingNotes;
-
-
-                var bookingData = BuildBookingRequest(services, totalAmount, notes);
-
-
+                string notes = string.IsNullOrWhiteSpace(BookingNotes) ? "ok" : BookingNotes.Trim();
+                var bookingData = CurrentBooking.ToCreateBookingPayload(services, notes);
+                LogBookingRequest(services, notes, bookingData);
                 await SendBookingRequest(bookingData, totalEndTime);
             }
             catch (Exception ex)
             {
-                return;
+                Console.WriteLine($"[PostBookingAsync] Exception: {ex.Message}");
+                await Toast.Make(AppResource.Connectionerror).Show();
             }
+        }
+
+        private void EnsureCurrentBooking()
+        {
+            CurrentBooking ??= new Booking { SelectedServices = new List<Servies>() };
+            CurrentBooking.EnsureMaps();
+        }
+
+        private void SyncCurrentBookingServices()
+        {
+            EnsureCurrentBooking();
+            CurrentBooking.SelectedServices = SelectedServices?.ToList() ?? new List<Servies>();
+        }
+
+        private bool IsPerServiceBookingMode()
+        {
+            EnsureCurrentBooking();
+            return CurrentBooking.HasPerServiceSelections;
         }
 
         private async Task<bool> ValidateBookingInputs()
         {
+            EnsureCurrentBooking();
+
             if (SelectedServices == null || SelectedServices.Count == 0)
             {
                 await Toast.Make(AppResource.Pleaseselectatleastoneservice).Show();
                 return false;
             }
 
-            if (SelectedProvider == null)
+            bool perService = IsPerServiceBookingMode();
+            bool allowGlobal = !perService;
+
+            Console.WriteLine($"[ValidateBookingInputs] Per-service mode: {perService}, Allow global fallback: {allowGlobal}");
+            Console.WriteLine($"[ValidateBookingInputs] Selected services: {SelectedServices.Count}");
+            Console.WriteLine($"[ValidateBookingInputs] ServiceProviderMap count: {CurrentBooking.ServiceProviderMap?.Count ?? 0}");
+            Console.WriteLine($"[ValidateBookingInputs] ServiceDateMap count: {CurrentBooking.ServiceDateMap?.Count ?? 0}");
+            Console.WriteLine($"[ValidateBookingInputs] ServiceSlotMap count: {CurrentBooking.ServiceSlotMap?.Count ?? 0}");
+
+            foreach (var svc in SelectedServices)
             {
-                await Toast.Make(AppResource.Pleaseselectaserviceprovider).Show();
-                return false;
+                Console.WriteLine($"[ValidateBookingInputs] Validating service {svc.Id}: {svc.NameServies}");
+
+                if (!CurrentBooking.TryGetProviderId(svc.Id, SelectedProvider?.Id, allowGlobal, out var providerId))
+                {
+                    Console.WriteLine($"[ValidateBookingInputs] ERROR: No provider for service {svc.Id}");
+                    await Toast.Make(AppResource.Pleaseselectaserviceprovider).Show();
+                    return false;
+                }
+                Console.WriteLine($"[ValidateBookingInputs] Service {svc.Id} provider: {providerId}");
+
+                if (!CurrentBooking.TryGetServiceDate(svc.Id, SelectedDate == default ? null : SelectedDate, allowGlobal, out var date))
+                {
+                    Console.WriteLine($"[ValidateBookingInputs] ERROR: No date for service {svc.Id}");
+                    await Toast.Make(AppResource.Pleaseselectadate).Show();
+                    return false;
+                }
+                Console.WriteLine($"[ValidateBookingInputs] Service {svc.Id} date: {date:yyyy-MM-dd}");
+
+                if (!CurrentBooking.TryGetSlot(svc.Id, SelectedSlot?.StartTime, allowGlobal, out var slot))
+                {
+                    Console.WriteLine($"[ValidateBookingInputs] ERROR: No slot for service {svc.Id}");
+                    await Toast.Make(AppResource.Pleaseselectatime).Show();
+                    return false;
+                }
+                Console.WriteLine($"[ValidateBookingInputs] Service {svc.Id} slot: {slot}");
             }
 
-            if (SelectedDate == default)
+            var serviceIds = SelectedServices.Select(s => s.Id);
+            Console.WriteLine($"[ValidateBookingInputs] Resolving root date from {serviceIds.Count()} services");
+
+            if (!CurrentBooking.TryResolveRootDate(serviceIds, SelectedDate == default ? null : SelectedDate, allowGlobal, out var rootDate, out var datesConflict))
             {
+                if (datesConflict)
+                {
+                    Console.WriteLine($"[ValidateBookingInputs] ERROR: Date conflict between services");
+                    await Toast.Make(AppResource.Pleaseselectadate).Show();
+                    BookingErrorMessage = "All services in one booking must share the same date.";
+                    return false;
+                }
+
+                Console.WriteLine($"[ValidateBookingInputs] ERROR: Unable to resolve root date");
                 await Toast.Make(AppResource.Pleaseselectadate).Show();
                 return false;
             }
 
-            if (SelectedSlot == null)
-            {
-                await Toast.Make(AppResource.Pleaseselectatime).Show();
-                return false;
-            }
+            Console.WriteLine($"[ValidateBookingInputs] Root date resolved: {rootDate:yyyy-MM-dd}");
+            CurrentBooking.Date = rootDate;
+            if (SelectedDate == default)
+                SelectedDate = rootDate;
 
             if (!PhoneVerified)
             {
+                Console.WriteLine($"[ValidateBookingInputs] Phone not verified, showing OTP popup");
                 var popup = new CanyouAcpetPhonenumber();
-
                 await App.Current.MainPage.ShowPopupAsync(popup);
-
                 return false;
             }
 
+            Console.WriteLine($"[ValidateBookingInputs] Validation passed");
             return true;
         }
 
-
-        private (List<object> services, TimeSpan totalEndTime) BuildServicesArray()
+        private (List<BookingServicePayloadItem> services, TimeSpan totalEndTime) BuildServicesArray()
         {
-            var services = new List<object>();
-            TimeSpan currentStartTime = ParseTimeString(SelectedSlot.StartTime);
+            EnsureCurrentBooking();
+            var services = new List<BookingServicePayloadItem>();
+            TimeSpan latestEndTime = TimeSpan.Zero;
+            bool allowGlobal = !IsPerServiceBookingMode();
+
+            Console.WriteLine($"[BuildServicesArray] Per-service mode: {CurrentBooking.HasPerServiceSelections}, Allow global fallback: {allowGlobal}");
 
             foreach (var service in SelectedServices)
             {
+                Console.WriteLine($"[BuildServicesArray] Processing service {service.Id}: {service.NameServies}");
+
+                if (!CurrentBooking.TryGetSlot(service.Id, SelectedSlot?.StartTime, allowGlobal, out var startTimeString))
+                {
+                    Console.WriteLine($"[BuildServicesArray] ERROR: Unable to get slot for service {service.Id}");
+                    return (new List<BookingServicePayloadItem>(), TimeSpan.Zero);
+                }
+                Console.WriteLine($"[BuildServicesArray] Service {service.Id} slot: {startTimeString}");
+
+                if (!CurrentBooking.TryGetProviderId(service.Id, SelectedProvider?.Id, allowGlobal, out var providerId))
+                {
+                    Console.WriteLine($"[BuildServicesArray] ERROR: Unable to get provider for service {service.Id}");
+                    return (new List<BookingServicePayloadItem>(), TimeSpan.Zero);
+                }
+                Console.WriteLine($"[BuildServicesArray] Service {service.Id} provider: {providerId}");
+
+                TimeSpan startTs = ParseTimeString(startTimeString);
 
                 int serviceDuration = GetServiceDuration(service);
                 if (serviceDuration <= 0)
                     serviceDuration = 30;
 
-                TimeSpan endTime = currentStartTime.Add(TimeSpan.FromMinutes(serviceDuration));
+                TimeSpan endTime = startTs.Add(TimeSpan.FromMinutes(serviceDuration));
+                if (endTime > latestEndTime)
+                    latestEndTime = endTime;
 
-
-                services.Add(new
+                services.Add(new BookingServicePayloadItem
                 {
                     service_id = service.Id,
-                    provider_id = SelectedProvider.Id,
-                    start_time = currentStartTime.ToString(@"hh\:mm")
+                    provider_id = providerId,
+                    start_time = startTimeString
                 });
-
-
-                currentStartTime = endTime;
             }
 
-            return (services, currentStartTime);
+            Console.WriteLine($"[BuildServicesArray] Built {services.Count} services successfully");
+            return (services, latestEndTime);
         }
 
 
@@ -1027,22 +1107,53 @@ namespace loukupm.ViewModel
             });
         }
 
-        private object BuildBookingRequest(List<object> services, decimal totalAmount, string notes)
+        private void LogBookingRequest(List<BookingServicePayloadItem> services, string notes, object bookingData)
         {
-            var bookingData = new
+            try
             {
-                date = SelectedDate.ToString("yyyy-MM-dd"),
-                payment_method = "cash",
-                notes = notes,
-                services = services
-            };
+                EnsureCurrentBooking();
+                var json = JsonSerializer.Serialize(bookingData);
+                Debug.WriteLine("===== BOOKING REQUEST =====");
+                Console.WriteLine("===== BOOKING REQUEST =====");
+                Console.WriteLine($"Date: {Booking.FormatApiDate(CurrentBooking.Date)}");
+                Console.WriteLine($"Payment Method: {Booking.NormalizePaymentMethod(CurrentBooking.PaymentMethod)}");
+                Console.WriteLine($"Notes: {(string.IsNullOrWhiteSpace(notes) ? "(empty)" : notes)}");
+                Console.WriteLine($"Services Count: {services?.Count ?? 0}");
+                Console.WriteLine($"Total Price: {CalculateTotalPrice():C}");
+                Console.WriteLine();
 
+                if (services != null && services.Count > 0)
+                {
+                    for (int i = 0; i < services.Count; i++)
+                    {
+                        var item = services[i];
+                        var service = SelectedServices.FirstOrDefault(s => s.Id == item.service_id);
+                        CurrentBooking.ServiceDateMap.TryGetValue(item.service_id, out var svcDate);
+                        CurrentBooking.ServiceSlotMap.TryGetValue(item.service_id, out var svcSlot);
 
-            return bookingData;
+                        Console.WriteLine($"Service {i + 1}:");
+                        Console.WriteLine($"  Service ID: {item.service_id}");
+                        Console.WriteLine($"  Service Name: {service?.NameServies ?? "Unknown"}");
+                        Console.WriteLine($"  Service Price: {service?.PriceServies ?? "Unknown"}");
+                        Console.WriteLine($"  Service Duration: {service?.TimeServies ?? 0} minutes");
+                        Console.WriteLine($"  Provider ID: {item.provider_id}");
+                        Console.WriteLine($"  Date: {(svcDate == default ? Booking.FormatApiDate(CurrentBooking.Date) : Booking.FormatApiDate(svcDate))}");
+                        Console.WriteLine($"  Selected Slot (UI): {svcSlot ?? "(not stored)"}");
+                        Console.WriteLine($"  Start Time (Payload): {item.start_time}");
+                    }
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("===== PAYLOAD =====");
+                Console.WriteLine($"Final JSON: {json}");
+                Console.WriteLine("===========================");
+                Debug.WriteLine($"Final JSON: {json}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LogBookingRequest] Error: {ex.Message}");
+            }
         }
-
-
-
 
         private async Task SendBookingRequest(object bookingData, TimeSpan totalEndTime)
         {
@@ -1147,27 +1258,32 @@ namespace loukupm.ViewModel
                 if (result.StatusCode == 422)
                 {
                     var userMessage = !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed;
+                    BookingErrorMessage = userMessage;
                     await Toast.Make(userMessage).Show();
 
-                    // Refresh provider availability for the selected date to avoid stale slots
                     try
                     {
-                        if (SelectedProvider != null && SelectedServices != null && SelectedServices.Count > 0)
+                        if (SelectedServices != null && SelectedServices.Count > 0)
                         {
-                            var serviceId = SelectedServices[0].Id;
-                            var avail = await _apiServices.GetProviderAvailabilityAsync(serviceId, SelectedProvider.Id, SelectedDate);
-                            if (avail?.Data != null)
+                            var service = SelectedServices[0];
+                            CurrentBooking.TryGetProviderId(service.Id, SelectedProvider?.Id, !IsPerServiceBookingMode(), out var providerId);
+                            CurrentBooking.TryGetServiceDate(service.Id, SelectedDate == default ? null : SelectedDate, !IsPerServiceBookingMode(), out var date);
+                            if (providerId > 0 && date != default)
                             {
-                                AvailableSlots.Clear();
-                                foreach (var s in avail.Data.AvailableSlots)
+                                var avail = await _apiServices.GetProviderAvailabilityAsync(service.Id, providerId, date);
+                                if (avail?.Data != null)
                                 {
-                                    AvailableSlots.Add(new SlotItem
+                                    AvailableSlots.Clear();
+                                    foreach (var s in avail.Data.AvailableSlots)
                                     {
-                                        StartTime = s.StartTime,
-                                        EndTime = s.EndTime,
-                                        DisplayTime = s.DisplayTime,
-                                        DurationMinutes = s.DurationMinutes
-                                    });
+                                        AvailableSlots.Add(new SlotItem
+                                        {
+                                            StartTime = s.StartTime,
+                                            EndTime = s.EndTime,
+                                            DisplayTime = s.DisplayTime,
+                                            DurationMinutes = s.DurationMinutes
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -1210,12 +1326,13 @@ namespace loukupm.ViewModel
                 return TimeSpan.Zero;
 
 
-            if (TimeSpan.TryParse(timeString, out var result))
+            if (TimeSpan.TryParse(timeString, CultureInfo.InvariantCulture, out var result))
                 return result;
 
 
             var parts = timeString.Split(':');
-            if (parts.Length >= 2 && int.TryParse(parts[0], out var hours) && int.TryParse(parts[1], out var minutes))
+            if (parts.Length >= 2 && int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var hours)
+                && int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var minutes))
             {
                 int seconds = parts.Length > 2 && int.TryParse(parts[2], out var sec) ? sec : 0;
                 return new TimeSpan(hours, minutes, seconds);
@@ -1227,32 +1344,225 @@ namespace loukupm.ViewModel
 
         public void ClearBookingData()
         {
-
             SelectedServices.Clear();
+            EnsureCurrentBooking();
             CurrentBooking.SelectedServices.Clear();
-
+            CurrentBooking.ClearServiceSelections();
 
             foreach (var p in WorkTeams)
                 p.BorderColor = "#202020";
             SelectedProvider = null;
 
-
             SelectedDate = default;
+            SelectedTime = default;
+            BookingNotes = string.Empty;
             foreach (var d in ProviderDays)
                 d.BorderColor = "#444444";
-
 
             foreach (var slot in AvailableSlots)
                 slot.IsSelected = false;
             SelectedSlot = null;
 
-
             AvailableSlots.Clear();
-
+            BookingErrorMessage = string.Empty;
 
             UpdateTotalPrice();
         }
 
+        /// <summary>
+        /// Gets list of providers capable of offering a specific service
+        /// </summary>
+        /// <param name="serviceId">The service ID to filter by</param>
+        /// <returns>List of WorkTeam providers who offer this service</returns>
+        private List<WorkTeam> GetProvidersForService(int serviceId)
+        {
+            if (WorkTeams == null || WorkTeams.Count == 0)
+                return new List<WorkTeam>();
+
+            return WorkTeams
+                .Where(provider => provider?.Services != null &&
+                                   provider.Services.Any(s => s?.Id == serviceId))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Groups selected services by their most suitable provider
+        /// Returns a dictionary where key is provider ID and value is list of services that provider can deliver
+        /// </summary>
+        /// <returns>Dictionary mapping provider ID to list of services</returns>
+        private Dictionary<int, List<Servies>> GroupServicesByProvider()
+        {
+            var groupedServices = new Dictionary<int, List<Servies>>();
+
+            if (SelectedServices == null || SelectedServices.Count == 0)
+                return groupedServices;
+
+            // For each selected service, find a suitable provider
+            foreach (var service in SelectedServices)
+            {
+                var capableProviders = GetProvidersForService(service.Id);
+
+                if (capableProviders.Count == 0)
+                {
+                    // No provider found for this service - log issue
+                    Console.WriteLine($"[ServiceBooking] No provider found for service: {service?.NameServies} (ID: {service?.Id})");
+                    continue;
+                }
+
+                // Prefer previously selected provider if they can deliver this service
+                WorkTeam selectedProvider = null;
+                if (SelectedProvider != null && capableProviders.Any(p => p.Id == SelectedProvider.Id))
+                {
+                    selectedProvider = SelectedProvider;
+                }
+                else
+                {
+                    // Auto-select first capable provider
+                    selectedProvider = capableProviders.FirstOrDefault();
+                    Console.WriteLine($"[ServiceBooking] Auto-assigned service '{service?.NameServies}' to provider '{selectedProvider?.Name}'");
+                }
+
+                if (selectedProvider != null)
+                {
+                    if (!groupedServices.ContainsKey(selectedProvider.Id))
+                    {
+                        groupedServices[selectedProvider.Id] = new List<Servies>();
+                    }
+                    groupedServices[selectedProvider.Id].Add(service);
+                }
+            }
+
+            return groupedServices;
+        }
+
+        /// <summary>
+        /// Validates that all selected services have available providers
+        /// </summary>
+        /// <returns>True if all services have at least one capable provider</returns>
+        private bool ValidateAllServicesHaveProviders()
+        {
+            if (SelectedServices == null || SelectedServices.Count == 0)
+                return false;
+
+            foreach (var service in SelectedServices)
+            {
+                var capableProviders = GetProvidersForService(service.Id);
+                if (capableProviders.Count == 0)
+                {
+                    Console.WriteLine($"[ServiceBooking] No provider available for service: {service?.NameServies}");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Finds the best available provider for a given service, considering date and slot availability
+        /// </summary>
+        /// <param name="service">The service to find a provider for</param>
+        /// <param name="date">The desired booking date</param>
+        /// <returns>The most suitable WorkTeam provider, or null if none available</returns>
+        private async Task<WorkTeam> FindBestProviderForServiceAsync(Servies service, DateTime date)
+        {
+            var capableProviders = GetProvidersForService(service.Id);
+
+            if (capableProviders.Count == 0)
+            {
+                return null;
+            }
+
+            // If previously selected provider can deliver, prefer them
+            if (SelectedProvider != null && capableProviders.Any(p => p.Id == SelectedProvider.Id))
+            {
+                return SelectedProvider;
+            }
+
+            // Check availability for each capable provider and return first with available slots
+            foreach (var provider in capableProviders)
+            {
+                var availability = await _apiServices.GetProviderAvailabilityAsync(service.Id, provider.Id, date);
+                if (availability?.Data?.AvailableSlots != null && availability.Data.AvailableSlots.Count > 0)
+                {
+                    Console.WriteLine($"[ServiceBooking] Found available slots for service '{service?.NameServies}' with provider '{provider?.Name}'");
+                    return provider;
+                }
+            }
+
+            // If no provider has available slots, return first capable provider anyway
+            // This allows the user to proceed and see availability errors from API
+            Console.WriteLine($"[ServiceBooking] No provider has available slots for service '{service?.NameServies}', returning first capable provider");
+            return capableProviders.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Checks if a specific provider can offer a given service
+        /// </summary>
+        /// <param name="provider">The WorkTeam provider to check</param>
+        /// <param name="serviceId">The service ID to check</param>
+        /// <returns>True if provider offers the service, false otherwise</returns>
+        private bool CanProviderOfferService(WorkTeam provider, int serviceId)
+        {
+            if (provider == null || provider.Services == null)
+                return false;
+
+            return provider.Services.Any(s => s?.Id == serviceId);
+        }
+
+        /// <summary>
+        /// Gets a list of services that are selected but NOT offered by the primary provider
+        /// These services will need alternative provider selection in the UI
+        /// </summary>
+        /// <returns>List of services needing alternative providers</returns>
+        public List<Servies> GetServicesNeedingAlternativeProvider()
+        {
+            var result = new List<Servies>();
+
+            if (SelectedServices == null || SelectedServices.Count == 0)
+                return result;
+
+            if (SelectedProvider == null)
+            {
+                // If no primary provider selected, all services need providers
+                return SelectedServices.ToList();
+            }
+
+            // Find services that primary provider doesn't support
+            foreach (var service in SelectedServices)
+            {
+                if (!CanProviderOfferService(SelectedProvider, service.Id))
+                {
+                    result.Add(service);
+                    Console.WriteLine($"[ServiceBooking] Service '{service?.NameServies}' (ID: {service?.Id}) needs alternative provider (primary provider '{SelectedProvider.Name}' doesn't support it)");
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets usable providers for a specific service (filtered list safe for UI binding)
+        /// </summary>
+        /// <param name="serviceId">The service ID to get providers for</param>
+        /// <returns>ObservableCollection of WorkTeam providers that support this service</returns>
+        public ObservableCollection<WorkTeam> GetAlternativeProvidersForService(int serviceId)
+        {
+            var providers = GetProvidersForService(serviceId);
+            return new ObservableCollection<WorkTeam>(providers);
+        }
+
+        /// <summary>
+        /// Checks if the primary provider offers a specific service
+        /// </summary>
+        /// <param name="serviceId">The service ID to check</param>
+        /// <returns>True if primary provider offers it, false otherwise or if no primary provider selected</returns>
+        public bool DoesPrimaryProviderSupportService(int serviceId)
+        {
+            if (SelectedProvider == null)
+                return false;
+
+            return CanProviderOfferService(SelectedProvider, serviceId);
+        }
 
         [ObservableProperty] private string userName;
         [ObservableProperty] private string password;
@@ -2026,6 +2336,8 @@ namespace loukupm.ViewModel
                 PreviousAppointments?.Clear();
                 CanceledAppointments?.Clear();
                 SelectedServices?.Clear();
+                CurrentBooking?.ClearServiceSelections();
+                CurrentBooking?.SelectedServices?.Clear();
                 WorkTeams?.Clear();
                 FilteredWorkTeams?.Clear();
                 Notifications?.Clear();
@@ -2363,6 +2675,7 @@ namespace loukupm.ViewModel
                 serviceToRemove.IsSelected = false;  // تحديث الحالة
                 SelectedServices.Remove(serviceToRemove);
                 CurrentBooking.SelectedServices.Remove(serviceToRemove);
+                CurrentBooking.RemoveServiceSelections(service.Id);
                 UpdateTotalPrice();
 
             }
@@ -2419,6 +2732,7 @@ namespace loukupm.ViewModel
         {
             SelectedServices.Clear();
             CurrentBooking.SelectedServices.Clear();
+            CurrentBooking.ClearServiceSelections();
             UpdateTotalPrice();
 
         }

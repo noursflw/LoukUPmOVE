@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
-    // الاستجابة العامة من الـ API
     public class AppointmentResponse
     {
         [JsonPropertyName("success")]
@@ -18,14 +17,12 @@ namespace loukupm.Model
         public AppointmentDataWrapper Data { get; set; }
     }
 
-    // تحتوي على قائمة الحجوزات
     public class AppointmentDataWrapper
     {
         [JsonPropertyName("data")]
         public List<Appointment> Data { get; set; }
     }
 
-    // تمثيل عنصر الحجز الواحد
     public class Appointment
     {
         [JsonPropertyName("id")]
@@ -124,26 +121,32 @@ namespace loukupm.Model
         [JsonPropertyName("can_cancel")]
         public bool CanCancel { get; set; }
 
-        // الحقول المحسوبة للـ XAML Binding
-        public string Stutes => StatusLabel ?? Status ?? "Unknown";
-        public string Date => FormattedDate ?? AppointmentDate ?? "N/A";
-        public string Time => TimeRange ?? $"{StartTime} - {EndTime}";
-        public string PriceBooking => $"{FormattedDuration ?? ""}";
-        public string UserName => Provider?.FullName ?? "Unknown";
+        public string Stutes =>
+            StatusLabel ?? Status ?? "Unknown";
 
-        /// <summary>
-        /// Production-ready provider image property with full URL encoding and null safety
-        /// </summary>
+        public string Date =>
+            FormattedDate ?? AppointmentDate ?? "N/A";
+
+        public string Time =>
+            TimeRange ?? $"{StartTime} - {EndTime}";
+
+        public string PriceBooking =>
+            $"{FormattedDuration ?? ""}";
+
+        public string UserName =>
+            Provider?.DisplayName ?? "Unknown";
+
         public string ImgePerson
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Provider?.AvatarUrl))
-                {
+                if (Provider == null)
                     return "imagesafe.png";
-                }
 
-                string processedUrl = Provider.AvatarUrl;
+                string processedUrl = Provider.ImageUrl;
+
+                if (string.IsNullOrWhiteSpace(processedUrl))
+                    return "imagesafe.png";
 
                 if (processedUrl.Contains("'"))
                 {
@@ -164,9 +167,14 @@ namespace loukupm.Model
             }
         }
 
-        public string Total => $"{TotalAmount:F2}";
-        public string TimePrice => $"{FormattedDuration ?? ""}";
-        public string ServiceName => ServicesDetails?.FirstOrDefault()?.ServiceName ?? "N/A";
+        public string Total =>
+            $"{TotalAmount:F2}";
+
+        public string TimePrice =>
+            $"{FormattedDuration ?? ""}";
+
+        public string ServiceName =>
+            ServicesDetails?.FirstOrDefault()?.ServiceName ?? "N/A";
     }
 
     public class Provider
@@ -177,6 +185,9 @@ namespace loukupm.Model
         [JsonPropertyName("full_name")]
         public string FullName { get; set; }
 
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
@@ -185,6 +196,36 @@ namespace loukupm.Model
 
         [JsonPropertyName("avatar_url")]
         public string AvatarUrl { get; set; }
+
+        [JsonPropertyName("profile_image_url")]
+        public string ProfileImageUrl { get; set; }
+
+        [JsonPropertyName("avatar")]
+        public string Avatar { get; set; }
+
+        public string DisplayName =>
+            !string.IsNullOrWhiteSpace(FullName)
+                ? FullName
+                : !string.IsNullOrWhiteSpace(Name)
+                    ? Name
+                    : "N/A";
+
+        public string ImageUrl
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(ProfileImageUrl))
+                    return ProfileImageUrl;
+
+                if (!string.IsNullOrWhiteSpace(AvatarUrl))
+                    return AvatarUrl;
+
+                if (!string.IsNullOrWhiteSpace(Avatar))
+                    return Avatar;
+
+                return "imagesafe.png";
+            }
+        }
     }
 
     public class ServiceDetail
@@ -212,5 +253,42 @@ namespace loukupm.Model
 
         [JsonPropertyName("sequence_order")]
         public int SequenceOrder { get; set; }
+
+        [JsonPropertyName("provider")]
+        public Provider Provider { get; set; }
+
+        public string ProviderName =>
+            Provider?.DisplayName ?? "N/A";
+
+        public string ProviderImage
+        {
+            get
+            {
+                if (Provider == null)
+                    return "imagesafe.png";
+
+                string processedUrl = Provider.ImageUrl;
+
+                if (string.IsNullOrWhiteSpace(processedUrl))
+                    return "imagesafe.png";
+
+                if (processedUrl.Contains("'"))
+                {
+                    processedUrl = processedUrl.Replace("'", "%27");
+                }
+
+                if (processedUrl.Contains("\""))
+                {
+                    processedUrl = processedUrl.Replace("\"", "%22");
+                }
+
+                if (processedUrl.Contains(" "))
+                {
+                    processedUrl = processedUrl.Replace(" ", "%20");
+                }
+
+                return processedUrl;
+            }
+        }
     }
 }

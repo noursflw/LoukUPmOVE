@@ -20,57 +20,44 @@ namespace loukupm.Services
 
         public ApiServices()
         {
-            // ✅ HttpClientHandler configuration with security best practices
-            var handler = new HttpClientHandler();
-
-#if DEBUG
-            // ⚠️ DEBUG ONLY: Relaxed SSL validation for testing with self-signed certificates
-            // This should NEVER be used in production
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+            var factory = AppServices.Get<IHttpClientFactory>();
+            if (factory != null)
             {
-                if (errors != System.Net.Security.SslPolicyErrors.None)
-                {
-                    Console.WriteLine($"⚠️ [DEBUG] Certificate validation bypassed: {errors}");
-                    Console.WriteLine($"   Subject: {cert?.Subject}");
-                    // Only accept specific test certificates, not any certificate
-                    if (cert?.Subject?.Contains("https://lookupfriseur.com") == true ||
-                        cert?.Subject?.Contains("test-23def.web.app") == true)
-                    {
-                        return true;
-                    }
-                    return false; // Still reject unknown certificates
-                }
-                return true;
+                _httpClient = factory.CreateClient("ApiClient");
+                return;
+            }
+
+            var inner = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
-#else
-            // ✅ PRODUCTION: Use strict SSL validation
-            handler.ServerCertificateCustomValidationCallback = null;
-            Console.WriteLine("✅ [ApiServices] Production SSL validation enabled");
-#endif
 
-            // ✅ Properly configure decompression
-            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            HttpMessageHandler pipeline = inner;
+            var tokenManager = AppServices.Get<TokenManager>();
+            var authService = AppServices.Get<AuthenticationService>();
+            if (tokenManager != null && authService != null)
+                pipeline = new AuthenticatedHttpClientHandler(tokenManager, authService) { InnerHandler = inner };
 
-            _httpClient = new HttpClient(handler)
+            _httpClient = new HttpClient(pipeline)
             {
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
-            // ✅ Add User-Agent for API compliance
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "LoukUPmOVE-MAUI/1.0");
-
-            Console.WriteLine("✅ [ApiServices] Initialized with 30s timeout");
+            if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
+                _httpClient.DefaultRequestHeaders.Add("User-Agent", "LoukUPmOVE-MAUI/1.0");
         }
 
         private async Task SetAuthorizationHeaderAsync()
         {
-            string? token = await SecureStorage.GetAsync("auth_token");
+            var tokenManager = AppServices.Get<TokenManager>();
+            string? token = tokenManager != null
+                ? await tokenManager.GetAccessTokenAsync()
+                : await SecureStorage.GetAsync(TokenManager.AccessTokenKey);
 
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
-
             }
             else
             {
@@ -144,6 +131,19 @@ namespace loukupm.Services
                     {
                         var otpResponse = JsonSerializer.Deserialize<Auth.OtpVerificationResponse>(responseContent,
                             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        if (!string.IsNullOrEmpty(otpResponse?.AccessToken))
+                        {
+                            var tokenManager = AppServices.Get<TokenManager>();
+                            if (tokenManager != null)
+                            {
+                                await tokenManager.SaveTokensAsync(
+                                    otpResponse.AccessToken,
+                                    otpResponse.RefreshToken,
+                                    otpResponse.AccessExpiresAt,
+                                    otpResponse.RefreshExpiresAt);
+                            }
+                        }
 
                         return (true, otpResponse?.AccessToken, otpResponse?.RefreshToken, otpResponse?.User,
                             (int)response.StatusCode, null);
@@ -498,49 +498,12 @@ namespace loukupm.Services
         }
 
 
-        public async Task<bool> RefreshTokenAsync()
+        public Task<bool> RefreshTokenAsync()
         {
-            try
-            {
-                string refreshToken = await SecureStorage.GetAsync("refresh_token");
-                if (string.IsNullOrEmpty(refreshToken))
-                    return false;
-
-                var payload = new
-                {
-                    refresh_token = refreshToken
-                };
-
-                var json = JsonSerializer.Serialize(payload);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync("https://lookupfriseur.com/api/auth/refresh", content);
-
-                if (!response.IsSuccessStatusCode)
-                    return false;
-
-                var responseJson = await response.Content.ReadAsStringAsync();
-
-                var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseJson,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                if (!string.IsNullOrEmpty(authResponse?.AccessToken))
-                {
-                    await SecureStorage.SetAsync("auth_token", authResponse.AccessToken);
-
-                    // إذا رجع refresh_token جديد، حدّثه كمان
-                    if (!string.IsNullOrEmpty(authResponse.RefreshToken))
-                        await SecureStorage.SetAsync("refresh_token", authResponse.RefreshToken);
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
+            var authService = AppServices.Get<AuthenticationService>();
+            return authService != null
+                ? authService.RefreshTokenAsync()
+                : Task.FromResult(false);
         }
 
         // Base URL is configurable via Preferences. Do NOT hardcode in UI.
@@ -574,10 +537,59 @@ namespace loukupm.Services
             }
         }
 
+        private static string ExtractValidationMessage(JsonDocument parsed, string responseBody)
+        {
+            if (parsed == null)
+                return string.IsNullOrWhiteSpace(responseBody) ? "Validation error" : responseBody;
+
+            try
+            {
+                var root = parsed.RootElement;
+                var parts = new List<string>();
+
+                if (root.TryGetProperty("message", out var messageEl) && messageEl.ValueKind == JsonValueKind.String)
+                {
+                    var msg = messageEl.GetString();
+                    if (!string.IsNullOrWhiteSpace(msg))
+                        parts.Add(msg);
+                }
+
+                if (root.TryGetProperty("errors", out var errorsEl) && errorsEl.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var prop in errorsEl.EnumerateObject())
+                    {
+                        if (prop.Value.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var item in prop.Value.EnumerateArray())
+                            {
+                                var text = item.ValueKind == JsonValueKind.String ? item.GetString() : item.ToString();
+                                if (!string.IsNullOrWhiteSpace(text))
+                                    parts.Add($"{prop.Name}: {text}");
+                            }
+                        }
+                        else
+                        {
+                            var text = prop.Value.ValueKind == JsonValueKind.String ? prop.Value.GetString() : prop.Value.ToString();
+                            if (!string.IsNullOrWhiteSpace(text))
+                                parts.Add($"{prop.Name}: {text}");
+                        }
+                    }
+                }
+
+                if (parts.Count > 0)
+                    return string.Join(" | ", parts);
+            }
+            catch
+            {
+            }
+
+            return string.IsNullOrWhiteSpace(responseBody) ? "Validation error" : responseBody;
+        }
+
         /// <summary>
-        /// Create a booking. Returns tuple: Success, StatusCode, Message, ResponseJson
+        /// Internal helper method to send a booking request without retry logic.
         /// </summary>
-        public async Task<(bool Success, int StatusCode, string Message, JsonDocument ResponseJson)> CreateBookingAsync(object payload)
+        private async Task<(bool Success, int StatusCode, string Message, JsonDocument ResponseJson)> SendBookingRequestAsync(object payload)
         {
             try
             {
@@ -587,6 +599,17 @@ namespace loukupm.Services
                 var url = $"{GetBaseUrl()}/api/bookings";
 
                 var json = JsonSerializer.Serialize(payload);
+                System.Diagnostics.Debug.WriteLine("===== BOOKING REQUEST =====");
+                System.Diagnostics.Debug.WriteLine($"URL: {url}");
+                System.Diagnostics.Debug.WriteLine($"Payload Type: {payload?.GetType().Name ?? "null"}");
+                System.Diagnostics.Debug.WriteLine($"Final JSON: {json}");
+                System.Diagnostics.Debug.WriteLine("===========================");
+                Console.WriteLine("===== BOOKING REQUEST =====");
+                Console.WriteLine($"URL: {url}");
+                Console.WriteLine($"Payload Type: {payload?.GetType().Name ?? "null"}");
+                Console.WriteLine($"Final JSON: {json}");
+                Console.WriteLine("===========================");
+
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Required headers
@@ -598,6 +621,17 @@ namespace loukupm.Services
                 var response = await _httpClient.PostAsync(url, content);
                 var responseBody = await response.Content.ReadAsStringAsync();
 
+                System.Diagnostics.Debug.WriteLine("===== BOOKING RESPONSE =====");
+                System.Diagnostics.Debug.WriteLine($"HTTP Status: {(int)response.StatusCode}");
+                System.Diagnostics.Debug.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => h.Key))}");
+                System.Diagnostics.Debug.WriteLine($"Response Body: {responseBody}");
+                System.Diagnostics.Debug.WriteLine("============================");
+                Console.WriteLine("===== BOOKING RESPONSE =====");
+                Console.WriteLine($"HTTP Status: {(int)response.StatusCode}");
+                Console.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => h.Key))}");
+                Console.WriteLine($"Response Body: {responseBody}");
+                Console.WriteLine("============================");
+
                 JsonDocument parsed = null;
                 try { parsed = JsonDocument.Parse(responseBody); } catch { }
 
@@ -608,14 +642,9 @@ namespace loukupm.Services
 
                 if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
                 {
-                    // 422 - business rule / validation
-                    var message = "Validation error";
-                    try
-                    {
-                        if (parsed != null && parsed.RootElement.TryGetProperty("message", out var m))
-                            message = m.GetString();
-                    }
-                    catch { }
+                    var message = ExtractValidationMessage(parsed, responseBody);
+                    System.Diagnostics.Debug.WriteLine($"[422 ERROR] Extracted Message: {message}");
+                    Console.WriteLine($"[422 ERROR] Extracted Message: {message}");
                     return (false, (int)response.StatusCode, message, parsed);
                 }
 
@@ -652,7 +681,20 @@ namespace loukupm.Services
             }
         }
 
-        public async Task<(bool Success, int StatusCode, string Message)> CancelBookingAsync(int bookingId, string cancellationReason)
+        /// <summary>
+        /// Create a booking. Returns tuple: Success, StatusCode, Message, ResponseJson
+        /// Handles 401 Unauthorized by attempting to refresh the token and retry once.
+        /// </summary>
+        public Task<(bool Success, int StatusCode, string Message, JsonDocument ResponseJson)> CreateBookingAsync(object payload)
+        {
+            return SendBookingRequestAsync(payload);
+        }
+
+
+        /// <summary>
+        /// Internal helper method to send a cancel booking request without retry logic.
+        /// </summary>
+        private async Task<(bool Success, int StatusCode, string Message)> SendCancelBookingRequestAsync(int bookingId, string cancellationReason)
         {
             try
             {
@@ -683,6 +725,14 @@ namespace loukupm.Services
             {
                 return (false, 0, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Cancel a booking with automatic token refresh on 401.
+        /// </summary>
+        public Task<(bool Success, int StatusCode, string Message)> CancelBookingAsync(int bookingId, string cancellationReason)
+        {
+            return SendCancelBookingRequestAsync(bookingId, cancellationReason);
         }
 
         public async Task<AvailabilityResponse> GetProviderAvailabilityAsync(int serviceId, int providerId, DateTime date, int? branchId = null)
@@ -832,60 +882,52 @@ namespace loukupm.Services
         }
 
         /// <summary>
-        /// Update user profile: first_name and avatar via MultipartFormDataContent
-        /// Returns response object with success status, message, and profile data
+        /// Internal helper method to send update profile request without retry logic.
+        /// Returns (response, statusCode) tuple
         /// </summary>
-        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath, string phonenumber)
+        private async Task<(ProfileUpdateApiResponse Response, int StatusCode)> SendUpdateProfileRequestAsync(string firstName, string avatarImagePath, string phonenumber)
         {
             var response = new ProfileUpdateApiResponse();
+            int statusCode = 0;
 
             try
             {
-                // ✅ Set authorization header
                 await SetAuthorizationHeaderAsync();
 
-                // Validate token
-                string? token = await SecureStorage.GetAsync("auth_token");
+                var tokenManager = AppServices.Get<TokenManager>();
+                string? token = tokenManager != null
+                    ? await tokenManager.GetAccessTokenAsync()
+                    : await SecureStorage.GetAsync(TokenManager.AccessTokenKey);
                 if (string.IsNullOrEmpty(token))
                 {
                     Console.WriteLine("❌ Authorization: No token found");
                     response.Success = false;
                     response.Message = "خطأ في المصادقة - لم يتم العثور على token";
-                    return response;
+                    return (response, 0);
                 }
                 Console.WriteLine($"✅ Authorization: Bearer token present (length: {token.Length})");
 
-                // ✅ Build MultipartFormDataContent
                 using (var form = new MultipartFormDataContent())
                 {
-                    // Add first_name field (only if provided)
                     if (!string.IsNullOrWhiteSpace(firstName))
                     {
                         form.Add(new StringContent(firstName.Trim()), "first_name");
                         Console.WriteLine($"📋 Field added: first_name = '{firstName.Trim()}'");
                     }
-                    // Add phone number field (only if provided)
                     if (!string.IsNullOrWhiteSpace(phonenumber))
                     {
                         form.Add(new StringContent(phonenumber.Trim()), "phone");
                         Console.WriteLine($"📋 Field added: phone = '{phonenumber.Trim()}'");
                     }
-                    // Add avatar file (only if image path is valid)
                     if (!string.IsNullOrWhiteSpace(avatarImagePath) && File.Exists(avatarImagePath))
                     {
                         try
                         {
-                            // ✅ Read file as byte array (solves stream disposal issue)
                             byte[] fileBytes = await File.ReadAllBytesAsync(avatarImagePath);
                             var fileName = Path.GetFileName(avatarImagePath);
-
-                            // Create ByteArrayContent from bytes (won't dispose while sending)
                             var fileContent = new ByteArrayContent(fileBytes);
-
-                            // Detect MIME type based on file extension
                             string mimeType = GetMimeType(avatarImagePath);
                             fileContent.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
-
                             form.Add(fileContent, "image", fileName);
                             Console.WriteLine($"📋 Field added: image = file '{fileName}' (size: {fileBytes.Length} bytes, content-type: {mimeType})");
                         }
@@ -894,7 +936,7 @@ namespace loukupm.Services
                             Console.WriteLine($"❌ Error reading avatar file: {fileEx.Message}");
                             response.Success = false;
                             response.Message = $"خطأ في قراءة الصورة: {fileEx.Message}";
-                            return response;
+                            return (response, 0);
                         }
                     }
                     else if (!string.IsNullOrWhiteSpace(avatarImagePath))
@@ -902,30 +944,20 @@ namespace loukupm.Services
                         Console.WriteLine($"⚠️ Avatar file not found at path: {avatarImagePath}");
                     }
 
-                    // ✅ Log request details
                     Console.WriteLine("📤 Sending update request to API:");
                     Console.WriteLine($"   URL: https://lookupfriseur.com/api/profile");
                     Console.WriteLine($"   Method: POST");
                     Console.WriteLine($"   Content-Type: multipart/form-data");
                     Console.WriteLine($"   Authorization: Bearer [token]");
-                    Console.WriteLine($"   Fields being sent: {(string.IsNullOrWhiteSpace(firstName) ? "" : "first_name ")}{(string.IsNullOrWhiteSpace(avatarImagePath) ? "" : "image")}");
 
-                    // ✅ Send request
-                    var httpResponse = await _httpClient.PostAsync(
-                        "https://lookupfriseur.com/api/profile",
-                        form
-                    );
-
-
-                    // ✅ Log response
+                    var httpResponse = await _httpClient.PostAsync("https://lookupfriseur.com/api/profile", form);
+                    statusCode = (int)httpResponse.StatusCode;
                     Console.WriteLine($"📊 Response Status: {httpResponse.StatusCode}");
                     string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
                     Console.WriteLine($"📄 Response Body: {responseBody}");
 
                     if (httpResponse.IsSuccessStatusCode)
                     {
-                        // ✅ Try to deserialize JSON response
                         try
                         {
                             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -934,60 +966,55 @@ namespace loukupm.Services
                             if (parsedResponse != null)
                             {
                                 response = parsedResponse;
-                                response.Success = parsedResponse.Success ?? true; // Assume success if not explicitly set
+                                response.Success = parsedResponse.Success ?? true;
                                 Console.WriteLine($"✅ Response parsed successfully");
-                                return response;
+                                return (response, statusCode);
                             }
                             else
                             {
-                                // Parsed but result is null
                                 Console.WriteLine($"⚠️ Response parsed as null");
                                 response.Success = true;
                                 response.Message = "تم التحديث (استجابة فارغة)";
-                                return response;
+                                return (response, statusCode);
                             }
                         }
                         catch (JsonException jsonEx)
                         {
-                            // JSON parsing failed but HTTP was successful
                             Console.WriteLine($"⚠️ JSON parsing failed: {jsonEx.Message}");
                             response.Success = true;
                             response.Message = "تم التحديث (لم نتمكن من قراءة الاستجابة)";
-                            return response;
+                            return (response, statusCode);
                         }
                     }
-                    else if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+
+                    if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                     {
-                        // 401: Unauthorized
                         Console.WriteLine("❌ Unauthorized (401) - Token invalid or expired");
                         response.Success = false;
-                        response.Message = "جلسة المستخدم انتهت، يرجى تسجيل الدخول مجدداً";
-                        return response;
+                        response.Message = "Unauthorized";
+                        return (response, statusCode);
                     }
-                    else if (httpResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+
+                    if (httpResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
                     {
-                        // 400: Bad Request
                         Console.WriteLine($"❌ Bad Request (400): {responseBody}");
                         response.Success = false;
                         response.Message = "البيانات المدخلة غير صحيحة";
-                        return response;
+                        return (response, statusCode);
                     }
-                    else if (httpResponse.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+
+                    if (httpResponse.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
                     {
-                        // 422: Unprocessable Entity
                         Console.WriteLine($"❌ Unprocessable Entity (422): {responseBody}");
                         response.Success = false;
                         response.Message = "فشل التحقق من البيانات";
-                        return response;
+                        return (response, statusCode);
                     }
-                    else
-                    {
-                        // Other HTTP errors
-                        Console.WriteLine($"❌ API Error: {httpResponse.StatusCode} - {responseBody}");
-                        response.Success = false;
-                        response.Message = $"خطأ: {(int)httpResponse.StatusCode}";
-                        return response;
-                    }
+
+                    Console.WriteLine($"❌ API Error: {httpResponse.StatusCode} - {responseBody}");
+                    response.Success = false;
+                    response.Message = $"خطأ: {(int)httpResponse.StatusCode}";
+                    return (response, statusCode);
                 }
             }
             catch (Exception ex)
@@ -996,17 +1023,32 @@ namespace loukupm.Services
                 Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
                 response.Success = false;
                 response.Message = $"خطأ: {ex.Message}";
-                return response;
+                return (response, 0);
             }
         }
 
-        public async Task<string?> DeleteCurrentUserProfileAsync(string currentPassword)
+        /// <summary>
+        /// Update user profile with automatic token refresh on 401.
+        /// </summary>
+        public async Task<ProfileUpdateApiResponse> UpdateUserProfileAsync(string firstName, string avatarImagePath, string phonenumber)
+        {
+            var (result, _) = await SendUpdateProfileRequestAsync(firstName, avatarImagePath, phonenumber);
+            return result;
+        }
+
+        /// <summary>
+        /// Internal helper method to send delete profile request without retry logic.
+        /// </summary>
+        private async Task<string?> SendDeleteProfileRequestAsync(string currentPassword)
         {
             try
             {
                 await SetAuthorizationHeaderAsync();
 
-                var token = await SecureStorage.GetAsync("auth_token");
+                var tokenManager = AppServices.Get<TokenManager>();
+                var token = tokenManager != null
+                    ? await tokenManager.GetAccessTokenAsync()
+                    : await SecureStorage.GetAsync(TokenManager.AccessTokenKey);
 
                 if (string.IsNullOrWhiteSpace(token))
                 {
@@ -1025,7 +1067,6 @@ namespace loukupm.Services
                     Encoding.UTF8,
                     "application/json");
 
-
                 using var request = new HttpRequestMessage(
                     HttpMethod.Delete,
                     "https://lookupfriseur.com/api/profile");
@@ -1036,28 +1077,23 @@ namespace loukupm.Services
 
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-
                 Console.WriteLine($"📊 Delete profile response: {httpResponse.StatusCode}");
                 Console.WriteLine($"📄 Delete profile body: {responseBody}");
-
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     return null; // نجاح
                 }
 
-
                 if (httpResponse.StatusCode == HttpStatusCode.UnprocessableEntity)
                 {
                     return "WrongPassword";
                 }
 
-
                 if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     return "Unauthorized";
                 }
-
 
                 return "Error";
             }
@@ -1066,6 +1102,14 @@ namespace loukupm.Services
                 Console.WriteLine(ex.Message);
                 return "Error";
             }
+        }
+
+        /// <summary>
+        /// Delete current user profile with automatic token refresh on 401.
+        /// </summary>
+        public Task<string?> DeleteCurrentUserProfileAsync(string currentPassword)
+        {
+            return SendDeleteProfileRequestAsync(currentPassword);
         }
 
         /// <summary>

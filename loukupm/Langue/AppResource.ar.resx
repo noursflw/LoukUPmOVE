@@ -1224,4 +1224,22 @@
   <data name="ViewAppointment" xml:space="preserve">
     <value>عرض الموعد </value>
   </data>
+  <data name="DonteChangeDetails" xml:space="preserve">
+    <value>هل تريد تجاهل التغييرات؟</value>
+  </data>
+  <data name="DonteChangeDetails1" xml:space="preserve">
+    <value>هل تريد تجاهل التغييرات؟</value>
+  </data>
+  <data name="changeDe" xml:space="preserve">
+    <value>لقد أجريت تغييرات لم يتم حفظها بعد.</value>
+  </data>
+  <data name="changeDe2" xml:space="preserve">
+    <value>احفظ التغييرات للاحتفاظ بها.</value>
+  </data>
+  <data name="yesnochange" xml:space="preserve">
+    <value>مغادرة دون حفظ</value>
+  </data>
+  <data name="nochangeing" xml:space="preserve">
+    <value>البقاء وحفظ التغييرات</value>
+  </data>
 </root>

@@ -69,7 +69,7 @@ public partial class App : Application
         string? token = null;
         try
         {
-            token = SecureStorage.GetAsync("auth_token").GetAwaiter().GetResult();
+            token = SecureStorage.GetAsync(TokenManager.AccessTokenKey).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {
@@ -81,7 +81,82 @@ public partial class App : Application
             : new AppShell { FlowDirection = direction };
     }
 
-    protected override void OnStart() { }
+    /// <summary>
+    /// Performs authentication checks on app startup.
+    /// Attempts to refresh token if it's expired.
+    /// </summary>
+    private async Task PerformAuthenticationCheckAsync()
+    {
+        try
+        {
+            // Get services from the app's service provider
+            var services = this.Handler?.MauiContext?.Services;
+            if (services == null)
+            {
+                Console.WriteLine("⚠️ Services not available for auth check");
+                return;
+            }
+
+            var tokenManager = services.GetService(typeof(TokenManager)) as TokenManager;
+            var authService = services.GetService(typeof(AuthenticationService)) as AuthenticationService;
+
+            if (tokenManager == null || authService == null)
+            {
+                Console.WriteLine("⚠️ TokenManager or AuthenticationService not available");
+                return;
+            }
+
+            // Check if user has valid tokens
+            bool hasValidTokens = await tokenManager.HasValidTokensAsync();
+
+            if (!hasValidTokens)
+            {
+                await tokenManager.ClearTokensAsync();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    var direction = MainPage?.FlowDirection ?? Microsoft.Maui.FlowDirection.LeftToRight;
+                    MainPage = new NavigationPage(new LoginPage { FlowDirection = direction });
+                });
+                return;
+            }
+
+            // Check if access token needs proactive refresh
+            bool accessTokenExpired = await tokenManager.IsAccessTokenExpiredOrExpiringSoonAsync();
+
+            if (accessTokenExpired)
+            {
+                Console.WriteLine("⏰ [App] Access token expiring, attempting proactive refresh...");
+                bool refreshed = await authService.RefreshTokenAsync();
+
+                if (refreshed)
+                {
+                    Console.WriteLine("✅ [App] Token refreshed successfully on startup");
+                }
+                else
+                {
+                    await tokenManager.ClearTokensAsync();
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        var direction = MainPage?.FlowDirection ?? Microsoft.Maui.FlowDirection.LeftToRight;
+                        MainPage = new NavigationPage(new LoginPage { FlowDirection = direction });
+                    });
+                }
+            }
+            else
+            {
+                Console.WriteLine("✅ [App] Authentication valid on startup");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ [App] Authentication check failed: {ex.Message}");
+        }
+    }
+
+    protected override void OnStart()
+    {
+        _ = PerformAuthenticationCheckAsync();
+    }
     protected override void OnResume() { }
     public static void ResetAuthenticationCheck()
     {

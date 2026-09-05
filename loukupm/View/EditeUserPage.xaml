@@ -69,9 +69,6 @@
                       
                         <Frame BackgroundColor="Transparent" BorderColor="Transparent">
 
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Button_Clicked_1"/>
-                            </Frame.GestureRecognizers>
 
                             <Grid VerticalOptions="End"
           HorizontalOptions="Center"

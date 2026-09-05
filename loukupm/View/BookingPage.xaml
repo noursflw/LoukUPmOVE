@@ -18,213 +18,195 @@
             <converters:DateToArabicFormatConverter x:Key="DateToArabicFormatConverter" />
 
             <!-- Unified Appointment Card DataTemplate -->
+            <!-- Unified Appointment Card DataTemplate (Enhanced & Modernized) -->
+            <!-- Unified Appointment Card DataTemplate (MAUI Compliant) -->
             <DataTemplate x:Key="AppointmentTemplate">
-                <Frame Margin="16,12,16,12" 
-                       Padding="0" 
-                       BorderColor="#444444" 
-                       BackgroundColor="#1A1A1A"
-                       CornerRadius="16"
-                       HasShadow="True"
-                       Shadow="{Shadow Offset='0,2', Radius='4', Opacity='0.3'}">
+                <Border Margin="16,10,16,10" 
+            Stroke="#2D2D2D" 
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 20">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#1E1E1E" Offset="0.0"/>
+                            <GradientStop Color="#121212" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+
                     <VerticalStackLayout Spacing="0">
 
-                        <!-- Status Button -->
-                        <Frame BorderColor="#E8C966"
-                               BackgroundColor="#33E8C930"
-                               CornerRadius="20"
-                               Padding="12,6"
-                               Margin="16,12,16,0"
-                               HasShadow="False"
-                               HorizontalOptions="Start">
-                            <Label Text="{Binding Stutes}" 
-                                   TextColor="#E8C966" 
-                                   FontFamily="Oswald"
-                                   FontSize="11"
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                        </Frame>
+                        <!-- Top Header Bar: Status & Time -->
+                        <Grid ColumnDefinitions="Auto,*" Padding="16,14,16,10">
+                            <!-- Status Badge -->
+                            <Border Grid.Column="0"
+                        Stroke="Transparent"
+                        BackgroundColor="#26E8C966"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="12,5"
+                        HorizontalOptions="Start">
+                                <Label Text="{Binding Stutes}" 
+                           TextColor="#E8C966" 
+                           FontFamily="Oswald"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           CharacterSpacing="0.5"
+                           VerticalOptions="Center" />
+                            </Border>
 
-                        <!-- Date and Time Info with Services -->
-                        <VerticalStackLayout Padding="16" Spacing="0">
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" RowSpacing="8">
-                                <!-- Left: Calendar Date -->
-                                <Frame Grid.Column="0" 
-                                       Grid.Row="0"
-                                       Grid.RowSpan="2"
-                                       BorderColor="#555555"
-                                       BackgroundColor="#222222"
-                                       CornerRadius="10"
-                                       Padding="10,14"
-                                       HasShadow="False"
-                                       HeightRequest="82"
-                                       WidthRequest="85">
-                                    <Label Text="{Binding Date, Converter={StaticResource DateToArabicFormatConverter}}" 
-                                           TextColor="#E8E8E8" 
-                                           FontFamily="Oswald"
-                                           FontSize="12"
-                                           HorizontalTextAlignment="Center"
-                                           VerticalTextAlignment="Center"
-                                           LineBreakMode="WordWrap"
-                                           FontAttributes="Bold" />
-                                </Frame>
-
-                                <!-- Right Top: Time -->
+                            <!-- Time Badge -->
+                            <HorizontalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="5" VerticalOptions="Center">
+                                <Label Text="🕒" FontSize="11" VerticalOptions="Center"/>
                                 <Label Text="{Binding Time}" 
-                                       TextColor="#AAAAAA" 
-                                       FontFamily="Oswald"
-                                       FontSize="10"
-                                       Grid.Column="1"
-                                       Grid.Row="0"
-                                       VerticalOptions="Start"/>
+                           TextColor="#B0B0B0" 
+                           FontFamily="Oswald"
+                           FontSize="12"
+                           FontAttributes="Bold"/>
+                            </HorizontalStackLayout>
+                        </Grid>
 
-                                <!-- Right Bottom: Service Name and Details -->
-                                <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="4">
-                                    <!-- Service Name (First Service) -->
-                                    <Label Text="{Binding ServicesDetails[0].ServiceName}" 
-                                           TextColor="#FFFFFF" 
-                                           FontFamily="Oswald"
-                                           FontSize="15"
-                                           Margin="0,20,0,0"
-                                           FontAttributes="Bold"
-                                           LineBreakMode="TailTruncation" />
+                        <!-- Line Separator -->
+                        <BoxView HeightRequest="1" BackgroundColor="#2A2A2A" Margin="16,0" />
 
-                                    <!-- Duration and Price -->
-                                    <HorizontalStackLayout Spacing="20">
-                                        <Label Text="{Binding FormattedDuration, StringFormat='⏱ {0}'}" 
-                                               TextColor="#888888" 
-                                               FontFamily="Oswald"
-                                               FontSize="15" />
-                                        <Label Text="{Binding Total, StringFormat='💳 {0} €'}" 
-                                               TextColor="#D3D3D3" 
+                        <!-- Main Body: Date & Services -->
+                        <Grid ColumnDefinitions="80,*" ColumnSpacing="16" Padding="16">
+
+                            <!-- Left: Styled Calendar Date Badge -->
+                            <Border Grid.Column="0"
+                        Stroke="#33E8C966"
+                        StrokeThickness="1"
+                        BackgroundColor="#1A1813"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="6,12"
+                        HeightRequest="85"
+                        VerticalOptions="Start">
+                                <Label Text="{Binding Date, Converter={StaticResource DateToArabicFormatConverter}}" 
+                           TextColor="#F5F5F5" 
+                           FontFamily="Oswald"
+                           FontSize="12"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           FontAttributes="Bold" />
+                            </Border>
+
+                            <!-- Right: Services Breakdown -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="12">
+                                <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding ServicesDetails}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <VerticalStackLayout Spacing="6">
+                                                <!-- Service Header (Title + Price) -->
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <Label Grid.Column="0" 
+                                               Text="{Binding ServiceName}" 
+                                               TextColor="#FFFFFF" 
                                                FontFamily="Oswald"
                                                FontSize="15"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation" />
+
+                                                    <Label Grid.Column="1" 
+                                               Text="{Binding FormattedPrice, StringFormat='{0} €'}" 
+                                               TextColor="#E8C966" 
+                                               FontFamily="Oswald"
+                                               FontSize="14"
                                                FontAttributes="Bold" />
-                                    </HorizontalStackLayout>
+                                                </Grid>
+
+                                                <!-- Duration & Provider Tag -->
+                                                <!-- Duration & Provider Tag -->
+                                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                                    <!-- Duration -->
+                                                    <Label Grid.Column="0" 
+           Text="{Binding FormattedDuration, StringFormat='⏱ {0}'}" 
+           TextColor="#888888" 
+           FontFamily="Oswald"
+           FontSize="11"
+           VerticalOptions="Center" />
+
+                                                    <!-- Provider info -->
+                                                    <HorizontalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="End" VerticalOptions="Center">
+                                                        <Border Stroke="#333333" 
+                HeightRequest="22" 
+                WidthRequest="22"
+                BackgroundColor="#2A2A2A"
+                StrokeShape="RoundRectangle 11" 
+                Padding="0">
+                                                            <Image Source="{Binding ProviderImage}"
+                   HeightRequest="22"
+                   WidthRequest="22"
+                   Aspect="AspectFill"/>
+                                                        </Border>
+
+                                                        <!-- تم توضيح الاسم وإلغاء أي تقييد لقصه -->
+                                                        <Label Text="{Binding UserName}" 
+               TextColor="#AAAAAA" 
+               FontFamily="Oswald"
+               FontSize="11"
+               LineBreakMode="NoWrap"
+               VerticalOptions="Center" />
+                                                    </HorizontalStackLayout>
+                                                </Grid>
+
+                                                <!-- Subtle Separator between multi-services -->
+                                                <BoxView HeightRequest="0.5" BackgroundColor="#262626" Margin="0,4,0,0" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Bottom Section: Location & Total Price -->
+                        <Border Margin="16,0,16,12" 
+                    Padding="12,8" 
+                    BackgroundColor="#141414" 
+                    StrokeShape="RoundRectangle 12" 
+                    Stroke="#222222">
+                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                                <!-- Location -->
+                                <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                    <Label Text="📍" FontSize="12" VerticalOptions="Center" />
+                                    <Label Text="LOOKUP Hair &amp; Beauty"
+                               TextColor="#CCCCCC" 
+                               FontFamily="Oswald"
+                               FontSize="12"
+                               FontAttributes="Bold"                          
+                               VerticalOptions="Center"
+                               LineBreakMode="TailTruncation" />
+                                </HorizontalStackLayout>
+
+                                <!-- Total Price -->
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                   
+                                    <Label Text="{Binding Total, StringFormat='{0} €'}" 
+                               TextColor="#E8C966" 
+                               FontFamily="Oswald"
+                               FontSize="15"
+                               FontAttributes="Bold" />
+                                   
+                                </HorizontalStackLayout>
                             </Grid>
-                        </VerticalStackLayout>
-
-                        <!-- Divider -->
-                        <!--<BoxView HeightRequest="1" BackgroundColor="#333333" Margin="16,0,16,0"/>-->
-
-                        <!-- Services List (if there are more than one service) -->
-                        <!--<VerticalStackLayout Spacing="6" Padding="16,8,16,0">
-                            <CollectionView ItemsSource="{Binding ServicesDetails}" 
-                                            Margin="0"
-                                            SelectionMode="None">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Frame BorderColor="Transparent" 
-                                               BackgroundColor="Transparent" 
-                                               CornerRadius="0" 
-                                               Padding="0" 
-                                               HasShadow="False"
-                                               Margin="0,2,0,2">
-                                            <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto">
-                                                --><!-- Service Name --><!--
-                                                <Label Text="{Binding ServiceName}" 
-                                                       TextColor="#D3D3D3" 
-                                                       FontFamily="Oswald" 
-                                                       FontSize="13"
-                                                       Grid.Column="0"
-                                                       Grid.Row="0"
-                                                       FontAttributes="Bold" 
-                                                       LineBreakMode="TailTruncation"
-                                                       VerticalOptions="Center"/>
-
-                                                --><!-- Duration --><!--
-                                                <Label Text="{Binding FormattedDuration}" 
-                                                       TextColor="#999999" 
-                                                       FontFamily="Oswald" 
-                                                       FontSize="15"
-                                                       Grid.Column="1"
-                                                       Grid.Row="0"
-                                                       HorizontalOptions="End"
-                                                       VerticalOptions="Center"
-                                                       Margin="8,0,0,0"/>
-
-                                                --><!-- Price --><!--
-                                                <Label Text="{Binding FormattedPrice, StringFormat='{0} €'}" 
-                                                       TextColor="#FFD700" 
-                                                       FontFamily="Oswald" 
-                                                       FontSize="12"
-                                                       FontAttributes="Bold"
-                                                       Grid.Column="2"
-                                                       Grid.Row="0"
-                                                       HorizontalOptions="End"
-                                                       VerticalOptions="Center"
-                                                       Margin="8,0,0,0"/>
-                                            </Grid>
-                                        </Frame>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </VerticalStackLayout>-->
-
-                        <!-- Divider -->
-                        <BoxView HeightRequest="1" BackgroundColor="#333333" Margin="16,8,16,0"/>
-
-                        <!-- Provider Info -->
-                        <VerticalStackLayout Spacing="8" Padding="16,8,16,12">
-                            <HorizontalStackLayout Spacing="12">
-                                <Frame BorderColor="#444444" 
-                                       HeightRequest="40" 
-                                       WidthRequest="40"
-                                       BackgroundColor="#2A2A2A"
-                                       CornerRadius="20" 
-                                       Margin="0"
-                                       Padding="0"
-                                       HasShadow="False">
-                                    <Image BackgroundColor="#2A2A2A" 
-                                           Source="{Binding ImgePerson}"
-                                           HeightRequest="40"
-                                           WidthRequest="40"
-                                           Aspect="AspectFill"
-                                           IsOpaque="False"/>
-                                </Frame>
-                                <Label Text="{Binding UserName}" 
-                                       TextColor="#D3D3D3" 
-                                       FontFamily="Oswald"
-                                       FontSize="12"
-                                       VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-
-                        <!-- Divider -->
-                        <BoxView HeightRequest="1" BackgroundColor="#333333" Margin="16,0,16,0"/>
-
-                        <!-- Location Info -->
-                        <HorizontalStackLayout Spacing="8" Padding="16,8,16,0">
-                            <Label Text="📍" FontSize="14" VerticalOptions="Center" />
-                            <Label Text="LOOKUP Hair &amp; Beauty" Margin="10"
-       TextColor="#D3D3D3" 
-       FontFamily="Oswald"
-       FontSize="14"
-       FontAttributes="Bold"                          
-       VerticalOptions="Center"
-       LineBreakMode="TailTruncation" />
-                        </HorizontalStackLayout>
+                        </Border>
 
                         <!-- Cancel Button -->
                         <Button HorizontalOptions="Fill" 
-                                FontFamily="OpenSansSemibold" 
-                                BorderColor="#555555" 
-                                BorderWidth="1" 
-                                CornerRadius="8" 
-                                FontSize="11" 
-                                BackgroundColor="Transparent" 
-                                TextColor="#D3D3D3"
-                                Padding="12,8"
-                                Margin="16,8,16,12"
-                                Text="{Loc:Translate Name=CancelBooking}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CancelBookingCommand}"
-                                CommandParameter="{Binding Id}"
-                                IsVisible="{Binding CanCancel}"
-                                IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsCancelingBooking, Converter={StaticResource InverseBoolConverter}}"/>
+                    FontFamily="OpenSansSemibold" 
+                    BorderColor="#3A2222" 
+                    BorderWidth="1" 
+                    CornerRadius="10" 
+                    FontSize="11" 
+                    BackgroundColor="#1A0D0D" 
+                    TextColor="#FF6B6B"
+                    Padding="0,8"
+                    Margin="16,0,16,16"
+                    Text="{Loc:Translate Name=CancelBooking}"
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CancelBookingCommand}"
+                    CommandParameter="{Binding Id}"
+                    IsVisible="{Binding CanCancel}"
+                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsCancelingBooking, Converter={StaticResource InverseBoolConverter}}"/>
 
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
             </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>

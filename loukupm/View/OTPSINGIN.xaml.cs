@@ -194,41 +194,13 @@ public partial class OTPSINGIN : ContentPage
 			{
 				Console.WriteLine($"✅ [OTPSINGIN] OTP verified successfully for user: {user?.Email ?? "unknown"}");
 
-				// Validate API response contains required tokens
+				// Tokens are persisted by ApiServices.VerifyOtpAsync via TokenManager.
 				if (string.IsNullOrEmpty(accessToken))
 				{
 					Console.WriteLine("❌ [OTPSINGIN] Access token is null or empty in API response");
 					DisplayError("Verification incomplete. Please try again.");
 					MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
 					return;
-				}
-
-				// Save tokens to secure storage ONLY after successful verification
-				try
-				{
-					await SecureStorage.SetAsync("auth_token", accessToken);
-					Console.WriteLine("✅ [OTPSINGIN] Auth token saved");
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"❌ [OTPSINGIN] Failed to save auth token: {ex.Message}");
-					DisplayError("Failed to save authentication. Please try again.");
-					MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-					return;
-				}
-
-				if (!string.IsNullOrEmpty(refreshToken))
-				{
-					try
-					{
-						await SecureStorage.SetAsync("refresh_token", refreshToken);
-						Console.WriteLine("✅ [OTPSINGIN] Refresh token saved");
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine($"⚠️ [OTPSINGIN] Failed to save refresh token: {ex.Message}");
-						// Continue anyway as refresh token is optional for initial login
-					}
 				}
 
 				// Load user data with error handling
