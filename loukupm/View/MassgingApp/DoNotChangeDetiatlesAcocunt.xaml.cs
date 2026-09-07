@@ -15,18 +15,22 @@ public partial class DoNotChangeDetiatlesAcocunt : Popup
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        await NavigationService.NavigateToTabBarPage(
-            NavigationService.ROUTE_PROFILE
-        );
-        this.Close();
+        // User confirmed discard/leave
+        try
+        {
+            this.Close(true);
+        }
+        catch { this.Close(true); }
     }
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        await NavigationService.NavigateToTabBarPage(
-            NavigationService.ROUTE_PROFILE
-        );
-        this.Close();
+        // User chose to cancel / stay on page
+        try
+        {
+            this.Close(false);
+        }
+        catch { this.Close(false); }
 
     }
 

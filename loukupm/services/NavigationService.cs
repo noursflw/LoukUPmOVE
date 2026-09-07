@@ -1,10 +1,13 @@
+using CommunityToolkit.Maui.Views;
 using loukupm.View;
+using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
-using Microsoft.Maui.Controls;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace loukupm.Services;
@@ -258,6 +261,45 @@ public static class NavigationService
 
         Console.WriteLine($"[Navigation] HandleBackButton called for: {currentPageName}");
 
+        // Check for unsaved edits on EditUserPage and prompt the user before leaving.
+        try
+        {
+            if (string.Equals(currentPageName, ROUTE_EDIT_USER, StringComparison.Ordinal) ||
+                string.Equals(currentPageName, nameof(EditeUserPage), StringComparison.Ordinal))
+            {
+                var vm = ViewModel.AppViewModel.Instance;
+                if (vm != null && vm.HasUserProfileChanges)
+                {
+                    try
+                    {
+                        var main = Application.Current?.MainPage;
+                        if (main != null)
+                        {
+                            var popup = new DoNotChangeDetiatlesAcocunt();
+                            var result = await main.ShowPopupAsync(popup);
+                            bool discard = (result is bool b && b);
+                            if (!discard)
+                            {
+                                // User cancelled - do not navigate
+                                return true;
+                            }
+
+                            // User chose to discard - mark as saved so navigation won't re-prompt
+                            try { vm.MarkUserProfileChangesSaved(); } catch { }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Navigation] Failed showing unsaved changes popup: {ex.Message}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Unsaved changes check failed: {ex.Message}");
+        }
+
         try
         {
             var context = GetNavigationContext();
@@ -407,6 +449,41 @@ public static class NavigationService
 
         try
         {
+            // Prevent losing unsaved edits on EditUserPage when navigating away via TabBar
+            try
+            {
+                var current = GetCurrentPageName();
+                var vm = ViewModel.AppViewModel.Instance;
+                if ((string.Equals(current, ROUTE_EDIT_USER, StringComparison.Ordinal) || string.Equals(current, nameof(EditeUserPage), StringComparison.Ordinal))
+                    && vm != null && vm.HasUserProfileChanges)
+                {
+                    try
+                    {
+                        var main = Application.Current?.MainPage;
+                        if (main != null)
+                        {
+                            var popup = new DoNotChangeDetiatlesAcocunt();
+                            var result = await main.ShowPopupAsync(popup);
+                            bool discard = (result is bool b && b);
+                            if (!discard)
+                            {
+                                return;
+                            }
+
+                            try { vm.MarkUserProfileChangesSaved(); } catch { }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Navigation] TabBar unsaved popup failed: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Navigation] TabBar unsaved check failed: {ex.Message}");
+            }
+
             var shell = Shell.Current;
             if (shell != null)
             {
@@ -434,6 +511,41 @@ public static class NavigationService
 
         try
         {
+            // If leaving EditUserPage via programmatic navigation, confirm unsaved changes
+            try
+            {
+                var current = GetCurrentPageName();
+                var vm = ViewModel.AppViewModel.Instance;
+                if ((string.Equals(current, ROUTE_EDIT_USER, StringComparison.Ordinal) || string.Equals(current, nameof(EditeUserPage), StringComparison.Ordinal))
+                    && vm != null && vm.HasUserProfileChanges)
+                {
+                    try
+                    {
+                        var main = Application.Current?.MainPage;
+                        if (main != null)
+                        {
+                            var popup = new DoNotChangeDetiatlesAcocunt();
+                            var result = await main.ShowPopupAsync(popup);
+                            bool discard = (result is bool b && b);
+                            if (!discard)
+                            {
+                                return;
+                            }
+
+                            try { vm.MarkUserProfileChangesSaved(); } catch { }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Navigation] Forward navigation unsaved popup failed: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Navigation] Forward navigation unsaved check failed: {ex.Message}");
+            }
+
             var context = GetNavigationContext();
             Console.WriteLine($"[Navigation] Navigating to {route} in context: {context}");
 

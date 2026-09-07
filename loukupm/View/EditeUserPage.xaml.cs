@@ -150,7 +150,7 @@ public partial class EditeUserPage : ContentPage
         }
     }
 
-        private async void Button_Clicked_9(object sender, EventArgs e)
+    private async void Button_Clicked_9(object sender, EventArgs e)
     {
         var popup = new RemoveUserPopup();
 

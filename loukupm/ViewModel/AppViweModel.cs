@@ -1649,6 +1649,16 @@ namespace loukupm.ViewModel
             OnPropertyChanged(nameof(CanUpdateUser));
         }
 
+        /// <summary>
+        /// Public helper to mark current user-edit state as saved / no pending changes.
+        /// This will capture the current values as the original snapshot so subsequent
+        /// edits are compared against these values.
+        /// </summary>
+        public void MarkUserProfileChangesSaved()
+        {
+            CaptureUserEditSnapshot();
+        }
+
         private void RefreshUserEditState()
         {
             HasUserProfileChanges =

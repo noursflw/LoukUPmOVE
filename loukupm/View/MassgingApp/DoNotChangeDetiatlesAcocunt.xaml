@@ -62,7 +62,6 @@ HorizontalTextAlignment="Center" />
             <Button
          Text="{Loc:Translate Name=Notrightnow}"
          BorderWidth="1"
-         Command="{Binding UpdateUserCommand}"       
          TextColor="Black"
          CornerRadius="10"
          HeightRequest="44"
