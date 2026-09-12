@@ -6,7 +6,7 @@
              xmlns:Loc="clr-namespace:loukupm.Langue">
 
     <Frame
-        BackgroundColor="#444444"
+        BackgroundColor="Black"
         CornerRadius="20"
         HasShadow="True"
         Padding="0"
@@ -26,7 +26,7 @@
            
             <VerticalStackLayout Margin="0,10,0,0">
                 <Image
-                     Source="messagbox.png"
+                     Source="icone55.svg"
                      HeightRequest="120"
                      Aspect="AspectFit"
                      HorizontalOptions="Center"/>

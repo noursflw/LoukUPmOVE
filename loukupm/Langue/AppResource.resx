@@ -328,7 +328,7 @@
     <value>Es wurde keine Antwort vom Server erhalten</value>
   </data>
   <data name="NOTEqlalepor" xml:space="preserve">
-    <value>Die eingegebenen Anmeldedaten sind nicht korrek</value>
+    <value>Die eingegebenen Anmeldedaten sind nicht korrekt </value>
   </data>
   <data name="NPasswordOnLogin" xml:space="preserve">
     <value>Passwort vergessen?</value>
@@ -1240,5 +1240,8 @@ Kontaktiere uns jederzeit. Wir helfen dir gerne weiter.</value>
   </data>
   <data name="nochangeing" xml:space="preserve">
     <value>Zurückbleiben &amp; Speichern</value>
+  </data>
+  <data name="yesw" xml:space="preserve">
+    <value>Zurück </value>
   </data>
 </root>

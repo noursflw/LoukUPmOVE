@@ -9,497 +9,742 @@ namespace loukupm.View;
 [QueryProperty(nameof(Data), "data")]
 public partial class OTPSINGIN : ContentPage
 {
-	private readonly ApiServices _apiServices = new();
-	private Auth.OtpContext _otpContext;
-	private CancellationTokenSource _timerCancellation;
-	private int _remainingSeconds = 60;
-	private const int RESEND_COUNTDOWN = 60;
+    private readonly ApiServices _apiServices = new();
 
-	/// <summary>
-	/// QueryProperty for receiving serialized OtpContext from navigation.
-	/// </summary>
-	public string Data
-	{
-		set
-		{
-			if (!string.IsNullOrEmpty(value))
-			{
-				try
-				{
-					// Decode URL-encoded JSON
-					string decodedJson = Uri.UnescapeDataString(value);
-					_otpContext = JsonSerializer.Deserialize<Auth.OtpContext>(decodedJson, 
-						new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    private Auth.OtpContext? _otpContext;
+    private CancellationTokenSource? _timerCancellation;
 
-					Console.WriteLine($"✅ [OTPSINGIN] OtpContext deserialized from query parameter: {_otpContext?.MaskedDestination}");
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"❌ [OTPSINGIN] Failed to deserialize OtpContext: {ex.Message}");
-					_otpContext = null;
-				}
-			}
-		}
-	}
+    private int _remainingSeconds = 60;
+    private const int RESEND_COUNTDOWN = 60;
 
-	public OTPSINGIN()
-	{
-		try
-		{
-			InitializeComponent();
-			this.InitializeLanguageTracking();
-			Console.WriteLine("✅ [OTPSINGIN] Page initialized successfully");
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Initialization failed: {ex.Message}");
-			throw;
-		}
-	}
+    private bool _isInitialized;
+    private bool _isVerifying;
 
-	protected override void OnNavigatedTo(NavigatedToEventArgs args)
-	{
-		base.OnNavigatedTo(args);
+    /// <summary>
+    /// Receives the serialized OtpContext from Shell navigation.
+    /// </summary>
+    public string Data
+    {
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return;
 
-		try
-		{
-			// Load OTP context from BindingContext or query parameters
-			if (BindingContext is Auth.OtpContext context)
-			{
-				_otpContext = context;
-				InitializePageWithContext();
-			}
-			else
-			{
-				Console.WriteLine("⚠️ [OTPSINGIN] No OTP context provided");
-				DisplayError("No verification context found. Please try again.");
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] OnNavigatedTo error: {ex.Message}");
-		}
-	}
+            try
+            {
+                string decodedJson = Uri.UnescapeDataString(value);
 
-	private void InitializePageWithContext()
-	{
-		try
-		{
-			if (_otpContext == null)
-			{
-				Console.WriteLine("❌ [OTPSINGIN] OTP context is null");
-				return;
-			}
+                var context = JsonSerializer.Deserialize<Auth.OtpContext>(
+                    decodedJson,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
 
-			Console.WriteLine($"📱 [OTPSINGIN] Initializing with: {_otpContext.MaskedDestination}");
+                if (context == null)
+                {
+                    Console.WriteLine("❌ [OTPSINGIN] Deserialized OtpContext is null");
+                    return;
+                }
 
-			// Display masked destination
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				MaskedDestinationLabel.Text = _otpContext.MaskedDestination ?? "your email/phone";
-				OtpEntry.Focus();
-			});
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Context initialization error: {ex.Message}");
-		}
-	}
+                _otpContext = context;
 
-	private void OnOtpTextChanged(object sender, TextChangedEventArgs e)
-	{
-		try
-		{
-			string otp = e.NewTextValue ?? "";
+                Console.WriteLine(
+                    $"✅ [OTPSINGIN] OtpContext received: {_otpContext.MaskedDestination}");
 
-			// Enable verify button only when 6 digits are entered
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				VerifyButton.IsEnabled = otp.Length == 6 && otp.All(c => char.IsDigit(c));
+                // The QueryProperty setter can be called after the page
+                // has already been created, so initialize the UI here too.
+                if (_isInitialized)
+                {
+                    MainThread.BeginInvokeOnMainThread(InitializePageWithContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"❌ [OTPSINGIN] Failed to deserialize OtpContext: {ex}");
 
-				// Clear error when user starts typing
-				if (!string.IsNullOrEmpty(otp) && ErrorMessageLabel.IsVisible)
-				{
-					ErrorMessageLabel.IsVisible = false;
-				}
-			});
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"⚠️ [OTPSINGIN] Text changed error: {ex.Message}");
-		}
-	}
+                _otpContext = null;
+            }
+        }
+    }
 
-	private async void OnVerifyClicked(object sender, EventArgs e)
-	{
-		try
-		{
-			string otp = OtpEntry.Text?.Trim() ?? "";
+    public OTPSINGIN()
+    {
+        try
+        {
+            InitializeComponent();
 
-			if (string.IsNullOrWhiteSpace(otp) || otp.Length != 6)
-			{
-				DisplayError("Please enter a valid 6-digit code");
-				return;
-			}
+            this.InitializeLanguageTracking();
 
-			if (!otp.All(c => char.IsDigit(c)))
-			{
-				DisplayError("OTP must contain only digits");
-				return;
-			}
+            _isInitialized = true;
 
-			// Check network connectivity
-			if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-			{
-				DisplayError("No internet connection. Please check your network.");
-				return;
-			}
+            Console.WriteLine(
+                "✅ [OTPSINGIN] Page initialized successfully");
 
-			await VerifyOtpWithApi(otp);
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Verify clicked error: {ex.Message}");
-			DisplayError("An error occurred. Please try again.");
-		}
-	}
+            // In case QueryProperty was already populated before
+            // the page finished initializing.
+            if (_otpContext != null)
+            {
+                MainThread.BeginInvokeOnMainThread(
+                    InitializePageWithContext);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Initialization failed: {ex}");
 
-	private async Task VerifyOtpWithApi(string otp)
-	{
-		try
-		{
-			// Show loading
-			ShowLoading(true);
+            throw;
+        }
+    }
 
-			Console.WriteLine($"🔐 [OTPSINGIN] Verifying OTP: {otp}");
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
 
-			// Validate OTP context exists
-			if (_otpContext == null)
-			{
-				Console.WriteLine("❌ [OTPSINGIN] OTP context is not initialized");
-				DisplayError("Verification context missing. Please try again.");
-				MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-				return;
-			}
+        try
+        {
+            Console.WriteLine("➡️ [OTPSINGIN] OnNavigatedTo");
 
-			// Call API to verify OTP
-			var (success, accessToken, refreshToken, user, statusCode, errorMessage) = 
-				await _apiServices.VerifyOtpAsync(
-					email: _otpContext.Email,
-					phone: _otpContext.Phone,
-					otp: otp,
-					registrationMethod: _otpContext.RegistrationMethod);
+            // QueryProperty is the primary source.
+            // BindingContext is kept as a fallback.
+            if (_otpContext == null &&
+                BindingContext is Auth.OtpContext context)
+            {
+                _otpContext = context;
 
-			if (success)
-			{
-				Console.WriteLine($"✅ [OTPSINGIN] OTP verified successfully for user: {user?.Email ?? "unknown"}");
+                Console.WriteLine(
+                    $"✅ [OTPSINGIN] OtpContext loaded from BindingContext: " +
+                    $"{_otpContext.MaskedDestination}");
+            }
 
-				// Tokens are persisted by ApiServices.VerifyOtpAsync via TokenManager.
-				if (string.IsNullOrEmpty(accessToken))
-				{
-					Console.WriteLine("❌ [OTPSINGIN] Access token is null or empty in API response");
-					DisplayError("Verification incomplete. Please try again.");
-					MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-					return;
-				}
+            if (_otpContext == null)
+            {
+                Console.WriteLine(
+                    "⚠️ [OTPSINGIN] No OTP context provided");
 
-				// Load user data with error handling
-				Console.WriteLine("📥 [OTPSINGIN] Loading user data...");
-				try
-				{
-					// Verify AppViewModel instance exists
-					if (AppViewModel.Instance == null)
-					{
-						Console.WriteLine("❌ [OTPSINGIN] AppViewModel.Instance is null");
-						DisplayError("Application initialization failed. Please try again.");
-						MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-						return;
-					}
+                DisplayError(
+                    "No verification context found. Please try again.");
 
-					await AppViewModel.Instance.LoadUserDataAsync();
-					Console.WriteLine("✅ [OTPSINGIN] User data loaded successfully");
-				}
-				catch (NullReferenceException nex)
-				{
-					Console.WriteLine($"❌ [OTPSINGIN] NullReferenceException during LoadUserDataAsync: {nex.Message}");
-					Console.WriteLine($"   Stack: {nex.StackTrace}");
-					DisplayError("Failed to load user data. Please try again.");
-					MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-					return;
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"❌ [OTPSINGIN] Exception during LoadUserDataAsync: {ex.Message}");
-					Console.WriteLine($"   Stack: {ex.StackTrace}");
-					DisplayError("Failed to load user data. Please try again.");
-					MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-					return;
-				}
+                return;
+            }
 
-				// Navigate to Home and clear stack
-				Console.WriteLine("🏠 [OTPSINGIN] Navigating to Home...");
-				try
-				{
-					// Ensure logout flag is cleared (we are logging in)
-					NavigationService.ResetLogoutFlag();
-					await ShellNavigationManager.NavigateToHomeAndClear();
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"❌ [OTPSINGIN] Navigation failed: {ex.Message}");
-					DisplayError("Navigation failed. Please try again.");
-					MainThread.BeginInvokeOnMainThread(() => { VerifyButton.IsEnabled = true; });
-				}
-			}
-			else
-			{
-				Console.WriteLine($"❌ [OTPSINGIN] OTP verification failed: {statusCode} - {errorMessage}");
+            InitializePageWithContext();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] OnNavigatedTo error: {ex}");
+        }
+    }
 
-				// Handle different error scenarios
-				string errorMsg = statusCode switch
-				{
-					422 => "Invalid verification code. Please try again.",
-					403 => "Account not verified or OTP expired. Please request a new code.",
-					429 => "Too many attempts. Please try again later.",
-					0 => "Network error. Please check your connection.",
-					_ => errorMessage ?? "Verification failed. Please try again."
-				};
+    private void InitializePageWithContext()
+    {
+        try
+        {
+            if (_otpContext == null)
+            {
+                Console.WriteLine(
+                    "❌ [OTPSINGIN] Cannot initialize page: OtpContext is null");
 
-				DisplayError(errorMsg);
+                return;
+            }
 
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					VerifyButton.IsEnabled = true;
-				});
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Exception during OTP verification: {ex.Message}");
-			Console.WriteLine($"   Stack: {ex.StackTrace}");
-			Console.WriteLine($"   Type: {ex.GetType().Name}");
-			DisplayError("An unexpected error occurred. Please try again.");
+            Console.WriteLine(
+                $"📱 [OTPSINGIN] Initializing with: " +
+                $"{_otpContext.MaskedDestination}");
 
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				VerifyButton.IsEnabled = true;
-			});
-		}
-		finally
-		{
-			ShowLoading(false);
-		}
-	}
+            MaskedDestinationLabel.Text =
+                string.IsNullOrWhiteSpace(_otpContext.MaskedDestination)
+                    ? "your email/phone"
+                    : _otpContext.MaskedDestination;
 
-	private async void OnResendClicked(object sender, EventArgs e)
-	{
-		try
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				ResendButton.IsEnabled = false;
-			});
+            ErrorMessageLabel.IsVisible = false;
 
-			if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-			{
-				DisplayError("No internet connection. Please check your network.");
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					ResendButton.IsEnabled = true;
-				});
-				return;
-			}
+            OtpEntry.Text = string.Empty;
 
-			Console.WriteLine($"📤 [OTPSINGIN] Requesting OTP resend...");
+            VerifyButton.IsEnabled = false;
 
-			var (success, statusCode, message, resendAfter) = 
-				await _apiServices.ResendOtpAsync(
-					email: _otpContext.Email,
-					phone: _otpContext.Phone,
-					registrationMethod: _otpContext.RegistrationMethod);
+            // Don't force focus before the page is actually visible.
+            Dispatcher.DispatchDelayed(
+                TimeSpan.FromMilliseconds(250),
+                () =>
+                {
+                    try
+                    {
+                        if (IsVisible && OtpEntry.IsEnabled)
+                        {
+                            OtpEntry.Focus();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(
+                            $"⚠️ [OTPSINGIN] Focus failed: {ex.Message}");
+                    }
+                });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Context initialization error: {ex}");
+        }
+    }
 
-			if (success)
-			{
-				Console.WriteLine($"✅ [OTPSINGIN] OTP resent successfully");
-				string dest = _otpContext.RegistrationMethod == "phone" ? "phone" : "email";
-				DisplayMessage($"New code sent! Check your {dest}");
+    private void OnOtpTextChanged(object sender, TextChangedEventArgs e)
+    {
+        try
+        {
+            string otp = e.NewTextValue ?? string.Empty;
 
-				// Start countdown timer
-				await StartResendCountdown();
-			}
-			else
-			{
-				Console.WriteLine($"❌ [OTPSINGIN] Resend failed: {statusCode} - {message}");
+            bool isValidOtp =
+                otp.Length == 6 &&
+                otp.All(char.IsDigit);
 
-				string errorMsg = statusCode switch
-				{
-					429 => "Too many resend attempts. Please wait before trying again.",
-					_ => message ?? "Failed to resend code. Please try again later."
-				};
+            VerifyButton.IsEnabled =
+                isValidOtp &&
+                !_isVerifying;
 
-				DisplayError(errorMsg);
+            // Clear error as soon as the user starts entering a new code.
+            if (!string.IsNullOrEmpty(otp))
+            {
+                ErrorMessageLabel.IsVisible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"⚠️ [OTPSINGIN] TextChanged error: {ex.Message}");
+        }
+    }
 
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					ResendButton.IsEnabled = true;
-				});
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Exception during resend: {ex.Message}");
-			DisplayError("An error occurred while resending the code.");
+    private async void OnVerifyClicked(object sender, EventArgs e)
+    {
+        if (_isVerifying)
+            return;
 
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				ResendButton.IsEnabled = true;
-			});
-		}
-	}
+        try
+        {
+            string otp = OtpEntry.Text?.Trim() ?? string.Empty;
 
-	private async Task StartResendCountdown()
-	{
-		try
-		{
-			_timerCancellation?.Cancel();
-			_timerCancellation = new CancellationTokenSource();
-			_remainingSeconds = RESEND_COUNTDOWN;
+            if (string.IsNullOrWhiteSpace(otp) ||
+                otp.Length != 6)
+            {
+                DisplayError(
+                    "Please enter a valid 6-digit code.");
 
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				ResendButton.IsVisible = false;
-				TimerLabel.IsVisible = true;
-				TimerLabel.Text = $"{_remainingSeconds}s";
-			});
+                return;
+            }
 
-			while (_remainingSeconds > 0 && !_timerCancellation.Token.IsCancellationRequested)
-			{
-				await Task.Delay(1000, _timerCancellation.Token);
-				_remainingSeconds--;
+            if (!otp.All(char.IsDigit))
+            {
+                DisplayError(
+                    "OTP must contain only digits.");
 
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					TimerLabel.Text = $"{_remainingSeconds}s";
-				});
-			}
+                return;
+            }
 
-			// Timer finished, show resend button again
-			if (!_timerCancellation.Token.IsCancellationRequested)
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					TimerLabel.IsVisible = false;
-					ResendButton.IsVisible = true;
-					ResendButton.IsEnabled = true;
-				});
-			}
-		}
-		catch (OperationCanceledException)
-		{
-			Console.WriteLine("ℹ️ [OTPSINGIN] Countdown cancelled");
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Countdown error: {ex.Message}");
-		}
-	}
+            if (_otpContext == null)
+            {
+                DisplayError(
+                    "Verification context missing. Please try again.");
 
-	private void OnBackClicked(object sender, EventArgs e)
-	{
-		try
-		{
-			// Cancel any ongoing timer
-			_timerCancellation?.Cancel();
+                return;
+            }
 
-			// Navigate back using NavigationService
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				try
-				{
-					await NavigationService.HandleBackButton(NavigationService.ROUTE_OTP);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"⚠️ [OTPSINGIN] Navigation error: {ex.Message}");
-				}
-			});
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"❌ [OTPSINGIN] Back clicked error: {ex.Message}");
-		}
-	}
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                DisplayError(
+                    "No internet connection. Please check your network.");
 
-	protected override bool OnBackButtonPressed()
-	{
-		MainThread.BeginInvokeOnMainThread(() => OnBackClicked(null, null));
-		return true;
-	}
+                return;
+            }
 
-	private void DisplayError(string message)
-	{
-		MainThread.BeginInvokeOnMainThread(() =>
-		{
-			try
-			{
-				ErrorMessageLabel.Text = message;
-				ErrorMessageLabel.IsVisible = true;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"⚠️ [OTPSINGIN] DisplayError failed: {ex.Message}");
-			}
-		});
-	}
+            _isVerifying = true;
 
-	private void DisplayMessage(string message)
-	{
-		MainThread.BeginInvokeOnMainThread(async () =>
-		{
-			try
-			{
-				await DisplayAlert("Success", message, "OK");
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"⚠️ [OTPSINGIN] DisplayMessage failed: {ex.Message}");
-			}
-		});
-	}
+            await VerifyOtpWithApi(otp);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Verify clicked error: {ex}");
 
-	private void ShowLoading(bool show)
-	{
-		MainThread.BeginInvokeOnMainThread(() =>
-		{
-			try
-			{
-				LoadingGrid.IsVisible = show;
-				LoadingIndicator.IsRunning = show;
-				VerifyButton.IsVisible = !show;
-				ResendButton.IsEnabled = !show;
-				OtpEntry.IsEnabled = !show;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"⚠️ [OTPSINGIN] ShowLoading failed: {ex.Message}");
-			}
-		});
-	}
+            DisplayError(
+                "An error occurred. Please try again.");
+        }
+        finally
+        {
+            _isVerifying = false;
+        }
+    }
 
-	protected override void OnDisappearing()
-	{
-		base.OnDisappearing();
+    private async Task VerifyOtpWithApi(string otp)
+    {
+        try
+        {
+            ShowLoading(true);
 
-		try
-		{
-			// Cancel timer when page disappears
-			_timerCancellation?.Cancel();
-			Console.WriteLine("ℹ️ [OTPSINGIN] Page disappearing, timer cancelled");
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"⚠️ [OTPSINGIN] OnDisappearing error: {ex.Message}");
-		}
-	}
+            Console.WriteLine(
+                $"🔐 [OTPSINGIN] Verifying OTP");
+
+            if (_otpContext == null)
+            {
+                Console.WriteLine(
+                    "❌ [OTPSINGIN] OTP context is null");
+
+                DisplayError(
+                    "Verification context missing. Please try again.");
+
+                return;
+            }
+
+            var (
+                success,
+                accessToken,
+                refreshToken,
+                user,
+                statusCode,
+                errorMessage
+            ) = await _apiServices.VerifyOtpAsync(
+                email: _otpContext.Email,
+                phone: _otpContext.Phone,
+                otp: otp,
+                registrationMethod: _otpContext.RegistrationMethod);
+
+            if (success)
+            {
+                Console.WriteLine(
+                    $"✅ [OTPSINGIN] OTP verified successfully for user: " +
+                    $"{user?.Email ?? "unknown"}");
+
+                if (string.IsNullOrWhiteSpace(accessToken))
+                {
+                    Console.WriteLine(
+                        "❌ [OTPSINGIN] Access token is null or empty");
+
+                    DisplayError(
+                        "Verification incomplete. Please try again.");
+
+                    return;
+                }
+
+                Console.WriteLine(
+                    "📥 [OTPSINGIN] Loading user data...");
+
+                try
+                {
+                    if (AppViewModel.Instance == null)
+                    {
+                        Console.WriteLine(
+                            "❌ [OTPSINGIN] AppViewModel.Instance is null");
+
+                        DisplayError(
+                            "Application initialization failed. Please try again.");
+
+                        return;
+                    }
+
+                    await AppViewModel.Instance.LoadUserDataAsync();
+
+                    Console.WriteLine(
+                        "✅ [OTPSINGIN] User data loaded successfully");
+                }
+                catch (NullReferenceException nex)
+                {
+                    Console.WriteLine(
+                        $"❌ [OTPSINGIN] NullReferenceException " +
+                        $"during LoadUserDataAsync: {nex}");
+
+                    DisplayError(
+                        "Failed to load user data. Please try again.");
+
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"❌ [OTPSINGIN] Exception during " +
+                        $"LoadUserDataAsync: {ex}");
+
+                    DisplayError(
+                        "Failed to load user data. Please try again.");
+
+                    return;
+                }
+
+                Console.WriteLine(
+                    "🏠 [OTPSINGIN] Navigating to Home...");
+
+                try
+                {
+                    NavigationService.ResetLogoutFlag();
+
+                    // CRITICAL: Set app context BEFORE navigating to home
+                    // This allows NavigateToHomeAndClear() to proceed
+                    NavigationService.SetAppContext();
+
+                    await ShellNavigationManager
+                        .NavigateToHomeAndClear();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"❌ [OTPSINGIN] Navigation failed: {ex}");
+
+                    DisplayError(
+                        "Navigation failed. Please try again.");
+                }
+            }
+            else
+            {
+                Console.WriteLine(
+                    $"❌ [OTPSINGIN] OTP verification failed: " +
+                    $"{statusCode} - {errorMessage}");
+
+                string errorMsg = statusCode switch
+                {
+                    422 =>
+                        "Invalid verification code. Please try again.",
+
+                    403 =>
+                        "Account not verified or OTP expired. Please request a new code.",
+
+                    429 =>
+                        "Too many attempts. Please try again later.",
+
+                    0 =>
+                        "Network error. Please check your connection.",
+
+                    _ =>
+                        string.IsNullOrWhiteSpace(errorMessage)
+                            ? "Verification failed. Please try again."
+                            : errorMessage
+                };
+
+                DisplayError(errorMsg);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Exception during OTP verification: {ex}");
+
+            DisplayError(
+                "An unexpected error occurred. Please try again.");
+        }
+        finally
+        {
+            ShowLoading(false);
+        }
+    }
+
+    private async void OnResendClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            if (_otpContext == null)
+            {
+                DisplayError(
+                    "Verification context missing. Please try again.");
+
+                return;
+            }
+
+            if (!ResendButton.IsEnabled)
+                return;
+
+            ResendButton.IsEnabled = false;
+
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                DisplayError(
+                    "No internet connection. Please check your network.");
+
+                ResendButton.IsEnabled = true;
+
+                return;
+            }
+
+            Console.WriteLine(
+                "📤 [OTPSINGIN] Requesting OTP resend...");
+
+            var (
+                success,
+                statusCode,
+                message,
+                resendAfter
+            ) = await _apiServices.ResendOtpAsync(
+                email: _otpContext.Email,
+                phone: _otpContext.Phone,
+                registrationMethod: _otpContext.RegistrationMethod);
+
+            if (success)
+            {
+                Console.WriteLine(
+                    "✅ [OTPSINGIN] OTP resent successfully");
+
+                string destination =
+                    _otpContext.RegistrationMethod?
+                        .Equals("phone", StringComparison.OrdinalIgnoreCase) == true
+                            ? "phone"
+                            : "email";
+
+                DisplayMessage(
+                    $"New code sent! Check your {destination}.");
+
+                // If the API gives us a retry-after value,
+                int countdown =
+     resendAfter.HasValue && resendAfter.Value > 0
+         ? resendAfter.Value
+         : RESEND_COUNTDOWN;
+
+                await StartResendCountdown(countdown);
+            }
+            else
+            {
+                Console.WriteLine(
+                    $"❌ [OTPSINGIN] Resend failed: " +
+                    $"{statusCode} - {message}");
+
+                string errorMsg = statusCode switch
+                {
+                    429 =>
+                        "Too many resend attempts. Please wait before trying again.",
+
+                    _ =>
+                        string.IsNullOrWhiteSpace(message)
+                            ? "Failed to resend code. Please try again later."
+                            : message
+                };
+
+                DisplayError(errorMsg);
+
+                ResendButton.IsEnabled = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Exception during resend: {ex}");
+
+            DisplayError(
+                "An error occurred while resending the code.");
+
+            ResendButton.IsEnabled = true;
+        }
+    }
+
+    private async Task StartResendCountdown(int seconds = RESEND_COUNTDOWN)
+    {
+        try
+        {
+            _timerCancellation?.Cancel();
+            _timerCancellation?.Dispose();
+
+            _timerCancellation =
+                new CancellationTokenSource();
+
+            CancellationToken token =
+                _timerCancellation.Token;
+
+            _remainingSeconds =
+                Math.Max(1, seconds);
+
+            ResendButton.IsVisible = false;
+            ResendButton.IsEnabled = false;
+
+            TimerLabel.IsVisible = true;
+            TimerLabel.Text =
+                $"{_remainingSeconds}s";
+
+            while (_remainingSeconds > 0)
+            {
+                await Task.Delay(
+                    TimeSpan.FromSeconds(1),
+                    token);
+
+                if (token.IsCancellationRequested)
+                    return;
+
+                _remainingSeconds--;
+
+                TimerLabel.Text =
+                    $"{_remainingSeconds}s";
+            }
+
+            if (!token.IsCancellationRequested)
+            {
+                TimerLabel.IsVisible = false;
+
+                ResendButton.IsVisible = true;
+                ResendButton.IsEnabled = true;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine(
+                "ℹ️ [OTPSINGIN] Countdown cancelled");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Countdown error: {ex}");
+        }
+    }
+
+    private void OnBackClicked(object? sender, EventArgs? e)
+    {
+        try
+        {
+            CancelTimer();
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    await NavigationService.HandleBackButton(
+                        NavigationService.ROUTE_OTP);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"⚠️ [OTPSINGIN] Navigation error: {ex}");
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"❌ [OTPSINGIN] Back clicked error: {ex}");
+        }
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        MainThread.BeginInvokeOnMainThread(
+            () => OnBackClicked(null, null));
+
+        return true;
+    }
+
+    private void DisplayError(string message)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            try
+            {
+                ErrorMessageLabel.Text = message;
+                ErrorMessageLabel.IsVisible = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"⚠️ [OTPSINGIN] DisplayError failed: {ex.Message}");
+            }
+        });
+    }
+
+    private void DisplayMessage(string message)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            try
+            {
+                await DisplayAlert(
+                    "Success",
+                    message,
+                    "OK");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"⚠️ [OTPSINGIN] DisplayMessage failed: {ex.Message}");
+            }
+        });
+    }
+
+    private void ShowLoading(bool show)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            try
+            {
+                LoadingGrid.IsVisible = show;
+                LoadingIndicator.IsRunning = show;
+
+                VerifyButton.IsVisible = !show;
+                VerifyButton.IsEnabled = !show && !_isVerifying;
+
+                OtpEntry.IsEnabled = !show;
+
+                // Don't allow resend while verification is running.
+                ResendButton.IsEnabled =
+                    !show &&
+                    TimerLabel.IsVisible == false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"⚠️ [OTPSINGIN] ShowLoading failed: {ex.Message}");
+            }
+        });
+    }
+
+    private void CancelTimer()
+    {
+        try
+        {
+            _timerCancellation?.Cancel();
+            _timerCancellation?.Dispose();
+            _timerCancellation = null;
+
+            Console.WriteLine(
+                "ℹ️ [OTPSINGIN] Timer cancelled");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"⚠️ [OTPSINGIN] CancelTimer error: {ex.Message}");
+        }
+    }
+    public void SetOtpContext(Auth.OtpContext context)
+    {
+        if (context == null)
+        {
+            Console.WriteLine(
+                "❌ [OTPSINGIN] SetOtpContext received null");
+
+            return;
+        }
+
+        _otpContext = context;
+
+        Console.WriteLine(
+            $"✅ [OTPSINGIN] OtpContext received directly: " +
+            $"{_otpContext.MaskedDestination}");
+
+        if (_isInitialized)
+        {
+            MainThread.BeginInvokeOnMainThread(
+                InitializePageWithContext);
+        }
+    }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        try
+        {
+            CancelTimer();
+
+            Console.WriteLine(
+                "ℹ️ [OTPSINGIN] Page disappearing");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"⚠️ [OTPSINGIN] OnDisappearing error: {ex.Message}");
+        }
+    }
 }
-

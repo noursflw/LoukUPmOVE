@@ -1238,4 +1238,7 @@ Du hast Änderungen vorgenommen, die noch nicht gespeichert wurden.</value>
   <data name="nochangeing" xml:space="preserve">
     <value>Zurückbleiben &amp; Speichern</value>
   </data>
+  <data name="yesw" xml:space="preserve">
+    <value>Zurück </value>
+  </data>
 </root>

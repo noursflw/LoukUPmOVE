@@ -26,6 +26,7 @@ public partial class TerminbuchenPage : ContentPage
         Loaded += async (s, e) =>
         {
             await RefreshProviderSelectorsAsync();
+            await LoadReminderOptionsAsync();
         };
 
         if (AppViewModel.Instance?.SelectedServices is INotifyCollectionChanged col)
@@ -93,7 +94,7 @@ public partial class TerminbuchenPage : ContentPage
 
         var container = new Border
         {
-            Margin = new Thickness(0, 8, 0, 8),
+            Margin = new Thickness(8, 8, 8, 8),
             Padding = new Thickness(12),
             BackgroundColor = Color.FromArgb("#222222"),
             Stroke = Color.FromArgb("#444444"),
@@ -356,8 +357,19 @@ public partial class TerminbuchenPage : ContentPage
         verticalStackLayout.Children.Add(
             pickerBorder);
 
+        // ========================================================
+        // WRAP DAYS CONTAINER IN SCROLL VIEW FOR HORIZONTAL SCROLLING
+        // ========================================================
+
+        var daysScrollView = new ScrollView
+        {
+            Orientation = ScrollOrientation.Horizontal,
+            Content = daysContainer,
+            Margin = new Thickness(0, 8, 0, 8)
+        };
+
         verticalStackLayout.Children.Add(
-            daysContainer);
+            daysScrollView);
 
         verticalStackLayout.Children.Add(
             slotsContainer);
@@ -907,6 +919,58 @@ public partial class TerminbuchenPage : ContentPage
                     ex.Message,
                     "OK");
             });
+        }
+    }
+
+    // ============================================================
+    // LOAD REMINDER OPTIONS FROM API
+    // ============================================================
+
+    private async Task LoadReminderOptionsAsync()
+    {
+        try
+        {
+            var viewModel = this.BindingContext as AppViewModel;
+            if (viewModel == null)
+                return;
+
+            Console.WriteLine("[TerminbuchenPage] Loading reminder options from API...");
+
+            var apiServices = new ApiServices();
+            var response = await apiServices.GetReminderOptionsAsync();
+
+            if (response == null || !response.Success || response.Data == null)
+            {
+                Console.WriteLine("[TerminbuchenPage] Failed to load reminder options");
+                return;
+            }
+
+            Console.WriteLine($"[TerminbuchenPage] Loaded {response.Data.Options.Count} reminder options");
+
+            // Update ViewModel with reminder options
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                viewModel.ReminderOptions.Clear();
+                foreach (var option in response.Data.Options)
+                {
+                    viewModel.ReminderOptions.Add(option);
+                }
+
+                // Set default selected option
+                if (response.Data.DefaultOffsetHours > 0)
+                {
+                    var defaultIndex = response.Data.Options.FindIndex(o => o.OffsetHours == response.Data.DefaultOffsetHours);
+                    if (defaultIndex >= 0)
+                    {
+                        viewModel.SelectedReminderOptionIndex = defaultIndex;
+                        Console.WriteLine($"[TerminbuchenPage] Set default reminder option index: {defaultIndex}");
+                    }
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[TerminbuchenPage] Exception loading reminder options: {ex.Message}");
         }
     }
 }

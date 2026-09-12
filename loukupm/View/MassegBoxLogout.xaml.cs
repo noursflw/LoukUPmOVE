@@ -1,36 +1,24 @@
-using CommunityToolkit.Maui.Views;
-using loukupm.Services;
-using loukupm.ViewModel;
 
+using CommunityToolkit.Maui.Views;
 
 namespace loukupm.View;
 
 public partial class MassegBoxLogout : Popup
 {
-	public MassegBoxLogout()
-	{
-        BindingContext= new AppViewModel();
-        InitializeComponent();
-	}
-
-    private async void Button_Clicked(object sender, EventArgs e)
+    public MassegBoxLogout()
     {
-        Close(true);
-      
-        await Task.Delay(300);
-        
-        try
-        {
-            await ShellNavigationManager.NavigateToLoginAndClear();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"? Logout navigation error: {ex.Message}");
-        }
+        InitializeComponent();
     }
 
-    private void Button_Clicked_1(object sender, EventArgs e)
+    // YES
+    private void Button_Clicked(object sender, EventArgs e)
     {
         Close(true);
+    }
+
+    // NO
+    private void Button_Clicked_1(object sender, EventArgs e)
+    {
+        Close(false);
     }
 }

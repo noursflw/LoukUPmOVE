@@ -7,7 +7,7 @@
              Color="Transparent">
     
     <Frame
-         BackgroundColor="#444444"
+         BackgroundColor="Black"
          CornerRadius="20"
          HasShadow="True"
          Padding="0"
@@ -29,7 +29,7 @@
           TextColor="White"
           HorizontalTextAlignment="Center" />
             <Image
-         Source="eroref.png"
+         Source="icone55.svg"
          HeightRequest="120"
          WidthRequest="200"  
          Aspect="AspectFit"

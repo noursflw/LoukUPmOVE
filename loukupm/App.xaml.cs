@@ -76,9 +76,16 @@ public partial class App : Application
             Console.WriteLine($"Auth token read failed: {ex.Message}");
         }
 
-        MainPage = string.IsNullOrWhiteSpace(token)
-            ? new NavigationPage(new LoginPage { FlowDirection = direction })
-            : new AppShell { FlowDirection = direction };
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            MainPage = new NavigationPage(new LoginPage { FlowDirection = direction });
+            NavigationService.SetLoginContext(); // Mark that we're in login context
+        }
+        else
+        {
+            MainPage = new AppShell { FlowDirection = direction };
+            NavigationService.SetAppContext(); // Mark that we're in app context
+        }
     }
 
     /// <summary>

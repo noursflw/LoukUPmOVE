@@ -5,7 +5,7 @@
              xmlns:Loc="clr-namespace:loukupm.Langue"  
              x:Class="loukupm.View.NoEqaulData" >
     <Frame
-   BackgroundColor="#444444"
+   BackgroundColor="Black"
    CornerRadius="20"
    HasShadow="True"
    Padding="0"
@@ -25,17 +25,19 @@
 
             <VerticalStackLayout Margin="0,10,0,0">
                 <Image
-                Source="messagbox.png"
+                Source="icone55.png"
                 HeightRequest="120"
                 Aspect="AspectFit"
                 HorizontalOptions="Center"/>
                 <Label
-             Text="{Loc:Translate Name=NOTEqlalepor}"
-                FontAttributes="Bold"
-                HorizontalOptions="Center" 
-                Margin="0,30,0,0"
-                TextColor="White"
-               HorizontalTextAlignment="Center" />
+    Text="{Loc:Translate Name=NOTEqlalepor}"
+    FontAttributes="Bold"
+    HorizontalOptions="Fill"
+    HorizontalTextAlignment="Center"
+    VerticalOptions="Start"
+    Margin="20,30,20,0"
+    TextColor="White"
+    LineBreakMode="WordWrap" />
 
             </VerticalStackLayout>
             <Button FontFamily="georgia-bold" FontSize="19"  BackgroundColor="#EBD750" Margin="10" TextColor="Black" BorderWidth="1" Clicked="CancelClicked"   Text="{Loc:Translate Name=close}"/>

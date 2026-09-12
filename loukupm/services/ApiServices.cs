@@ -1756,5 +1756,169 @@ namespace loukupm.Services
                 return null;
             }
         }
-    }
-}
+
+        // ============================================================
+        // REMINDER API METHODS
+        // ============================================================
+
+        /// <summary>
+        /// Get reminder configuration options for the current language.
+        /// Sends Accept-Language header with current app language.
+        /// </summary>
+        public async Task<ReminderOptionsResponse> GetReminderOptionsAsync()
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                // Get current language
+                string savedCulture = Preferences.Get("AppLanguage", "en-US");
+                string languageCode = savedCulture.Split('-')[0].ToLower();
+
+                // Ensure valid language code
+                if (languageCode != "ar" && languageCode != "de" && languageCode != "en")
+                    languageCode = "en";
+
+                string url = $"{GetBaseUrl()}/api/appointments/reminders/options";
+
+                // Set Accept-Language header
+                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
+                _httpClient.DefaultRequestHeaders.Add("Accept-Language", languageCode);
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Failed to get reminder options: {response.StatusCode}");
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsAsync<string>();
+                var result = JsonSerializer.Deserialize<ReminderOptionsResponse>(json);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while getting reminder options: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Create or update a reminder for an appointment.
+        /// POST is an upsert operation - replaces existing reminder if present.
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string Message, ReminderResponse ResponseData)> CreateReminderAsync(int appointmentId, int offsetHours)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                var url = $"{GetBaseUrl()}/api/appointments/reminders";
+
+                var request = new CreateReminderRequest
+                {
+                    AppointmentId = appointmentId,
+                    OffsetHours = offsetHours
+                };
+
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                Console.WriteLine($"📤 Creating reminder - URL: {url}");
+                Console.WriteLine($"📤 Request payload: {json}");
+
+                var response = await _httpClient.PostAsync(url, content);
+
+                var responseJson = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"📥 Response: {response.StatusCode} - {responseJson}");
+
+                ReminderResponse responseData = null;
+                if (!string.IsNullOrEmpty(responseJson))
+                {
+                    try
+                    {
+                        responseData = JsonSerializer.Deserialize<ReminderResponse>(responseJson);
+                    }
+                    catch { }
+                }
+
+                return (response.IsSuccessStatusCode, (int)response.StatusCode, response.IsSuccessStatusCode ? "Success" : "Failed", responseData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while creating reminder: {ex.Message}");
+                return (false, 500, ex.Message, null);
+            }
+        }
+
+        /// <summary>
+        /// Get the reminder for an appointment.
+        /// Returns null data if no reminder exists (HTTP 200 with data: null is valid).
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, ReminderResponse ResponseData)> GetReminderAsync(int appointmentId)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                var url = $"{GetBaseUrl()}/api/appointments/{appointmentId}/reminders";
+
+                var response = await _httpClient.GetAsync(url);
+
+                var responseJson = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"📥 Get reminder response: {response.StatusCode} - {responseJson}");
+
+                ReminderResponse responseData = null;
+                if (!string.IsNullOrEmpty(responseJson))
+                {
+                    try
+                    {
+                        responseData = JsonSerializer.Deserialize<ReminderResponse>(responseJson);
+                    }
+                    catch { }
+                }
+
+                // 200 with data:null is valid (no reminder set)
+                // 404 means no reminder exists
+                return (response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.NotFound, (int)response.StatusCode, responseData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while getting reminder: {ex.Message}");
+                return (false, 500, null);
+            }
+        }
+
+        /// <summary>
+        /// Delete/disable a reminder for an appointment.
+        /// Both 200 and 404 (not found) are treated as success.
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string Message)> DeleteReminderAsync(int appointmentId)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                var url = $"{GetBaseUrl()}/api/appointments/{appointmentId}/reminders";
+
+                Console.WriteLine($"🗑️ Deleting reminder for appointment {appointmentId}");
+
+                var response = await _httpClient.DeleteAsync(url);
+
+                Console.WriteLine($"📥 Delete reminder response: {response.StatusCode}");
+
+                // Both 200 and 404 are success cases
+                bool success = response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.NotFound;
+
+                return (success, (int)response.StatusCode, success ? "Reminder deleted" : "Failed to delete reminder");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while deleting reminder: {ex.Message}");
+                return (false, 500, ex.Message);
+            }
+        }
+
+            }
+        }

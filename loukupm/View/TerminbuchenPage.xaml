@@ -372,13 +372,42 @@
                         FontFamily="Oswald" />
 
 
-                    <!-- TIME PICKER -->
+                    <!-- REMINDER TOGGLE SWITCH -->
 
-                    <TimePicker
-                        Time="{Binding ReminderTime}"
+                    <HorizontalStackLayout
+                        Spacing="12"
+                        Margin="0,8,0,0">
+
+                        <Switch
+                            IsToggled="{Binding IsReminderEnabled}"
+                                      OnColor="White"
+            
+                                   ThumbColor="#D4AF37"   
+                            BackgroundColor="Transparent"
+                            VerticalOptions="Center" />
+
+                        <Label
+                             Text="{Loc:Translate Name=AppointmentReminder}"
+                            TextColor="#D3D3D3"
+                            FontFamily="Oswald"
+                            FontSize="13"
+                            VerticalOptions="Center" />
+
+                    </HorizontalStackLayout>
+
+
+                    <!-- REMINDER OPTIONS PICKER (Enabled/Disabled by Switch) -->
+
+                    <Picker
+                        ItemsSource="{Binding ReminderOptions}"
+                        SelectedIndex="{Binding SelectedReminderOptionIndex}"
+                        IsEnabled="{Binding IsReminderEnabled}"
                         TextColor="White"
                         FontFamily="Oswald"
-                        FontSize="14" />
+                        FontSize="14"
+                        BackgroundColor="#555555"
+                        TitleColor="#D3D3D3"
+                        Margin="0,8,0,0" />
 
 
                     <!-- ENABLE REMINDER -->

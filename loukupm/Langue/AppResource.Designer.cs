@@ -1358,7 +1358,7 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Die eingegebenen Anmeldedaten sind nicht korrek.
+        ///   Looks up a localized string similar to Die eingegebenen Anmeldedaten sind nicht korrekt .
         /// </summary>
         internal static string NOTEqlalepor {
             get {
@@ -3347,6 +3347,15 @@ namespace loukupm.Langue {
         internal static string Yesthenumberiscorrect {
             get {
                 return ResourceManager.GetString("Yesthenumberiscorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zurück .
+        /// </summary>
+        internal static string yesw {
+            get {
+                return ResourceManager.GetString("yesw", resourceCulture);
             }
         }
         

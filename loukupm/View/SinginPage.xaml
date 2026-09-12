@@ -228,7 +228,7 @@
            TextDecorations="Underline"
            VerticalTextAlignment="Center">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3" />
                         </Label.GestureRecognizers>
                     </Label>
 

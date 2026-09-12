@@ -136,6 +136,10 @@ public partial class LoginPage : ContentPage
 
                 NavigationService.ResetLogoutFlag();
 
+                // CRITICAL: Set app context BEFORE navigating to home
+                // This allows NavigateToHomeAndClear() to proceed
+                NavigationService.SetAppContext();
+
                 await ShellNavigationManager.NavigateToHomeAndClear();
 
                 return;
@@ -426,6 +430,10 @@ public partial class LoginPage : ContentPage
                 isGoogleNavSuccessful = true;
 
                 NavigationService.ResetLogoutFlag();
+
+                // CRITICAL: Set app context BEFORE navigating to home
+                // This allows NavigateToHomeAndClear() to proceed
+                NavigationService.SetAppContext();
 
                 await ShellNavigationManager.NavigateToHomeAndClear();
 

@@ -98,6 +98,15 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private TimeSpan reminderTime = new TimeSpan(1, 0, 0);
 
+        [ObservableProperty]
+        private int selectedReminderOptionIndex = 0;
+
+        [ObservableProperty]
+        private bool isReminderEnabled = false;
+
+        [ObservableProperty]
+        private ObservableCollection<ReminderOption> reminderOptions = new ObservableCollection<ReminderOption>();
+
 
         [ObservableProperty]
         private string selectedImagePath = string.Empty;
@@ -195,7 +204,8 @@ namespace loukupm.ViewModel
             NotificationCount = _notificationState.UnreadCount;
 
             LoadData();
-            AboutUsVM = new AboutUsViewModel();
+
+            EnableReminderTimerCommand = new AsyncRelayCommand(EnableReminderTimerAsync);
             HomeSliderVM = new HomeSliderViewModel();
             phoneOtpVM = new PhoneOtpViewModel(_apiServices);
 
@@ -902,6 +912,19 @@ namespace loukupm.ViewModel
                     return;
                 }
 
+                // Set reminder on booking if enabled
+                if (IsReminderEnabled && SelectedReminderOptionIndex < ReminderOptions.Count)
+                {
+                    var selectedOption = ReminderOptions[SelectedReminderOptionIndex];
+                    CurrentBooking.ReminderOffsetHours = selectedOption.OffsetHours;
+                    Console.WriteLine($"[PostBookingAsync] Reminder enabled: {selectedOption.OffsetHours} hours");
+                }
+                else
+                {
+                    CurrentBooking.ReminderOffsetHours = null;
+                    Console.WriteLine("[PostBookingAsync] Reminder disabled");
+                }
+
                 string notes = string.IsNullOrWhiteSpace(BookingNotes) ? "ok" : BookingNotes.Trim();
                 var bookingData = CurrentBooking.ToCreateBookingPayload(services, notes);
                 LogBookingRequest(services, notes, bookingData);
@@ -1169,6 +1192,8 @@ namespace loukupm.ViewModel
                 if (result.Success && result.StatusCode == 201)
                 {
                     string bookingNumber = string.Empty;
+                    bool reminderFailed = false;  // Track if reminder needs retry
+
                     try
                     {
                         if (result.ResponseJson != null && result.ResponseJson.RootElement.TryGetProperty("data", out var dataEl))
@@ -1176,14 +1201,29 @@ namespace loukupm.ViewModel
                             if (dataEl.TryGetProperty("booking_number", out var bn)) bookingNumber = bn.GetString();
                             else if (dataEl.TryGetProperty("number", out var nb)) bookingNumber = nb.GetString();
                             else if (dataEl.TryGetProperty("id", out var id)) bookingNumber = id.GetRawText();
+
+                            // Check if reminder is null (booking succeeded but reminder failed)
+                            if (dataEl.TryGetProperty("reminder", out var reminderEl) && reminderEl.ValueKind == System.Text.Json.JsonValueKind.Null)
+                            {
+                                reminderFailed = true;
+                                Console.WriteLine("[SendBookingRequest] Booking succeeded but reminder is null - will retry reminder creation");
+                            }
                         }
                     }
                     catch { }
 
                     LastBookingNumber = bookingNumber;
+
+                    // If reminder failed but booking succeeded, try to create reminder separately
+                    if (reminderFailed && IsReminderEnabled && CurrentBooking.ReminderOffsetHours.HasValue && int.TryParse(bookingNumber, out int appointmentId))
+                    {
+                        Console.WriteLine($"[SendBookingRequest] Retrying reminder creation for appointment {appointmentId}");
+                        await RetryReminderCreation(appointmentId, CurrentBooking.ReminderOffsetHours.Value);
+                    }
+
                     var pouo = new SuccessfullyBookingNow();
                     await App.Current.MainPage.ShowPopupAsync(pouo);
-          
+
                     // Clear draft and local booking state
                     try { SecureStorage.Remove("booking_draft"); } catch { }
                     ClearBookingData();
@@ -1209,10 +1249,20 @@ namespace loukupm.ViewModel
                                 {
                                     if (dataEl.TryGetProperty("booking_number", out var bn)) LastBookingNumber = bn.GetString();
                                     else if (dataEl.TryGetProperty("number", out var nb)) LastBookingNumber = nb.GetString();
+
+                                    // Check reminder again
+                                    if (dataEl.TryGetProperty("reminder", out var reminderEl) && reminderEl.ValueKind == System.Text.Json.JsonValueKind.Null)
+                                    {
+                                        if (IsReminderEnabled && CurrentBooking.ReminderOffsetHours.HasValue && int.TryParse(LastBookingNumber, out int appointmentId))
+                                        {
+                                            Console.WriteLine($"[SendBookingRequest] Retrying reminder creation for appointment {appointmentId}");
+                                            await RetryReminderCreation(appointmentId, CurrentBooking.ReminderOffsetHours.Value);
+                                        }
+                                    }
                                 }
                             }
                             catch { }
-                            //////
+
                             await Toast.Make(AppResource.Bookingsuccessful).Show();
                             ClearBookingData();
                             await NavigationService.NavigateToPage(nameof(BookingPage));
@@ -1319,6 +1369,50 @@ namespace loukupm.ViewModel
             }
         }
 
+
+        private async Task RetryReminderCreation(int appointmentId, int offsetHours)
+        {
+            try
+            {
+                Console.WriteLine($"[RetryReminderCreation] Creating reminder for appointment {appointmentId} with offset {offsetHours} hours");
+
+                var (success, statusCode, message, response) = await _apiServices.CreateReminderAsync(appointmentId, offsetHours);
+
+                if (success)
+                {
+                    Console.WriteLine("[RetryReminderCreation] Reminder created successfully");
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Toast.Make("Reminder set successfully", ToastDuration.Short).Show();
+                    });
+                }
+                else if (statusCode == 422)
+                {
+                    // Validation error - likely too_late
+                    Console.WriteLine($"[RetryReminderCreation] Reminder validation error: {message}");
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Toast.Make("Selected reminder duration has already passed. Please try a shorter duration.", ToastDuration.Long).Show();
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"[RetryReminderCreation] Failed with status {statusCode}: {message}");
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Toast.Make($"Could not set reminder: {message}", ToastDuration.Short).Show();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[RetryReminderCreation] Exception: {ex.Message}");
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Toast.Make($"Error setting reminder: {ex.Message}", ToastDuration.Short).Show();
+                });
+            }
+        }
 
         private TimeSpan ParseTimeString(string timeString)
         {
@@ -2084,36 +2178,53 @@ namespace loukupm.ViewModel
         }
 
 
-        [RelayCommand]
-        private async Task Logout()
+[RelayCommand]
+private async Task Logout()
         {
             try
             {
                 Console.WriteLine("[Logout] START");
 
-
                 NavigationService.BeginLogout();
 
-
+                // Keep the selected application language
+                var appLanguage = Preferences.Get("AppLanguage", "de-DE");
 
                 ResetUser();
+
                 OneSignalService.Logout();
+
                 SecureStorage.RemoveAll();
+
                 Preferences.Clear();
+
+                // Restore language after clearing preferences
+                Preferences.Set("AppLanguage", appLanguage);
+
                 App.ResetAuthenticationCheck();
+
+                Console.WriteLine("[Logout] About to navigate to login page");
+
                 await NavigationService.NavigateToLoginAndClear();
 
-
+                Console.WriteLine("[Logout] Successfully returned to Login");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Logout] ERROR {ex}");
+                Console.WriteLine($"[Logout] ERROR: {ex}");
+                Console.WriteLine($"[Logout] Stack trace: {ex.StackTrace}");
             }
             finally
             {
+                Console.WriteLine("[Logout] Resetting logout flag");
                 NavigationService.ResetLogoutFlag();
+                Console.WriteLine("[Logout] END");
             }
         }
+
+
+
+
 
       
         public void ResetUser()
@@ -2801,21 +2912,28 @@ namespace loukupm.ViewModel
             {
                 Console.WriteLine("\n=== EnableReminderTimerAsync Started ===");
 
-                // ✅ Validate reminder time input
-                if (string.IsNullOrWhiteSpace(ReminderMinutes) || !int.TryParse(ReminderMinutes, out var minutes))
+                // ✅ Check if reminder is enabled
+                if (!IsReminderEnabled)
                 {
-                    await Toast.Make("❌ Invalid reminder time. Please enter a number.", ToastDuration.Short).Show();
+                    await Toast.Make("❌ الرجاء تفعيل التنبيهات أولاً", ToastDuration.Short).Show();
                     return;
                 }
 
-                if (minutes <= 0 || minutes > 1440)  // 0 to 24 hours
+                // ✅ Convert selected reminder option to TimeSpan
+                TimeSpan reminderDuration = SelectedReminderOptionIndex switch
                 {
-                    await Toast.Make("❌ Reminder must be between 1 and 1440 minutes.", ToastDuration.Short).Show();
-                    return;
-                }
+                    0 => TimeSpan.FromHours(1),      // 1 hour
+                    1 => TimeSpan.FromHours(3),      // 3 hours
+                    2 => TimeSpan.FromHours(6),      // 6 hours
+                    3 => TimeSpan.FromHours(12),     // 12 hours
+                    4 => TimeSpan.FromDays(1),       // 1 day
+                    5 => TimeSpan.FromDays(1),       // 1 day before
+                    _ => TimeSpan.FromHours(1)       // Default: 1 hour
+                };
 
-                ReminderTime = TimeSpan.FromMinutes(minutes);
-                Console.WriteLine($"✅ Reminder time set to: {ReminderTime:hh\\:mm\\:ss}");
+                ReminderTime = reminderDuration;
+                var reminderLabel = SelectedReminderOptionIndex < ReminderOptions.Count ? ReminderOptions[SelectedReminderOptionIndex].Label : "Unknown";
+                Console.WriteLine($"✅ Reminder duration selected: {reminderLabel} ({ReminderTime:hh\\:mm\\:ss})");
 
                 var now = DateTime.Now;
                 Console.WriteLine($"   Current time: {now:yyyy-MM-dd HH:mm:ss}");
@@ -3056,6 +3174,12 @@ namespace loukupm.ViewModel
                     IsVerified = true;
                     Otp = string.Empty;
                     Toast.Make(AppResource.OTPverifiedsuccessfully).Show();
+
+                    LoadData();
+
+                    // الرجوع للصفحة السابقة
+                    await Shell.Current.GoToAsync("..", true);
+
                 }
                 // خطأ - 400
                 else if (statusCode == 400)

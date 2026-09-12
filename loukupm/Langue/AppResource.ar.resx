@@ -1242,4 +1242,7 @@
   <data name="nochangeing" xml:space="preserve">
     <value>البقاء وحفظ التغييرات</value>
   </data>
+  <data name="yesw" xml:space="preserve">
+    <value>حسناً</value>
+  </data>
 </root>

@@ -121,6 +121,9 @@ namespace loukupm.Model
         [JsonPropertyName("can_cancel")]
         public bool CanCancel { get; set; }
 
+        [JsonPropertyName("reminder")]
+        public Reminder Reminder { get; set; }
+
         public string Stutes =>
             StatusLabel ?? Status ?? "Unknown";
 

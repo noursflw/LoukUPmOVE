@@ -41,6 +41,12 @@ namespace loukupm.Model
         /// </summary>
         public Dictionary<int, DateTime> ServiceDateMap { get; set; } = new();
 
+        /// <summary>
+        /// Reminder offset in hours. If null or not set, no reminder is created.
+        /// If positive integer, creates a reminder that many hours before the appointment.
+        /// </summary>
+        public int? ReminderOffsetHours { get; set; }
+
         public string PaymentMethod { get; set; }
         public string CardHolderName { get; set; }
         public string CardNumber { get; set; }
@@ -256,6 +262,13 @@ namespace loukupm.Model
 
             if (!string.IsNullOrWhiteSpace(notes))
                 payload["notes"] = notes;
+
+            // Include reminder_offset_hours if reminder is enabled and value is set
+            if (ReminderOffsetHours.HasValue && ReminderOffsetHours.Value > 0)
+            {
+                payload["reminder_offset_hours"] = ReminderOffsetHours.Value;
+                System.Diagnostics.Debug.WriteLine($"[ToCreateBookingPayload] Reminder offset hours: {ReminderOffsetHours.Value}");
+            }
 
             return payload;
         }

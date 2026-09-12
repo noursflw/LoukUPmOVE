@@ -1,4 +1,5 @@
-﻿using loukupm.Services;
+﻿using CommunityToolkit.Maui.Views;
+using loukupm.Services;
 using loukupm.View;
 using loukupm.ViewModel;
 using OneSignalSDK.DotNet;
@@ -194,6 +195,18 @@ namespace loukupm
         public static void ResetAuthenticationCheck()
         {
             Console.WriteLine("🔄 ResetAuthenticationCheck called (no-op in new flow)");
+        }
+
+        private async void MenuItem_Clicked(object sender, EventArgs e)
+        {
+            var popup = new MassegBoxLogout(); 
+            var result = await Shell.Current.ShowPopupAsync(popup);
+            if 
+                (result is bool confirmed && confirmed) 
+            { 
+                await 
+                   AppViewModel.Instance.LogoutCommand.ExecuteAsync(null);
+            }
         }
     }
 }
