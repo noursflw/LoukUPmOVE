@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.TerminbuchenPage"
+             x:Name="TerminbuchenPageRoot"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#0A0A0A"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
+             xmlns:converters="clr-namespace:loukupm.Converter"
+             Title="TerminbuchenPage">
+
+    <ContentPage.Resources>
+
+        <ResourceDictionary>
+
+            <!-- ================================================= -->
+            <!-- CONVERTERS -->
+            <!-- ================================================= -->
+
+            <converters:InverseBoolConverter
+                x:Key="InverseBoolConverter" />
+
+            <converters:BoolToColorConverter
+                x:Key="BoolToColorConverter" />
+
+            <converters:BoolToBackgroundColorConverter
+                x:Key="BoolToBackgroundColorConverter" />
+
+            <converters:BoolToTextColorConverter
+                x:Key="BoolToTextColorConverter" />
+
+            <converters:StringNotEmptyConverter
+                x:Key="StringNotEmptyConverter" />
+
+        </ResourceDictionary>
+
+    </ContentPage.Resources>
+
+
+    <!-- ========================================================= -->
+    <!-- ONLY ONE SCROLLVIEW FOR THE WHOLE PAGE -->
+    <!-- ========================================================= -->
+
+    <ScrollView
+        VerticalScrollBarVisibility="Always">
+
+        <VerticalStackLayout
+            Spacing="0"
+            Padding="0,0,0,30">
+
+
+            <!-- ================================================= -->
+            <!-- HEADER SECTION -->
+            <!-- ================================================= -->
+
+            <Grid
+                ColumnDefinitions="*,Auto"
+                HeightRequest="60"
+                BackgroundColor="#0A0A0A">
+
+                <Label
+                    Text="{Loc:Translate Name=Booking}"
+                    TextColor="White"
+                    Margin="24,0,0,0"
+                    FontSize="24"
+                    FontFamily="georgia-bold"
+                    VerticalOptions="Center" />
+
+                <Button
+                    Grid.Column="1"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    CornerRadius="12"
+                    ImageSource="backbuttonpmg.png"
+                    BackgroundColor="#0A0A0A"
+                    BorderColor="#999999"
+                    Margin="0,0,10,0"
+                    BorderWidth="1"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    Clicked="Button_Clicked" />
+
+            </Grid>
+
+
+            <!-- ================================================= -->
+            <!-- SECTION 1: SELECTED SERVICES -->
+            <!-- ================================================= -->
+
+            <VerticalStackLayout
+                Margin="20,20,20,10">
+
+                <Label
+                    Text="{Loc:Translate Name=addservies}"
+                    FontSize="18"
+                    FontFamily="Oswald"
+                    TextColor="White"
+                    FontAttributes="Bold" />
+
+                <Label
+                    Text="Selected services for your appointment"
+                    FontSize="12"
+                    FontFamily="Oswald"
+                    TextColor="#999999"
+                    Margin="0,4,0,0" />
+
+            </VerticalStackLayout>
+
+
+            <!-- ================================================= -->
+            <!-- SELECTED SERVICES -->
+            <!--
+                 CollectionView removed intentionally.
+                 It was inside the page ScrollView and could
+                 interfere with vertical scrolling.
+            -->
+            <!-- ================================================= -->
+
+            <VerticalStackLayout
+                Margin="6"
+                BindableLayout.ItemsSource="{Binding SelectedServices}"
+                IsVisible="{Binding IsCatogory, Converter={StaticResource InverseBoolConverter}}">
+
+                <BindableLayout.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <VerticalStackLayout
+                            Margin="20,0,20,15"
+                            Spacing="0">
+
+                            <Border
+                                Margin="0"
+                                Stroke="#D4AF37"
+                                StrokeThickness="2"
+                                BackgroundColor="Transparent"
+                                StrokeShape="RoundRectangle 16"
+                                HeightRequest="130"
+                                Padding="0">
+
+                                <Grid
+                                    ColumnDefinitions="100,*,80"
+                                    RowDefinitions="*"
+                                    Padding="0"
+                                    ColumnSpacing="12">
+
+
+                                    <!-- ================================= -->
+                                    <!-- SERVICE IMAGE -->
+                                    <!-- ================================= -->
+
+                                    <Frame
+                                        Grid.Column="0"
+                                        Padding="0"
+                                        Margin="12,12,0,12"
+                                        CornerRadius="12"
+                                        BackgroundColor="#444444"
+                                        BorderColor="#444444"
+                                        HasShadow="False"
+                                        WidthRequest="90"
+                                        HeightRequest="100">
+
+                                        <ff:CachedImage
+                                            Source="{Binding ImageSafe}"
+                                            Aspect="AspectFill"
+                                            LoadingPlaceholder="imagesafe.png"
+                                            ErrorPlaceholder="imagesafe.png" />
+
+                                    </Frame>
+
+
+                                    <!-- ================================= -->
+                                    <!-- SERVICE DETAILS -->
+                                    <!-- ================================= -->
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="5"
+                                        Padding="8,12,0,12"
+                                        VerticalOptions="Center">
+
+                                        <Label
+                                            Text="{Binding NameServies}"
+                                            FontFamily="Oswald"
+                                            TextColor="White"
+                                            FontSize="16"
+                                            FontAttributes="Bold"
+                                            LineBreakMode="TailTruncation" />
+
+                                        <Label
+                                            Text="{Binding Category.Name}"
+                                            FontFamily="Oswald"
+                                            TextColor="#999999"
+                                            FontSize="12"
+                                            LineBreakMode="TailTruncation" />
+
+
+                                        <!-- ============================= -->
+                                        <!-- TIME + PRICE -->
+                                        <!-- ============================= -->
+
+                                        <HorizontalStackLayout
+                                            Spacing="15"
+                                            Margin="0,5,0,0">
+
+
+                                            <!-- TIME -->
+
+                                            <HorizontalStackLayout
+                                                Spacing="3">
+
+                                                <Label
+                                                    Text="⏱"
+                                                    FontSize="12"
+                                                    TextColor="#D4AF37"
+                                                    VerticalOptions="Center" />
+
+                                                <Label
+                                                    Text="{Binding TimeServies}"
+                                                    FontFamily="Oswald"
+                                                    TextColor="#D3D3D3"
+                                                    FontSize="12"
+                                                    VerticalOptions="Center" />
+
+                                                <Label
+                                                    Text="Min."
+                                                    FontSize="12"
+                                                    TextColor="#D3D3D3"
+                                                    VerticalOptions="Center" />
+
+                                            </HorizontalStackLayout>
+
+
+                                            <!-- PRICE -->
+
+                                            <Label
+                                                Text="{Binding PriceServies, StringFormat='{0:F2} EUR'}"
+                                                FontFamily="Oswald"
+                                                TextColor="#D4AF37"
+                                                FontSize="14"
+                                                FontAttributes="Bold" />
+
+                                        </HorizontalStackLayout>
+
+                                    </VerticalStackLayout>
+
+
+                                    <!-- ================================= -->
+                                    <!-- REMOVE BUTTON -->
+                                    <!-- ================================= -->
+
+                                    <Button
+                                        Grid.Column="2"
+                                        Text="✕"
+                                        FontSize="24"
+                                        TextColor="#999999"
+                                        BackgroundColor="Transparent"
+                                        Padding="0"
+                                        Margin="0,8,12,8"
+                                        CornerRadius="8"
+                                        VerticalOptions="Start"
+                                        HorizontalOptions="End"
+                                        Clicked="OnRemoveService" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+                    </DataTemplate>
+
+                </BindableLayout.ItemTemplate>
+
+            </VerticalStackLayout>
+
+
+            <!-- ================================================= -->
+            <!-- ADD SERVICES BUTTON -->
+            <!-- ================================================= -->
+
+            <Button
+                Text="{Loc:Translate Name=addservies}"
+                BorderColor="Black"
+                TextColor="White"
+                Clicked="Button_Clicked_2"
+                BackgroundColor="Black"
+                ImageSource="plus.png"
+                FontFamily="Oswald"
+                FontSize="16"
+                CornerRadius="16"
+                HeightRequest="48"
+                VerticalOptions="End"
+                Margin="10,0,10,10" />
+
+
+            <!-- ================================================= -->
+            <!-- SECTION 2: SERVICE PROVIDER SELECTION -->
+            <!-- ================================================= -->
+
+            <VerticalStackLayout
+                Margin="20,20,20,10">
+
+                <Label
+                    Text="Service Provider"
+                    FontSize="18"
+                    FontFamily="Oswald"
+                    TextColor="White"
+                    FontAttributes="Bold" />
+
+                <Label
+                    Text="Choose provider(s) who can perform the selected services"
+                    FontSize="12"
+                    FontFamily="Oswald"
+                    TextColor="#999999"
+                    Margin="0,4,0,0" />
+
+            </VerticalStackLayout>
+
+
+            <!-- ================================================= -->
+            <!-- DYNAMIC SERVICE PROVIDER SELECTORS -->
+            <!--
+                 IMPORTANT:
+                 No ScrollView here.
+                 The parent ScrollView handles all scrolling.
+            -->
+            <!-- ================================================= -->
+
+            <VerticalStackLayout
+                x:Name="ServiceProviderSelectorsContainer"
+                Margin="10,0,10,20"
+                Padding="0,10,0,20"
+                Spacing="12" />
+
+
+            <!-- ================================================= -->
+            <!-- APPOINTMENT REMINDER -->
+            <!-- ================================================= -->
+
+            <Frame
+                BorderColor="#444444"
+                BackgroundColor="#444444"
+                CornerRadius="16"
+                Margin="10,0,10,20"
+                Padding="16">
+
+                <VerticalStackLayout
+                    Spacing="10">
+
+
+                    <!-- REMINDER TITLE -->
+
+                    <Label
+                        Text="{Loc:Translate Name=AppointmentReminder}"
+                        FontSize="16"
+                        TextColor="White"
+                        FontFamily="Oswald"
+                        FontAttributes="Bold" />
+
+
+                    <!-- REMINDER DESCRIPTION -->
+
+                    <Label
+                        Text="{Loc:Translate Name=SelectReminderTime}"
+                        FontSize="12"
+                        TextColor="#D3D3D3"
+                        FontFamily="Oswald" />
+
+
+                    <!-- REMINDER TOGGLE SWITCH -->
+
+                    <HorizontalStackLayout
+                        Spacing="12"
+                        Margin="0,8,0,0">
+
+                        <Switch
+                            IsToggled="{Binding IsReminderEnabled}"
+                                      OnColor="White"
+            
+                                   ThumbColor="#D4AF37"   
+                            BackgroundColor="Transparent"
+                            VerticalOptions="Center" />
+
+                        <Label
+                             Text="{Loc:Translate Name=AppointmentReminder}"
+                            TextColor="#D3D3D3"
+                            FontFamily="Oswald"
+                            FontSize="13"
+                            VerticalOptions="Center" />
+
+                    </HorizontalStackLayout>
+
+
+                    <!-- REMINDER OPTIONS PICKER (Enabled/Disabled by Switch) -->
+
+                    <Picker
+                        ItemsSource="{Binding ReminderOptions}"
+                        SelectedIndex="{Binding SelectedReminderOptionIndex}"
+                        IsEnabled="{Binding IsReminderEnabled}"
+                        TextColor="White"
+                        FontFamily="Oswald"
+                        FontSize="14"
+                        BackgroundColor="#555555"
+                        TitleColor="#D3D3D3"
+                        Margin="0,8,0,0" />
+
+
+                    <!-- ENABLE REMINDER -->
+
+                    <Button
+                        Text="{Loc:Translate Name=EnableReminderTimer}"
+                        TextColor="Black"
+                        BackgroundColor="#D4AF37"
+                        FontFamily="Oswald"
+                        FontSize="14"
+                        CornerRadius="8"
+                        Padding="10,8"
+                        Command="{Binding EnableReminderTimerCommand}" />
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+
+            <!-- ================================================= -->
+            <!-- SECTION 6: INVOICE / BOOKING SUMMARY -->
+            <!-- ================================================= -->
+
+            <Grid
+                ColumnDefinitions="*,Auto"
+                HeightRequest="70"
+                Padding="20,0"
+                Margin="0,20,0,0">
+
+
+                <!-- ============================================= -->
+                <!-- INVOICE -->
+                <!-- ============================================= -->
+
+                <VerticalStackLayout
+                    Grid.Column="0"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="{Loc:Translate Name=invoic}"
+                        TextColor="#D3D3D3"
+                        FontSize="{OnIdiom Phone=16, Tablet=18}"
+                        VerticalOptions="Center" />
+
+                    <Label
+                        Text="{Binding TotalPrice, StringFormat='{0:F2} EUR'}"
+                        TextColor="#FFD700"
+                        FontSize="{OnIdiom Phone=16, Tablet=18}"
+                        FontAttributes="Bold"
+                        VerticalOptions="Center" />
+
+                </VerticalStackLayout>
+
+
+                <!-- ============================================= -->
+                <!-- SECTION 7: BOOK NOW BUTTON -->
+                <!-- ============================================= -->
+
+                <Button
+                    Grid.Column="1"
+                    Text="{Loc:Translate Name=bookingNow}"
+                    TextColor="Black"
+                    FontSize="{OnIdiom Phone=16, Tablet=22}"
+                    CornerRadius="12"
+                    Padding="20,0"
+                    MinimumWidthRequest="120"
+                    HeightRequest="50"
+                    FontFamily="georgia-bold"
+                    BorderWidth="1"
+                    BackgroundColor="#D4AF37"
+                    Command="{Binding PostBookingCommand}"
+                    IsEnabled="{Binding IsBookingInProgress, Converter={StaticResource InverseBoolConverter}}"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center" />
+
+            </Grid>
+
+
+            <!-- ================================================= -->
+            <!-- SECTION 8: BOOKING STATE INDICATORS -->
+            <!-- ================================================= -->
+
+
+            <!-- ============================================= -->
+            <!-- LOADING -->
+            <!-- ============================================= -->
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBookingInProgress}"
+                IsVisible="{Binding IsBookingInProgress}"
+                Color="#FFD700"
+                HorizontalOptions="Center"
+                Margin="0,20,0,20" />
+
+
+            <!-- ============================================= -->
+            <!-- ERROR MESSAGE -->
+            <!-- ============================================= -->
+
+            <Label
+                Text="{Binding BookingErrorMessage}"
+                TextColor="#FF6666"
+                FontFamily="Oswald"
+                HorizontalOptions="Center"
+                Margin="20,0,20,10"
+                IsVisible="{Binding BookingErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+
+            <!-- ============================================= -->
+            <!-- BOOKING NUMBER -->
+            <!-- ============================================= -->
+
+            <Label
+                Text="{Loc:Translate Name=BookingNumberLabel} {Binding LastBookingNumber}"
+                TextColor="#D4AF37"
+                FontFamily="Oswald"
+                HorizontalOptions="Center"
+                Margin="20,0,20,20"
+                IsVisible="{Binding LastBookingNumber, Converter={StaticResource StringNotEmptyConverter}}" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

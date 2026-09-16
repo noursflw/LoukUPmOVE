@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.MassgingApp.ErorRemoveMyAccount"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             Color="Transparent">
+    <Frame
+  BackgroundColor="Black"
+  CornerRadius="20"
+  HasShadow="True"
+  Padding="0"
+  BorderColor="#444444"
+ 
+  HorizontalOptions="Center"
+  VerticalOptions="Center">
+
+        <VerticalStackLayout
+      Padding="20"
+      Spacing="18"
+      HorizontalOptions="Center"
+      WidthRequest="320"
+      VerticalOptions="Center">
+            
+
+
+
+
+
+            <Border
+    BackgroundColor="Red"
+    Opacity="0.6"
+    StrokeThickness="0"
+    StrokeShape="RoundRectangle 20">
+
+                <VerticalStackLayout 
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        Padding="20">
+
+                    <Label 
+            Text="{Loc:Translate Name=Denger}"
+            TextColor="White"
+            FontSize="20"
+            HorizontalOptions="Center"/>
+
+                    <Label 
+            Text="{Loc:Translate Name=SubDenger}"
+            TextColor="White"
+            FontSize="14"
+            HorizontalOptions="Center"/>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Frame BackgroundColor="Black" >
+                <VerticalStackLayout Spacing="20" >
+                    <Label HorizontalOptions="Center" Margin="5" Text="{Loc:Translate Name=ProfileDetails}"/>
+                    <BoxView BackgroundColor="#999999"  HeightRequest="2" CornerRadius="10" Margin="0,-9,0,0"/>
+                    <Label HorizontalOptions="Center"  Text="{Loc:Translate Name=YourAppointments}"/>
+                    <BoxView BackgroundColor="#999999"  HeightRequest="2" CornerRadius="10" Margin="0,-9,0,0"/>
+                    <Label HorizontalOptions="Center" Text="{Loc:Translate Name=BookingHistory}"/>
+                </VerticalStackLayout>
+            </Frame>
+            <Label HorizontalOptions="Center" Text="{Loc:Translate Name=EnterPasswordCerent}"/>
+            <material:TextField 
+                    TextColor="#A8883C"
+                 Text="{Binding CurrentPassword}"
+AccentColor="#A8883C"
+                   x:Name="PasswordEntry"
+                   CornerRadius="16"  
+                   InputBackgroundColor="Transparent" 
+                   IsPassword="True"  
+                   Margin="25,0,25,0" >
+                <material:TextField.Attachments>
+                    <material:TextFieldPasswordShowHideAttachment />
+                </material:TextField.Attachments>
+            </material:TextField>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" >
+                <Button
+   Text="{Loc:Translate Name=yes}"
+   BorderWidth="1"
+   TextColor="White"
+    BackgroundColor="Red"
+                    BorderColor="Red"
+                    WidthRequest="100"
+   CornerRadius="10"
+   HeightRequest="44"
+   FontFamily="georgia" 
+   Command="{Binding DeleteAccountCommand}"
+   CommandParameter="{Binding CurrentPassword}"
+   Clicked="Button_Clicked_1" />
+                <Button
+Text="{Loc:Translate Name=no}"
+BorderWidth="1"
+ WidthRequest="100"                    
+TextColor="Black"
+CornerRadius="10"
+HeightRequest="44"
+FontFamily="georgia"                        
+Clicked="Button_Clicked_1" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>
