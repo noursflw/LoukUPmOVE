@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.HomePage" 
+             x:Name="RootPage"
+             xmlns:converters="clr-namespace:loukupm.Converter"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:views="clr-namespace:loukupm.View"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="True"      
+             Title=" "
+             xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
+             xmlns:vm="clr-namespace:loukupm.ViewModel"
+
+             BackgroundColor="#0A0A0A">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Black" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,0">
+
+            <!-- اليسار -->
+            <HorizontalStackLayout 
+        Grid.Column="0"
+        Spacing="5"
+         
+        IsVisible="{Binding IsLoadUser, Converter={StaticResource InverseBoolConverter}}">
+                <Grid WidthRequest="50"
+      HeightRequest="50">
+
+                    <ImageButton
+        CornerRadius="30"
+        HeightRequest="50"
+        WidthRequest="50"
+        Clicked="OnFlyoutMenuClicked"
+        Source="ic_menu.svg"
+        Padding="5"/>
+
+                
+
+                </Grid>
+                <VerticalStackLayout>
+                    <HorizontalStackLayout>
+
+                        <Label Margin="5,10,0,0"
+                                 FontSize="18"
+                                 FontFamily="Oswald"
+                                 TextColor="White"
+                                  Text="{Loc:Translate Name=Wellcom}"/>
+
+                        <Label Text="{Binding UserName}"
+                               Margin="5,10,0,0"
+                               FontSize="18"
+                               FontFamily="Oswald"
+                               TextColor="White"/>
+                    </HorizontalStackLayout>
+                    <Label  Margin="0,0,0,3" Text="{Loc:Translate Name=nicetommetyou}" TextColor="#999999" />
+                </VerticalStackLayout>
+
+               
+            </HorizontalStackLayout>
+
+            <!-- Skeleton -->
+            <Frame 
+        HeightRequest="10"
+        Margin="20,0,0,0"
+        WidthRequest="120"
+        CornerRadius="3"
+        BackgroundColor="#444444"
+        BorderColor="#444444"
+        sk:Skeleton.IsBusy="{Binding IsLoadUser}"
+        IsVisible="{Binding IsLoadUser}"
+        sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"/>
+
+            <!-- Spacer -->
+            <BoxView Grid.Column="1" BackgroundColor="#0A0A0A" />
+
+          
+            <HorizontalStackLayout Grid.Column="2" Margin="0,0,20,0">
+
+                <Grid WidthRequest="40" FlowDirection="LeftToRight"
+          HeightRequest="40">
+
+                    <ImageButton
+            CornerRadius="30"
+            HeightRequest="20"
+            WidthRequest="20"
+             Aspect="Center"           
+            Clicked="Button_Clicked"
+            Source="nn1.png" />
+
+                    <views:NotificationBadgeView />
+
+                </Grid>
+
+            </HorizontalStackLayout>
+
+        </Grid>
+        <RefreshView Grid.Row="1" 
+                     Margin="0,0,0,40"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshHomeCommand}"
+                     RefreshColor="#A8883C">
+            <ScrollView>
+                <VerticalStackLayout IsVisible="{Binding HasNoHomeData, Converter={StaticResource InverseBoolConverter}}"
+                                 Padding="0"
+                                 Spacing="0">
+                    <Frame BorderColor="#444444" HeightRequest="150" Margin="24,30,24,10"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding HomeSliderVM.IsLoading}" IsVisible="{Binding HomeSliderVM.IsLoading}" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+
+                    </Frame>
+                    <CarouselView HeightRequest="150" 
+                              Margin="0,15,0,0"
+                              PeekAreaInsets="0"
+                              Loop="True"
+                              IsSwipeEnabled="True"
+                              HorizontalOptions="Fill"
+                              FlowDirection="LeftToRight"
+                              ItemsSource="{Binding HomeSliderVM.Items}"
+                              IsVisible="{Binding HomeSliderVM.IsLoading, Converter={StaticResource InverseBoolConverter}}">
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Padding="0"
+                                   Margin="20,0,20,0"
+                                   HasShadow="True"
+                                   CornerRadius="18"
+                                   HeightRequest="150"
+                                   BackgroundColor="#1A1A1A"
+                                   BorderColor="Transparent"
+                                   FlowDirection="LeftToRight">
+                                    <Grid ColumnDefinitions="*,*"
+                                      FlowDirection="LeftToRight">
+                                        <Image Grid.Column="0" 
+                                           Grid.ColumnSpan="2"
+                                           Source="{Binding ImageUrl}"
+                                           Aspect="AspectFill"
+                                           ZIndex="0"
+                                           FlowDirection="LeftToRight"/>
+
+                                        <BoxView Grid.Column="0"
+         Grid.ColumnSpan="2"
+         ZIndex="1"
+         FlowDirection="LeftToRight">
+                                            <BoxView.Background>
+                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                    <GradientStop Color="#D0000000" Offset="0"/>
+                                                    <GradientStop Color="#C0000000" Offset="0.2"/>
+                                                    <GradientStop Color="#A0000000" Offset="0.3"/>
+                                                    <GradientStop Color="#90000000" Offset="0.4"/>
+                                                    <GradientStop Color="#60000000" Offset="0.7"/>
+                                                    <GradientStop Color="#00000000" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </BoxView.Background>
+                                        </BoxView>
+
+
+
+                                        <VerticalStackLayout Grid.Column="0"
+                                                         Padding="20"
+                                                         Spacing="4"
+                                                         VerticalOptions="Center"
+                                                         HorizontalOptions="Start"
+                                                         MaximumWidthRequest="140"
+                                                         ZIndex="2">
+
+                                            <Label Text="{Binding Title}"
+                                               TextColor="White"
+                                              
+                                               FontFamily="Oswald"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="NoWrap"/>
+
+                                            <Label Text="{Binding Subtitle}"
+                                               TextColor="#f5b713"
+                                               
+                                               FontFamily="Oswald"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="WordWrap"
+                                               Margin="0,-2,0,2"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                    <material:TextField
+    HeightRequest="50"
+   TextColor="#A8883C"
+    AccentColor="#A8883C"
+    Margin="25,30,25,0"
+    InputBackgroundColor="#1C1F24"
+    CornerRadius="16"
+    Icon="search.svg"
+    Title="search"
+    Text="{Binding SearchServiceTerm}"
+    BorderColor="Transparent"
+    />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ Loc:Translate Name=chosesservies}"  FontFamily="georgia" TextColor="White" FontSize="24" Margin="15" HorizontalOptions="Start" />
+                        <Label 
+                        Margin="10,10,15,0" Grid.Column="1" Text="{ Loc:Translate Name=AllServies}"   FontSize="14" TextColor="#B8963F" FontFamily="Oswald"   TextDecorations="Underline" HorizontalOptions="End">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                            </Label.GestureRecognizers>
+
+                        </Label>
+
+                    </Grid>
+                    <CollectionView 
+                   ItemsSource="{Binding FilteredServices}" 
+                   Margin="16,0,16,0"
+                   IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
+
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout  
+                           Orientation="Vertical" 
+                           HorizontalItemSpacing="12"
+                           VerticalItemSpacing="12"
+                           Span="2" />
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame 
+                               Padding="0"
+                               CornerRadius="10"
+                               BorderColor="#111111"
+                               HasShadow="False"
+                               HeightRequest="60"
+                               Margin="0,0,0,0">
+                                    <Frame.Background>
+                                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                            <GradientStop Color="#111111" Offset="0"/>
+                                            <GradientStop Color="#151821" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Frame.Background>
+                                    <Grid ColumnDefinitions="*,50">
+                                        <VerticalStackLayout 
+                                       Grid.Column="0"
+                                       Padding="16,1,10,12"
+                                       Spacing="0"
+                                        
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Fill">
+
+                                            <Label 
+                                           Text="{Binding NameServies}" 
+                                           FontFamily="Oswald" 
+                                           TextColor="#FFFFFF" 
+                                           FontSize="13"
+                                           
+                                           
+                                           LineBreakMode="WordWrap"
+                                           MaxLines="0"
+                                           HorizontalTextAlignment="Start" />
+
+                                        </VerticalStackLayout>
+                                        <Grid 
+                                       Grid.Column="1"
+                                       Padding="-10,0,0,0"
+                                       ColumnDefinitions="*"
+                                       RowDefinitions="*">
+                                            <ff:CachedImage
+                                           Grid.Row="0"
+                                           Grid.Column="0"
+                                            WidthRequest="60"
+                                           Source="{Binding ImageSafe}"
+                                           Aspect="AspectFit"
+                                           
+                                           Opacity="0.92"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center" />
+                                            <BoxView 
+                                           Grid.Row="0"
+                                           Grid.Column="0"
+                                           HorizontalOptions="Fill"
+                                           VerticalOptions="Fill">
+                                                <BoxView.Background>
+                                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                        <GradientStop Color="#33000000" Offset="0"/>
+                                                        <GradientStop Color="#00000000" Offset="0"/>
+                                                    </LinearGradientBrush>
+                                                </BoxView.Background>
+                                            </BoxView>
+
+                                        </Grid>
+
+                                    </Grid>
+
+                                </Frame>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+                    <VerticalStackLayout>
+
+                        <HorizontalStackLayout>
+
+                            <Frame BorderColor="#444444" HeightRequest="70" Margin="24,10,24,10" WidthRequest="150"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding IsServicesLoad}" IsVisible="{Binding IsServicesLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                                <Frame CornerRadius="10" Padding="0" Margin="0,0,0,0" WidthRequest="65" HorizontalOptions="Start"  HeightRequest="40" BackgroundColor="#303030" BorderColor="#303030" />
+                            </Frame>
+
+                            <Frame BorderColor="#444444" HeightRequest="70" Margin="24,10,24,10" WidthRequest="150"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding IsServicesLoad}" IsVisible="{Binding IsServicesLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                                <Frame CornerRadius="10" Padding="0" Margin="0,0,0,0" WidthRequest="65" HorizontalOptions="Start" HeightRequest="40" BackgroundColor="#303030" BorderColor="#303030" />
+                            </Frame>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+
+                            <Frame BorderColor="#444444" HeightRequest="70" Margin="24,10,24,10" WidthRequest="150"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding IsServicesLoad}" IsVisible="{Binding IsServicesLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                                <Frame CornerRadius="10" Padding="0" Margin="0,0,0,0" WidthRequest="65" HeightRequest="40" HorizontalOptions="Start" BackgroundColor="#303030" BorderColor="#303030" />
+                            </Frame>
+
+                            <Frame BorderColor="#444444" HeightRequest="70" Margin="24,10,24,10" WidthRequest="150"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding IsServicesLoad}" IsVisible="{Binding IsServicesLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                                <Frame CornerRadius="10" Padding="0" Margin="0,0,0,0" WidthRequest="65" HeightRequest="40" HorizontalOptions="Start" BackgroundColor="#303030" BorderColor="#303030" />
+                            </Frame>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+
+                            <Frame BorderColor="#444444" HeightRequest="70" Margin="24,10,24,10" WidthRequest="150"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding IsServicesLoad}" IsVisible="{Binding IsServicesLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                                <Frame CornerRadius="10" Padding="0" Margin="0,0,0,0" WidthRequest="65" HeightRequest="40" HorizontalOptions="Start" BackgroundColor="#303030" BorderColor="#303030" />
+                            </Frame>
+
+                            <Frame BorderColor="#444444" HeightRequest="70" Margin="24,10,24,10" WidthRequest="150"  CornerRadius="16" BackgroundColor="#444444"  sk:Skeleton.IsBusy="{Binding IsServicesLoad}" IsVisible="{Binding IsServicesLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                                <Frame CornerRadius="10" Padding="0" Margin="0,0,0,0" WidthRequest="65" HeightRequest="40" HorizontalOptions="Start" BackgroundColor="#303030" BorderColor="#303030" />
+                            </Frame>
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
+                    <Label Text="{Loc:Translate Name=TitelTeam}" FontSize="24" Margin="24,20,0,0" TextColor="White" FontFamily="georgia" />
+
+                    <CollectionView ItemsSource="{Binding WorkTeams}" ItemsLayout="HorizontalList"   Margin="0,0,20,50" IsVisible="{Binding IsWorkTeamLoad, Converter={StaticResource InverseBoolConverter}}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="Transparent" CornerRadius="20" WidthRequest="140"  BorderColor="Transparent" >
+                                    <VerticalStackLayout  Margin="12" Spacing="0">
+                                        <Frame BackgroundColor="#0B0D10" 
+WidthRequest="70" 
+HeightRequest="70" 
+CornerRadius="38"
+Padding="0"
+BorderColor="#333333"
+HasShadow="False">
+                                            <ff:CachedImage
+ WidthRequest="70"
+ HeightRequest="70"
+ Aspect="Fill"
+ FadeAnimationEnabled="True"
+ DownsampleToViewSize="True"
+ BackgroundColor="#0B0D10"
+ IsOpaque="False"
+ Source="{Binding ImageSafe}" />
+                                        </Frame>
+                                        <Label Text="{Binding Name}" TextColor="#999999" HorizontalOptions="Center" FontSize="12" LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <HorizontalStackLayout>
+
+                        <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" WidthRequest="100" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                            <Frame CornerRadius="30" Margin="0,0,0,0" BackgroundColor="#303030" BorderColor="#303030" />
+                        </Frame>
+
+                        <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" WidthRequest="100" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                            <Frame CornerRadius="30" Margin="0,0,0,0" BackgroundColor="#303030" BorderColor="#303030" />
+                        </Frame>
+
+                        <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" WidthRequest="100" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                            <Frame CornerRadius="30" Margin="0,0,0,0" BackgroundColor="#303030" BorderColor="#303030" />
+                        </Frame>
+
+                        <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" WidthRequest="100" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                            <Frame CornerRadius="30" Margin="0,0,0,0" BackgroundColor="#303030" BorderColor="#303030" />
+                        </Frame>
+
+                        <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" WidthRequest="100" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}" IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                            <Frame CornerRadius="30" Margin="0,0,0,0" BackgroundColor="#303030" BorderColor="#303030" />
+                        </Frame>
+
+                        <Frame BorderColor="#444444" HeightRequest="100" Margin="24,10,24,10" CornerRadius="16" BackgroundColor="#444444" WidthRequest="100" sk:Skeleton.IsBusy="{Binding IsWorkTeamLoad}"  IsVisible="{Binding IsWorkTeamLoad }" sk:Skeleton.Animation="{sk:DefaultAnimation Fade}">
+                            <Frame CornerRadius="30" Margin="0,0,0,0" BackgroundColor="#303030" BorderColor="#303030" />
+                        </Frame>
+
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <!-- عنصر عدم وجود بيانات / عدم الاتصال -->
+        <VerticalStackLayout Grid.Row="1"
+                            IsVisible="{Binding HasNoHomeData}"
+                            Spacing="0"
+                            Padding="0"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand"
+                            BackgroundColor="#0A0A0A">
+            <Grid RowDefinitions="*,Auto,Auto" VerticalOptions="FillAndExpand">
+                <!-- مسافة فارغة -->
+                <BoxView Grid.Row="0" BackgroundColor="#0A0A0A"/>
+
+                <!-- الرسالة والصورة -->
+                <VerticalStackLayout Grid.Row="1" 
+                                    Spacing="15" 
+                                    Padding="20" 
+                                    HorizontalOptions="Center">
+                    <Label Text="📡" 
+                           FontSize="60" 
+                           HorizontalTextAlignment="Center" 
+                           Margin="0"/>
+                    <Label Text="{ Loc:Translate Name=NoData}" 
+                           FontSize="18" 
+                           FontFamily="Oswald" 
+                           TextColor="White" 
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="{ Loc:Translate Name=CheckInternet}" 
+                           FontSize="14" 
+                           TextColor="#999999" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <!-- زر المحاولة -->
+                <StackLayout Grid.Row="2" 
+                            Padding="20,0,20,60" 
+                            HorizontalOptions="Center">
+                    <Button Text="{ Loc:Translate Name=TryAgain}" 
+                            BackgroundColor="#A8883C" 
+                            TextColor="Black" 
+                            CornerRadius="8" 
+                            Padding="30,12"
+                            FontFamily="Oswald"
+                            FontAttributes="Bold"
+                            Command="{Binding RefreshHomeCommand}" 
+                            HorizontalOptions="Center"/>
+                </StackLayout>
+            </Grid>
+        </VerticalStackLayout>
+
+        <Frame Grid.Row="1"
+       Background="#111111"
+       BorderColor="Transparent"
+       Padding="0"
+       HeightRequest="70"
+       VerticalOptions="End"
+       HorizontalOptions="Fill"
+       CornerRadius="10"
+       Margin="10,0,10,30">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+            </Frame.GestureRecognizers>
+
+            <Grid ColumnDefinitions="*,Auto" Padding="0">
+
+                <!-- LEFT SIDE -->
+                <Grid Grid.Column="0"
+              ColumnDefinitions="Auto,*"
+              Padding="20,15,10,15"
+              ColumnSpacing="10">
+
+                    <Image Source="calendartick"
+                   WidthRequest="24"
+                   HeightRequest="24"
+                   VerticalOptions="Center"/>
+
+                    <VerticalStackLayout Grid.Column="1"
+                                 Spacing="0"
+                                 VerticalOptions="Center">
+
+                        <Label TextColor="White"
+                       Text="{Loc:Translate Name=timetosphelstel}"
+                       FontSize="Default"
+                       LineBreakMode="TailTruncation"/>
+
+                        <Label TextColor="White"
+                       Text="{Loc:Translate Name=yourstylestatuphere}"
+                       FontSize="12"
+                       LineBreakMode="TailTruncation"/>
+                    </VerticalStackLayout>
+
+                </Grid>
+
+                <!-- BUTTON -->
+                <Frame Grid.Column="1"
+       BackgroundColor="#D4AF37"
+       CornerRadius="20"
+       Padding="0"
+       HeightRequest="40"
+       HorizontalOptions="End"
+       VerticalOptions="Center"
+       Margin="0,0,20,0"
+       HasShadow="False">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </Frame.GestureRecognizers>
+
+                    <HorizontalStackLayout Padding="10,0"
+                           Spacing="6"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+
+                        <Image Source="calendarticky.svg"
+               WidthRequest="18"
+               HeightRequest="18"
+               VerticalOptions="Center"/>
+
+                        <Label Text="{Loc:Translate Name=bookinNowAbotus}"
+               FontFamily="OpenSansSemibold"
+               TextColor="Black"
+               FontSize="Micro"
+               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                </Frame>
+
+            </Grid>
+        </Frame>
+
+        <Border Grid.Row="1"
+        Margin="0,0,0,-10"
+        HeightRequest="20"
+        VerticalOptions="End"
+        HorizontalOptions="Fill"
+        StrokeShape="RoundRectangle 40,40,0,0"
+        Background="#151821"
+        Stroke="#151821" />
+
+    </Grid>
+</ContentPage>

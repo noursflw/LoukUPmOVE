@@ -1,0 +1,1261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="aboutaswelcom" xml:space="preserve">
+    <value>مرحبا بكم في</value>
+  </data>
+  <data name="aboutusga" xml:space="preserve">
+    <value>حول التطبيق </value>
+  </data>
+  <data name="AboutUsTeam" xml:space="preserve">
+    <value>تعرف على فريقنا</value>
+  </data>
+  <data name="AboutUSTeam3" xml:space="preserve">
+    <value>رومي ستادلر</value>
+  </data>
+  <data name="AbutUSTeam2" xml:space="preserve">
+    <value>جاكلين أوبرهوفر</value>
+  </data>
+  <data name="AcsepPassword" xml:space="preserve">
+    <value>لقد تم إعادة تعيين كلمة المرور الخاصة بك بنجاح.</value>
+  </data>
+  <data name="AcspetNewpassword" xml:space="preserve">
+    <value>تأكيد كلمة المرور الجديدة</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>اضافة </value>
+  </data>
+  <data name="addcard" xml:space="preserve">
+    <value>أضف بطاقة</value>
+  </data>
+  <data name="addservies" xml:space="preserve">
+    <value>إضافة خدمة أخرى</value>
+  </data>
+  <data name="AllServies" xml:space="preserve">
+    <value>كل الخدمات </value>
+  </data>
+  <data name="Alltext" xml:space="preserve">
+    <value>يُرجى ملء جميع الحقول</value>
+  </data>
+  <data name="AND" xml:space="preserve">
+    <value>و</value>
+  </data>
+  <data name="AppInfo" xml:space="preserve">
+    <value>من نحن </value>
+  </data>
+  <data name="Benachrichtigungen" xml:space="preserve">
+    <value>إشعارات</value>
+  </data>
+  <data name="Booking" xml:space="preserve">
+    <value>حجز موعد</value>
+  </data>
+  <data name="bookingNow" xml:space="preserve">
+    <value>احجز الآن</value>
+  </data>
+  <data name="bookingsentsuccessfully" xml:space="preserve">
+    <value>تم إرسال الحجز بنجاح.</value>
+  </data>
+  <data name="bookinNowAbotus" xml:space="preserve">
+    <value>حجز موعد</value>
+  </data>
+  <data name="cardsaleh" xml:space="preserve">
+    <value>صالحة حتى</value>
+  </data>
+  <data name="celectedserviesiddone" xml:space="preserve">
+    <value>تمت إضافة الخدمة بنجاح</value>
+  </data>
+  <data name="ChangeImage" xml:space="preserve">
+    <value>تغيير الصورة</value>
+  </data>
+  <data name="ChangMyPassword1" xml:space="preserve">
+    <value>كلمة المرور الحالية</value>
+  </data>
+  <data name="ChangPassord" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="changvaldechen" xml:space="preserve">
+    <value>إعادة تعيين كلمة المرور</value>
+  </data>
+  <data name="chosesservies" xml:space="preserve">
+    <value>اختيار ال خدمة</value>
+  </data>
+  <data name="CodeNotIncorrect" xml:space="preserve">
+    <value>الرمز غير صحيح. يرجى المحاولة مرة أخرى</value>
+  </data>
+  <data name="CompletedAddServies" xml:space="preserve">
+    <value>تمت اضافة الخدمة بنجاح</value>
+  </data>
+  <data name="CompletedLogin" xml:space="preserve">
+    <value>تم تسجيل الدخول</value>
+  </data>
+  <data name="CompletedSendEmaileSucsees" xml:space="preserve">
+    <value>تم إرسال رمز التحقق إلى عنوان بريدك الإلكتروني.</value>
+  </data>
+  <data name="ConfermUpateChane" xml:space="preserve">
+    <value> تم تحديث بيانات المستخدم بنجاح </value>
+  </data>
+  <data name="ConifermPassword" xml:space="preserve">
+    <value>تأكيد كلمة المرور</value>
+  </data>
+  <data name="CreatAccount" xml:space="preserve">
+    <value>ليس لديك حساب بعد؟</value>
+  </data>
+  <data name="CreatAcount2" xml:space="preserve">
+    <value>إنشاء الحساب </value>
+  </data>
+  <data name="datebooking" xml:space="preserve">
+    <value>الأوقات المتاحة في هذا اليوم</value>
+  </data>
+  <data name="DescriptionAboutus" xml:space="preserve">
+    <value>في صالون LOOK UP Friseur في لاندسهوت، نقدم لكم خدمة قص وتصفيف شعر حصرية مصممة خصيصًا لتلبية رغباتكم واحتياجاتكم الشخصية. يستخدم مصففو الشعر ذوو الخبرة لدينا أحدث التقنيات ومنتجات عالية الجودة لضمان حصولكم على أفضل النتائج في كل زيارة.</value>
+  </data>
+  <data name="descrtiondate" xml:space="preserve">
+    <value>انقر للتحديد</value>
+  </data>
+  <data name="desRestPass" xml:space="preserve">
+    <value>سوف تتلقى قريبًا رسالة بريد إلكتروني تحتوي على رمز لإعداد كلمة مرور جديدة</value>
+  </data>
+  <data name="DesStartPage" xml:space="preserve">
+    <value>في صالون LOOK UP Friseur في لاندسهوت، نقدم لكم خدمة قص وتصفيف شعر حصرية مصممة خصيصًا لتلبية رغباتكم واحتياجاتكم الشخصية. يستخدم مصففو الشعر ذوو الخبرة لدينا أحدث التقنيات ومنتجات عالية الجودة لضمان حصولكم على أفضل النتائج في كل زيارة.</value>
+  </data>
+  <data name="DesTeam1" xml:space="preserve">
+    <value>يتخصص مصففو الشعر لدينا في تعزيز جمال كل فرد، ويقدمون قصات شعر احترافية، وتصفيفات، وصبغات شعر للرجال والنساء والأطفال. سواءً كنتِ تفضلين الإطلالة الكلاسيكية، أو العصرية، أو الجريئة، سنجد لكِ الإطلالة المثالية. مصففو الشعر ذوو الخبرة في صالون LOOK UP Friseur في لاندسهوت خبراء في مجالهم، ويقدمون قصات شعر وتسريحات شعر حصرية مصممة خصيصًا لتلبية احتياجاتكِ الشخصية. باستخدام أحدث التقنيات والمنتجات عالية الجودة، سيشعرونكِ بالراحة والجمال.</value>
+  </data>
+  <data name="DesTeam2" xml:space="preserve">
+    <value>فنانة في مجال المرأة ذات لمسة خفيفة وحساسية خاصة</value>
+  </data>
+  <data name="DesTeam3" xml:space="preserve">
+    <value>يتخصص أفضل مصففي الشعر لدينا في إبراز الجمال الفردي وتقديم قصات الشعر الاحترافية وتصفيفه وتلوينه</value>
+  </data>
+  <data name="detailesMyAccount" xml:space="preserve">
+    <value>تحرير تفاصيل الحساب</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="EnterEmailOrPassword" xml:space="preserve">
+    <value>يرجى إدخال البريد الإلكتروني وكلمة المرور</value>
+  </data>
+  <data name="EROR" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="ErorDeletAccount" xml:space="preserve">
+    <value>حدث خطأ أثناء العملية.</value>
+  </data>
+  <data name="EroreConacted" xml:space="preserve">
+    <value>خطأ في الاتصال</value>
+  </data>
+  <data name="EroreInput" xml:space="preserve">
+    <value>خطأ في الإدخال</value>
+  </data>
+  <data name="ErorEmailInput" xml:space="preserve">
+    <value>يرجى إدخال بريد إلكتروني صحيح</value>
+  </data>
+  <data name="ErorlogIn" xml:space="preserve">
+    <value>تعذر تسجيل الدخول</value>
+  </data>
+  <data name="FeildUpdatePassord" xml:space="preserve">
+    <value>فشل تحديث كلمة المرور</value>
+  </data>
+  <data name="GoogleLogin" xml:space="preserve">
+    <value>واصل مع جوجل</value>
+  </data>
+  <data name="historey" xml:space="preserve">
+    <value>اختر التاريخ</value>
+  </data>
+  <data name="hrearchooes" xml:space="preserve">
+    <value>اختر مصفف الشعر</value>
+  </data>
+  <data name="Introduction" xml:space="preserve">
+    <value>المقدمة .1</value>
+  </data>
+  <data name="invoic" xml:space="preserve">
+    <value>في المجموع</value>
+  </data>
+  <data name="IsYourEmailNotREGSTER" xml:space="preserve">
+    <value>البريد الإلكتروني غير مسجل في النظام</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اسم العائلة</value>
+  </data>
+  <data name="linkpass" xml:space="preserve">
+    <value>إعادة تعيين كلمة المرور</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>تسجيل الدخول </value>
+  </data>
+  <data name="Logoutmessag" xml:space="preserve">
+    <value>هل أنت متأكد من  تسجيل الخروج من  الحساب؟</value>
+  </data>
+  <data name="Mybook" xml:space="preserve">
+    <value>مواعيدي</value>
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value> الاسم </value>
+  </data>
+  <data name="NewMyPassord" xml:space="preserve">
+    <value>كلمة المرور الجديدة</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="NoConfermChangeDataUser" xml:space="preserve">
+    <value>حدث خطأ لم يتم تحديث البيانات حاول مرة أخرى</value>
+  </data>
+  <data name="NoEnternetConctesd" xml:space="preserve">
+    <value>لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى</value>
+  </data>
+  <data name="noresponseserver" xml:space="preserve">
+    <value>لم يتم الحصول على استجابة من الخادم</value>
+  </data>
+  <data name="NOTEqlalepor" xml:space="preserve">
+    <value>بيانات تسجيل الدخول غير صحيحة</value>
+  </data>
+  <data name="NPasswordOnLogin" xml:space="preserve">
+    <value>نسيت كلمة السر؟</value>
+  </data>
+  <data name="nubercrad" xml:space="preserve">
+    <value>رقم البطاقة</value>
+  </data>
+  <data name="pasl" xml:space="preserve">
+    <value>يجب أن تحتوي الكلمة على أكثر من 6 أحرف</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="Passwordnotmatch" xml:space="preserve">
+    <value>كلمتا المرور غير متطابقتين</value>
+  </data>
+  <data name="PasswordUpdated" xml:space="preserve">
+    <value>تم تحديث كلمة المرور بنجاح</value>
+  </data>
+  <data name="paymentgetwaymethod" xml:space="preserve">
+    <value>طريقة الدفع</value>
+  </data>
+  <data name="paynaw" xml:space="preserve">
+    <value>ادفع الآن</value>
+  </data>
+  <data name="pesoncard" xml:space="preserve">
+    <value>حامل البطاقة</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>رقم الهاتف</value>
+  </data>
+  <data name="pleaseselectoneservice" xml:space="preserve">
+    <value>الرجاء اختيار خدمة واحدة على الأقل قبل المتابعة.</value>
+  </data>
+  <data name="PolicyandPrivacy" xml:space="preserve">
+    <value>سياسة الخصوصية</value>
+  </data>
+  <data name="RemoveMyCount" xml:space="preserve">
+    <value>هل أنت متأكد من حذف الحساب؟</value>
+  </data>
+  <data name="ResetPasswordvv" xml:space="preserve">
+    <value>أدخل بريدك الإلكتروني. سنرسل لك رمز OTP لإعادة تعيين كلمة المرور.</value>
+  </data>
+  <data name="Sacsess" xml:space="preserve">
+    <value>نجاح</value>
+  </data>
+  <data name="SaveChangFoeMyAccount" xml:space="preserve">
+    <value>حفظ التغييرات</value>
+  </data>
+  <data name="SaveChangFoeMyAccount1" xml:space="preserve">
+    <value>حفظ التغييرات</value>
+  </data>
+  <data name="sendotp" xml:space="preserve">
+    <value>تم إرسال الرمز</value>
+  </data>
+  <data name="setting" xml:space="preserve">
+    <value>إعدادات التطبيق</value>
+  </data>
+  <data name="Singin" xml:space="preserve">
+    <value>إنشاء حساب</value>
+  </data>
+  <data name="standpay" xml:space="preserve">
+    <value>مستعد</value>
+  </data>
+  <data name="SuccessfullyVerified" xml:space="preserve">
+    <value>تم التحقق من الرمز بنجاح</value>
+  </data>
+  <data name="TeamNaser" xml:space="preserve">
+    <value>نصرالدين البرهو</value>
+  </data>
+  <data name="TermsandConditions" xml:space="preserve">
+    <value>الشروط والأحكام</value>
+  </data>
+  <data name="TheEmailisUSED" xml:space="preserve">
+    <value>اسم المستخدم مستخدم بالفعل</value>
+  </data>
+  <data name="theserviewasdone" xml:space="preserve">
+    <value>الخدمة موجودة مسبقا</value>
+  </data>
+  <data name="TitelTeam" xml:space="preserve">
+    <value>تعرف على فريقنا </value>
+  </data>
+  <data name="Titledescrption" xml:space="preserve">
+    <value>مصممون ذوو خبرة وشغف وإبداع لتصميم أسلوبك الشخصي.</value>
+  </data>
+  <data name="TitlwMyPrefile" xml:space="preserve">
+    <value>ملفي الشخصي</value>
+  </data>
+  <data name="VisteInAboutUS" xml:space="preserve">
+    <value>تفضلوا بزيارتنا! تفضلوا بزيارتنا تلقائيًا - حتى بدون موعد!</value>
+  </data>
+  <data name="WateResposeOTP" xml:space="preserve">
+    <value>تم طلب رمز تحقق (OTP) مؤخرًا. يرجى الانتظار قبل المحاولة مرة أخرى.</value>
+  </data>
+  <data name="Wellcom" xml:space="preserve">
+    <value>مرحباً</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="YouHaveAcount" xml:space="preserve">
+    <value>هل لديك حساب بالفعل؟</value>
+  </data>
+  <data name="PolicyIntroduction" xml:space="preserve">
+    <value>مقدمة</value>
+  </data>
+  <data name="PolicyIntroductionText" xml:space="preserve">
+    <value>نحن في تطبيق حجز مواعيد الحلاق نحترم خصوصية المستخدمين ونلتزم بحماية بياناتهم الشخصية. توضح سياسة الخصوصية هذه كيفية جمع المعلومات واستخدامها وحمايتها عند استخدام التطبيق.
+
+باستخدام التطبيق فإنك توافق على الممارسات الموضحة في هذه السياسة.</value>
+  </data>
+  <data name="PolicyDataCollection" xml:space="preserve">
+    <value>1. المعلومات التي نقوم بجمعها</value>
+  </data>
+  <data name="PolicyAccountInfo" xml:space="preserve">
+    <value>معلومات الحساب</value>
+  </data>
+  <data name="PolicyAccountInfoDesc" xml:space="preserve">
+    <value>عند إنشاء حساب داخل التطبيق قد نقوم بجمع:</value>
+  </data>
+  <data name="PolicyName" xml:space="preserve">
+    <value>• الاسم</value>
+  </data>
+  <data name="PolicyLastName" xml:space="preserve">
+    <value>• الكنية</value>
+  </data>
+  <data name="PolicyEmail" xml:space="preserve">
+    <value>• البريد الإلكتروني</value>
+  </data>
+  <data name="PolicyPassword" xml:space="preserve">
+    <value>• كلمة المرور (يتم تخزينها بشكل مشفر)</value>
+  </data>
+  <data name="PolicyGoogleLogin" xml:space="preserve">
+    <value>تسجيل الدخول عبر Google</value>
+  </data>
+  <data name="PolicyGoogleLoginDesc" xml:space="preserve">
+    <value>في حال اختيار تسجيل الدخول باستخدام حساب Google قد نحصل على:</value>
+  </data>
+  <data name="PolicyGoogleInfo" xml:space="preserve">
+    <value>نستخدم هذه المعلومات فقط لإنشاء حساب المستخدم داخل التطبيق.</value>
+  </data>
+  <data name="PolicyBookingInfo" xml:space="preserve">
+    <value>معلومات الحجز</value>
+  </data>
+  <data name="PolicyBookingInfoDesc" xml:space="preserve">
+    <value>عند استخدام خدمة الحجز يتم تخزين المعلومات التالية:</value>
+  </data>
+  <data name="PolicyServiceType" xml:space="preserve">
+    <value>• نوع الخدمة المطلوبة</value>
+  </data>
+  <data name="PolicyServiceProvider" xml:space="preserve">
+    <value>• مزود الخدمة (الحلاق)</value>
+  </data>
+  <data name="PolicyBookingDate" xml:space="preserve">
+    <value>• تاريخ الحجز</value>
+  </data>
+  <data name="PolicyBookingTime" xml:space="preserve">
+    <value>• وقت الحجز</value>
+  </data>
+  <data name="PolicyBookingInfoUsage" xml:space="preserve">
+    <value>يتم استخدام هذه المعلومات فقط لإدارة المواعيد.</value>
+  </data>
+  <data name="PolicyDeviceInfo" xml:space="preserve">
+    <value>معلومات الجهاز</value>
+  </data>
+  <data name="PolicyDeviceInfoDesc" xml:space="preserve">
+    <value>قد يتم جمع معلومات تقنية تلقائياً مثل:</value>
+  </data>
+  <data name="PolicyDeviceType" xml:space="preserve">
+    <value>• نوع الجهاز</value>
+  </data>
+  <data name="PolicyOperatingSystem" xml:space="preserve">
+    <value>• نظام التشغيل</value>
+  </data>
+  <data name="PolicyIPAddress" xml:space="preserve">
+    <value>• عنوان IP</value>
+  </data>
+  <data name="PolicyCrashLogs" xml:space="preserve">
+    <value>• بيانات الأعطال (Crash logs)</value>
+  </data>
+  <data name="PolicyDeviceInfoUsage" xml:space="preserve">
+    <value>تستخدم هذه المعلومات لتحسين أداء التطبيق.</value>
+  </data>
+  <data name="PolicyUsage" xml:space="preserve">
+    <value>2. كيفية استخدام المعلومات</value>
+  </data>
+  <data name="PolicyUsageDesc" xml:space="preserve">
+    <value>نستخدم المعلومات للأغراض التالية:</value>
+  </data>
+  <data name="PolicyUsageCreateAccount" xml:space="preserve">
+    <value>• إنشاء حساب المستخدم</value>
+  </data>
+  <data name="PolicyUsageManageAccount" xml:space="preserve">
+    <value>• تسجيل الدخول وإدارة الحساب</value>
+  </data>
+  <data name="PolicyUsageManageBooking" xml:space="preserve">
+    <value>• إدارة حجوزات المواعيد</value>
+  </data>
+  <data name="PolicyUsageSendNotifications" xml:space="preserve">
+    <value>• إرسال إشعارات متعلقة بالحجوزات</value>
+  </data>
+  <data name="PolicyUsageImproveApp" xml:space="preserve">
+    <value>• تحسين أداء التطبيق</value>
+  </data>
+  <data name="PolicyUsagePreventFraud" xml:space="preserve">
+    <value>• منع الاحتيال أو إساءة الاستخدام</value>
+  </data>
+  <data name="PolicyUsageSupport" xml:space="preserve">
+    <value>• دعم المستخدمين</value>
+  </data>
+  <data name="PolicyUsageDisclaimer" xml:space="preserve">
+    <value>لن يتم استخدام المعلومات لأي غرض آخر دون موافقة المستخدم.</value>
+  </data>
+  <data name="PolicyNotifications" xml:space="preserve">
+    <value>3. الإشعارات</value>
+  </data>
+  <data name="PolicyNotificationsDesc" xml:space="preserve">
+    <value>قد يرسل التطبيق إشعارات للمستخدمين مثل:</value>
+  </data>
+  <data name="PolicyNotificationBookingConfirm" xml:space="preserve">
+    <value>• تأكيد الحجز</value>
+  </data>
+  <data name="PolicyNotificationReminder" xml:space="preserve">
+    <value>• تذكير بموعد الحجز</value>
+  </data>
+  <data name="PolicyNotificationUpdates" xml:space="preserve">
+    <value>• تحديثات تتعلق بالخدمة</value>
+  </data>
+  <data name="PolicyNotificationsDisable" xml:space="preserve">
+    <value>يمكن للمستخدم إيقاف الإشعارات في أي وقت من إعدادات الجهاز.</value>
+  </data>
+  <data name="PolicyDataSharing" xml:space="preserve">
+    <value>4. مشاركة المعلومات</value>
+  </data>
+  <data name="PolicyDataSharingNo" xml:space="preserve">
+    <value>نحن لا نقوم ببيع أو تأجير بيانات المستخدمين لأي طرف ثالث.</value>
+  </data>
+  <data name="PolicyDataSharingOnlyWhen" xml:space="preserve">
+    <value>قد تتم مشاركة المعلومات فقط في الحالات التالية:</value>
+  </data>
+  <data name="PolicyDataSharingCompliance" xml:space="preserve">
+    <value>• الامتثال للقوانين أو الطلبات القانونية</value>
+  </data>
+  <data name="PolicyDataSharingProtect" xml:space="preserve">
+    <value>• حماية حقوق التطبيق</value>
+  </data>
+  <data name="PolicyDataSharingInfrastructure" xml:space="preserve">
+    <value>• تشغيل خدمات البنية التحتية التقنية (مثل الخوادم)</value>
+  </data>
+  <data name="PolicyDataProtection" xml:space="preserve">
+    <value>5. حماية البيانات</value>
+  </data>
+  <data name="PolicyDataProtectionDesc" xml:space="preserve">
+    <value>نحن نتخذ إجراءات أمنية مناسبة لحماية البيانات، مثل:</value>
+  </data>
+  <data name="PolicyDataProtectionHTTPS" xml:space="preserve">
+    <value>• استخدام الاتصال المشفر HTTPS</value>
+  </data>
+  <data name="PolicyDataProtectionPassword" xml:space="preserve">
+    <value>• تشفير كلمات المرور</value>
+  </data>
+  <data name="PolicyDataProtectionDatabase" xml:space="preserve">
+    <value>• حماية قواعد البيانات</value>
+  </data>
+  <data name="PolicyDataProtectionDisclaimer" xml:space="preserve">
+    <value>ومع ذلك لا يمكن ضمان أمان البيانات بشكل كامل على الإنترنت.</value>
+  </data>
+  <data name="PolicyDataRetention" xml:space="preserve">
+    <value>6. الاحتفاظ بالبيانات</value>
+  </data>
+  <data name="PolicyDataRetentionDesc" xml:space="preserve">
+    <value>نحتفظ ببيانات المستخدم فقط طالما كان الحساب نشطاً أو عند الحاجة لتقديم الخدمة.
+
+قد يتم الاحتفاظ ببعض البيانات لفترة محدودة للأغراض القانونية أو التقنية.</value>
+  </data>
+  <data name="PolicyAccountDeletion" xml:space="preserve">
+    <value>7. حذف الحساب</value>
+  </data>
+  <data name="PolicyAccountDeletionDesc" xml:space="preserve">
+    <value>يمكن للمستخدم حذف حسابه في أي وقت من داخل التطبيق عبر:</value>
+  </data>
+  <data name="PolicyAccountDeletionPath" xml:space="preserve">
+    <value>الملف الشخصي → حذف الحساب</value>
+  </data>
+  <data name="PolicyAccountDeletionWhenDelete" xml:space="preserve">
+    <value>عند حذف الحساب:</value>
+  </data>
+  <data name="PolicyAccountDeletionInfo" xml:space="preserve">
+    <value>• يتم حذف معلومات الحساب</value>
+  </data>
+  <data name="PolicyAccountDeletionData" xml:space="preserve">
+    <value>• يتم حذف بيانات المستخدم المرتبطة به</value>
+  </data>
+  <data name="PolicyAccountDeletionLegal" xml:space="preserve">
+    <value>• قد يتم الاحتفاظ ببعض البيانات لفترة محدودة لأسباب قانونية</value>
+  </data>
+  <data name="PolicyAccountRecovery" xml:space="preserve">
+    <value>8. استعادة الحساب</value>
+  </data>
+  <data name="PolicyAccountRecoveryDesc" xml:space="preserve">
+    <value>يمكن للمستخدم استعادة الوصول إلى حسابه باستخدام:</value>
+  </data>
+  <data name="PolicyAccountRecoveryOTP" xml:space="preserve">
+    <value>رمز التحقق OTP المرسل إلى البريد الإلكتروني</value>
+  </data>
+  <data name="PolicyUserRights" xml:space="preserve">
+    <value>9. حقوق المستخدم</value>
+  </data>
+  <data name="PolicyUserRightsDesc" xml:space="preserve">
+    <value>يحق للمستخدم:</value>
+  </data>
+  <data name="PolicyUserRightsAccess" xml:space="preserve">
+    <value>• الوصول إلى بياناته</value>
+  </data>
+  <data name="PolicyUserRightsModify" xml:space="preserve">
+    <value>• تعديل بياناته</value>
+  </data>
+  <data name="PolicyUserRightsDelete" xml:space="preserve">
+    <value>• حذف حسابه</value>
+  </data>
+  <data name="PolicyUserRightsRequest" xml:space="preserve">
+    <value>• طلب حذف بياناته</value>
+  </data>
+  <data name="PolicyChildren" xml:space="preserve">
+    <value>10. الأطفال</value>
+  </data>
+  <data name="PolicyChildrenDesc" xml:space="preserve">
+    <value>هذا التطبيق غير موجه للأطفال دون سن 13 عاماً ولا نقوم بجمع بياناتهم عمداً.</value>
+  </data>
+  <data name="PolicyThirdParty" xml:space="preserve">
+    <value>11. خدمات الطرف الثالث</value>
+  </data>
+  <data name="PolicyThirdPartyDesc" xml:space="preserve">
+    <value>قد يستخدم التطبيق خدمات خارجية مثل:</value>
+  </data>
+  <data name="PolicyThirdPartyGoogle" xml:space="preserve">
+    <value>• تسجيل الدخول عبر Google</value>
+  </data>
+  <data name="PolicyThirdPartyNotifications" xml:space="preserve">
+    <value>• خدمات الإشعارات</value>
+  </data>
+  <data name="PolicyThirdPartyDisclaimer" xml:space="preserve">
+    <value>وقد تخضع هذه الخدمات لسياسات الخصوصية الخاصة بها.</value>
+  </data>
+  <data name="PolicyPolicyChanges" xml:space="preserve">
+    <value>12. التعديلات على سياسة الخصوصية</value>
+  </data>
+  <data name="PolicyPolicyChangesDesc" xml:space="preserve">
+    <value>قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم إعلام المستخدمين بأي تغييرات مهمة عبر التطبيق.</value>
+  </data>
+  <data name="PolicyContactUs" xml:space="preserve">
+    <value>13. التواصل معنا</value>
+  </data>
+  <data name="PolicyContactUsDesc" xml:space="preserve">
+    <value>في حال وجود أي استفسار حول سياسة الخصوصية يمكن التواصل معنا عبر:</value>
+  </data>
+  <data name="PolicyContactEmail" xml:space="preserve">
+    <value>البريد الإلكتروني: support@example.com</value>
+  </data>
+  <data name="PolicyLastUpdate" xml:space="preserve">
+    <value>آخر تحديث: ديسمبر 2026</value>
+  </data>
+  <data name="notfoundtime" xml:space="preserve">
+    <value>لا توجد أوقات متاحة</value>
+  </data>
+  <data name="notfoundapement" xml:space="preserve">
+    <value>لا توجد حجوزات</value>
+  </data>
+  <data name="younotapement" xml:space="preserve">
+    <value>لم تقم بحجز أي موعد حتى الآن</value>
+  </data>
+  <data name="TermsIntroduction" xml:space="preserve">
+    <value>باستخدام تطبيق حجز مواعيد الحلاق فإنك توافق على الشروط التالية.</value>
+  </data>
+  <data name="TermsAppUsage" xml:space="preserve">
+    <value>1. استخدام التطبيق</value>
+  </data>
+  <data name="TermsAppUsageDesc" xml:space="preserve">
+    <value>التطبيق مخصص لحجز مواعيد خدمات الحلاقة.</value>
+  </data>
+  <data name="TermsAppUsageAgreement" xml:space="preserve">
+    <value>يوافق المستخدم على:</value>
+  </data>
+  <data name="TermsProvideCorrectInfo" xml:space="preserve">
+    <value>• تقديم معلومات صحيحة عند التسجيل</value>
+  </data>
+  <data name="TermsUseLegalWay" xml:space="preserve">
+    <value>• استخدام التطبيق بطريقة قانونية</value>
+  </data>
+  <data name="TermsNoHacking" xml:space="preserve">
+    <value>• عدم محاولة اختراق أو تعطيل النظام</value>
+  </data>
+  <data name="TermsAccounts" xml:space="preserve">
+    <value>2. الحسابات</value>
+  </data>
+  <data name="TermsAccountResponsibility" xml:space="preserve">
+    <value>المستخدم مسؤول عن:</value>
+  </data>
+  <data name="TermsKeepPassword" xml:space="preserve">
+    <value>• الحفاظ على سرية كلمة المرور</value>
+  </data>
+  <data name="TermsAccountActivities" xml:space="preserve">
+    <value>• جميع الأنشطة التي تتم عبر حسابه</value>
+  </data>
+  <data name="TermsAccountSuspend" xml:space="preserve">
+    <value>يحق لإدارة التطبيق تعليق أو حذف الحساب في حال:</value>
+  </data>
+  <data name="TermsAbusiveUse" xml:space="preserve">
+    <value>• إساءة استخدام التطبيق</value>
+  </data>
+  <data name="TermsViolateTerms" xml:space="preserve">
+    <value>• انتهاك الشروط</value>
+  </data>
+  <data name="TermsBookings" xml:space="preserve">
+    <value>3. الحجوزات</value>
+  </data>
+  <data name="TermsBookingCommitment" xml:space="preserve">
+    <value>عند حجز موعد:</value>
+  </data>
+  <data name="TermsAttendOnTime" xml:space="preserve">
+    <value>• يجب الالتزام بوقت الموعد</value>
+  </data>
+  <data name="TermsLateCancel" xml:space="preserve">
+    <value>• في حال التأخر قد يتم إلغاء الحجز</value>
+  </data>
+  <data name="TermsPayment" xml:space="preserve">
+    <value>4. الدفع</value>
+  </data>
+  <data name="TermsNoOnlinePayment" xml:space="preserve">
+    <value>التطبيق لا يدعم الدفع الإلكتروني.</value>
+  </data>
+  <data name="TermsCashPayment" xml:space="preserve">
+    <value>جميع المدفوعات تتم نقداً مباشرة في موقع مزود الخدمة (الحلاق).</value>
+  </data>
+  <data name="TermsCancellation" xml:space="preserve">
+    <value>5. إلغاء الحجز</value>
+  </data>
+  <data name="TermsCancelBooking" xml:space="preserve">
+    <value>يمكن للمستخدم إلغاء الحجز قبل موعده عبر التطبيق.</value>
+  </data>
+  <data name="TermsServiceResponsibility" xml:space="preserve">
+    <value>6. مسؤولية الخدمة</value>
+  </data>
+  <data name="TermsPlatformOnly" xml:space="preserve">
+    <value>التطبيق يعمل كمنصة لحجز المواعيد فقط.</value>
+  </data>
+  <data name="TermsNotResponsible" xml:space="preserve">
+    <value>ولا يتحمل مسؤولية:</value>
+  </data>
+  <data name="TermsQualityOfService" xml:space="preserve">
+    <value>• جودة الخدمة المقدمة من مزود الخدمة</value>
+  </data>
+  <data name="TermsUserDispute" xml:space="preserve">
+    <value>• أي نزاع بين المستخدم ومزود الخدمة</value>
+  </data>
+  <data name="TermsAvailability" xml:space="preserve">
+    <value>7. توفر التطبيق</value>
+  </data>
+  <data name="TermsAvailabilityEffort" xml:space="preserve">
+    <value>نسعى لتوفير التطبيق بشكل دائم، ولكن لا نضمن:</value>
+  </data>
+  <data name="TermsNoTechnicalIssues" xml:space="preserve">
+    <value>• عدم حدوث أعطال تقنية</value>
+  </data>
+  <data name="TermsNoFullGuarantee" xml:space="preserve">
+    <value>• توفر الخدمة بنسبة 100%</value>
+  </data>
+  <data name="TermsAccountTermination" xml:space="preserve">
+    <value>8. إنهاء الحساب</value>
+  </data>
+  <data name="TermsUserCanDelete" xml:space="preserve">
+    <value>يمكن للمستخدم حذف حسابه في أي وقت.</value>
+  </data>
+  <data name="TermsAdminCanTerminate" xml:space="preserve">
+    <value>كما يحق لإدارة التطبيق إنهاء الحساب في حال مخالفة الشروط.</value>
+  </data>
+  <data name="TermsModifications" xml:space="preserve">
+    <value>9. التعديلات</value>
+  </data>
+  <data name="TermsCanModify" xml:space="preserve">
+    <value>يحق لإدارة التطبيق تعديل هذه الشروط في أي وقت.</value>
+  </data>
+  <data name="TermsLastUpdateTerms" xml:space="preserve">
+    <value>آخر تحديث: مارس 2026</value>
+  </data>
+  <data name="CancelBooking" xml:space="preserve">
+    <value>إلغاء الحجز</value>
+  </data>
+  <data name="Pleaseenterthepasswordinbothfields" xml:space="preserve">
+    <value>يرجى إدخال كلمة المرور في كلا الحقلين</value>
+  </data>
+  <data name="Passwordsdonotmatch" xml:space="preserve">
+    <value>كلمة المرور غير متطابقة</value>
+  </data>
+  <data name="Passwordupdatedsuccessfully" xml:space="preserve">
+    <value>تم تحديث كلمة المرور بنجاح</value>
+  </data>
+  <data name="Failedtoupdatethepassword" xml:space="preserve">
+    <value>فشل في تحديث كلمة المرور</value>
+  </data>
+  <data name="Errorbuildingtheservicelist" xml:space="preserve">
+    <value>خطأ في بناء قائمة الخدمات</value>
+  </data>
+  <data name="Pleaseselectatleastoneservice" xml:space="preserve">
+    <value>يرجى اختيار خدمة واحدة على الأقل</value>
+  </data>
+  <data name="Pleaseselectaserviceprovider" xml:space="preserve">
+    <value>يرجى اختيار مزود الخدمة</value>
+  </data>
+  <data name="Pleaseselectadate" xml:space="preserve">
+    <value>يرجى اختيار تاريخ</value>
+  </data>
+  <data name="Pleaseselectatime" xml:space="preserve">
+    <value>يرجى اختيار وقت</value>
+  </data>
+  <data name="Bookingsuccessful" xml:space="preserve">
+    <value>تم الحجز بنجاح</value>
+  </data>
+  <data name="Bookingfailed" xml:space="preserve">
+    <value>Booking failed</value>
+  </data>
+  <data name="Connectionerror" xml:space="preserve">
+    <value>خطأ في الاتصال</value>
+  </data>
+  <data name="Pleaseenterthefirstnameorselectanimage" xml:space="preserve">
+    <value>يرجى إدخال الاسم الأول أو اختيار صورة</value>
+  </data>
+  <data name="Anunexpectederroroccurred" xml:space="preserve">
+    <value>حدث خطأ غير متوقع</value>
+  </data>
+  <data name="Pleaseenterthecurrentpassword" xml:space="preserve">
+    <value>يرجى إدخال كلمة المرور الحالية</value>
+  </data>
+  <data name="Pleaseenterthenewpasswordinbothfields" xml:space="preserve">
+    <value>يرجى إدخال كلمة المرور الجديدة في كلا الحقلين</value>
+  </data>
+  <data name="Thenewpasswordsdonotmatch" xml:space="preserve">
+    <value>كلمات المرور الجديدة غير متطابقة</value>
+  </data>
+  <data name="Thenewpasswordmustbeatleast8characterslong" xml:space="preserve">
+    <value>كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل</value>
+  </data>
+  <data name="Thenewpasswordmustbedifferentfromthecurrentone" xml:space="preserve">
+    <value>كلمة المرور الجديدة يجب أن تكون مختلفة عن الحالية</value>
+  </data>
+  <data name="Invaliddata" xml:space="preserve">
+    <value>خطأ في البيانات</value>
+  </data>
+  <data name="DataverificationfailedPleasecheckthevalidityofthepasswords" xml:space="preserve">
+    <value>فشل التحقق من البيانات. تحقق من صحة كلمات المرور</value>
+  </data>
+  <data name="FailedtochangethepasswordPleasechecktheentereddata" xml:space="preserve">
+    <value>فشل تغيير كلمة المرور. تحقق من صحة البيانات المدخلة</value>
+  </data>
+  <data name="Thecurrentpasswordisincorrect" xml:space="preserve">
+    <value>كلمة المرور الحالية غير صحيحة</value>
+  </data>
+  <data name="InvalidrequestPleasechecktheentereddata" xml:space="preserve">
+    <value>طلب غير صحيح. تحقق من البيانات المدخلة</value>
+  </data>
+  <data name="Failedtochangethepassword" xml:space="preserve">
+    <value>فشل تغيير كلمة المرور</value>
+  </data>
+  <data name="Errorreadingthetime" xml:space="preserve">
+    <value>خطأ في قراءة الوقت</value>
+  </data>
+  <data name="Pleaseselectaservice" xml:space="preserve">
+    <value>يرجى اختيار خدمة</value>
+  </data>
+  <data name="Noavailabletimes" xml:space="preserve">
+    <value>لا توجد أوقات متاحة</value>
+  </data>
+  <data name="Fetchedsuccessfully" xml:space="preserve">
+    <value>تم جلب</value>
+  </data>
+  <data name="Availabletime" xml:space="preserve">
+    <value>وقت متاح</value>
+  </data>
+  <data name="Bookingcanceledsuccessfully" xml:space="preserve">
+    <value>تم إلغاء الحجز بنجاح</value>
+  </data>
+  <data name="Failedtocancelthebooking" xml:space="preserve">
+    <value>فشل في إلغاء الحجز</value>
+  </data>
+  <data name="Noupcomingappointments" xml:space="preserve">
+    <value>لا توجد مواعيد قادمة</value>
+  </data>
+  <data name="Errorreadingthebookingappointment" xml:space="preserve">
+    <value>خطأ في قراءة موعد الحجز</value>
+  </data>
+  <data name="Theremindertimemustbebeforethebookingappointment" xml:space="preserve">
+    <value>وقت التذكير يجب أن يكون قبل موعد الحجز</value>
+  </data>
+  <data name="Remindersentsuccessfully" xml:space="preserve">
+    <value>تم إرسال التذكير بنجاح</value>
+  </data>
+  <data name="Failedtosend" xml:space="preserve">
+    <value>فشل الإرسال</value>
+  </data>
+  <data name="Emailisrequired" xml:space="preserve">
+    <value>البريد الإلكتروني مطلوب</value>
+  </data>
+  <data name="Thisfieldisrequired" xml:space="preserve">
+    <value>الحقل مطلوب</value>
+  </data>
+  <data name="Passwordsmatch" xml:space="preserve">
+    <value>كلمات المرور متطابقة</value>
+  </data>
+  <data name="timetosphelstel" xml:space="preserve">
+    <value>وقت لمظهرك المثالي</value>
+  </data>
+  <data name="yourstylestatuphere" xml:space="preserve">
+    <value>إطلالتك تبدأ من هنا</value>
+  </data>
+  <data name="nicetommetyou" xml:space="preserve">
+    <value>جميل ان نراك هنا!</value>
+  </data>
+  <data name="thisstyle" xml:space="preserve">
+    <value>إطلالتك</value>
+  </data>
+  <data name="startuphere" xml:space="preserve">
+    <value>تبدأ من هنا</value>
+  </data>
+  <data name="chosessevvesandbegin" xml:space="preserve">
+    <value>اختر خدمتك
+واحجز بسهولة
+</value>
+  </data>
+  <data name="wellomeonlookup" xml:space="preserve">
+    <value>✨lookup  أهلاً بك في </value>
+  </data>
+  <data name="Callmy" xml:space="preserve">
+    <value>اتصل بنا</value>
+  </data>
+  <data name="Legal" xml:space="preserve">
+    <value>قانوني</value>
+  </data>
+  <data name="other" xml:space="preserve">
+    <value>أخرى</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>عام</value>
+  </data>
+  <data name="serviceremoved" xml:space="preserve">
+    <value>تم إزالة الخدمة</value>
+    <comment>رسالة عند حذف خدمة من القائمة</comment>
+  </data>
+  <data name="serviceremoved1" xml:space="preserve">
+    <value>تم إزالة الخدمة</value>
+    <comment>رسالة عند حذف خدمة من القائمة</comment>
+  </data>
+  <data name="dataself" xml:space="preserve">
+    <value>البيانات الشخصية</value>
+  </data>
+  <data name="dataself1" xml:space="preserve">
+    <value>البيانات الشخصية</value>
+  </data>
+  <data name="imegpesonaly" xml:space="preserve">
+    <value>الصورة الشخصية</value>
+  </data>
+  <data name="scertey" xml:space="preserve">
+    <value>الأمان</value>
+  </data>
+  <data name="password_uppercase_required" xml:space="preserve">
+    <value>على الأقل حرف واحد كبير</value>
+  </data>
+  <data name="TabUpcoming" xml:space="preserve">
+    <value>القادمة</value>
+  </data>
+  <data name="TabPast" xml:space="preserve">
+    <value>السابقة</value>
+  </data>
+  <data name="TabCancelled" xml:space="preserve">
+    <value>الملغاة</value>
+  </data>
+  <data name="DataPblicer" xml:space="preserve">
+    <value>بيانات النشر</value>
+  </data>
+  <data name="image_upload_completed_success" xml:space="preserve">
+    <value>تم تحميل الصورة بنجاح </value>
+  </data>
+  <data name="select_image_from_gallery" xml:space="preserve">
+    <value>اختر صورة من المعرض</value>
+  </data>
+  <data name="operation_cancelled" xml:space="preserve">
+    <value>تم الإلغاء</value>
+  </data>
+  <data name="operation_cancelled1" xml:space="preserve">
+    <value>تم الإلغاء</value>
+  </data>
+  <data name="image_upload_failed" xml:space="preserve">
+    <value>فشل تحميل الصورة</value>
+  </data>
+  <data name="password_min_length" xml:space="preserve">
+    <value>على الأقل 8 أحرف</value>
+  </data>
+  <data name="password_number_required " xml:space="preserve">
+    <value>على الأقل رقم واحد</value>
+  </data>
+  <data name="RemoveMyAccount" xml:space="preserve">
+    <value>حذف حسابي</value>
+  </data>
+  <data name="RemoveMyAccount1" xml:space="preserve">
+    <value>حذف حسابي</value>
+  </data>
+  <data name="AcepetPhoneNumber" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="AcepetPhoneNumber2" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="AcepetPhoneNumber1" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>الرئيسية</value>
+  </data>
+  <data name="ServicesPage" xml:space="preserve">
+    <value>خدماتنا</value>
+  </data>
+  <data name="BookingPage" xml:space="preserve">
+    <value>حجوزاتي</value>
+  </data>
+  <data name="ProfilePage" xml:space="preserve">
+    <value>حسابي</value>
+  </data>
+  <data name="NotFoundPhoneNumber" xml:space="preserve">
+    <value>رقم الهاتف غير موجود</value>
+  </data>
+  <data name="completesendotppone" xml:space="preserve">
+    <value>تم إرسال رمز التحقق</value>
+  </data>
+  <data name="Failedtosendotp" xml:space="preserve">
+    <value>فشل في الإرسال</value>
+  </data>
+  <data name="Pleaseentertheotp" xml:space="preserve">
+    <value>الرجاء إدخال رمز OTP.</value>
+  </data>
+  <data name="OTPverifiedsuccessfully" xml:space="preserve">
+    <value>تم التحقق من رمز OTP بنجاح.</value>
+  </data>
+  <data name="InvalidOTP" xml:space="preserve">
+    <value>رمز OTP غير صالح.</value>
+  </data>
+  <data name="PhoneNumberAlreadyVerified" xml:space="preserve">
+    <value>رقم الهاتف مُؤكَّد بالفعل</value>
+  </data>
+  <data name="FailedToVerifyOtp" xml:space="preserve">
+    <value>فشل التحقق من رمز التحقق</value>
+  </data>
+  <data name="PhoneNumberNotVerified" xml:space="preserve">
+    <value>لم يتم التحقق من رقم الجوال</value>
+  </data>
+  <data name="SMSNotifications" xml:space="preserve">
+    <value>تذكيرات المواعيد عبر الرسائل النصية</value>
+  </data>
+  <data name="EmailNotifications" xml:space="preserve">
+    <value>تذكيرات المواعيد عبر البريد الإلكتروني</value>
+  </data>
+  <data name="SettingLang" xml:space="preserve">
+    <value>إعدادات اللغة</value>
+  </data>
+  <data name="SettingLang1" xml:space="preserve">
+    <value>إعدادات اللغة</value>
+  </data>
+  <data name="SettingNottivcation" xml:space="preserve">
+    <value>إعدادات الإشعارات</value>
+  </data>
+  <data name="DesNotfction" xml:space="preserve">
+    <value>استلام إشعارات العروض والمواعيد</value>
+  </data>
+  <data name="DesSms" xml:space="preserve">
+    <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
+  </data>
+  <data name="DesEmai" xml:space="preserve">
+    <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
+  </data>
+  <data name="ContactUsD" xml:space="preserve">
+    <value>نحن هنا من أجلك</value>
+  </data>
+  <data name="ContactUsDescription" xml:space="preserve">
+    <value>هل لديك سؤال أو تحتاج إلى مساعدة؟ 
+تواصل معنا في أي وقت، ويسعدنا مساعدتك
+</value>
+  </data>
+  <data name="WorkTime" xml:space="preserve">
+    <value>أوقات العمل</value>
+  </data>
+  <data name="FollowUs" xml:space="preserve">
+    <value>تابعنا</value>
+  </data>
+  <data name="ConfirmCancelBooking" xml:space="preserve">
+    <value>إلغاء الموعد؟</value>
+  </data>
+  <data name="ConfirmCancelBookingMessage" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد إلغاء هذا الموعد؟
+لا يمكن التراجع عن هذا الإجراء</value>
+  </data>
+  <data name="Yess" xml:space="preserve">
+    <value>إلغاء الموعد</value>
+  </data>
+  <data name="Noo" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="Noo1" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="close1" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="Titelotpphone" xml:space="preserve">
+    <value>تأكيد رقم الهاتف </value>
+  </data>
+  <data name="desotppnone" xml:space="preserve">
+    <value>سيصلك خلال لحظات رمز تحقق عبر رسالة نصية لتأكيد رقم هاتفك</value>
+  </data>
+  <data name="password_number_required2" xml:space="preserve">
+    <value>على الأقل رقم واحد</value>
+  </data>
+  <data name="YOUSHEDACIPTNUMBERPHONE" xml:space="preserve">
+    <value>لا يمكنك حجز موعد حالياً</value>
+  </data>
+  <data name="YOUSHEDACIPTNUMBERPHONE2" xml:space="preserve">
+    <value>يجب تأكيد رقم هاتفك قبل أن تتمكن من حجز المواعيد</value>
+  </data>
+  <data name="ACPITINGPHONENMBER" xml:space="preserve">
+    <value>تأكيد رقم الهاتف</value>
+  </data>
+  <data name="Notrightnow" xml:space="preserve">
+    <value>ليس الآن</value>
+  </data>
+  <data name="AppointmentReminder" xml:space="preserve">
+    <value>تذكير بالموعد</value>
+  </data>
+  <data name="SelectReminderTime" xml:space="preserve">
+    <value>اختر وقت التذكير قبل الموعد</value>
+  </data>
+  <data name="EnableReminderTimer" xml:space="preserve">
+    <value>تفعيل التذكير بالموعد</value>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>اختيار</value>
+  </data>
+  <data name="Isthisyourcurrentphonenumber" xml:space="preserve">
+    <value>هل هذا هو رقم هاتفك الحالي؟</value>
+  </data>
+  <data name="Wewillsendtheverificationcodetothefollowingphonenumber" xml:space="preserve">
+    <value>سنرسل رمز التحقق إلى رقم الهاتف التالي</value>
+  </data>
+  <data name="Pleasemakesureitiscorrect" xml:space="preserve">
+    <value>يرجى التأكد من أنه صحيح</value>
+  </data>
+  <data name="Yesthenumberiscorrect" xml:space="preserve">
+    <value>نعم، الرقم صحيح</value>
+  </data>
+  <data name="newPhoneNumber" xml:space="preserve">
+    <value>تعديل الرقم</value>
+  </data>
+  <data name="all" xml:space="preserve">
+    <value>الكل </value>
+  </data>
+  <data name="EnterPasswordCerent" xml:space="preserve">
+    <value>أدخل كلمة المرور الحالية</value>
+  </data>
+  <data name="ProfileDetails" xml:space="preserve">
+    <value>بياناتك الشخصية</value>
+  </data>
+  <data name="YourAppointments" xml:space="preserve">
+    <value>مواعيدك</value>
+  </data>
+  <data name="BookingHistory" xml:space="preserve">
+    <value>سجل حجوزاتك</value>
+  </data>
+  <data name="Denger" xml:space="preserve">
+    <value>تحذير!</value>
+  </data>
+  <data name="SubDenger" xml:space="preserve">
+    <value>عند حذف حسابك، سيتم حذف جميع بياناتك نهائيا. لا يمكن التراجع عن هذا الإجراء.</value>
+  </data>
+  <data name="EnterPasswordCeren" xml:space="preserve">
+    <value>أدخل كلمة المرور</value>
+  </data>
+  <data name="iSPASSWORDNOTCORECED" xml:space="preserve">
+    <value>كلمة المرور غير صحيحة</value>
+  </data>
+  <data name="DeleteAccountError" xml:space="preserve">
+    <value>حدث خطأ أثناء حذف الحساب</value>
+  </data>
+  <data name="NoChange" xml:space="preserve">
+    <value>تعديل الرقم</value>
+  </data>
+  <data name="Appointmentbookedsuccessfully" xml:space="preserve">
+    <value>تم حجز موعدك بنجاح 
+ شكراً لثقتك بنا. نتطلع لاستقبالك. 
+</value>
+  </data>
+  <data name="ViewAppointment" xml:space="preserve">
+    <value>عرض الموعد </value>
+  </data>
+  <data name="DonteChangeDetails" xml:space="preserve">
+    <value>هل تريد تجاهل التغييرات؟</value>
+  </data>
+  <data name="DonteChangeDetails1" xml:space="preserve">
+    <value>هل تريد تجاهل التغييرات؟</value>
+  </data>
+  <data name="changeDe" xml:space="preserve">
+    <value>لقد أجريت تغييرات لم يتم حفظها بعد.</value>
+  </data>
+  <data name="changeDe2" xml:space="preserve">
+    <value>احفظ التغييرات للاحتفاظ بها.</value>
+  </data>
+  <data name="yesnochange" xml:space="preserve">
+    <value>مغادرة دون حفظ</value>
+  </data>
+  <data name="nochangeing" xml:space="preserve">
+    <value>البقاء وحفظ التغييرات</value>
+  </data>
+  <data name="yesw" xml:space="preserve">
+    <value>حسناً</value>
+  </data>
+  <data name="aaselected" xml:space="preserve">
+    <value>الخدمات المختارة لموعدك</value>
+  </data>
+  <data name="Chooseprovider(s)whocanperformtheselectedservices" xml:space="preserve">
+    <value>اختر مقدم الخدمة الذي يمكنه تقديم الخدمات المختارة</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>اختر مقدم الخدمة</value>
+  </data>
+</root>

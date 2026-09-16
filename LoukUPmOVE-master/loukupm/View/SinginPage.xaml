@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.SinginPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             xmlns:loc="clr-namespace:loukupm.Langue"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             BackgroundImageSource="baackgroundpage.png">
+    <ScrollView Orientation="Vertical">
+        <StackLayout>
+            <Grid RowDefinitions="20*,80*">
+                <Image WidthRequest="200" HeightRequest="60" Grid.Row="0" Margin="0,10,0,0" Source="slogo.png"/>
+                <Label Text="{loc:Translate Name=CreatAcount2}" Grid.Row="0" FontSize="32" FontFamily="georgia-bold" Margin="110,130,30,0" TextColor="White" />
+            </Grid>
+            <VerticalStackLayout  x:Name="fglogin" >
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=NameUser}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField TextChanged="RegisterNameEntry_TextChanged" x:Name="RegisterNameEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="{loc:Translate Name=NameUser}" />
+                <Label
+                  x:Name="ErorNameInput"
+                  TextColor="Red"
+                  FontSize="12"
+                 Margin="25,10,25,0"
+                 IsVisible="False"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=LastName}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField TextChanged="RegisterLastNameEntry_TextChanged" x:Name="RegisterLastNameEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="person.svg" HeightRequest="50" Title="{loc:Translate Name=LastName}" />
+                <Label
+  x:Name="ErorLastNameInput"
+  TextColor="Red"
+  FontSize="12"
+ Margin="25,10,25,0"
+ IsVisible="False"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=EMail}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField x:Name="RegisterEmailEntry" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png" HeightRequest="50" Title="{loc:Translate Name=EMail}" TextChanged="OnEmailTextChanged" />
+                <Label
+                  x:Name="LiveErrorLabel"
+                  TextColor="Red"
+                  FontSize="12"
+                  Margin="25,10,25,0"
+                  IsVisible="False"/>
+                <Label FontSize="16" Margin="12,3,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=PhoneNumber}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField x:Name="RegisterPhoneEntry"  Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png"  Keyboard="Numeric" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
+                <Label FontSize="16" Margin="12,24,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=Password}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField x:Name="RegisterPasswordEntry" Title="{loc:Translate Name=Password }" TextChanged="RegisterPasswordEntry_TextChanged" CornerRadius="16" InputBackgroundColor="Transparent" IsPassword="True" Margin="25,0,25,0">
+                    
+                    <material:TextField.Attachments>
+                        <material:TextFieldPasswordShowHideAttachment />
+                    </material:TextField.Attachments>
+                </material:TextField>
+                
+                <Label FontSize="16" Margin="12,24,0,0" Padding="10">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=AcspetNewpassword}" TextColor="White"/>
+                            <Span Text=" *" TextColor="Red" FontSize="14"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <material:TextField TextChanged="OnConfirmPasswordTextChanged" x:Name="RegisterConfirmPasswordEntry" Title="{loc:Translate Name=AcspetNewpassword}" CornerRadius="16" InputBackgroundColor="Transparent" IsPassword="True" Margin="25,0,25,0">
+                    <material:TextField.Attachments>
+                        <material:TextFieldPasswordShowHideAttachment />
+                    </material:TextField.Attachments>
+                </material:TextField>
+                <Label
+                  x:Name="PasswordMatchLabel"
+                  TextColor="Red"
+                  FontSize="12"
+                  Margin="25,10,25,0"
+                  IsVisible="False"/>
+
+                <VerticalStackLayout Spacing="10" Margin="24,10,0,0">
+
+                    <!-- شرط: طول كلمة المرور -->
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Frame x:Name="LengthFrame"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               BackgroundColor="Red"
+               Padding="0"
+               HasShadow="False"
+               VerticalOptions="Center">
+
+                            <Label x:Name="LengthIcon"
+                   Text="○"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
+                        </Frame>
+
+                        <Label Text="{loc:Translate Name=password_min_length}"
+               TextColor="White"
+               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <!-- شرط: حرف كبير -->
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Frame x:Name="UpperFrame"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               BackgroundColor="Red"
+               Padding="0"
+               HasShadow="False"
+               VerticalOptions="Center">
+
+                            <Label x:Name="UpperIcon"
+                   Text="○"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
+                        </Frame>
+
+                        <Label Text="{loc:Translate Name=password_uppercase_required}"
+               TextColor="White"
+               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <!-- شرط: رقم -->
+                    <HorizontalStackLayout Spacing="10">
+
+                        <Frame x:Name="NumberFrame"
+               WidthRequest="24"
+               HeightRequest="24"
+               CornerRadius="12"
+               BackgroundColor="Red"
+               Padding="0"
+               HasShadow="False"
+               VerticalOptions="Center">
+
+                            <Label x:Name="NumberIcon"
+                   Text="○"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
+                        </Frame>
+
+                        <Label Text="{loc:Translate Name=password_number_required2}"
+               TextColor="White"
+               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+                <Button
+        x:Name="RegisterButton"
+        TextColor="#1F1B04"
+                    Margin="25"
+        FontSize="22"
+        FontFamily="georgia-bold"
+        Clicked="OnRegisterClicked"
+        BorderWidth="1"
+        Text="{loc:Translate Name=CreatAcount2}"
+        CornerRadius="16"
+        HeightRequest="60"
+       
+        />
+
+               
+                <ActivityIndicator 
+        x:Name="LoadingIndicator"
+                    Margin="20"
+        IsRunning="False"
+        IsVisible="False"
+        Color="White"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        Scale="1.4" />
+                <HorizontalStackLayout
+    Margin="60,20,0,0"
+    Spacing="4"
+    VerticalOptions="Center">
+
+                    <Label Text="{loc:Translate Name=YouHaveAcount}"
+           FontSize="18"
+           TextColor="White"
+           VerticalTextAlignment="Center"/>
+
+                    <Label Text="{loc:Translate Name=Login}"
+           FontSize="18"
+           TextColor="#A8883C"
+           TextDecorations="Underline"
+           VerticalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+            <Image Margin="25,0" Source="or.svg" HeightRequest="24"/>
+            <Button
+                     BackgroundColor="#202020"
+                     FontFamily="Oswald"
+       TextColor="White"
+       BorderColor="#D3D3D3"
+       ImageSource="google.png"
+       Clicked="GoogleButton_Clicked" 
+       BorderWidth="1"
+        HeightRequest="60"
+                Margin="30"
+       x:Name="GoogleButton"
+       CornerRadius="18"
+       Text="{ loc:Translate Name=GoogleLogin}"
+       VerticalOptions="Fill"
+       HorizontalOptions="Fill" />
+
+            <ActivityIndicator x:Name="GoogleLoadingIndicator"
+                       IsVisible="False"
+                       IsRunning="False"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       Color="White"
+                       Scale="1.0"/>
+       
+          
+            <Frame Margin="15" BackgroundColor="#252525" ZIndex="1" x:Name="fg"  IsVisible="False" >
+                <WebView x:Name="webView" 
+            BackgroundColor="#AA000000"
+            IsVisible="False"
+            HeightRequest="600"
+            WidthRequest="300"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"/>
+            </Frame>
+            <HorizontalStackLayout
+    VerticalOptions="Center"
+    HorizontalOptions="Center"
+    Margin="20,0,20,20"
+    Spacing="5">
+
+                <Label VerticalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=TermsandConditions}"
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
+                                <Span.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" />
+                                </Span.GestureRecognizers>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label Text="{loc:Translate Name=AND}"
+           TextColor="White"
+           FontSize="19"
+           VerticalTextAlignment="Center"/>
+
+                <Label VerticalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{loc:Translate Name=PolicyandPrivacy}"
+                      TextDecorations="Underline"
+                      TextColor="#A8883C">
+                                <Span.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2" />
+                                </Span.GestureRecognizers>
+                            </Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <material:CheckBox
+        x:Name="DD"
+        CheckChanged="CheckBox_CheckChanged"
+        BorderColor="#A8883C"
+        Color="#A8883C"
+        VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+            <BoxView BackgroundColor="Transparent" HeightRequest="100"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
