@@ -36,6 +36,12 @@ namespace loukupm.Model
         public Dictionary<int, string> ServiceSlotMap { get; set; } = new();
 
         /// <summary>
+        /// Mapping of service ID to slot end time (HH:mm).
+        /// Used so a later service can start only after this one finishes.
+        /// </summary>
+        public Dictionary<int, string> ServiceSlotEndMap { get; set; } = new();
+
+        /// <summary>
         /// Mapping of service ID to the date chosen for that service.
         /// Key: Service.Id, Value: DateTime (date portion)
         /// </summary>
@@ -63,6 +69,7 @@ namespace loukupm.Model
         {
             ServiceProviderMap ??= new Dictionary<int, int>();
             ServiceSlotMap ??= new Dictionary<int, string>();
+            ServiceSlotEndMap ??= new Dictionary<int, string>();
             ServiceDateMap ??= new Dictionary<int, DateTime>();
             SelectedServices ??= new List<Servies>();
         }
@@ -72,6 +79,7 @@ namespace loukupm.Model
             EnsureMaps();
             ServiceProviderMap.Clear();
             ServiceSlotMap.Clear();
+            ServiceSlotEndMap.Clear();
             ServiceDateMap.Clear();
             ProviderId = null;
             ProviderName = null;
@@ -85,12 +93,47 @@ namespace loukupm.Model
             EnsureMaps();
             ServiceProviderMap.Remove(serviceId);
             ServiceSlotMap.Remove(serviceId);
+            ServiceSlotEndMap.Remove(serviceId);
             ServiceDateMap.Remove(serviceId);
         }
 
         public static string FormatApiDate(DateTime date)
         {
-            return date.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            return ToCalendarDate(date).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Calendar day only. Kind and time are ignored so the same day never looks like two dates.
+        /// </summary>
+        public static DateTime ToCalendarDate(DateTime date)
+        {
+            return DateTime.SpecifyKind(date.Date, DateTimeKind.Unspecified);
+        }
+
+        public void SetServiceSlot(int serviceId, string startTime, string endTime)
+        {
+            EnsureMaps();
+            ServiceSlotMap[serviceId] = startTime;
+
+            if (string.IsNullOrWhiteSpace(endTime))
+                ServiceSlotEndMap.Remove(serviceId);
+            else
+                ServiceSlotEndMap[serviceId] = endTime;
+        }
+
+        public void ClearServiceSlot(int serviceId)
+        {
+            EnsureMaps();
+            ServiceSlotMap.Remove(serviceId);
+            ServiceSlotEndMap.Remove(serviceId);
+        }
+
+        public void SetServiceDate(int serviceId, DateTime date)
+        {
+            EnsureMaps();
+            var day = ToCalendarDate(date);
+            ServiceDateMap[serviceId] = day;
+            Date = day;
         }
 
         /// <summary>
@@ -165,19 +208,19 @@ namespace loukupm.Model
             EnsureMaps();
             if (ServiceDateMap.TryGetValue(serviceId, out var mapped) && mapped != default)
             {
-                date = mapped.Date;
+                date = ToCalendarDate(mapped);
                 return true;
             }
 
             if (allowGlobalFallback && globalDate.HasValue && globalDate.Value != default)
             {
-                date = globalDate.Value.Date;
+                date = ToCalendarDate(globalDate.Value);
                 return true;
             }
 
             if (allowGlobalFallback && Date != default)
             {
-                date = Date.Date;
+                date = ToCalendarDate(Date);
                 return true;
             }
 
@@ -200,7 +243,7 @@ namespace loukupm.Model
             foreach (var id in ids)
             {
                 if (ServiceDateMap.TryGetValue(id, out var mapped) && mapped != default)
-                    perServiceDates.Add(mapped.Date);
+                    perServiceDates.Add(ToCalendarDate(mapped));
             }
 
             if (perServiceDates.Count > 0)
@@ -221,13 +264,13 @@ namespace loukupm.Model
 
             if (allowGlobalFallback && globalDate.HasValue && globalDate.Value != default)
             {
-                date = globalDate.Value.Date;
+                date = ToCalendarDate(globalDate.Value);
                 return true;
             }
 
             if (allowGlobalFallback && Date != default)
             {
-                date = Date.Date;
+                date = ToCalendarDate(Date);
                 return true;
             }
 

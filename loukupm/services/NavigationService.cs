@@ -406,6 +406,25 @@ public static class NavigationService
                 return false;
             }
 
+            if (currentPageName == ROUTE_LOGIN || currentPageName == nameof(LoginPage))
+            {
+                Console.WriteLine("[Navigation] At LoginPage - allowing application exit");
+                return false;
+            }
+
+            if (currentPageName == ROUTE_SIGNIN || currentPageName == nameof(SinginPage)
+                || currentPageName == ROUTE_OTP || currentPageName == ROUTE_REST_PASSWORD)
+            {
+                await shell.GoToAsync($"//{ROUTE_LOGIN}", false);
+                return true;
+            }
+
+            if (currentPageName == ROUTE_OTP_PHONE_NUMBER || currentPageName == nameof(OTPPoneNumper))
+            {
+                await LeavePhoneOtpPageAsync();
+                return true;
+            }
+
             // HOME PAGE: Allow exit
             if (currentPageName == ROUTE_HOME || currentPageName == nameof(HomePage))
             {
@@ -531,6 +550,62 @@ public static class NavigationService
         {
             Console.WriteLine($"[Navigation] Error navigating to TabBar {route}: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Opens the phone OTP page on the shell stack.
+    /// Falls back to a direct push when route navigation does not show the page.
+    /// </summary>
+    public static async Task OpenPhoneOtpPageAsync()
+    {
+        Console.WriteLine("[Navigation] Opening OTPPoneNumper");
+
+        async Task OpenAsync()
+        {
+            var shell = Shell.Current;
+            if (shell == null)
+                throw new InvalidOperationException("Shell is not available");
+
+            if (shell.CurrentPage is OTPPoneNumper)
+                return;
+
+            await shell.GoToAsync(ROUTE_OTP_PHONE_NUMBER, animate: true);
+        }
+
+        try
+        {
+            if (MainThread.IsMainThread)
+                await OpenAsync();
+            else
+                await MainThread.InvokeOnMainThreadAsync(OpenAsync);
+
+            Console.WriteLine("[Navigation] OTPPoneNumper opened");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] Opening OTPPoneNumper failed: {ex}");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Leaves the phone OTP page without Shell relative routing.
+    /// GoToAsync("..") from this page crashes the Android shell and closes the app.
+    /// </summary>
+    public static async Task LeavePhoneOtpPageAsync()
+    {
+        Console.WriteLine("[Navigation] Returning to ProfilePage after phone OTP");
+
+        if (Shell.Current is not AppShell shell)
+        {
+            await NavigateToTabBarPage(ROUTE_PROFILE);
+            return;
+        }
+
+        if (MainThread.IsMainThread)
+            await shell.ShowProfileAsync();
+        else
+            await MainThread.InvokeOnMainThreadAsync(shell.ShowProfileAsync);
     }
 
     /// <summary>
@@ -675,224 +750,59 @@ public static class NavigationService
 
     public static async Task NavigateToLoginAndClear()
     {
+        Console.WriteLine("[Navigation] NavigateToLoginAndClear START");
+        SetLoginContext();
+
         try
         {
-            Console.WriteLine("[Navigation] NavigateToLoginAndClear START");
-
-            // First, clear the logout flag to prevent any blocking
-            // Actually, we want to keep it set until AFTER the navigation is complete
-
-            await MainThread.InvokeOnMainThreadAsync(() =>
+            if (Shell.Current is AppShell appShell)
             {
-                var app = Application.Current;
-
-                if (app == null)
-                {
-                    Console.WriteLine("[Navigation] Application.Current is null");
-                    return;
-                }
-
-                Console.WriteLine("[Navigation] About to replace MainPage");
-                var oldPage = app.MainPage;
-                Console.WriteLine($"[Navigation] Old MainPage type: {oldPage?.GetType().Name}");
-
-                // Get saved language BEFORE creating new page
-                var lang = Preferences.Get("AppLanguage", "de-DE");
-
-                var direction = lang.StartsWith("ar", StringComparison.OrdinalIgnoreCase)
-                    ? FlowDirection.RightToLeft
-                    : FlowDirection.LeftToRight;
-
-                // Create a completely new Login root
-                var loginPage = new LoginPage
-                {
-                    FlowDirection = direction
-                };
-
-                var navigationPage = new NavigationPage(loginPage)
-                {
-                    FlowDirection = direction
-                };
-
-                // CRITICAL: Replace the application's root page
-                // This effectively removes the Shell from the visual tree
-                if (app.Windows.Count > 0)
-                {
-                    Console.WriteLine("[Navigation] Replacing via Windows[0].Page (primary method)");
-                    app.Windows[0].Page = navigationPage;
-                }
-                else
-                {
-                    Console.WriteLine("[Navigation] Replacing via MainPage (fallback method)");
-                    app.MainPage = navigationPage;
-                }
-
-                Console.WriteLine($"[Navigation] MainPage successfully replaced with {navigationPage.GetType().Name}");
-                Console.WriteLine($"[Navigation] LoginPage instance: {loginPage.GetType().Name}");
-
-                // Force garbage collection of old Shell to break references
-                // This helps ensure Shell.Current will be cleared
-                oldPage = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            });
-
-            // Longer delay to allow MAUI to fully complete the page replacement
-            // and for the OS to process the UI changes
-            Console.WriteLine("[Navigation] Waiting for MAUI UI refresh...");
-            await Task.Delay(500);
-
-            // CRITICAL: Set login context to prevent any Shell navigation attempts
-            SetLoginContext();
-
-            // Verify that navigation was successful
-            bool isLoginPageActive = VerifyLoginPageActive();
-            if (!isLoginPageActive)
-            {
-                Console.WriteLine("[Navigation] ?? WARNING: Login page verification failed after navigation");
-                // Try again with more aggressive replacement
-                Console.WriteLine("[Navigation] Attempting secondary replacement...");
-                await SecondaryLoginPageEnsure();
-            }
-            else
-            {
-                Console.WriteLine("[Navigation] ? Login page verification successful");
+                await appShell.GoToLoginAsync();
+                Console.WriteLine("[Navigation] NavigateToLoginAndClear COMPLETE via Shell");
+                return;
             }
 
-            Console.WriteLine("[Navigation] NavigateToLoginAndClear COMPLETE");
+            if (Shell.Current != null)
+            {
+                Shell.Current.FlyoutIsPresented = false;
+                Shell.Current.FlyoutBehavior = FlyoutBehavior.Disabled;
+                await Shell.Current.GoToAsync($"//{ROUTE_LOGIN}", false);
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[Navigation] NavigateToLoginAndClear ERROR: {ex}");
-            Console.WriteLine($"[Navigation] Stack trace: {ex.StackTrace}");
-            // Even on error, set login context to be safe
-            SetLoginContext();
         }
     }
-
-    /// <summary>
-    /// Secondary fallback method to ensure LoginPage is the active root if primary replacement failed.
-    /// </summary>
-    private static async Task SecondaryLoginPageEnsure()
-    {
-        try
-        {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                var app = Application.Current;
-                if (app == null) return;
-
-                // Last resort: Create brand new LoginPage and force it
-                var lang = Preferences.Get("AppLanguage", "de-DE");
-                var direction = lang.StartsWith("ar", StringComparison.OrdinalIgnoreCase)
-                    ? FlowDirection.RightToLeft
-                    : FlowDirection.LeftToRight;
-
-                var loginPage = new LoginPage { FlowDirection = direction };
-                var navPage = new NavigationPage(loginPage) { FlowDirection = direction };
-
-                if (app.Windows.Count > 0)
-                {
-                    app.Windows[0].Page = navPage;
-                }
-                else
-                {
-                    app.MainPage = navPage;
-                }
-
-                // CRITICAL: Set login context to prevent any Shell navigation attempts
-                SetLoginContext();
-
-                Console.WriteLine("[Navigation] Secondary LoginPage replacement completed");
-            });
-
-            await Task.Delay(300);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] SecondaryLoginPageEnsure ERROR: {ex.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Verifies that we're currently on the LoginPage in a NavigationPage context.
-    /// Used for validation after logout navigation.
-    /// </summary>
-    private static bool VerifyLoginPageActive()
-    {
-        try
-        {
-            var app = Application.Current;
-            if (app == null)
-            {
-                Console.WriteLine("[Navigation] VerifyLoginPageActive: Application.Current is null");
-                return false;
-            }
-
-            var mainPage = app.MainPage;
-            if (mainPage == null)
-            {
-                Console.WriteLine("[Navigation] VerifyLoginPageActive: MainPage is null");
-                return false;
-            }
-
-            // Check if we're in NavigationPage context
-            if (mainPage is NavigationPage navPage)
-            {
-                var currentPage = navPage.Navigation.NavigationStack.LastOrDefault();
-                if (currentPage is LoginPage)
-                {
-                    Console.WriteLine("[Navigation] ? VerifyLoginPageActive: SUCCESS - LoginPage is active");
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine($"[Navigation] ? VerifyLoginPageActive: FAILED - Current page is {currentPage?.GetType().Name}");
-                    return false;
-                }
-            }
-
-            Console.WriteLine($"[Navigation] ? VerifyLoginPageActive: FAILED - MainPage is not NavigationPage, it's {mainPage.GetType().Name}");
-            return false;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Navigation] VerifyLoginPageActive ERROR: {ex.Message}");
-            return false;
-        }
-    }
-
-
 
     /// <summary>
     /// Hard reset to home app (used after login).
-    /// Destroys NavigationPage and initializes AppShell.
+    /// Reuses AppShell when it is already the window root.
     /// </summary>
     public static async Task NavigateToHomeAndClear()
     {
         try
         {
-            if (_logoutInProgress)
-            {
-                Console.WriteLine("[Navigation] NavigateToHomeAndClear ignored because logout is in progress");
-                return;
-            }
+            ResetLogoutFlag();
+            SetAppContext();
 
-            // CRITICAL: If we're in login context, we should NOT proceed
-            if (_isLoginContext)
-            {
-                Console.WriteLine("[Navigation] NavigateToHomeAndClear ignored - we're in LOGIN context, not APP context");
-                Console.WriteLine("[Navigation] This is likely a navigation attempt from stale Shell reference");
-                return;
-            }
-
-            Console.WriteLine("[Navigation] Hard reset - creating AppShell");
+            Console.WriteLine("[Navigation] NavigateToHomeAndClear START");
 
             var app = Application.Current;
 
             if (app == null)
             {
                 Console.WriteLine("[Navigation] Application.Current is null");
+                return;
+            }
+
+            if (Shell.Current is AppShell existingShell)
+            {
+                await existingShell.GoToHomeAsync();
+                var vm = AppViewModel.Instance;
+                if (vm.HasNoHomeData && vm.RefreshHomeCommand?.CanExecute(null) == true)
+                    await vm.RefreshHomeCommand.ExecuteAsync(null);
+                Console.WriteLine("[Navigation] Switched existing AppShell to HomePage");
                 return;
             }
 
@@ -918,13 +828,13 @@ public static class NavigationService
 
                     Console.WriteLine("[Navigation] Creating new AppShell instance");
 
-                    shellPage = new AppShell();
+                    shellPage = new AppShell
+                    {
+                        FlowDirection = App.GetSavedFlowDirection()
+                    };
 
-                    var oldMain = app.MainPage;
-
-                    app.MainPage = shellPage;
-
-                    // Mark that we're now in app context
+                    var oldMain = app.Windows.FirstOrDefault()?.Page ?? app.MainPage;
+                    App.SetRootPage(shellPage);
                     SetAppContext();
 
                     Console.WriteLine(
@@ -941,20 +851,11 @@ public static class NavigationService
                 }
             });
 
-
-
             if (shellPage == null)
             {
                 Console.WriteLine("[Navigation] Shell creation failed");
                 return;
             }
-
-
-
-            // Give MAUI time to attach native platform view
-            await Task.Delay(200);
-
-
 
             if (_logoutInProgress)
             {
@@ -962,30 +863,8 @@ public static class NavigationService
                 return;
             }
 
-
-
-            try
-            {
-                shellPage.FlyoutIsPresented = false;
-
-
-                await shellPage.GoToAsync(
-                    $"//{ROUTE_HOME}",
-                    animate: false
-                );
-
-
-                Console.WriteLine(
-                    "[Navigation] Successfully navigated to HomePage"
-                );
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(
-                    $"[Navigation] Failed navigating inside Shell: {ex}"
-                );
-            }
+            await shellPage.GoToHomeAsync();
+            Console.WriteLine("[Navigation] Successfully navigated to HomePage");
 
         }
         catch (Exception ex)

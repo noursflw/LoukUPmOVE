@@ -19,6 +19,13 @@ public partial class ProfilePage : ContentPage
         Shell.SetNavBarIsVisible(this, false);
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is AppViewModel viewModel)
+            viewModel.NotifyPhoneVerificationStatus();
+    }
+
     private async void Button_Clicked(object sender, EventArgs e)
     {
         NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
@@ -107,7 +114,30 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked_9(object sender, EventArgs e)
     {
-        var popup = new Itsphonenumber();
-        await this.ShowPopupAsync(popup);
+        try
+        {
+            var popup = new Itsphonenumber();
+            var result = await this.ShowPopupAsync(popup);
+
+            // Shell navigation while the popup is still dismissing crashes the app.
+            await Task.Delay(300);
+
+            if (result is string action && action == "edit")
+            {
+                await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
+                return;
+            }
+
+            if (result is bool confirmed && confirmed)
+            {
+                var sent = await AppViewModel.Instance.RequestPhoneOtpAsync();
+                if (sent)
+                    await NavigationService.OpenPhoneOtpPageAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ProfilePage] Phone confirmation failed: {ex}");
+        }
     }
 }

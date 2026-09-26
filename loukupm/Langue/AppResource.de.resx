@@ -357,6 +357,9 @@
   <data name="PhoneNumber" xml:space="preserve">
     <value>Telefonnummer</value>
   </data>
+  <data name="PhonePrefixRequired" xml:space="preserve">
+    <value>Die Vorwahl +49 ist bereits eingetragen. Bitte ergänzen Sie nur die restlichen Ziffern, zum Beispiel:</value>
+  </data>
   <data name="pleaseselectoneservice" xml:space="preserve">
     <value>Bitte wählen Sie mindestens einen Dienst aus, bevor Sie fortfahren.</value>
   </data>
@@ -838,6 +841,18 @@ Einige Daten können für einen begrenzten Zeitraum zu rechtlichen oder technisc
   <data name="Pleaseselectadate" xml:space="preserve">
     <value>Bitte wählen Sie ein Datum aus</value>
   </data>
+  <data name="ServicesMustShareDate" xml:space="preserve">
+    <value>Alle Dienstleistungen müssen am selben Datum liegen.</value>
+  </data>
+  <data name="PleaseSelectProviderFirst" xml:space="preserve">
+    <value>Bitte wählen Sie zuerst einen Dienstleister aus</value>
+  </data>
+  <data name="ErrorLoadingSlots" xml:space="preserve">
+    <value>Zeiten konnten nicht geladen werden</value>
+  </data>
+  <data name="NoProviderAvailable" xml:space="preserve">
+    <value>Kein Dienstleister verfügbar</value>
+  </data>
   <data name="Pleaseselectatime" xml:space="preserve">
     <value>Bitte wählen Sie eine Uhrzeit aus</value>
   </data>
@@ -1099,6 +1114,12 @@ Beginnt hier
   <data name="DesEmai" xml:space="preserve">
     <value>Vor Ihrem Termin eine Erinnerung per E-Mail erhalten</value>
   </data>
+  <data name="PushNotifications" xml:space="preserve">
+    <value>Termin-Erinnerungen per Push</value>
+  </data>
+  <data name="DesPush" xml:space="preserve">
+    <value>Vor Ihrem Termin eine Erinnerung in der App erhalten</value>
+  </data>
   <data name="ContactUsD" xml:space="preserve">
     <value>Wir sind für dich da</value>
   </data>
@@ -1160,6 +1181,9 @@ Diese Aktion kann nicht rückgängig gemacht werden.</value>
   </data>
   <data name="SelectReminderTime" xml:space="preserve">
     <value>Select reminder time before appointment</value>
+  </data>
+  <data name="SelectProvider" xml:space="preserve">
+    <value>Dienstleister auswählen</value>
   </data>
   <data name="EnableReminderTimer" xml:space="preserve">
     <value>Enable Reminder Time</value>
@@ -1240,5 +1264,164 @@ Du hast Änderungen vorgenommen, die noch nicht gespeichert wurden.</value>
   </data>
   <data name="yesw" xml:space="preserve">
     <value>Zurück </value>
+  </data>
+  <data name="serviceproviders" xml:space="preserve">
+    <value>Dienstleister</value>
+  </data>
+  <data name="serviceproviderdescription" xml:space="preserve">
+    <value>Wähle einen Dienstleister, der die ausgewählten Dienstleistungen anbietet</value>
+  </data>
+  <data name="selectedservices" xml:space="preserve">
+    <value>Ausgewählte Dienstleistungen für deinen Termin</value>
+  </data>
+  <data name="DayAbbrevSunday" xml:space="preserve">
+    <value>So</value>
+  </data>
+  <data name="DayAbbrevMonday" xml:space="preserve">
+    <value>Mo</value>
+  </data>
+  <data name="DayAbbrevTuesday" xml:space="preserve">
+    <value>Di</value>
+  </data>
+  <data name="DayAbbrevWednesday" xml:space="preserve">
+    <value>Mi</value>
+  </data>
+  <data name="DayAbbrevThursday" xml:space="preserve">
+    <value>Do</value>
+  </data>
+  <data name="DayAbbrevFriday" xml:space="preserve">
+    <value>Fr</value>
+  </data>
+  <data name="DayAbbrevSaturday" xml:space="preserve">
+    <value>Sa</value>
+  </data>
+  <data name="NoAppointmentsAvailable" xml:space="preserve">
+    <value>Keine Termine verfügbar</value>
+  </data>
+  <data name="NoAppointmentsAvailableForDay" xml:space="preserve">
+    <value>Für diesen Tag sind leider keine freien Termine verfügbar.</value>
+  </data>
+  <data name="OtpSigninTitle" xml:space="preserve">
+    <value>OTP-Verifizierung</value>
+  </data>
+  <data name="OtpSigninVerifyAccount" xml:space="preserve">
+    <value>Konto bestätigen</value>
+  </data>
+  <data name="OtpSigninEnterCode" xml:space="preserve">
+    <value>Geben Sie den 6-stelligen Bestätigungscode ein, der gesendet wurde an:</value>
+  </data>
+  <data name="OtpSigninInvalidCode" xml:space="preserve">
+    <value>Ungültiger Bestätigungscode</value>
+  </data>
+  <data name="OtpSigninVerify" xml:space="preserve">
+    <value>Bestätigen</value>
+  </data>
+  <data name="OtpSigninDidntReceive" xml:space="preserve">
+    <value>Code nicht erhalten?</value>
+  </data>
+  <data name="OtpSigninResend" xml:space="preserve">
+    <value>Code erneut senden</value>
+  </data>
+  <data name="OtpSigninBack" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="OtpSigninNoContext" xml:space="preserve">
+    <value>Kein Bestätigungskontext gefunden. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninYourContact" xml:space="preserve">
+    <value>Ihre E-Mail/Telefonnummer</value>
+  </data>
+  <data name="OtpSigninEnterValidCode" xml:space="preserve">
+    <value>Bitte geben Sie einen gültigen 6-stelligen Code ein.</value>
+  </data>
+  <data name="OtpSigninDigitsOnly" xml:space="preserve">
+    <value>Der Code darf nur Ziffern enthalten.</value>
+  </data>
+  <data name="OtpSigninContextMissing" xml:space="preserve">
+    <value>Bestätigungskontext fehlt. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninNoInternet" xml:space="preserve">
+    <value>Keine Internetverbindung. Bitte prüfen Sie Ihr Netzwerk.</value>
+  </data>
+  <data name="OtpSigninErrorTryAgain" xml:space="preserve">
+    <value>Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninIncomplete" xml:space="preserve">
+    <value>Die Verifizierung ist unvollständig. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninInitFailed" xml:space="preserve">
+    <value>Die App-Initialisierung ist fehlgeschlagen. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninLoadUserFailed" xml:space="preserve">
+    <value>Benutzerdaten konnten nicht geladen werden. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninNavigationFailed" xml:space="preserve">
+    <value>Navigation fehlgeschlagen. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninInvalidTryAgain" xml:space="preserve">
+    <value>Ungültiger Bestätigungscode. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninExpired" xml:space="preserve">
+    <value>Konto nicht verifiziert oder Code abgelaufen. Bitte fordern Sie einen neuen Code an.</value>
+  </data>
+  <data name="OtpSigninTooManyAttempts" xml:space="preserve">
+    <value>Zu viele Versuche. Bitte versuchen Sie es später erneut.</value>
+  </data>
+  <data name="OtpSigninNetworkError" xml:space="preserve">
+    <value>Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung.</value>
+  </data>
+  <data name="OtpSigninVerificationFailed" xml:space="preserve">
+    <value>Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninUnexpectedError" xml:space="preserve">
+    <value>Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="OtpSigninNewCodeEmail" xml:space="preserve">
+    <value>Neuer Code gesendet! Prüfen Sie Ihre E-Mail.</value>
+  </data>
+  <data name="OtpSigninNewCodePhone" xml:space="preserve">
+    <value>Neuer Code gesendet! Prüfen Sie Ihr Telefon.</value>
+  </data>
+  <data name="OtpSigninTooManyResend" xml:space="preserve">
+    <value>Zu viele Sendeversuche. Bitte warten Sie, bevor Sie es erneut versuchen.</value>
+  </data>
+  <data name="OtpSigninResendFailed" xml:space="preserve">
+    <value>Code konnte nicht erneut gesendet werden. Bitte versuchen Sie es später erneut.</value>
+  </data>
+  <data name="OtpSigninResendError" xml:space="preserve">
+    <value>Beim erneuten Senden des Codes ist ein Fehler aufgetreten.</value>
+  </data>
+  <data name="OtpSigninSuccess" xml:space="preserve">
+    <value>Erfolg</value>
+  </data>
+  <data name="OtpSigninOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OtpSigninSeconds" xml:space="preserve">
+    <value>{0}s</value>
+  </data>
+  <data name="EmailAlreadyRegisteredTitle" xml:space="preserve">
+    <value>E-Mail-Adresse bereits registriert</value>
+  </data>
+  <data name="EmailAlreadyRegisteredMessage" xml:space="preserve">
+    <value>Diese E-Mail-Adresse wird bereits für ein Konto verwendet. Bitte verwende eine andere E-Mail-Adresse oder melde dich mit diesem Konto an.</value>
+  </data>
+  <data name="EmailAlreadyRegisteredClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="EmailAlreadyRegisteredLogin" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="EmailNotVerifiedTitle" xml:space="preserve">
+    <value>E-Mail nicht verifiziert</value>
+  </data>
+  <data name="EmailNotVerifiedMessage" xml:space="preserve">
+    <value>Dein Konto wurde erfolgreich erstellt, aber deine E-Mail-Adresse wurde noch nicht verifiziert. Bitte überprüfe deine E-Mails und gib den Bestätigungscode ein, um dein Konto zu aktivieren.</value>
+  </data>
+  <data name="EmailNotVerifiedClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="EmailNotVerifiedVerify" xml:space="preserve">
+    <value>Zur Verifizierung</value>
   </data>
 </root>

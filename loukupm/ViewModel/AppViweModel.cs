@@ -107,6 +107,33 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private ObservableCollection<ReminderOption> reminderOptions = new ObservableCollection<ReminderOption>();
 
+        [ObservableProperty]
+        private bool hasActiveReminderChannel = true;
+
+        [ObservableProperty]
+        private bool showChannelWarning = false;
+
+        [ObservableProperty]
+        private string channelWarningMessage = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<string> channelWarnings = new ObservableCollection<string>();
+
+        [ObservableProperty]
+        private string reminderTitle = string.Empty;
+
+        [ObservableProperty]
+        private string reminderSubtitle = string.Empty;
+
+        [ObservableProperty]
+        private string reminderQuestion = string.Empty;
+
+        [ObservableProperty]
+        private bool isReminderSectionVisible = true;
+
+        [ObservableProperty]
+        private ReminderOption selectedReminderOption;
+
 
         [ObservableProperty]
         private string selectedImagePath = string.Empty;
@@ -127,6 +154,7 @@ namespace loukupm.ViewModel
 
         private readonly ApiServices _apiServices = new ApiServices();
         private readonly services.NotificationStateService _notificationState;
+        private readonly SemaphoreSlim _homeLoadLock = new(1, 1);
 
         private static readonly Lazy<AppViewModel> _instance = new(() => new AppViewModel(GetNotificationStateFromServiceProvider(), GetNotificationServiceFromServiceProvider()));
         public static AppViewModel Instance => _instance.Value;
@@ -204,6 +232,8 @@ namespace loukupm.ViewModel
             NotificationCount = _notificationState.UnreadCount;
 
             LoadData();
+            // Load reminder options dynamically (do not block constructor)
+            _ = LoadReminderOptionsAsync();
 
             EnableReminderTimerCommand = new AsyncRelayCommand(EnableReminderTimerAsync);
             HomeSliderVM = new HomeSliderViewModel();
@@ -236,7 +266,7 @@ namespace loukupm.ViewModel
                     SelectedServices.Add(service);
                     CurrentBooking.SelectedServices.Add(service);  // إضافة للـ List
 
-                    await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
+                  //  await Toast.Make(AppResource.celectedserviesiddone, ToastDuration.Short).Show();
                 }
                 else
                 {
@@ -246,7 +276,7 @@ namespace loukupm.ViewModel
                     CurrentBooking.SelectedServices.Remove(service);
                     CurrentBooking.RemoveServiceSelections(service.Id);
 
-                    await Toast.Make(AppResource.serviceremoved, ToastDuration.Short).Show();
+                  //  await Toast.Make(AppResource.serviceremoved, ToastDuration.Short).Show();
                     Console.WriteLine($"✅ Service deselected: {service.NameServies}");
                 }
 
@@ -264,44 +294,138 @@ namespace loukupm.ViewModel
 
         private async Task InitializeAsync()
         {
+            await LoadHomeDataWithRetryAsync(isRefresh: false);
+        }
+
+        /// <summary>
+        /// Loads home content and retries on cold start / resume, when the network
+        /// or access token is not ready yet. Does not treat a first failed request
+        /// as "no internet".
+        /// </summary>
+        private async Task LoadHomeDataWithRetryAsync(bool isRefresh)
+        {
+            const int maxAttempts = 3;
+            int[] delaysMs = { 0, 700, 1500 };
+
+            await _homeLoadLock.WaitAsync();
             try
             {
-                System.Diagnostics.Debug.WriteLine("🔄 [InitializeAsync] Starting initial data load...");
+                if (isRefresh)
+                    IsRefreshing = true;
 
-                await LoadUser();
+                HasNoHomeData = false;
 
-                _token = await SecureStorage.GetAsync(TokenManager.AccessTokenKey) ?? string.Empty;
+                bool loaded = false;
 
-                await LoadBookingsAsync();
-
-
-                var homeSliderTask = Task.CompletedTask;
-
-                if (HomeSliderVM.Items.Count == 0)
+                for (int attempt = 1; attempt <= maxAttempts; attempt++)
                 {
-                    homeSliderTask = HomeSliderVM.LoadSlidersAsync();
+                    try
+                    {
+                        if (delaysMs[attempt - 1] > 0)
+                            await Task.Delay(delaysMs[attempt - 1]);
+
+                        System.Diagnostics.Debug.WriteLine($"🔄 [HomeLoad] Attempt {attempt}/{maxAttempts} (refresh={isRefresh})...");
+
+                        await EnsureAccessTokenReadyAsync();
+
+                        await LoadUser();
+                        _token = await SecureStorage.GetAsync(TokenManager.AccessTokenKey) ?? string.Empty;
+
+                        try
+                        {
+                            await LoadBookingsAsync();
+                        }
+                        catch (Exception bookingEx)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"⚠️ [HomeLoad] Bookings load skipped: {bookingEx.Message}");
+                        }
+
+                        var homeSliderTask = (HomeSliderVM.Items.Count == 0 || isRefresh)
+                            ? RefreshHomeSliderAsync()
+                            : Task.CompletedTask;
+
+                        await Task.WhenAll(
+                            LoadNotificationsAsync(),
+                            LoadWorkTeamsAsync(),
+                            LoadServicesAsync(),
+                            homeSliderTask
+                        );
+
+                        if (HasDisplayableHomeContent())
+                        {
+                            loaded = true;
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ [HomeLoad] Attempt {attempt} failed: {ex.Message}");
+                    }
                 }
 
-                await Task.WhenAll(
-                    LoadNotificationsAsync(),
-                    LoadWorkTeamsAsync(),
-                    LoadServicesAsync(),
-                    homeSliderTask
-                );
+                EvaluateHasNoHomeData(loadFailed: !loaded);
+                System.Diagnostics.Debug.WriteLine($"✅ [HomeLoad] Complete. Loaded={loaded}, NoData={HasNoHomeData}, User={currentUser != null}, Services={Services?.Count ?? 0}, Teams={WorkTeams?.Count ?? 0}");
+            }
+            finally
+            {
+                IsRefreshing = false;
+                _homeLoadLock.Release();
+            }
+        }
 
-                // Evaluate data state after initial load
-                bool hasUserData = currentUser != null && !string.IsNullOrWhiteSpace(currentUser.UserName);
-                bool hasServices = Services != null && Services.Count > 0;
-                bool hasWorkTeams = WorkTeams != null && WorkTeams.Count > 0;
+        private static bool IsNetworkAvailable()
+        {
+            try
+            {
+                var access = Connectivity.NetworkAccess;
+                return access == NetworkAccess.Internet
+                    || access == NetworkAccess.ConstrainedInternet;
+            }
+            catch
+            {
+                // Do not show the offline overlay just because connectivity APIs failed.
+                return true;
+            }
+        }
 
-                HasNoHomeData = !hasUserData || (!hasServices && !hasWorkTeams);
+        private bool HasDisplayableHomeContent()
+        {
+            bool hasUser = currentUser != null
+                || !string.IsNullOrWhiteSpace(UserName)
+                || !string.IsNullOrWhiteSpace(Email);
+            bool hasServices = Services != null && Services.Count > 0;
+            bool hasWorkTeams = WorkTeams != null && WorkTeams.Count > 0;
+            bool hasSliders = HomeSliderVM?.Items != null && HomeSliderVM.Items.Count > 0;
 
-                System.Diagnostics.Debug.WriteLine($"✅ [InitializeAsync] Initialization complete. User={hasUserData}, Services={hasServices}, Teams={hasWorkTeams}, Sliders={HomeSliderVM.Items.Count}, NoData={HasNoHomeData}");
+            return hasUser || hasServices || hasWorkTeams || hasSliders;
+        }
+
+        private void EvaluateHasNoHomeData(bool loadFailed)
+        {
+            if (HasDisplayableHomeContent())
+            {
+                HasNoHomeData = false;
+                return;
+            }
+
+            HasNoHomeData = loadFailed || !IsNetworkAvailable();
+        }
+
+        private async Task EnsureAccessTokenReadyAsync()
+        {
+            try
+            {
+                var tokenManager = AppServices.Get<TokenManager>();
+                var authService = AppServices.Get<AuthenticationService>();
+                if (tokenManager == null || authService == null)
+                    return;
+
+                if (await tokenManager.IsAccessTokenExpiredOrExpiringSoonAsync())
+                    await authService.RefreshTokenAsync();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ [InitializeAsync] Error: {ex.Message}");
-                HasNoHomeData = true;
+                System.Diagnostics.Debug.WriteLine($"⚠️ [HomeLoad] Token refresh skipped: {ex.Message}");
             }
         }
 
@@ -436,45 +560,67 @@ namespace loukupm.ViewModel
             IsLoadNotifiction = true;
         }
 
-        private async Task RefreshHomeDataAsync()
+        public async Task RefreshReminderOptionsAsync()
+        {
+            await LoadReminderOptionsAsync();
+        }
+
+        /// <summary>
+        /// Load reminder options from API and update ViewModel properties accordingly.
+        /// Obeys rule: do NOT hardcode reminder options; use server-provided options.
+        /// </summary>
+        private async Task LoadReminderOptionsAsync()
         {
             try
             {
-                IsRefreshing = true;
-                HasNoHomeData = false;
+                var optionsResponse = await _apiServices.GetReminderOptionsAsync();
+                if (optionsResponse?.Data == null)
+                {
+                    Console.WriteLine("⚠️  No reminder options returned from API");
+                    return;
+                }
 
-                // تحديث البيانات الثلاث بشكل متزامن + Home Slider
-                var sliderRefreshTask = RefreshHomeSliderAsync();
+                var options = optionsResponse.Data.Options ?? new System.Collections.Generic.List<ReminderOption>();
 
-                await Task.WhenAll(
-                    LoadUserAsync(),
-                    LoadServicesAsync(),
-                    LoadWorkTeamsAsync(),
-                    sliderRefreshTask
-                );
+                ReminderOptionsCache.Set(options);
 
-                // التحقق من وجود بيانات
-                bool hasUserData = currentUser != null && !string.IsNullOrWhiteSpace(currentUser.UserName);
-                bool hasServices = Services != null && Services.Count > 0;
-                bool hasWorkTeams = WorkTeams != null && WorkTeams.Count > 0;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    ReminderOptions.Clear();
+                    foreach (var opt in options)
+                        ReminderOptions.Add(opt);
 
-                // يعتبر عدم وجود بيانات إذا لم تكن بيانات المستخدم موجودة أو إذا كانت كلا من الخدمات والفرق فارغة
-                // يعتبر عدم وجود بيانات إذا لم تكن أي من البيانات الثلاث موجودة
-                // أو إذا لم تكن بيانات المستخدم موجودة (بيانات حرجة)
-                HasNoHomeData = !hasUserData || (!hasServices && !hasWorkTeams);
+                    int defaultOffset = optionsResponse.Data.DefaultOffsetHours;
+                    int index = ReminderOptions.ToList().FindIndex(x => x.OffsetHours == defaultOffset);
+                    SelectedReminderOptionIndex = index >= 0 ? index : 0;
+                    SelectedReminderOption = ReminderOptions.Count > 0
+                        ? ReminderOptions[SelectedReminderOptionIndex]
+                        : null;
 
-                System.Diagnostics.Debug.WriteLine($"🔄 [RefreshHomeDataAsync] Data Status: User={hasUserData}, Services={hasServices}, Teams={hasWorkTeams}, Sliders={HomeSliderVM.Items.Count}, NoData={HasNoHomeData}");
+                    ReminderTitle = optionsResponse.Data.Texts?.Title ?? AppResource.AppointmentReminder;
+                    ReminderSubtitle = optionsResponse.Data.Texts?.Subtitle ?? string.Empty;
+                    ReminderQuestion = optionsResponse.Data.Texts?.Question ?? AppResource.SelectReminderTime;
+                    IsReminderSectionVisible = true;
+
+                    HasActiveReminderChannel = optionsResponse.Data.ResolveHasActiveChannel();
+                    var warnings = _apiServices.GetChannelWarnings(optionsResponse);
+                    ShowChannelWarning = warnings.HasAnyWarning;
+                    ChannelWarnings.Clear();
+                    foreach (var w in warnings.Warnings)
+                        ChannelWarnings.Add(w);
+
+                    ChannelWarningMessage = warnings.HasAnyWarning ? warnings.Warnings.FirstOrDefault() : string.Empty;
+                });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ [RefreshHomeDataAsync] Error refreshing home data: {ex.Message}");
-                HasNoHomeData = true;
+                Console.WriteLine($"❌ Exception while loading reminder options: {ex.Message}");
             }
-            finally
-            {
-                IsRefreshing = false;
-                System.Diagnostics.Debug.WriteLine($"✅ [RefreshHomeDataAsync] Refresh complete. IsRefreshing={IsRefreshing}, HasNoHomeData={HasNoHomeData}");
-            }
+        }
+
+        private async Task RefreshHomeDataAsync()
+        {
+            await LoadHomeDataWithRetryAsync(isRefresh: true);
         }
 
         /// <summary>
@@ -524,7 +670,8 @@ namespace loukupm.ViewModel
 
             try
             {
-                var data = await _apiServices.GetUserAppointmentsAsync(currentUser);
+                var data = CombineLinkedAppointments(
+                    await _apiServices.GetUserAppointmentsAsync(currentUser));
 
                 if (data == null || data.Count == 0)
                 {
@@ -567,11 +714,247 @@ namespace loukupm.ViewModel
 
                 HasNoAppointments = false;
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"⚠️ Error loading bookings: {ex.Message}");
+            }
             finally
             {
                 IsloadBooking = false;
             }
         }
+
+        /// <summary>
+        /// The appointments API can return one row per service. Services from the same
+        /// visit are shown as a single booking.
+        /// </summary>
+        private static List<Appointment> CombineLinkedAppointments(List<Appointment> source)
+        {
+            if (source == null || source.Count < 2)
+                return source ?? new List<Appointment>();
+
+            var remaining = source.ToList();
+            var combined = new List<Appointment>();
+
+            while (remaining.Count > 0)
+            {
+                var seed = remaining[0];
+                remaining.RemoveAt(0);
+
+                var group = new List<Appointment> { seed };
+                var grew = true;
+                while (grew)
+                {
+                    grew = false;
+                    for (var i = remaining.Count - 1; i >= 0; i--)
+                    {
+                        if (!BelongsToSameVisit(group, remaining[i]))
+                            continue;
+
+                        group.Add(remaining[i]);
+                        remaining.RemoveAt(i);
+                        grew = true;
+                    }
+                }
+
+                combined.Add(group.Count == 1 ? seed : MergeVisit(group));
+            }
+
+            return combined
+                .OrderBy(a => VisitStart(a) ?? DateTime.MaxValue)
+                .ToList();
+        }
+
+        private static bool BelongsToSameVisit(List<Appointment> group, Appointment candidate)
+        {
+            if (group == null || group.Count == 0 || candidate == null)
+                return false;
+
+            if (!string.IsNullOrWhiteSpace(candidate.Number)
+                && group.All(a => string.Equals(a.Number, candidate.Number, StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+
+            var seed = group[0];
+            if (!SameAppointmentDay(seed, candidate) || !SameAppointmentStatus(seed, candidate))
+                return false;
+
+            if (!CreatedInTheSameVisit(group, candidate))
+                return false;
+
+            var ranges = new List<(DateTime Start, DateTime End)>();
+            foreach (var item in group.Append(candidate))
+            {
+                if (!TryGetAppointmentRange(item, out var start, out var end))
+                    return false;
+
+                ranges.Add((start, end));
+            }
+
+            ranges.Sort((left, right) => left.Start.CompareTo(right.Start));
+            var limitGap = !HasCreatedTimestamps(group, candidate);
+            for (var i = 1; i < ranges.Count; i++)
+            {
+                var gapMinutes = (ranges[i].Start - ranges[i - 1].End).TotalMinutes;
+                if (gapMinutes < -1)
+                    return false;
+
+                // Without a shared creation time, only chain services that still
+                // belong to one visit. A known creation time groups the whole visit.
+                if (limitGap && gapMinutes > 240)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool HasCreatedTimestamps(List<Appointment> group, Appointment candidate)
+        {
+            return CreatedAtParsed(candidate) && group.All(CreatedAtParsed);
+        }
+
+        private static bool CreatedAtParsed(Appointment appointment)
+        {
+            return DateTime.TryParse(appointment?.CreatedAt, CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
+                || DateTime.TryParse(appointment?.CreatedAt, out _);
+        }
+
+        private static bool CreatedInTheSameVisit(List<Appointment> group, Appointment candidate)
+        {
+            if (!DateTime.TryParse(candidate.CreatedAt, CultureInfo.InvariantCulture, DateTimeStyles.None, out var candidateCreated)
+                && !DateTime.TryParse(candidate.CreatedAt, out candidateCreated))
+            {
+                return group.All(a => string.IsNullOrWhiteSpace(a.CreatedAt));
+            }
+
+            foreach (var item in group)
+            {
+                if (!DateTime.TryParse(item.CreatedAt, CultureInfo.InvariantCulture, DateTimeStyles.None, out var created)
+                    && !DateTime.TryParse(item.CreatedAt, out created))
+                {
+                    return false;
+                }
+
+                if (Math.Abs((created - candidateCreated).TotalMinutes) > 10)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool SameAppointmentDay(Appointment left, Appointment right)
+        {
+            var leftDay = left?.AppointmentDate ?? left?.FormattedDate;
+            var rightDay = right?.AppointmentDate ?? right?.FormattedDate;
+            return !string.IsNullOrWhiteSpace(leftDay)
+                && string.Equals(leftDay.Trim(), rightDay?.Trim(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool SameAppointmentStatus(Appointment left, Appointment right)
+        {
+            if (left.IsCancelled != right.IsCancelled)
+                return false;
+
+            if (!string.IsNullOrWhiteSpace(left.Status) && !string.IsNullOrWhiteSpace(right.Status))
+                return string.Equals(left.Status, right.Status, StringComparison.OrdinalIgnoreCase);
+
+            return left.StatusValue == right.StatusValue;
+        }
+
+        private static Appointment MergeVisit(List<Appointment> group)
+        {
+            var ordered = group
+                .OrderBy(a => VisitStart(a) ?? DateTime.MaxValue)
+                .ToList();
+
+            var first = ordered[0];
+            var last = ordered[ordered.Count - 1];
+            var details = new List<ServiceDetail>();
+            var ids = new List<int>();
+
+            foreach (var item in ordered)
+            {
+                ids.Add(item.Id);
+                if (item.ServicesDetails != null)
+                    details.AddRange(item.ServicesDetails);
+            }
+
+            first.ServicesDetails = details;
+            first.RelatedBookingIds = ids.Distinct().ToList();
+            first.TotalAmount = ordered.Sum(a => a.TotalAmount);
+            first.Subtotal = ordered.Sum(a => a.Subtotal);
+            first.TaxAmount = ordered.Sum(a => a.TaxAmount);
+            first.DurationMinutes = ordered.Sum(a => a.DurationMinutes);
+            first.EndTime = last.EndTime;
+            first.TimeRange = $"{first.StartTime} - {last.EndTime}";
+            first.CanCancel = ordered.Any(a => a.CanCancel);
+            first.Reminder ??= ordered.Select(a => a.Reminder).FirstOrDefault(r => r != null);
+
+            if (first.DurationMinutes > 0)
+                first.FormattedDuration = $"{first.DurationMinutes}m";
+
+            return first;
+        }
+
+        private static DateTime? VisitStart(Appointment appointment)
+        {
+            return TryGetAppointmentRange(appointment, out var start, out _)
+                ? start
+                : null;
+        }
+
+        private static bool TryGetAppointmentRange(Appointment appointment, out DateTime start, out DateTime end)
+        {
+            start = default;
+            end = default;
+            if (appointment == null)
+                return false;
+
+            var day = DateTime.Today;
+            if (!DateTime.TryParse(appointment.AppointmentDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out day)
+                && !DateTime.TryParse(appointment.AppointmentDate, out day)
+                && !DateTime.TryParse(appointment.FormattedDate, out day))
+            {
+                day = DateTime.Today;
+            }
+
+            day = day.Date;
+            if (!TryParseClockOnDay(day, appointment.StartTime, out start))
+                return false;
+
+            if (!TryParseClockOnDay(day, appointment.EndTime, out end))
+                end = start.AddMinutes(appointment.DurationMinutes > 0 ? appointment.DurationMinutes : 30);
+
+            if (end < start)
+                end = end.AddDays(1);
+
+            return true;
+        }
+
+        private static bool TryParseClockOnDay(DateTime day, string raw, out DateTime value)
+        {
+            value = default;
+            if (string.IsNullOrWhiteSpace(raw))
+                return false;
+
+            if (DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+                || DateTime.TryParse(raw, out parsed))
+            {
+                value = day.Date.Add(parsed.TimeOfDay);
+                return true;
+            }
+
+            if (TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var clock)
+                || TimeSpan.TryParse(raw, out clock))
+            {
+                value = day.Date.Add(clock);
+                return true;
+            }
+
+            return false;
+        }
+
         private async Task LoadNotificationsAsync()
         {
             try
@@ -645,8 +1028,13 @@ namespace loukupm.ViewModel
 
                 var data = await _apiServices.GetWorkTeamsAsync();
 
+                if (data == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("⚠️ Work teams request failed — keeping existing data");
+                    return;
+                }
 
-                if (data == null || data.Count == 0)
+                if (data.Count == 0)
                 {
                     WorkTeams.Clear();
                     FilteredWorkTeams.Clear();
@@ -771,11 +1159,17 @@ namespace loukupm.ViewModel
 
                 var data = await _apiServices.GetServiesAsync();
 
+                if (data == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("⚠️ Services request failed — keeping existing data");
+                    return;
+                }
+
                 Services.Clear();
                 FilteredServices.Clear();
                 Categories.Clear();
 
-                if (data == null || data.Count == 0)
+                if (data.Count == 0)
                 {
                     SelectedCategory = null;
                     return;
@@ -913,11 +1307,22 @@ namespace loukupm.ViewModel
                 }
 
                 // Set reminder on booking if enabled
-                if (IsReminderEnabled && SelectedReminderOptionIndex < ReminderOptions.Count)
+                if (IsReminderEnabled)
                 {
-                    var selectedOption = ReminderOptions[SelectedReminderOptionIndex];
-                    CurrentBooking.ReminderOffsetHours = selectedOption.OffsetHours;
-                    Console.WriteLine($"[PostBookingAsync] Reminder enabled: {selectedOption.OffsetHours} hours");
+                    var selectedOption = SelectedReminderOption
+                        ?? (SelectedReminderOptionIndex >= 0 && SelectedReminderOptionIndex < ReminderOptions.Count
+                            ? ReminderOptions[SelectedReminderOptionIndex]
+                            : null);
+
+                    if (selectedOption != null)
+                    {
+                        CurrentBooking.ReminderOffsetHours = selectedOption.OffsetHours;
+                        Console.WriteLine($"[PostBookingAsync] Reminder enabled: {selectedOption.OffsetHours} hours");
+                    }
+                    else
+                    {
+                        CurrentBooking.ReminderOffsetHours = null;
+                    }
                 }
                 else
                 {
@@ -955,9 +1360,25 @@ namespace loukupm.ViewModel
             return CurrentBooking.HasPerServiceSelections;
         }
 
+        private static string LocalizeServerBookingMessage(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return AppResource.Bookingfailed;
+
+            if (message.Contains("share the same date", StringComparison.OrdinalIgnoreCase))
+                return AppResource.ServicesMustShareDate;
+
+            if (message.Contains("Please select a date", StringComparison.OrdinalIgnoreCase)
+                || message.Contains("select a date", StringComparison.OrdinalIgnoreCase))
+                return AppResource.Pleaseselectadate;
+
+            return message;
+        }
+
         private async Task<bool> ValidateBookingInputs()
         {
             EnsureCurrentBooking();
+            BookingErrorMessage = string.Empty;
 
             if (SelectedServices == null || SelectedServices.Count == 0)
             {
@@ -989,6 +1410,7 @@ namespace loukupm.ViewModel
                 if (!CurrentBooking.TryGetServiceDate(svc.Id, SelectedDate == default ? null : SelectedDate, allowGlobal, out var date))
                 {
                     Console.WriteLine($"[ValidateBookingInputs] ERROR: No date for service {svc.Id}");
+                    BookingErrorMessage = AppResource.Pleaseselectadate;
                     await Toast.Make(AppResource.Pleaseselectadate).Show();
                     return false;
                 }
@@ -1011,12 +1433,13 @@ namespace loukupm.ViewModel
                 if (datesConflict)
                 {
                     Console.WriteLine($"[ValidateBookingInputs] ERROR: Date conflict between services");
-                    await Toast.Make(AppResource.Pleaseselectadate).Show();
-                    BookingErrorMessage = "All services in one booking must share the same date.";
+                    BookingErrorMessage = AppResource.ServicesMustShareDate;
+                    await Toast.Make(AppResource.ServicesMustShareDate).Show();
                     return false;
                 }
 
                 Console.WriteLine($"[ValidateBookingInputs] ERROR: Unable to resolve root date");
+                BookingErrorMessage = AppResource.Pleaseselectadate;
                 await Toast.Make(AppResource.Pleaseselectadate).Show();
                 return false;
             }
@@ -1192,7 +1615,10 @@ namespace loukupm.ViewModel
                 if (result.Success && result.StatusCode == 201)
                 {
                     string bookingNumber = string.Empty;
-                    bool reminderFailed = false;  // Track if reminder needs retry
+                    int appointmentId = 0;
+                    bool reminderFailed = false;
+                    bool reminderRequested = IsReminderEnabled && CurrentBooking.ReminderOffsetHours.HasValue;
+                    bool hasActiveChannel = true;
 
                     try
                     {
@@ -1200,13 +1626,23 @@ namespace loukupm.ViewModel
                         {
                             if (dataEl.TryGetProperty("booking_number", out var bn)) bookingNumber = bn.GetString();
                             else if (dataEl.TryGetProperty("number", out var nb)) bookingNumber = nb.GetString();
-                            else if (dataEl.TryGetProperty("id", out var id)) bookingNumber = id.GetRawText();
 
-                            // Check if reminder is null (booking succeeded but reminder failed)
-                            if (dataEl.TryGetProperty("reminder", out var reminderEl) && reminderEl.ValueKind == System.Text.Json.JsonValueKind.Null)
+                            if (dataEl.TryGetProperty("id", out var idEl) && idEl.ValueKind == System.Text.Json.JsonValueKind.Number)
+                                appointmentId = idEl.GetInt32();
+
+                            if (reminderRequested)
                             {
-                                reminderFailed = true;
-                                Console.WriteLine("[SendBookingRequest] Booking succeeded but reminder is null - will retry reminder creation");
+                                if (!dataEl.TryGetProperty("reminder", out var reminderEl) || reminderEl.ValueKind == System.Text.Json.JsonValueKind.Null)
+                                {
+                                    reminderFailed = true;
+                                    Console.WriteLine("[SendBookingRequest] Booking succeeded but reminder is null - will retry reminder creation");
+                                }
+                                else if (reminderEl.ValueKind == System.Text.Json.JsonValueKind.Object
+                                         && reminderEl.TryGetProperty("has_active_channel", out var hac)
+                                         && hac.ValueKind == System.Text.Json.JsonValueKind.False)
+                                {
+                                    hasActiveChannel = false;
+                                }
                             }
                         }
                     }
@@ -1214,11 +1650,14 @@ namespace loukupm.ViewModel
 
                     LastBookingNumber = bookingNumber;
 
-                    // If reminder failed but booking succeeded, try to create reminder separately
-                    if (reminderFailed && IsReminderEnabled && CurrentBooking.ReminderOffsetHours.HasValue && int.TryParse(bookingNumber, out int appointmentId))
+                    if (reminderFailed && reminderRequested && appointmentId > 0)
                     {
                         Console.WriteLine($"[SendBookingRequest] Retrying reminder creation for appointment {appointmentId}");
                         await RetryReminderCreation(appointmentId, CurrentBooking.ReminderOffsetHours.Value);
+                    }
+                    else if (reminderRequested && !hasActiveChannel)
+                    {
+                        await Toast.Make(ChannelWarningMessage ?? "Reminder saved, but no active notification channels are available.", ToastDuration.Long).Show();
                     }
 
                     var pouo = new SuccessfullyBookingNow();
@@ -1243,6 +1682,7 @@ namespace loukupm.ViewModel
                         if (retry.Success && retry.StatusCode == 201)
                         {
                             LastBookingNumber = "";
+                            int retryAppointmentId = 0;
                             try
                             {
                                 if (retry.ResponseJson != null && retry.ResponseJson.RootElement.TryGetProperty("data", out var dataEl))
@@ -1250,13 +1690,15 @@ namespace loukupm.ViewModel
                                     if (dataEl.TryGetProperty("booking_number", out var bn)) LastBookingNumber = bn.GetString();
                                     else if (dataEl.TryGetProperty("number", out var nb)) LastBookingNumber = nb.GetString();
 
-                                    // Check reminder again
+                                    if (dataEl.TryGetProperty("id", out var idEl) && idEl.ValueKind == System.Text.Json.JsonValueKind.Number)
+                                        retryAppointmentId = idEl.GetInt32();
+
                                     if (dataEl.TryGetProperty("reminder", out var reminderEl) && reminderEl.ValueKind == System.Text.Json.JsonValueKind.Null)
                                     {
-                                        if (IsReminderEnabled && CurrentBooking.ReminderOffsetHours.HasValue && int.TryParse(LastBookingNumber, out int appointmentId))
+                                        if (IsReminderEnabled && CurrentBooking.ReminderOffsetHours.HasValue && retryAppointmentId > 0)
                                         {
-                                            Console.WriteLine($"[SendBookingRequest] Retrying reminder creation for appointment {appointmentId}");
-                                            await RetryReminderCreation(appointmentId, CurrentBooking.ReminderOffsetHours.Value);
+                                            Console.WriteLine($"[SendBookingRequest] Retrying reminder creation for appointment {retryAppointmentId}");
+                                            await RetryReminderCreation(retryAppointmentId, CurrentBooking.ReminderOffsetHours.Value);
                                         }
                                     }
                                 }
@@ -1304,10 +1746,11 @@ namespace loukupm.ViewModel
                     return;
                 }
 
-                // Validation / business errors (422) - handle slot conflicts specially
-                if (result.StatusCode == 422)
+                // Validation / business errors (422) or slot conflict (409)
+                if (result.StatusCode == 422 || result.StatusCode == 409)
                 {
-                    var userMessage = !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed;
+                    var userMessage = LocalizeServerBookingMessage(
+                        !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed);
                     BookingErrorMessage = userMessage;
                     await Toast.Make(userMessage).Show();
 
@@ -1349,12 +1792,13 @@ namespace loukupm.ViewModel
                 // Rate limited
                 if (result.StatusCode == 429)
                 {
-                    await Toast.Make(AppResource.Bookingfailed).Show();
+                    await Toast.Make("Too many requests. Please wait a minute and try again.", ToastDuration.Long).Show();
                     return;
                 }
 
                 // Generic failure: show friendly message
-                var fallback = !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed;
+                var fallback = LocalizeServerBookingMessage(
+                    !string.IsNullOrWhiteSpace(result.Message) ? result.Message : AppResource.Bookingfailed);
                 BookingErrorMessage = fallback;
                 await Toast.Make(fallback).Show();
             }
@@ -1381,18 +1825,30 @@ namespace loukupm.ViewModel
                 if (success)
                 {
                     Console.WriteLine("[RetryReminderCreation] Reminder created successfully");
-                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    if (response?.Data != null && !response.Data.HasActiveChannel)
                     {
-                        await Toast.Make("Reminder set successfully", ToastDuration.Short).Show();
-                    });
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await Toast.Make(ChannelWarningMessage ?? "Reminder saved, but no active notification channels are available.", ToastDuration.Long).Show();
+                        });
+                    }
                 }
                 else if (statusCode == 422)
                 {
-                    // Validation error - likely too_late
-                    Console.WriteLine($"[RetryReminderCreation] Reminder validation error: {message}");
+                    var validationMessage = response?.FirstErrorMessage();
+                    if (string.IsNullOrWhiteSpace(validationMessage))
+                        validationMessage = message;
+                    Console.WriteLine($"[RetryReminderCreation] Reminder validation error: {validationMessage}");
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await Toast.Make("Selected reminder duration has already passed. Please try a shorter duration.", ToastDuration.Long).Show();
+                        await Toast.Make(validationMessage, ToastDuration.Long).Show();
+                    });
+                }
+                else if (statusCode == 429)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Toast.Make("Too many requests. Please wait a minute and try again.", ToastDuration.Long).Show();
                     });
                 }
                 else
@@ -1661,6 +2117,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string userName;
         [ObservableProperty] private string password;
         [ObservableProperty] private string confirmPassword;
+        [ObservableProperty] private string currentPassword = string.Empty;
         [ObservableProperty] private string? imageUser;
         [ObservableProperty] private string email;
         [ObservableProperty] private string fullName;
@@ -1710,7 +2167,8 @@ namespace loukupm.ViewModel
             }
         }
 
-        private string avatar;
+        public const string DefaultAvatar = "default_avatar";
+        private string avatar = DefaultAvatar;
         private string originalUserFirstName = string.Empty;
         private string originalPhone = string.Empty;
         private string originalAvatar = string.Empty;
@@ -1753,6 +2211,32 @@ namespace loukupm.ViewModel
             CaptureUserEditSnapshot();
         }
 
+        private static bool PhoneNumbersMatch(string? left, string? right)
+        {
+            static string Digits(string? value) =>
+                new string((value ?? string.Empty).Where(char.IsDigit).ToArray());
+
+            return string.Equals(Digits(left), Digits(right), StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// A new phone number is unverified until OTP succeeds.
+        /// Apply this after reloading the profile so a stale verified flag cannot stick.
+        /// </summary>
+        private void ApplyPhoneVerificationAfterProfileSave(bool phoneChanged)
+        {
+            if (phoneChanged)
+                PhoneVerified = false;
+
+            NotifyPhoneVerificationStatus();
+        }
+
+        public void NotifyPhoneVerificationStatus()
+        {
+            OnPropertyChanged(nameof(PhoneVerified));
+            OnPropertyChanged(nameof(PhoneVerificationStatus));
+        }
+
         private void RefreshUserEditState()
         {
             HasUserProfileChanges =
@@ -1779,28 +2263,48 @@ namespace loukupm.ViewModel
 
         private User currentUser;
 
+        private static string ResolveAvatar(User user)
+        {
+            var url = user?.ProfileImageUrl;
+            if (string.IsNullOrWhiteSpace(url))
+                url = user?.ImageUser;
+
+            if (string.IsNullOrWhiteSpace(url) ||
+                url.Equals("null", StringComparison.OrdinalIgnoreCase))
+                return DefaultAvatar;
+
+            return url;
+        }
+
         private async Task LoadUser()
         {
             try
             {
                 IsLoadUser = true;
 
-                currentUser = await _apiServices.GetUserAsync();
-
-                if (currentUser != null)
+                var user = await _apiServices.GetUserAsync();
+                if (user == null)
                 {
-                    UserName = currentUser.UserName;
-                    UserFirstName = currentUser.UserName ?? string.Empty;  // ✅ Initialize from API first_name
-                    Email = currentUser.Email;
-                    FullName = currentUser.FullName;
-                    Phone = currentUser.Phone;
-                    PhoneVerified = currentUser.PhoneVerified;
-
-                    Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
-                    CaptureUserEditSnapshot();
-
-                    Console.WriteLine($"✅ [AppViewModel] User initialized: UserFirstName = '{UserFirstName}', PhoneVerified = {PhoneVerified}");
+                    System.Diagnostics.Debug.WriteLine("⚠️ GetUserAsync returned null — keeping existing user data");
+                    return;
                 }
+
+                currentUser = user;
+                UserName = currentUser.UserName;
+                UserFirstName = currentUser.UserName ?? string.Empty;
+                Email = currentUser.Email;
+                FullName = currentUser.FullName;
+                Phone = currentUser.Phone;
+                PhoneVerified = currentUser.PhoneVerified;
+
+                Avatar = ResolveAvatar(currentUser);
+                CaptureUserEditSnapshot();
+
+                Console.WriteLine($"✅ [AppViewModel] User initialized: UserFirstName = '{UserFirstName}', PhoneVerified = {PhoneVerified}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"⚠️ LoadUser failed: {ex.Message}");
             }
             finally
             {
@@ -1875,13 +2379,24 @@ namespace loukupm.ViewModel
 
                 try
                 {
-                    Avatar = currentUser.ProfileImageUrl ?? "default_avatar.png";
+                    PhoneVerified = currentUser.PhoneVerified;
+                    OnPropertyChanged(nameof(PhoneVerificationStatus));
+                    Console.WriteLine($"✅ [AppViewModel] PhoneVerified set: {PhoneVerified}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ [AppViewModel] Error setting PhoneVerified: {ex.Message}");
+                }
+
+                try
+                {
+                    Avatar = ResolveAvatar(currentUser);
                     Console.WriteLine($"✅ [AppViewModel] Avatar set: {Avatar}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"⚠️ [AppViewModel] Error setting Avatar: {ex.Message}");
-                    Avatar = "default_avatar.png";
+                    Avatar = DefaultAvatar;
                 }
 
                 // ✅ CRITICAL FIX: Only update UserFirstName if it's empty or null
@@ -2079,6 +2594,8 @@ namespace loukupm.ViewModel
                     return;
                 }
 
+                var phoneChanged = !PhoneNumbersMatch(Phone, originalPhone);
+
                 Console.WriteLine("📤 Calling UpdateUserProfileAsync...\n");
                 var apiResponse = await _apiServices.UpdateUserProfileAsync(UserFirstName, SelectedImagePath, Phone);
 
@@ -2123,6 +2640,7 @@ namespace loukupm.ViewModel
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
                     await LoadUserDataAsync();
+                    ApplyPhoneVerificationAfterProfileSave(phoneChanged);
                     CaptureUserEditSnapshot();
 
                 }
@@ -2156,6 +2674,8 @@ namespace loukupm.ViewModel
                     SelectedImagePath = string.Empty;
                     var popup = new ConfermChange();
                     await Application.Current.MainPage.ShowPopupAsync(popup);
+                    await LoadUserDataAsync();
+                    ApplyPhoneVerificationAfterProfileSave(phoneChanged);
                     CaptureUserEditSnapshot();
                 }
                 else
@@ -2194,6 +2714,17 @@ private async Task Logout()
 
                 OneSignalService.Logout();
 
+                try
+                {
+                    var tokenManager = loukupm.MauiProgram.Services?.GetService(typeof(TokenManager)) as TokenManager;
+                    if (tokenManager != null)
+                        await tokenManager.ClearTokensAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Logout] TokenManager clear failed: {ex.Message}");
+                }
+
                 SecureStorage.RemoveAll();
 
                 Preferences.Clear();
@@ -2202,12 +2733,6 @@ private async Task Logout()
                 Preferences.Set("AppLanguage", appLanguage);
 
                 App.ResetAuthenticationCheck();
-
-                Console.WriteLine("[Logout] About to navigate to login page");
-
-                await NavigationService.NavigateToLoginAndClear();
-
-                Console.WriteLine("[Logout] Successfully returned to Login");
             }
             catch (Exception ex)
             {
@@ -2216,7 +2741,8 @@ private async Task Logout()
             }
             finally
             {
-                Console.WriteLine("[Logout] Resetting logout flag");
+                Console.WriteLine("[Logout] About to navigate to login page");
+                await NavigationService.NavigateToLoginAndClear();
                 NavigationService.ResetLogoutFlag();
                 Console.WriteLine("[Logout] END");
             }
@@ -2230,56 +2756,76 @@ private async Task Logout()
         public void ResetUser()
         {
             currentUser = null;
+            _token = string.Empty;
 
             UserName = "";
             UserFirstName = "";
             Email = "";
             FullName = "";
             Phone = "";
-            Avatar = "default_avatar.png";
-
+            Avatar = DefaultAvatar;
+            PhoneVerified = false;
             IsLoadUser = false;
+            HasNoHomeData = true;
+            HasNoAppointments = true;
+            UnreadNotificationCount = 0;
+            NotificationCount = 0;
+
+            Services?.Clear();
+            FilteredServices?.Clear();
+            Bookings?.Clear();
+            Appointments?.Clear();
+            UpcomingAppointments?.Clear();
+            PreviousAppointments?.Clear();
+            CanceledAppointments?.Clear();
+            WorkTeams?.Clear();
+            FilteredWorkTeams?.Clear();
+            Notifications?.Clear();
+            SelectedServices?.Clear();
+
+            try
+            {
+                ClearBookingData();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Logout] ClearBookingData: {ex.Message}");
+            }
+
+            LoginPage.IsLogged = false;
         }
         public event PropertyChangedEventHandler PropertyChanged;
        
 
         public ICommand ChangePasswordUserCommand { get; }
-        private string currentPassword = string.Empty;
-
-        public string CurrentPassword
-        {
-            get => currentPassword;
-            set => currentPassword = value;
-        }
 
         private async Task ChangeUserPasswordAsync()
         {
-
             if (string.IsNullOrWhiteSpace(CurrentPassword))
             {
                 await Toast.Make(AppResource.Pleaseenterthecurrentpassword).Show();
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
+            if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
             {
                 await Toast.Make(AppResource.Pleaseenterthenewpasswordinbothfields).Show();
                 return;
             }
 
-            if (password != confirmPassword)
+            if (Password != ConfirmPassword)
             {
                 await Toast.Make(AppResource.Thenewpasswordsdonotmatch).Show();
                 return;
             }
 
-            if (password.Length < 8)
+            if (Password.Length < 8)
             {
                 await Toast.Make(AppResource.Thenewpasswordmustbeatleast8characterslong).Show();
                 return;
             }
 
-            if (password == CurrentPassword)
+            if (Password == CurrentPassword)
             {
                 await Toast.Make(AppResource.Thenewpasswordmustbedifferentfromthecurrentone).Show();
                 return;
@@ -2287,85 +2833,40 @@ private async Task Logout()
 
             try
             {
-                await SetAuthorizationHeaderAsync();
-                var passwordChangeData = new
+                var (success, statusCode, _) = await _apiServices.ChangePasswordAsync(
+                    CurrentPassword,
+                    Password,
+                    ConfirmPassword);
+
+                if (success)
                 {
-                    current_password = CurrentPassword,
-                    password = password,
-                    password_confirmation = confirmPassword
-                };
-
-                var json = JsonSerializer.Serialize(passwordChangeData);
-
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync(
-                    "https://lookupfriseur.com/api/profile/change-password",
-                    content);
-
-
-
-                var responseBody = await response.Content.ReadAsStringAsync();
-
-
-                if (response.IsSuccessStatusCode)
-                {
-
                     CurrentPassword = string.Empty;
                     Password = string.Empty;
                     ConfirmPassword = string.Empty;
 
                     await Toast.Make(AppResource.PasswordUpdated, ToastDuration.Short).Show();
+                    return;
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+
+                if (statusCode == 422)
                 {
-
-
-                    try
-                    {
-                        var errorOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                        var errorResponse = JsonSerializer.Deserialize<Auth.ErrorResponse>(responseBody, errorOptions);
-
-                        if (errorResponse?.Errors != null)
-                        {
-                            var errorMessages = string.Join("\n",
-                                errorResponse.Errors.Values.SelectMany(e => e));
-                            await Toast.Make(AppResource.Invaliddata).Show();
-                        }
-                        else if (!string.IsNullOrEmpty(errorResponse?.Message))
-                        {
-                            await Toast.Make($"خطأ: {errorResponse.Message}").Show();
-                        }
-                        else
-                        {
-                            await Toast.Make(AppResource.DataverificationfailedPleasecheckthevalidityofthepasswords).Show();
-                        }
-                    }
-                    catch
-                    {
-                        await Toast.Make(AppResource.FailedtochangethepasswordPleasechecktheentereddata).Show();
-                    }
+                    await Toast.Make(AppResource.Invaliddata).Show();
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                else if (statusCode == 401)
                 {
-
                     await Toast.Make(AppResource.Thecurrentpasswordisincorrect).Show();
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                else if (statusCode == 400)
                 {
-
                     await Toast.Make(AppResource.InvalidrequestPleasechecktheentereddata).Show();
                 }
                 else
                 {
-
-
                     await Toast.Make(AppResource.Failedtochangethepassword).Show();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
                 await Toast.Make(AppResource.Connectionerror).Show();
             }
         }
@@ -2379,6 +2880,9 @@ private async Task Logout()
             try
             {
                 if (string.IsNullOrWhiteSpace(currentPassword))
+                    currentPassword = CurrentPassword;
+
+                if (string.IsNullOrWhiteSpace(currentPassword))
                 {
                     await App.Current.MainPage.ShowPopupAsync(
                         new PleaseEnterCurrentPasswordPopup());
@@ -2386,35 +2890,32 @@ private async Task Logout()
                     return;
                 }
 
-
                 var result = await _apiServices.DeleteCurrentUserProfileAsync(currentPassword);
-
 
                 if (result == null)
                 {
+                    CurrentPassword = string.Empty;
                     await Logout();
                     return;
                 }
 
-
-                if (result == "WrongPassword")
+                if (result == "WrongPassword" || result == "Unauthorized")
                 {
-                    await Toast.Make(AppResource.iSPASSWORDNOTCORECED
-                        ,
+                    await Toast.Make(AppResource.iSPASSWORDNOTCORECED,
                         ToastDuration.Short).Show();
-
                     return;
                 }
-
 
                 await Toast.Make(
                     AppResource.DeleteAccountError,
                     ToastDuration.Short).Show();
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                await Toast.Make(
+                    AppResource.DeleteAccountError,
+                    ToastDuration.Short).Show();
             }
         }
         private readonly services.NotificationService _notificationService;
@@ -2472,7 +2973,7 @@ private async Task Logout()
                 Email = string.Empty;
                 FullName = string.Empty;
                 Phone = string.Empty;
-                Avatar = null;
+                Avatar = DefaultAvatar;
 
                
                 try
@@ -2821,7 +3322,20 @@ private async Task Logout()
 
                 IsCancelingBooking = true;
 
-                bool success = await _apiServices.CancelBookingAsync(bookingId);
+                var match = Appointments?.FirstOrDefault(a =>
+                    a.Id == bookingId
+                    || (a.RelatedBookingIds?.Contains(bookingId) ?? false));
+
+                var ids = match?.RelatedBookingIds is { Count: > 0 }
+                    ? match.RelatedBookingIds.Distinct().ToList()
+                    : new List<int> { bookingId };
+
+                bool success = true;
+                foreach (var id in ids)
+                {
+                    if (!await _apiServices.CancelBookingAsync(id))
+                        success = false;
+                }
 
                 if (success)
                 {
@@ -2845,6 +3359,72 @@ private async Task Logout()
             {
                 IsCancelingBooking = false;
             }
+        }
+
+        public async Task SetAppointmentReminderEnabledAsync(Appointment appointment, bool enabled)
+        {
+            if (appointment == null || !appointment.CanManageReminder)
+                return;
+
+            try
+            {
+                if (!enabled)
+                {
+                    var (success, _, message) = await _apiServices.DeleteReminderAsync(appointment.Id);
+                    if (success)
+                    {
+                        appointment.Reminder = null;
+                        await LoadBookingsAsync();
+                    }
+                    else
+                    {
+                        await Toast.Make(message ?? "Failed to disable reminder", ToastDuration.Short).Show();
+                    }
+                    return;
+                }
+
+                var offset = SelectedReminderOption?.OffsetHours
+                    ?? (SelectedReminderOptionIndex >= 0 && SelectedReminderOptionIndex < ReminderOptions.Count
+                        ? ReminderOptions[SelectedReminderOptionIndex].OffsetHours
+                        : 1);
+
+                await ChangeAppointmentReminderOffsetAsync(appointment, offset);
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message, ToastDuration.Short).Show();
+            }
+        }
+
+        public async Task ChangeAppointmentReminderOffsetAsync(Appointment appointment, int offsetHours)
+        {
+            if (appointment == null || !appointment.CanManageReminder)
+                return;
+
+            var (success, statusCode, message, response) = await _apiServices.CreateReminderAsync(appointment.Id, offsetHours);
+            if (success)
+            {
+                appointment.Reminder = response?.Data;
+                await LoadBookingsAsync();
+                if (response?.Data != null && !response.Data.HasActiveChannel)
+                    await Toast.Make(ChannelWarningMessage ?? "Reminder saved, but no active notification channels are available.", ToastDuration.Long).Show();
+                return;
+            }
+
+            if (statusCode == 422)
+            {
+                var validationMessage = response?.FirstErrorMessage();
+                await Toast.Make(string.IsNullOrWhiteSpace(validationMessage) ? message : validationMessage, ToastDuration.Long).Show();
+                return;
+            }
+
+            if (statusCode == 429)
+            {
+                await Toast.Make("Too many requests. Please wait a minute and try again.", ToastDuration.Long).Show();
+                return;
+            }
+
+            await Toast.Make(message ?? "Could not set reminder", ToastDuration.Short).Show();
         }
 
 
@@ -2912,84 +3492,47 @@ private async Task Logout()
             {
                 Console.WriteLine("\n=== EnableReminderTimerAsync Started ===");
 
-                // ✅ Check if reminder is enabled
                 if (!IsReminderEnabled)
                 {
-                    await Toast.Make("❌ الرجاء تفعيل التنبيهات أولاً", ToastDuration.Short).Show();
+                    await Toast.Make(AppResource.EnableReminderTimer, ToastDuration.Short).Show();
                     return;
                 }
 
-                // ✅ Convert selected reminder option to TimeSpan
-                TimeSpan reminderDuration = SelectedReminderOptionIndex switch
-                {
-                    0 => TimeSpan.FromHours(1),      // 1 hour
-                    1 => TimeSpan.FromHours(3),      // 3 hours
-                    2 => TimeSpan.FromHours(6),      // 6 hours
-                    3 => TimeSpan.FromHours(12),     // 12 hours
-                    4 => TimeSpan.FromDays(1),       // 1 day
-                    5 => TimeSpan.FromDays(1),       // 1 day before
-                    _ => TimeSpan.FromHours(1)       // Default: 1 hour
-                };
+                var selectedOption = SelectedReminderOption
+                    ?? (SelectedReminderOptionIndex >= 0 && SelectedReminderOptionIndex < ReminderOptions.Count
+                        ? ReminderOptions[SelectedReminderOptionIndex]
+                        : null);
 
-                ReminderTime = reminderDuration;
-                var reminderLabel = SelectedReminderOptionIndex < ReminderOptions.Count ? ReminderOptions[SelectedReminderOptionIndex].Label : "Unknown";
-                Console.WriteLine($"✅ Reminder duration selected: {reminderLabel} ({ReminderTime:hh\\:mm\\:ss})");
+                if (selectedOption == null)
+                {
+                    await Toast.Make(AppResource.SelectReminderTime, ToastDuration.Short).Show();
+                    return;
+                }
 
                 var now = DateTime.Now;
-                Console.WriteLine($"   Current time: {now:yyyy-MM-dd HH:mm:ss}");
 
-                // ✅ Find upcoming appointment with null safety
                 var upcomingAppointment = Appointments
-                    .Where(a => !string.IsNullOrWhiteSpace(a?.AppointmentDate))  // Filter nulls
+                    .Where(a => a != null && a.CanManageReminder && !string.IsNullOrWhiteSpace(a.AppointmentDate))
                     .Select(a =>
                     {
                         bool parsed = DateTime.TryParse(a.AppointmentDate, out var date);
                         return new { Appointment = a, Date = date, WasParsed = parsed };
                     })
-                    .Where(x => x.WasParsed && x.Date > now)  // Only valid future dates
+                    .Where(x => x.WasParsed && x.Date > now)
                     .OrderBy(x => x.Date)
                     .FirstOrDefault();
 
                 if (upcomingAppointment == null)
                 {
-                    Console.WriteLine("❌ No upcoming appointments found");
                     await Toast.Make(AppResource.Noupcomingappointments, ToastDuration.Short).Show();
                     return;
                 }
 
-                Console.WriteLine($"   Found appointment: {upcomingAppointment.Date:yyyy-MM-dd HH:mm:ss}");
+                ReminderTime = TimeSpan.FromHours(selectedOption.OffsetHours);
 
-                // ✅ Validate TimeSpan is not default
-                if (ReminderTime == TimeSpan.Zero)
-                {
-                    await Toast.Make("❌ Reminder time must be greater than zero.", ToastDuration.Short).Show();
-                    return;
-                }
-
-                // ✅ Calculate reminder datetime with date context (from copilot-instructions)
-                var reminderDateTime = upcomingAppointment.Date - ReminderTime;
-
-                // ✅ Auto-adjust if reminder is on same day as appointment or later
-                if (reminderDateTime >= upcomingAppointment.Date)
-                {
-                    reminderDateTime = reminderDateTime.AddDays(-1);
-                    Console.WriteLine($"⚠️ Auto-adjusted reminder to previous day");
-                }
-
-                if (reminderDateTime <= now)
-                {
-                    Console.WriteLine($"❌ Reminder time in past: {reminderDateTime:yyyy-MM-dd HH:mm:ss}");
-                    await Toast.Make(AppResource.Theremindertimemustbebeforethebookingappointment, ToastDuration.Short).Show();
-                    return;
-                }
-
-                Console.WriteLine($"✅ Reminder set for: {reminderDateTime:yyyy-MM-dd HH:mm:ss}");
-                await SendAppointmentReminder(upcomingAppointment.Appointment, reminderDateTime);
-            }
-            catch (FormatException fex)
-            {
-                Console.WriteLine($"❌ Format error: {fex.Message}");
-                await Toast.Make("❌ Invalid date or time format.", ToastDuration.Short).Show();
+                await ChangeAppointmentReminderOffsetAsync(
+                    upcomingAppointment.Appointment,
+                    selectedOption.OffsetHours);
             }
             catch (Exception ex)
             {
@@ -2998,48 +3541,6 @@ private async Task Logout()
                 await Toast.Make($"❌ Error: {ex.Message}", ToastDuration.Short).Show();
             }
         }
-        private async Task SendAppointmentReminder(Appointment appointment, DateTime remindAtDateTime)
-        {
-            try
-            {
-                await SetAuthorizationHeaderAsync();
-
-
-                var reminderData = new
-                {
-                    appointment_id = appointment.Id,
-                    remind_at = remindAtDateTime.ToString("yyyy-MM-ddTHH:mm:ss")
-                };
-
-                var json = JsonSerializer.Serialize(reminderData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-
-
-                var response = await _httpClient.PostAsync(
-                    "https://lookupfriseur.com/api/appointments/reminders",
-                    content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-
-                    await Toast.Make(AppResource.Remindersentsuccessfully, ToastDuration.Short).Show();
-                }
-                else
-                {
-                    var errorBody = await response.Content.ReadAsStringAsync();
-
-                    await Toast.Make(AppResource.Failedtosend, ToastDuration.Short).Show();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                await Toast.Make(AppResource.EROR, ToastDuration.Short).Show();
-            }
-        }
-
 
         [ObservableProperty]
         private string otp;
@@ -3056,146 +3557,153 @@ private async Task Logout()
         [ObservableProperty]
         private string message;
 
+        private string _phonePendingVerification = string.Empty;
+
         // ========================
         // 🚀 Commands
         // ========================
 
+        public Task<bool> RequestPhoneOtpAsync() => SendOtp();
+
         [RelayCommand]
-        private async Task SendOtp()
+        private async Task<bool> SendOtp()
         {
-            if (IsBusy) return;
+            if (IsBusy) return false;
 
             try
             {
                 IsBusy = true;
                 Message = string.Empty;
 
-                // ✅ Validate input
-                if (string.IsNullOrWhiteSpace(Phone))
+                var phone = (Phone ?? string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(phone))
                 {
-                    Toast.Make(AppResource.NotFoundPhoneNumber).Show();
-                    return;
+                    await ShowPhoneOtpToastAsync(AppResource.NotFoundPhoneNumber);
+                    return false;
                 }
 
-                // ✅ Call API method with structured response
-                var (success, statusCode, errorMessage, retryAfter) =
-                    await _apiServices.SendPhoneOtpAsync(Phone);
+                _phonePendingVerification = phone;
 
-                // ========================
-                // 🟢 SUCCESS CASE (200)
-                // ========================
+                var (success, statusCode, errorMessage, retryAfter) =
+                    await _apiServices.SendPhoneOtpAsync(phone);
+
                 if (success)
                 {
                     OtpSent = true;
-                    Toast.Make(AppResource.completesendotppone).Show();
-
-                    // Navigate to OTP verification page
-                    await NavigationService.NavigateToPage(
-                        NavigationService.ROUTE_OTP_PHONE_NUMBER);
-
-                    return;
+                    Otp = string.Empty;
+                    Console.WriteLine("[PhoneOtp] Send accepted. Caller will open OTPPoneNumper.");
+                    _ = ShowPhoneOtpToastAsync(AppResource.completesendotppone);
+                    return true;
                 }
-
-                // ========================
-                // 🔴 ERROR HANDLING
-                // ========================
 
                 Console.WriteLine($"❌ Send OTP failed: Status={statusCode}, Error={errorMessage}");
 
-                // HTTP 400 - Validation errors / Already verified
-                if (statusCode == 400)
+                if (IsPhoneAlreadyVerifiedMessage(errorMessage))
                 {
-                    // Check if phone is already verified
-                    if (errorMessage?.ToLower().Contains("verified") == true ||
-                        errorMessage?.ToLower().Contains("already") == true)
-                    {
-                        Toast.Make(AppResource.PhoneNumberAlreadyVerified).Show();
-                        OtpSent = true; // Consider it as sent since already verified
-                    }
-                    else
-                    {
-                        // Generic validation error
-                        Toast.Make(errorMessage ?? AppResource.Failedtosendotp).Show();
-                    }
-                    return;
+                    await MarkPhoneVerifiedAsync();
+                    await ShowPhoneOtpToastAsync(AppResource.PhoneNumberAlreadyVerified);
+                    return false;
                 }
 
-                // HTTP 429 - Too Many Requests (Rate Limit)
                 if (statusCode == 429)
                 {
                     Console.WriteLine($"⏳ Rate limited. Retry after {retryAfter} seconds");
-
                     Message = retryAfter.HasValue
                         ? $"Please wait {retryAfter} seconds before retrying"
                         : "Too many attempts. Please wait before retrying.";
-
-                    Toast.Make("Too many attempts").Show();
-
-                    return;
+                    await ShowPhoneOtpToastAsync(AppResource.WateResposeOTP);
+                    return false;
                 }
 
-                // Other HTTP errors
-                Toast.Make(AppResource.Failedtosendotp).Show();
+                await ShowPhoneOtpToastAsync(
+                    string.IsNullOrWhiteSpace(errorMessage)
+                        ? AppResource.Failedtosendotp
+                        : errorMessage);
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Unexpected error during send OTP: {ex.Message}\n{ex.StackTrace}");
-                Toast.Make("Error sending OTP").Show();
+                Console.WriteLine($"❌ Unexpected error during send OTP: {ex}");
+                await ShowPhoneOtpToastAsync(AppResource.Failedtosendotp);
+                return false;
             }
             finally
             {
                 IsBusy = false;
             }
         }
+        public Task<bool> ConfirmPhoneOtpAsync() => VerifyOtp();
+
         [RelayCommand]
-        private async Task VerifyOtp()
+        private async Task<bool> VerifyOtp()
         {
-            if (IsBusy) return;
+            if (IsBusy) return false;
 
             try
             {
                 IsBusy = true;
                 Message = string.Empty;
 
-                // تحقق من الصيغة
-                if (string.IsNullOrWhiteSpace(Otp))
+                var code = (Otp ?? string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(code) || !code.All(char.IsDigit))
                 {
-                    Toast.Make(AppResource.Pleaseentertheotp).Show();
-                    return;
+                    await ShowPhoneOtpToastAsync(AppResource.Pleaseentertheotp);
+                    return false;
                 }
 
-                // استدعاء API
+                var phone = string.IsNullOrWhiteSpace(_phonePendingVerification)
+                    ? (Phone ?? string.Empty).Trim()
+                    : _phonePendingVerification;
+
+                if (string.IsNullOrWhiteSpace(phone))
+                {
+                    await ShowPhoneOtpToastAsync(AppResource.NotFoundPhoneNumber);
+                    return false;
+                }
+
                 var (success, statusCode, errorMessage, retryAfter) =
-                    await _apiServices.VerifyPhoneOtpAsync(Phone, Otp);
+                    await _apiServices.VerifyPhoneOtpAsync(phone, code);
 
-                // نجاح - 200
-                if (success)
+                if (success || IsPhoneAlreadyVerifiedMessage(errorMessage))
                 {
-                    IsVerified = true;
                     Otp = string.Empty;
-                    Toast.Make(AppResource.OTPverifiedsuccessfully).Show();
-
-                    LoadData();
-
-                    // الرجوع للصفحة السابقة
-                    await Shell.Current.GoToAsync("..", true);
-
-                }
-                // خطأ - 400
-                else if (statusCode == 400)
-                {
-                    Toast.Make(AppResource.PhoneNumberAlreadyVerified).Show();
                     IsVerified = true;
+                    PhoneVerified = true;
+                    OnPropertyChanged(nameof(PhoneVerificationStatus));
+                    Console.WriteLine("[PhoneOtp] Verification accepted. Returning to ProfilePage.");
+                    _ = ShowPhoneOtpToastAsync(
+                        success
+                            ? AppResource.OTPverifiedsuccessfully
+                            : AppResource.PhoneNumberAlreadyVerified);
+                    _ = MarkPhoneVerifiedAsync();
+                    return true;
                 }
-                // أي خطأ آخر
-                else
+
+                Console.WriteLine($"❌ Verify OTP failed: Status={statusCode}, Error={errorMessage}");
+
+                if (statusCode == 429)
                 {
-                    Toast.Make(AppResource.FailedToVerifyOtp).Show();
+                    Message = retryAfter.HasValue
+                        ? $"Please wait {retryAfter} seconds before retrying"
+                        : "Too many attempts. Please wait before retrying.";
+                    await ShowPhoneOtpToastAsync(AppResource.WateResposeOTP);
+                    return false;
                 }
+
+                if (statusCode is 400 or 422)
+                {
+                    await ShowPhoneOtpToastAsync(AppResource.InvalidOTP);
+                    return false;
+                }
+
+                await ShowPhoneOtpToastAsync(AppResource.FailedToVerifyOtp);
+                return false;
             }
             catch (Exception ex)
             {
-                Toast.Make("حدث خطأ").Show();
+                Console.WriteLine($"❌ Unexpected error during verify OTP: {ex}");
+                await ShowPhoneOtpToastAsync(AppResource.FailedToVerifyOtp);
+                return false;
             }
             finally
             {
@@ -3217,26 +3725,97 @@ private async Task Logout()
                 IsBusy = true;
                 Message = string.Empty;
 
-                // Call API method with structured response
+                var phone = string.IsNullOrWhiteSpace(_phonePendingVerification)
+                    ? (Phone ?? string.Empty).Trim()
+                    : _phonePendingVerification;
+
+                if (string.IsNullOrWhiteSpace(phone))
+                {
+                    await ShowPhoneOtpToastAsync(AppResource.NotFoundPhoneNumber);
+                    return;
+                }
+
                 var (success, statusCode, errorMessage, retryAfter) =
-                    await _apiServices.SendPhoneOtpAsync(Phone);
+                    await _apiServices.SendPhoneOtpAsync(phone);
 
                 if (success)
                 {
-                    Message = "تم إعادة إرسال الرمز";
+                    OtpSent = true;
+                    await ShowPhoneOtpToastAsync(AppResource.completesendotppone);
+                    return;
                 }
-                else
+
+                Console.WriteLine($"❌ Resend OTP failed: Status={statusCode}, Error={errorMessage}");
+
+                if (statusCode == 429)
                 {
-                    Message = errorMessage ?? "فشل إعادة الإرسال";
+                    Message = retryAfter.HasValue
+                        ? $"Please wait {retryAfter} seconds before retrying"
+                        : "Too many attempts. Please wait before retrying.";
+                    await ShowPhoneOtpToastAsync(AppResource.WateResposeOTP);
+                    return;
                 }
+
+                await ShowPhoneOtpToastAsync(
+                    string.IsNullOrWhiteSpace(errorMessage)
+                        ? AppResource.Failedtosendotp
+                        : errorMessage);
             }
             catch (Exception ex)
             {
-                Message = "حدث خطأ";
+                Console.WriteLine($"❌ Unexpected error during resend OTP: {ex}");
+                await ShowPhoneOtpToastAsync(AppResource.Failedtosendotp);
             }
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        private async Task MarkPhoneVerifiedAsync()
+        {
+            IsVerified = true;
+            OtpSent = true;
+
+            try
+            {
+                await LoadUser();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PhoneOtp] Reload user after verify failed: {ex.Message}");
+            }
+
+            PhoneVerified = true;
+            OnPropertyChanged(nameof(PhoneVerificationStatus));
+        }
+
+        private static bool IsPhoneAlreadyVerifiedMessage(string? errorMessage)
+        {
+            if (string.IsNullOrWhiteSpace(errorMessage))
+                return false;
+
+            return errorMessage.Contains("verified", StringComparison.OrdinalIgnoreCase)
+                || errorMessage.Contains("verifiziert", StringComparison.OrdinalIgnoreCase)
+                || errorMessage.Contains("مؤكد", StringComparison.Ordinal)
+                || errorMessage.Contains("مُؤكَّد", StringComparison.Ordinal);
+        }
+
+        private static async Task ShowPhoneOtpToastAsync(string? message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            try
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Toast.Make(message, ToastDuration.Short).Show();
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PhoneOtp] Toast failed: {ex.Message}");
             }
         }
 

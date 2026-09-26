@@ -33,7 +33,6 @@ public partial class App : Application
         }
 
         var savedLang = Preferences.Get("AppLanguage", string.Empty);
-        var direction = Microsoft.Maui.FlowDirection.LeftToRight;
         CultureInfo initialCulture;
 
         if (!string.IsNullOrEmpty(savedLang))
@@ -61,11 +60,16 @@ public partial class App : Application
 
             Console.WriteLine($"🌍 First run: System language detected, set to {initialCulture.DisplayName}");
         }
+    }
 
-        direction = initialCulture.TwoLetterISOLanguageName == "ar"
-            ? Microsoft.Maui.FlowDirection.RightToLeft
-            : Microsoft.Maui.FlowDirection.LeftToRight;
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(CreateRootPage());
+    }
 
+    internal static Page CreateRootPage()
+    {
+        var direction = GetSavedFlowDirection();
         string? token = null;
         try
         {
@@ -78,14 +82,35 @@ public partial class App : Application
 
         if (string.IsNullOrWhiteSpace(token))
         {
-            MainPage = new NavigationPage(new LoginPage { FlowDirection = direction });
-            NavigationService.SetLoginContext(); // Mark that we're in login context
+            NavigationService.SetLoginContext();
+            return new NavigationPage(new LoginPage { FlowDirection = direction })
+            {
+                FlowDirection = direction
+            };
         }
+
+        NavigationService.SetAppContext();
+        return new AppShell { FlowDirection = direction };
+    }
+
+    internal static Microsoft.Maui.FlowDirection GetSavedFlowDirection()
+    {
+        var lang = Preferences.Get("AppLanguage", "de-DE");
+        return lang.StartsWith("ar", StringComparison.OrdinalIgnoreCase)
+            ? Microsoft.Maui.FlowDirection.RightToLeft
+            : Microsoft.Maui.FlowDirection.LeftToRight;
+    }
+
+    public static void SetRootPage(Page page)
+    {
+        var app = Current;
+        if (app == null)
+            return;
+
+        if (app.Windows.Count > 0)
+            app.Windows[0].Page = page;
         else
-        {
-            MainPage = new AppShell { FlowDirection = direction };
-            NavigationService.SetAppContext(); // Mark that we're in app context
-        }
+            app.MainPage = page;
     }
 
     /// <summary>
@@ -118,13 +143,18 @@ public partial class App : Application
 
             if (!hasValidTokens)
             {
-                await tokenManager.ClearTokensAsync();
-                await MainThread.InvokeOnMainThreadAsync(() =>
+                // Keep the current session if tokens exist but expiry metadata is not ready yet.
+                // Only send the user to login when there is truly no access token.
+                var accessToken = await tokenManager.GetAccessTokenAsync();
+                if (string.IsNullOrWhiteSpace(accessToken))
                 {
-                    var direction = MainPage?.FlowDirection ?? Microsoft.Maui.FlowDirection.LeftToRight;
-                    MainPage = new NavigationPage(new LoginPage { FlowDirection = direction });
-                });
-                return;
+                    await tokenManager.ClearTokensAsync();
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        SetRootPage(CreateRootPage());
+                    });
+                    return;
+                }
             }
 
             // Check if access token needs proactive refresh
@@ -141,12 +171,21 @@ public partial class App : Application
                 }
                 else
                 {
-                    await tokenManager.ClearTokensAsync();
-                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    // Network blips on cold start must not log the user out.
+                    bool refreshExpired = await tokenManager.IsRefreshTokenExpiredAsync();
+                    var refreshToken = await tokenManager.GetRefreshTokenAsync();
+                    if (refreshExpired || string.IsNullOrWhiteSpace(refreshToken))
                     {
-                        var direction = MainPage?.FlowDirection ?? Microsoft.Maui.FlowDirection.LeftToRight;
-                        MainPage = new NavigationPage(new LoginPage { FlowDirection = direction });
-                    });
+                        await tokenManager.ClearTokensAsync();
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            SetRootPage(CreateRootPage());
+                        });
+                    }
+                    else
+                    {
+                        Console.WriteLine("⚠️ [App] Token refresh failed temporarily — keeping session");
+                    }
                 }
             }
             else
@@ -164,9 +203,37 @@ public partial class App : Application
     {
         _ = PerformAuthenticationCheckAsync();
     }
-    protected override void OnResume() { }
+    protected override void OnResume()
+    {
+        _ = ResumeHomeIfNeededAsync();
+    }
+
+    private static async Task ResumeHomeIfNeededAsync()
+    {
+        try
+        {
+            if (Current?.Windows?.FirstOrDefault()?.Page is not AppShell
+                && Current?.MainPage is not AppShell)
+            {
+                return;
+            }
+
+            var vm = loukupm.ViewModel.AppViewModel.Instance;
+            if (vm.HasNoHomeData && vm.RefreshHomeCommand?.CanExecute(null) == true)
+                await vm.RefreshHomeCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ [App] Resume home refresh skipped: {ex.Message}");
+        }
+    }
     public static void ResetAuthenticationCheck()
     {
         Console.WriteLine("🔄 ResetAuthenticationCheck called (no-op in new flow)");
+    }
+
+    public void LoadLoginPage()
+    {
+        _ = NavigationService.NavigateToLoginAndClear();
     }
 }

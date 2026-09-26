@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
+using loukupm.Langue;
 using loukupm.Model;
 using loukupm.Services;
 using loukupm.ViewModel;
@@ -14,7 +15,14 @@ namespace loukupm.View;
 
 public partial class TerminbuchenPage : ContentPage
 {
-    private Dictionary<int, Picker> _serviceProviderPickers = new();
+    private readonly Dictionary<int, ServiceSlotHost> _slotHosts = new();
+
+    private sealed class ServiceSlotHost
+    {
+        public Servies Service { get; init; }
+        public FlexLayout SlotsContainer { get; init; }
+        public WorkTeam Provider { get; set; }
+    }
 
     public TerminbuchenPage()
     {
@@ -51,10 +59,11 @@ public partial class TerminbuchenPage : ContentPage
             if (viewModel == null)
                 return;
 
+            _slotHosts.Clear();
+
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 ServiceProviderSelectorsContainer.Children.Clear();
-                _serviceProviderPickers.Clear();
             });
 
             var services = viewModel.SelectedServices?.ToList();
@@ -122,30 +131,52 @@ public partial class TerminbuchenPage : ContentPage
         verticalStackLayout.Children.Add(serviceName);
 
         // ========================================================
-        // PROVIDER PICKER
+        // PROVIDER SELECTOR
         // ========================================================
 
-        var picker = new Picker
+        WorkTeam? selectedProvider = null;
+
+        var nameLabel = new Label
         {
-            Title = "Select provider",
-            BackgroundColor = Color.FromArgb("#333333"),
-            TextColor = Colors.White,
+            Text = AppResource.SelectProvider,
+            TextColor = Color.FromArgb("#999999"),
             FontFamily = "Oswald",
-            FontSize = 13,
-            HeightRequest = 40,
-            ItemDisplayBinding = new Binding("Name")
+            FontSize = 14,
+            VerticalOptions = LayoutOptions.Center,
+            LineBreakMode = LineBreakMode.TailTruncation
         };
 
-        var pickerBorder = new Border
+        var chevron = new Label
         {
-            Stroke = Color.FromArgb("#444444"),
+            Text = "▾",
+            TextColor = Color.FromArgb("#D4AF37"),
+            FontSize = 16,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var selectorGrid = new Grid
+        {
+            ColumnSpacing = 8,
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = GridLength.Star },
+                new ColumnDefinition { Width = GridLength.Auto }
+            }
+        };
+        selectorGrid.Add(nameLabel, 0, 0);
+        selectorGrid.Add(chevron, 1, 0);
+
+        var selector = new Border
+        {
+            BackgroundColor = Color.FromArgb("#1A1813"),
+            Stroke = Color.FromArgb("#D4AF37"),
             StrokeThickness = 1,
             StrokeShape = new RoundRectangle
             {
-                CornerRadius = new CornerRadius(8)
+                CornerRadius = new CornerRadius(10)
             },
-            Padding = new Thickness(0),
-            Content = picker
+            Padding = new Thickness(12, 10),
+            Content = selectorGrid
         };
 
         // ========================================================
@@ -176,22 +207,27 @@ public partial class TerminbuchenPage : ContentPage
             Margin = new Thickness(0, 8, 0, 0)
         };
 
+        var slotHost = new ServiceSlotHost
+        {
+            Service = service,
+            SlotsContainer = slotsContainer
+        };
+        _slotHosts[service.Id] = slotHost;
+
         // ========================================================
         // GET PROVIDERS
         // ========================================================
 
         var providers =
-            viewModel?.GetAlternativeProvidersForService(service.Id);
+            viewModel?.GetAlternativeProvidersForService(service.Id)?.ToList();
 
         if (providers != null && providers.Count > 0)
         {
-            picker.ItemsSource = providers;
-
             // ====================================================
             // RESTORE PREVIOUS PROVIDER
             // ====================================================
 
-            if (viewModel.CurrentBooking != null &&
+            if (viewModel?.CurrentBooking != null &&
                 viewModel.CurrentBooking.ServiceProviderMap.TryGetValue(
                     service.Id,
                     out var providerId))
@@ -202,7 +238,10 @@ public partial class TerminbuchenPage : ContentPage
 
                 if (existing != null)
                 {
-                    picker.SelectedItem = existing;
+                    selectedProvider = existing;
+                    slotHost.Provider = existing;
+                    nameLabel.Text = existing.Name;
+                    nameLabel.TextColor = Color.FromArgb("#E8C966");
                 }
             }
         }
@@ -210,7 +249,7 @@ public partial class TerminbuchenPage : ContentPage
         {
             var noProvidersLabel = new Label
             {
-                Text = "No provider available",
+                Text = AppResource.NoProviderAvailable,
                 TextColor = Color.FromArgb("#FF6666"),
                 FontFamily = "Oswald",
                 FontSize = 12,
@@ -222,77 +261,163 @@ public partial class TerminbuchenPage : ContentPage
         }
 
         // ========================================================
-        // BUILD DAY BUTTONS
+        // BUILD DAY SHORTCUTS (day abbreviation + date number)
         // ========================================================
+
+        void ApplyDayCellStyle(Border cell, bool selected)
+        {
+            cell.BackgroundColor = selected
+                ? Color.FromArgb("#FFD700")
+                : Color.FromArgb("#333333");
+
+            cell.Stroke = selected
+                ? Color.FromArgb("#FFD700")
+                : Color.FromArgb("#444444");
+
+            if (cell.Content is not Grid grid)
+                return;
+
+            foreach (var child in grid.Children.OfType<Label>())
+            {
+                var row = Grid.GetRow(child);
+                if (row == 0)
+                {
+                    child.TextColor = selected
+                        ? Colors.Black
+                        : Color.FromArgb("#999999");
+                }
+                else
+                {
+                    child.TextColor = selected
+                        ? Colors.Black
+                        : Colors.White;
+                }
+            }
+        }
+
+        Border CreateDayCell(DateTime date, bool selected)
+        {
+            var dayLabel = new Label
+            {
+                Text = GetDayAbbreviation(date.DayOfWeek),
+                FontFamily = "Oswald",
+                FontSize = 11,
+                FontAttributes = FontAttributes.Bold,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+                MaxLines = 1,
+                HeightRequest = 18
+            };
+
+            var dateLabel = new Label
+            {
+                Text = date.ToString("dd.MM"),
+                FontFamily = "Oswald",
+                FontSize = 13,
+                FontAttributes = FontAttributes.Bold,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+                MaxLines = 1,
+                HeightRequest = 24
+            };
+
+            Grid.SetRow(dayLabel, 0);
+            Grid.SetRow(dateLabel, 1);
+
+            var content = new Grid
+            {
+                RowSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Center,
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = new GridLength(18) },
+                    new RowDefinition { Height = new GridLength(24) }
+                },
+                Children = { dayLabel, dateLabel }
+            };
+
+            var cell = new Border
+            {
+                StrokeThickness = 1,
+                StrokeShape = new RoundRectangle
+                {
+                    CornerRadius = new CornerRadius(10)
+                },
+                Padding = new Thickness(4, 6),
+                WidthRequest = 58,
+                HeightRequest = 72,
+                Content = content
+            };
+
+            ApplyDayCellStyle(cell, selected);
+            return cell;
+        }
 
         void BuildDayButtons()
         {
             daysContainer.Children.Clear();
 
             var today = DateTime.Today;
+            DateTime? highlightedDate = null;
+
+            if (viewModel?.CurrentBooking != null &&
+                viewModel.CurrentBooking.ServiceDateMap.TryGetValue(
+                    service.Id,
+                    out var mappedDate))
+            {
+                highlightedDate = mappedDate.Date;
+            }
 
             for (int i = 0; i < 7; i++)
             {
                 var date = today.AddDays(i);
+                var isSelected =
+                    highlightedDate.HasValue &&
+                    Booking.ToCalendarDate(highlightedDate.Value) == Booking.ToCalendarDate(date);
 
-                var btn = new Button
+                var cell = CreateDayCell(date, isSelected);
+
+                var tap = new TapGestureRecognizer();
+                tap.Tapped += async (s, e) =>
                 {
-                    Text = date.ToString("dd\nddd"),
-                    FontFamily = "Oswald",
-                    FontSize = 12,
-                    BackgroundColor = Color.FromArgb("#333333"),
-                    TextColor = Colors.White,
-                    CornerRadius = 8,
-                    Padding = new Thickness(6),
-                    HeightRequest = 50,
-                    WidthRequest = 55,
-                    Margin = new Thickness(0, 0, 4, 0)
-                };
+                    foreach (var c in daysContainer.Children.OfType<Border>())
+                        ApplyDayCellStyle(c, selected: false);
 
-                btn.Clicked += async (s, e) =>
-                {
-                    // =================================================
-                    // RESET DAY BUTTONS
-                    // =================================================
-
-                    foreach (
-                        var c in daysContainer.Children.OfType<Button>())
-                    {
-                        c.BackgroundColor =
-                            Color.FromArgb("#333333");
-
-                        c.TextColor = Colors.White;
-                    }
-
-                    btn.BackgroundColor =
-                        Color.FromArgb("#FFD700");
-
-                    btn.TextColor = Colors.Black;
+                    ApplyDayCellStyle(cell, selected: true);
 
                     Console.WriteLine(
                         $"[TerminbuchenPage] Date selected for service " +
                         $"{service.Id}: {date:yyyy-MM-dd}");
 
-                    // =================================================
-                    // CHECK PROVIDER
-                    // =================================================
+                    var dateChanged = RememberServiceDate(service, date);
 
-                    if (picker.SelectedItem is WorkTeam selectedProvider)
+                    if (selectedProvider != null)
                     {
                         await LoadSlotsAsync(
                             service,
                             selectedProvider,
                             date,
                             slotsContainer);
+
+                        if (dateChanged)
+                            await RefreshFollowingServiceSlotsAsync(service.Id);
                     }
-                    else
+                    else if (dateChanged)
+                    {
+                        await RefreshFollowingServiceSlotsAsync(service.Id);
+                    }
+
+                    if (selectedProvider == null)
                     {
                         slotsContainer.Children.Clear();
 
                         slotsContainer.Children.Add(
                             new Label
                             {
-                                Text = "Please select a provider first",
+                                Text = AppResource.PleaseSelectProviderFirst,
                                 TextColor =
                                     Color.FromArgb("#FF6666"),
                                 FontFamily = "Oswald",
@@ -301,34 +426,41 @@ public partial class TerminbuchenPage : ContentPage
                     }
                 };
 
-                daysContainer.Children.Add(btn);
+                cell.GestureRecognizers.Add(tap);
+                daysContainer.Children.Add(cell);
             }
         }
 
         // ========================================================
-        // PROVIDER SELECTION CHANGED
+        // PROVIDER SELECTION
         // ========================================================
 
-        picker.SelectedIndexChanged += async (s, e) =>
+        if (providers != null && providers.Count > 0)
         {
-            if (picker.SelectedItem is WorkTeam selectedProvider)
+            var openProviders = new TapGestureRecognizer();
+            openProviders.Tapped += async (s, e) =>
             {
-                OnServiceProviderSelected(
-                    service,
+                var popup = new ProviderSelectionPopup(
+                    AppResource.SelectProvider,
+                    providers,
                     selectedProvider);
 
-                BuildDayButtons();
+                if (await this.ShowPopupAsync(popup) is not WorkTeam chosen)
+                    return;
 
+                selectedProvider = chosen;
+                slotHost.Provider = chosen;
+                nameLabel.Text = chosen.Name;
+                nameLabel.TextColor = Color.FromArgb("#E8C966");
+
+                var providerChanged = OnServiceProviderSelected(service, chosen);
+                BuildDayButtons();
                 slotsContainer.Children.Clear();
 
                 Console.WriteLine(
                     $"[TerminbuchenPage] Provider changed for " +
                     $"service {service.Id}: " +
-                    $"{selectedProvider.Name}");
-
-                // ====================================================
-                // RESTORE PREVIOUS DATE
-                // ====================================================
+                    $"{chosen.Name}");
 
                 if (viewModel?.CurrentBooking != null &&
                     viewModel.CurrentBooking.ServiceDateMap.TryGetValue(
@@ -337,33 +469,28 @@ public partial class TerminbuchenPage : ContentPage
                 {
                     await LoadSlotsAsync(
                         service,
-                        selectedProvider,
+                        chosen,
                         existingDate,
                         slotsContainer);
+
+                    if (providerChanged)
+                        await RefreshFollowingServiceSlotsAsync(service.Id);
                 }
-            }
-        };
+                else if (providerChanged)
+                {
+                    await RefreshFollowingServiceSlotsAsync(service.Id);
+                }
+            };
 
-        // ========================================================
-        // STORE PICKER
-        // ========================================================
+            selector.GestureRecognizers.Add(openProviders);
 
-        _serviceProviderPickers[service.Id] = picker;
-
-        // ========================================================
-        // ADD CONTROLS
-        // ========================================================
-
-        verticalStackLayout.Children.Add(
-            pickerBorder);
-
-        // ========================================================
-        // WRAP DAYS CONTAINER IN SCROLL VIEW FOR HORIZONTAL SCROLLING
-        // ========================================================
+            verticalStackLayout.Children.Add(selector);
+        }
 
         var daysScrollView = new ScrollView
         {
             Orientation = ScrollOrientation.Horizontal,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
             Content = daysContainer,
             Margin = new Thickness(0, 8, 0, 8)
         };
@@ -374,7 +501,37 @@ public partial class TerminbuchenPage : ContentPage
         verticalStackLayout.Children.Add(
             slotsContainer);
 
+        if (selectedProvider != null)
+        {
+            BuildDayButtons();
+
+            if (viewModel?.CurrentBooking != null &&
+                viewModel.CurrentBooking.ServiceDateMap.TryGetValue(service.Id, out var savedDate))
+            {
+                _ = LoadSlotsAsync(service, selectedProvider, savedDate, slotsContainer);
+            }
+        }
+
         return container;
+    }
+
+    // ============================================================
+    // DAY ABBREVIATIONS (ar / de)
+    // ============================================================
+
+    private static string GetDayAbbreviation(DayOfWeek dayOfWeek)
+    {
+        return dayOfWeek switch
+        {
+            DayOfWeek.Sunday => AppResource.DayAbbrevSunday,
+            DayOfWeek.Monday => AppResource.DayAbbrevMonday,
+            DayOfWeek.Tuesday => AppResource.DayAbbrevTuesday,
+            DayOfWeek.Wednesday => AppResource.DayAbbrevWednesday,
+            DayOfWeek.Thursday => AppResource.DayAbbrevThursday,
+            DayOfWeek.Friday => AppResource.DayAbbrevFriday,
+            DayOfWeek.Saturday => AppResource.DayAbbrevSaturday,
+            _ => string.Empty
+        };
     }
 
     // ============================================================
@@ -407,34 +564,25 @@ public partial class TerminbuchenPage : ContentPage
 
             // ========================================================
             // CHECK SLOTS
+            // Each later service only keeps times that start after
+            // every earlier selected service has finished.
             // ========================================================
 
-            if (avail?.Data?.AvailableSlots != null &&
-                avail.Data.AvailableSlots.Count > 0)
+            var slots = (avail?.Data?.AvailableSlots ?? new List<AvailableSlot>())
+                .Where(slot => IsSlotAfterEarlierServices(service, date, slot))
+                .ToList();
+
+            RemoveSavedSlotIfTooEarly(service);
+
+            if (slots.Count > 0)
             {
                 Console.WriteLine(
                     $"[TerminbuchenPage] Found " +
-                    $"{avail.Data.AvailableSlots.Count} available slots");
+                    $"{slots.Count} available slots");
 
-                foreach (var slot in avail.Data.AvailableSlots)
+                foreach (var slot in slots)
                 {
-                    var slotButton = new Button
-                    {
-                        Text = slot.DisplayTime,
-                        FontFamily = "Oswald",
-                        FontSize = 12,
-                        BackgroundColor =
-                            Color.FromArgb("#333333"),
-                        TextColor = Colors.White,
-                        CornerRadius = 8,
-                        Padding = new Thickness(8, 6),
-                        Margin = new Thickness(0, 0, 8, 8),
-                        HeightRequest = 40
-                    };
-
-                    // =================================================
-                    // RESTORE SELECTED SLOT
-                    // =================================================
+                    var isSavedSlot = false;
 
                     if (BindingContext is AppViewModel vm &&
                         vm.CurrentBooking != null &&
@@ -447,49 +595,24 @@ public partial class TerminbuchenPage : ContentPage
                                 slot.StartTime)
                             ?? slot.StartTime;
 
-                        if (string.Equals(
+                        isSavedSlot = string.Equals(
                             savedSlot,
                             formattedSavedSlot,
-                            StringComparison.OrdinalIgnoreCase))
-                        {
-                            slotButton.BackgroundColor =
-                                Color.FromArgb("#FFD700");
-
-                            slotButton.TextColor =
-                                Colors.Black;
-                        }
+                            StringComparison.OrdinalIgnoreCase);
                     }
 
-                    // =================================================
-                    // SLOT CLICK
-                    // =================================================
+                    var slotChip = CreateSlotChip(slot, isSavedSlot);
 
-                    slotButton.Clicked += (ss, ee) =>
+                    var tap = new TapGestureRecognizer();
+                    tap.Tapped += async (ss, ee) =>
                     {
-                        // =============================================
-                        // RESET ALL SLOT BUTTONS
-                        // =============================================
-
-                        foreach (
-                            var c in slotsContainer.Children
-                                .OfType<Button>())
+                        foreach (var c in slotsContainer.Children.OfType<Border>())
                         {
-                            c.BackgroundColor =
-                                Color.FromArgb("#333333");
-
-                            c.TextColor =
-                                Colors.White;
+                            if (c.ClassId == "slot")
+                                ApplySlotChipStyle(c, selected: false);
                         }
 
-                        // =============================================
-                        // SELECT CURRENT SLOT
-                        // =============================================
-
-                        slotButton.BackgroundColor =
-                            Color.FromArgb("#FFD700");
-
-                        slotButton.TextColor =
-                            Colors.Black;
+                        ApplySlotChipStyle(slotChip, selected: true);
 
                         Console.WriteLine(
                             $"[TerminbuchenPage] " +
@@ -511,21 +634,27 @@ public partial class TerminbuchenPage : ContentPage
                                     slot.StartTime)
                                 ?? slot.StartTime;
 
+                            var formattedEnd = ResolveSlotEnd(
+                                service,
+                                slot,
+                                formattedTime);
+
                             // ==========================================
                             // SERVICE SLOT
                             // ==========================================
 
-                            viewModel.CurrentBooking
-                                .ServiceSlotMap[service.Id] =
-                                formattedTime;
+                            viewModel.CurrentBooking.SetServiceSlot(
+                                service.Id,
+                                formattedTime,
+                                formattedEnd);
 
                             // ==========================================
                             // SERVICE DATE
                             // ==========================================
 
-                            viewModel.CurrentBooking
-                                .ServiceDateMap[service.Id] =
-                                date.Date;
+                            var day = Booking.ToCalendarDate(date);
+                            viewModel.CurrentBooking.SetServiceDate(service.Id, day);
+                            viewModel.SelectedDate = day;
 
                             // ==========================================
                             // DEBUG
@@ -564,15 +693,13 @@ public partial class TerminbuchenPage : ContentPage
                                     $"Service {kvp.Key} -> " +
                                     $"{kvp.Value}");
                             }
+
+                            await RefreshFollowingServiceSlotsAsync(service.Id);
                         }
                     };
 
-                    // =================================================
-                    // ADD SLOT BUTTON
-                    // =================================================
-
-                    slotsContainer.Children.Add(
-                        slotButton);
+                    slotChip.GestureRecognizers.Add(tap);
+                    slotsContainer.Children.Add(slotChip);
                 }
             }
             else
@@ -582,16 +709,35 @@ public partial class TerminbuchenPage : ContentPage
                     $"No available slots found for service " +
                     $"{service.Id}");
 
-                slotsContainer.Children.Add(
+                var emptyState = new VerticalStackLayout
+                {
+                    Spacing = 4,
+                    Margin = new Thickness(0, 5)
+                };
+
+                FlexLayout.SetBasis(emptyState, new FlexBasis(1, true));
+
+                emptyState.Children.Add(
                     new Label
                     {
-                        Text = "No available slots",
-                        TextColor =
-                            Color.FromArgb("#FF6666"),
-                        FontFamily = "Oswald",
-                        FontSize = 12,
-                        Margin = new Thickness(0, 5)
+                        Text = AppResource.NoAppointmentsAvailable,
+                        TextColor = Color.FromArgb("#FF6666"),
+                        FontFamily = "georgia-bold",
+                        FontSize = 16,
+                        LineBreakMode = LineBreakMode.WordWrap
                     });
+
+                emptyState.Children.Add(
+                    new Label
+                    {
+                        Text = AppResource.NoAppointmentsAvailableForDay,
+                        TextColor = Color.FromArgb("#888888"),
+                        FontFamily = "Oswald",
+                        FontSize = 13,
+                        LineBreakMode = LineBreakMode.WordWrap
+                    });
+
+                slotsContainer.Children.Add(emptyState);
             }
         }
         catch (Exception ex)
@@ -605,7 +751,7 @@ public partial class TerminbuchenPage : ContentPage
             slotsContainer.Children.Add(
                 new Label
                 {
-                    Text = "Error loading slots",
+                    Text = AppResource.ErrorLoadingSlots,
                     TextColor =
                         Color.FromArgb("#FF6666"),
                     FontFamily = "Oswald",
@@ -614,11 +760,305 @@ public partial class TerminbuchenPage : ContentPage
         }
     }
 
+    private static Border CreateSlotChip(AvailableSlot slot, bool selected)
+    {
+        var startText = FormatSlotClock(slot.StartTime);
+        if (string.IsNullOrWhiteSpace(startText))
+            startText = slot.DisplayTime;
+
+        var endText = FormatSlotClock(slot.EndTime);
+
+        var stack = new VerticalStackLayout
+        {
+            Spacing = 0,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        stack.Children.Add(new Label
+        {
+            Text = startText,
+            FontFamily = "Oswald",
+            FontSize = 15,
+            FontAttributes = FontAttributes.Bold,
+            HorizontalTextAlignment = TextAlignment.Center,
+            HorizontalOptions = LayoutOptions.Center
+        });
+
+        if (!string.IsNullOrWhiteSpace(endText) &&
+            !string.Equals(endText, startText, StringComparison.Ordinal))
+        {
+            stack.Children.Add(new Label
+            {
+                Text = endText,
+                FontFamily = "Oswald",
+                FontSize = 11,
+                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalOptions = LayoutOptions.Center
+            });
+        }
+
+        var chip = new Border
+        {
+            ClassId = "slot",
+            StrokeThickness = 1,
+            StrokeShape = new RoundRectangle
+            {
+                CornerRadius = new CornerRadius(12)
+            },
+            Padding = new Thickness(4, 8),
+            Margin = new Thickness(3),
+            HeightRequest = 58,
+            HorizontalOptions = LayoutOptions.Fill,
+            Content = stack
+        };
+
+        FlexLayout.SetBasis(chip, new FlexBasis(0.30f, true));
+        ApplySlotChipStyle(chip, selected);
+        return chip;
+    }
+
+    private static void ApplySlotChipStyle(Border chip, bool selected)
+    {
+        chip.BackgroundColor = selected
+            ? Color.FromArgb("#FFD700")
+            : Color.FromArgb("#1A1813");
+
+        chip.Stroke = selected
+            ? Color.FromArgb("#F3D97A")
+            : Color.FromArgb("#3A3A3A");
+
+        if (chip.Content is not VerticalStackLayout stack)
+            return;
+
+        var labels = stack.Children.OfType<Label>().ToList();
+        if (labels.Count > 0)
+            labels[0].TextColor = selected ? Colors.Black : Colors.White;
+
+        if (labels.Count > 1)
+        {
+            labels[1].TextColor = selected
+                ? Color.FromArgb("#3A2E00")
+                : Color.FromArgb("#8A8A8A");
+        }
+    }
+
+    private static string FormatSlotClock(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return string.Empty;
+
+        if (TimeSpan.TryParse(raw, out var time))
+            return $"{time.Hours:00}:{time.Minutes:00}";
+
+        if (DateTime.TryParse(raw, out var dateTime))
+            return dateTime.ToString("HH:mm");
+
+        return raw.Trim();
+    }
+
+    private bool IsSlotAfterEarlierServices(Servies service, DateTime slotDate, AvailableSlot slot)
+    {
+        if (!TryGetPreviousServicesEnd(service, out var earlierEnd))
+            return true;
+
+        var day = Booking.ToCalendarDate(slotDate);
+        var endDay = Booking.ToCalendarDate(earlierEnd);
+
+        if (day > endDay)
+            return true;
+
+        if (day < endDay)
+            return false;
+
+        if (!TryParseClock(slot.StartTime, out var start))
+            return false;
+
+        return start >= earlierEnd.TimeOfDay;
+    }
+
+    private bool TryGetPreviousServicesEnd(Servies service, out DateTime earlierEnd)
+    {
+        earlierEnd = default;
+
+        if (BindingContext is not AppViewModel viewModel)
+            return false;
+
+        var services = viewModel.SelectedServices?.ToList();
+        if (services == null || services.Count < 2)
+            return false;
+
+        var index = services.FindIndex(s => s.Id == service.Id);
+        if (index <= 0)
+            return false;
+
+        DateTime? latestEnd = null;
+        for (var i = 0; i < index; i++)
+        {
+            if (!TryGetScheduledEnd(viewModel, services[i], out var endAt))
+                continue;
+
+            if (latestEnd == null || endAt > latestEnd)
+                latestEnd = endAt;
+        }
+
+        if (latestEnd == null)
+            return false;
+
+        earlierEnd = latestEnd.Value;
+        return true;
+    }
+
+    private static bool TryGetScheduledEnd(AppViewModel viewModel, Servies service, out DateTime endAt)
+    {
+        endAt = default;
+        var booking = viewModel.CurrentBooking;
+        if (booking == null || service == null)
+            return false;
+
+        if (!booking.ServiceDateMap.TryGetValue(service.Id, out var date))
+            return false;
+
+        if (!booking.ServiceSlotMap.TryGetValue(service.Id, out var startRaw))
+            return false;
+
+        if (!TryParseClock(startRaw, out var start))
+            return false;
+
+        var day = Booking.ToCalendarDate(date);
+        var startAt = day.Add(start);
+
+        if (booking.ServiceSlotEndMap.TryGetValue(service.Id, out var endRaw) &&
+            TryParseClock(endRaw, out var endClock) &&
+            endClock > start)
+        {
+            endAt = day.Add(endClock);
+            return true;
+        }
+
+        var minutes = service.TimeServies > 0
+            ? service.TimeServies
+            : 30;
+
+        endAt = startAt.Add(TimeSpan.FromMinutes(minutes));
+        return true;
+    }
+
+    private void RemoveSavedSlotIfTooEarly(Servies service)
+    {
+        if (BindingContext is not AppViewModel viewModel || viewModel.CurrentBooking == null)
+            return;
+
+        if (!TryGetPreviousServicesEnd(service, out var earlierEnd))
+            return;
+
+        var booking = viewModel.CurrentBooking;
+        if (!booking.ServiceSlotMap.TryGetValue(service.Id, out var saved))
+            return;
+
+        if (!booking.ServiceDateMap.TryGetValue(service.Id, out var savedDate))
+            return;
+
+        if (!TryParseClock(saved, out var start))
+            return;
+
+        var day = Booking.ToCalendarDate(savedDate);
+        var endDay = Booking.ToCalendarDate(earlierEnd);
+        var tooEarly = day < endDay || (day == endDay && start < earlierEnd.TimeOfDay);
+
+        if (tooEarly)
+            booking.ClearServiceSlot(service.Id);
+    }
+
+    private static string ResolveSlotEnd(Servies service, AvailableSlot slot, string formattedStart)
+    {
+        var formattedEnd = Booking.FormatApiTime(slot.EndTime);
+        if (!string.IsNullOrWhiteSpace(formattedEnd) &&
+            TryParseClock(formattedStart, out var start) &&
+            TryParseClock(formattedEnd, out var end) &&
+            end > start)
+        {
+            return formattedEnd;
+        }
+
+        if (!TryParseClock(formattedStart, out var startClock))
+            return formattedEnd;
+
+        var minutes = slot.DurationMinutes > 0
+            ? slot.DurationMinutes
+            : service.TimeServies > 0
+                ? service.TimeServies
+                : 30;
+
+        var computedEnd = startClock.Add(TimeSpan.FromMinutes(minutes));
+        return $"{computedEnd.Hours:D2}:{computedEnd.Minutes:D2}";
+    }
+
+    private static bool TryParseClock(string raw, out TimeSpan time)
+    {
+        time = default;
+        var formatted = Booking.FormatApiTime(raw);
+        if (string.IsNullOrWhiteSpace(formatted))
+            return false;
+
+        return TimeSpan.TryParse(formatted, System.Globalization.CultureInfo.InvariantCulture, out time);
+    }
+
+    private async Task RefreshFollowingServiceSlotsAsync(int changedServiceId)
+    {
+        if (BindingContext is not AppViewModel viewModel)
+            return;
+
+        var services = viewModel.SelectedServices?.ToList();
+        if (services == null || services.Count < 2)
+            return;
+
+        var index = services.FindIndex(s => s.Id == changedServiceId);
+        if (index < 0 || index >= services.Count - 1)
+            return;
+
+        for (var i = index + 1; i < services.Count; i++)
+        {
+            var following = services[i];
+            if (!_slotHosts.TryGetValue(following.Id, out var host) || host.Provider == null)
+                continue;
+
+            if (viewModel.CurrentBooking == null ||
+                !viewModel.CurrentBooking.ServiceDateMap.TryGetValue(following.Id, out var date))
+            {
+                continue;
+            }
+
+            await LoadSlotsAsync(following, host.Provider, date, host.SlotsContainer);
+        }
+    }
+
+    private bool RememberServiceDate(Servies service, DateTime date)
+    {
+        if (BindingContext is not AppViewModel viewModel)
+            return false;
+
+        viewModel.CurrentBooking ??= new Booking();
+        viewModel.CurrentBooking.EnsureMaps();
+
+        var day = Booking.ToCalendarDate(date);
+        var dateChanged = !viewModel.CurrentBooking.ServiceDateMap.TryGetValue(service.Id, out var existing)
+            || Booking.ToCalendarDate(existing) != day;
+
+        viewModel.CurrentBooking.SetServiceDate(service.Id, day);
+        viewModel.SelectedDate = day;
+
+        if (dateChanged)
+            viewModel.CurrentBooking.ClearServiceSlot(service.Id);
+
+        return dateChanged;
+    }
+
     // ============================================================
     // SERVICE PROVIDER SELECTED
     // ============================================================
 
-    private void OnServiceProviderSelected(
+    private bool OnServiceProviderSelected(
         Servies service,
         WorkTeam provider)
     {
@@ -628,28 +1068,22 @@ public partial class TerminbuchenPage : ContentPage
                 this.BindingContext as AppViewModel;
 
             if (viewModel == null)
-                return;
+                return false;
 
             viewModel.CurrentBooking ??=
                 new Booking();
 
             viewModel.CurrentBooking.EnsureMaps();
 
-            // ========================================================
-            // REMOVE PREVIOUS SELECTION
-            // ========================================================
+            var providerChanged =
+                !viewModel.CurrentBooking.ServiceProviderMap.TryGetValue(service.Id, out var currentProviderId)
+                || currentProviderId != provider.Id;
 
-            viewModel.CurrentBooking
-                .RemoveServiceSelections(
-                    service.Id);
+            viewModel.CurrentBooking.ServiceProviderMap[service.Id] = provider.Id;
 
-            // ========================================================
-            // SAVE PROVIDER
-            // ========================================================
-
-            viewModel.CurrentBooking
-                .ServiceProviderMap[service.Id] =
-                provider.Id;
+            // A new provider has different times. Keep the chosen date.
+            if (providerChanged)
+                viewModel.CurrentBooking.ClearServiceSlot(service.Id);
 
             Console.WriteLine(
                 $"[TerminbuchenPage] " +
@@ -673,11 +1107,13 @@ public partial class TerminbuchenPage : ContentPage
 
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await Toast.Make(
-                    $"Provider selected: {provider.Name} for {service.NameServies}",
-                    ToastDuration.Short)
-                    .Show();
+                //await Toast.Make(
+                //    $"Provider selected: {provider.Name} for {service.NameServies}",
+                //    ToastDuration.Short)
+                //    .Show();
             });
+
+            return providerChanged;
         }
         catch (Exception ex)
         {
@@ -692,12 +1128,22 @@ public partial class TerminbuchenPage : ContentPage
                     $"Error selecting provider: {ex.Message}",
                     "OK");
             });
+
+            return false;
         }
     }
 
     // ============================================================
     // BACK BUTTON
     // ============================================================
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Re-fetch so labels follow the active UI language.
+        await LoadReminderOptionsAsync();
+    }
 
     protected override bool OnBackButtonPressed()
     {
@@ -930,47 +1376,62 @@ public partial class TerminbuchenPage : ContentPage
     {
         try
         {
-            var viewModel = this.BindingContext as AppViewModel;
-            if (viewModel == null)
-                return;
-
-            Console.WriteLine("[TerminbuchenPage] Loading reminder options from API...");
-
-            var apiServices = new ApiServices();
-            var response = await apiServices.GetReminderOptionsAsync();
-
-            if (response == null || !response.Success || response.Data == null)
-            {
-                Console.WriteLine("[TerminbuchenPage] Failed to load reminder options");
-                return;
-            }
-
-            Console.WriteLine($"[TerminbuchenPage] Loaded {response.Data.Options.Count} reminder options");
-
-            // Update ViewModel with reminder options
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                viewModel.ReminderOptions.Clear();
-                foreach (var option in response.Data.Options)
-                {
-                    viewModel.ReminderOptions.Add(option);
-                }
-
-                // Set default selected option
-                if (response.Data.DefaultOffsetHours > 0)
-                {
-                    var defaultIndex = response.Data.Options.FindIndex(o => o.OffsetHours == response.Data.DefaultOffsetHours);
-                    if (defaultIndex >= 0)
-                    {
-                        viewModel.SelectedReminderOptionIndex = defaultIndex;
-                        Console.WriteLine($"[TerminbuchenPage] Set default reminder option index: {defaultIndex}");
-                    }
-                }
-            });
+            if (this.BindingContext is AppViewModel viewModel)
+                await viewModel.RefreshReminderOptionsAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[TerminbuchenPage] Exception loading reminder options: {ex.Message}");
+        }
+    }
+
+
+    private async void OnReminderTimeTapped(object sender, TappedEventArgs e)
+    {
+        if (BindingContext is not AppViewModel viewModel)
+            return;
+
+        if (viewModel.ReminderOptions.Count == 0)
+            await viewModel.RefreshReminderOptionsAsync();
+
+        if (viewModel.ReminderOptions.Count == 0)
+            return;
+
+        var popup = new ReminderTimePopup(
+            viewModel.ReminderQuestion,
+            viewModel.ReminderOptions,
+            viewModel.SelectedReminderOption);
+
+        if (await this.ShowPopupAsync(popup) is ReminderTimePopupResult result && result.Option != null)
+            viewModel.SelectedReminderOption = result.Option;
+    }
+
+    private async void OnReminderSwitchToggled(object sender, ToggledEventArgs e)
+    {
+        bool isEnabled = e.Value;
+
+        if (isEnabled)
+        {
+            // 1. إظهار العنصر وجعله شفافاً للبدء في تأثير الظهور
+            ReminderDetailsLayout.IsVisible = true;
+            ReminderDetailsLayout.Opacity = 0;
+
+            // 2. تطبيق انميشن تدريجي للظهور والتوسع اللطيف
+            await Task.WhenAll(
+                ReminderDetailsLayout.FadeTo(1, 250, Easing.CubicIn),
+                ReminderDetailsLayout.TranslateTo(0, 0, 250, Easing.CubicOut)
+            );
+        }
+        else
+        {
+            // 1. انميشن الاختفاء التدريجي
+            await Task.WhenAll(
+                ReminderDetailsLayout.FadeTo(0, 200, Easing.CubicOut),
+                ReminderDetailsLayout.TranslateTo(0, -10, 200, Easing.CubicIn)
+            );
+
+            // 2. إخفاؤه تماماً بعد انتهاء الحركة لكي لا يتفاعل مع الـ Layout
+            ReminderDetailsLayout.IsVisible = false;
         }
     }
 }

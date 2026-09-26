@@ -67,7 +67,7 @@
             <Label HorizontalOptions="Center" Text="{Loc:Translate Name=EnterPasswordCerent}"/>
             <material:TextField 
                     TextColor="#A8883C"
-                 Text="{Binding CurrentPassword}"
+                 Text="{Binding CurrentPassword, Mode=TwoWay}"
 AccentColor="#A8883C"
                    x:Name="PasswordEntry"
                    CornerRadius="16"  
@@ -87,20 +87,18 @@ AccentColor="#A8883C"
                     BorderColor="Red"
                     WidthRequest="100"
    CornerRadius="10"
-   HeightRequest="44"
+    HeightRequest="44"
    FontFamily="georgia" 
-   Command="{Binding DeleteAccountCommand}"
-   CommandParameter="{Binding CurrentPassword}"
-   Clicked="Button_Clicked_1" />
+   Clicked="ConfirmDeleteClicked" />
                 <Button
 Text="{Loc:Translate Name=no}"
 BorderWidth="1"
  WidthRequest="100"                    
 TextColor="Black"
-CornerRadius="10"
+   CornerRadius="10"
 HeightRequest="44"
 FontFamily="georgia"                        
-Clicked="Button_Clicked_1" />
+Clicked="CancelClicked" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </Frame>

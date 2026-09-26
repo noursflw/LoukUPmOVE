@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace loukupm.Model
 {
@@ -7,7 +8,9 @@ namespace loukupm.Model
     /// </summary>
     public class SettingsResponse
     {
+        [JsonPropertyName("success")]
         public bool Success { get; set; }
+        [JsonPropertyName("data")]
         public List<SettingItem> Data { get; set; } = new();
     }
 
@@ -16,39 +19,25 @@ namespace loukupm.Model
     /// </summary>
     public class SettingItem
     {
-        /// <summary>
-        /// Unique identifier for the setting (e.g., "sms_notifications").
-        /// </summary>
+        [JsonPropertyName("key")]
         public string Key { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Display label for the setting (e.g., "SMS Notifications").
-        /// </summary>
+        [JsonPropertyName("label")]
         public string Label { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Description or help text for the setting.
-        /// </summary>
+        [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Type of the setting: "boolean", "string", "integer", etc.
-        /// </summary>
+        [JsonPropertyName("type")]
         public string Type { get; set; } = "boolean";
 
-        /// <summary>
-        /// Group name for organizing settings (e.g., "notifications", "privacy").
-        /// </summary>
+        [JsonPropertyName("group")]
         public string Group { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Current value of the setting (can be bool, string, int, etc.).
-        /// </summary>
+        [JsonPropertyName("value")]
         public object? Value { get; set; }
 
-        /// <summary>
-        /// Indicates if this is the default value.
-        /// </summary>
+        [JsonPropertyName("is_default")]
         public bool IsDefault { get; set; }
     }
 

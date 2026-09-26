@@ -77,13 +77,13 @@
                    CornerRadius="40"
                    Padding="0"
                    IsClippedToBounds="True"
-                   BackgroundColor="Transparent"
+                   BackgroundColor="#2A2A2A"
                    BorderColor="Transparent"
                    HasShadow="False"
                    HorizontalOptions="Start"
                    VerticalOptions="Center">
 
-                <Image Source="{Binding Avatar}"
+                <Image Source="{Binding Avatar, TargetNullValue=default_avatar, FallbackValue=default_avatar}"
                        Aspect="AspectFill"/>
             </Frame>
 
@@ -111,30 +111,7 @@
         </Grid>
     </Shell.FlyoutHeader>
 
-    <ShellContent Route="MainPage"
-                  ContentTemplate="{DataTemplate local:MainPage}"
-                  IsVisible="False" />
-
-    <ShellContent Route="LoginPage"
-                  ContentTemplate="{DataTemplate view:LoginPage}"
-                  IsVisible="False" />
-    <ShellContent Route="SinginPage"
-                  ContentTemplate="{DataTemplate view:SinginPage}"
-                  IsVisible="False" />
-    <ShellContent Route="PolicyandPrivacyPageatAthun"
-              ContentTemplate="{DataTemplate view:PolicyandPrivacyPageatAthun}"
-              IsVisible="False" />
-    <ShellContent Route="TermsAndConditionsAthun"
-           ContentTemplate="{DataTemplate view:TermsAndConditionsAthun}"
-           IsVisible="False" />
-
-    <ShellContent Route="NotifictionPage"
-                  ContentTemplate="{DataTemplate view:NotifictionPage}"
-                  IsVisible="False" />
-
-    
-    <TabBar>
-        
+    <TabBar x:Name="MainTabBar">
         <ShellContent
             Icon="nhome.png"
             Title="{Loc:Translate Name=HomePage}"
@@ -157,6 +134,30 @@
             ContentTemplate="{DataTemplate view:ProfilePage}"
             Route="ProfilePage" />
     </TabBar>
+
+    <ShellContent Route="MainPage"
+                  ContentTemplate="{DataTemplate local:MainPage}"
+                  IsVisible="False" />
+
+    <ShellItem x:Name="LoginShellItem"
+               Route="LoginPage"
+               FlyoutItemIsVisible="False"
+               IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate view:LoginPage}" />
+    </ShellItem>
+    <ShellContent Route="SinginPage"
+                  ContentTemplate="{DataTemplate view:SinginPage}"
+                  IsVisible="False" />
+    <ShellContent Route="PolicyandPrivacyPageatAthun"
+              ContentTemplate="{DataTemplate view:PolicyandPrivacyPageatAthun}"
+              IsVisible="False" />
+    <ShellContent Route="TermsAndConditionsAthun"
+           ContentTemplate="{DataTemplate view:TermsAndConditionsAthun}"
+           IsVisible="False" />
+
+    <ShellContent Route="NotifictionPage"
+                  ContentTemplate="{DataTemplate view:NotifictionPage}"
+                  IsVisible="False" />
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- MAIN CONTENT SECTION -->

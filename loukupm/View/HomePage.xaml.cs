@@ -54,6 +54,11 @@ public partial class HomePage : ContentPage
 			{
 				vm.HomeSliderVM.LoadSlidersCommand.Execute(null);
 			}
+
+			if (vm.HasNoHomeData && vm.RefreshHomeCommand?.CanExecute(null) == true)
+			{
+				_ = vm.RefreshHomeCommand.ExecuteAsync(null);
+			}
 		}
 		catch (Exception ex)
 		{

@@ -1,18 +1,41 @@
 using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Controls;
-using loukupm.Services;
+using loukupm.Langue;
 
 namespace loukupm.View.MassgingApp;
 
 public partial class EmaileUsed : Popup
 {
-	public EmaileUsed()
+	private readonly Func<Task>? _onLogin;
+
+	public bool GoToLogin { get; private set; }
+
+	public EmaileUsed(Func<Task>? onLogin = null)
 	{
+		_onLogin = onLogin;
 		InitializeComponent();
-        this.Color = Colors.Transparent;
+		DialogRoot.FlowDirection = LocalizationResourcesManager.Instanse.GetFlowDirection();
 	}
-	private async void CancelClicked(object? sender, EventArgs e)
+
+	private void CloseClicked(object? sender, EventArgs e)
 	{
-		await ShellNavigationManager.NavigateToLoginAndClear();
-    }
+		Close();
+	}
+
+	private async void LoginClicked(object? sender, EventArgs e)
+	{
+		GoToLogin = true;
+		Close();
+
+		if (_onLogin == null)
+			return;
+
+		try
+		{
+			await MainThread.InvokeOnMainThreadAsync(_onLogin);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"[EmaileUsed] Login navigation failed: {ex}");
+		}
+	}
 }

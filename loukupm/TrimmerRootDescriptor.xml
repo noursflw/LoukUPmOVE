@@ -8,6 +8,7 @@
 
 	<!-- Preserve all View pages that are used in routing -->
 	<type fullname="loukupm.View.SinginPage" preserve="all" />
+	<type fullname="loukupm.View.MassgingApp.EmaileUsed" preserve="all" />
 	<type fullname="loukupm.View.OTPSINGIN" preserve="all" />
 	<type fullname="loukupm.View.TermsAndConditionsAthun" preserve="all" />
 	<type fullname="loukupm.View.PolicyandPrivacyPageatAthun" preserve="all" />

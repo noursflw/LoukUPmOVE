@@ -121,6 +121,12 @@ namespace loukupm.Model
         [JsonPropertyName("can_cancel")]
         public bool CanCancel { get; set; }
 
+        /// <summary>
+        /// Appointment ids that belong to this visit. One booking can come back as several rows.
+        /// </summary>
+        [JsonIgnore]
+        public List<int> RelatedBookingIds { get; set; } = new();
+
         [JsonPropertyName("reminder")]
         public Reminder Reminder { get; set; }
 
@@ -178,6 +184,59 @@ namespace loukupm.Model
 
         public string ServiceName =>
             ServicesDetails?.FirstOrDefault()?.ServiceName ?? "N/A";
+
+        public bool CanManageReminder =>
+            !IsCancelled &&
+            !IsPast &&
+            !IsCompleted &&
+            !string.Equals(Status, "USER_CANCELLED", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(Status, "CANCELLED", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(Status, "COMPLETED", StringComparison.OrdinalIgnoreCase);
+
+        public bool HasActiveReminder =>
+            Reminder != null && Reminder.IsActive;
+
+        /// <summary>
+        /// Label of the active reminder, taken from the server options. Legacy reminders
+        /// created with an absolute remind_at have no offset_hours, so the timestamp is shown.
+        /// </summary>
+        public string ReminderSummary
+        {
+            get
+            {
+                if (!HasActiveReminder)
+                    return string.Empty;
+
+                if (Reminder.OffsetHours.HasValue)
+                {
+                    var label = ReminderOptionsCache.LabelFor(Reminder.OffsetHours.Value);
+                    if (!string.IsNullOrWhiteSpace(label))
+                        return label;
+                }
+
+                if (DateTimeOffset.TryParse(Reminder.RemindAt, out var remindAt))
+                    return remindAt.LocalDateTime.ToString("g");
+
+                return Reminder.RemindAt ?? string.Empty;
+            }
+        }
+
+        public string ReminderChannelWarning
+        {
+            get
+            {
+                if (Reminder == null)
+                    return string.Empty;
+
+                var warnings = ReminderChannelHelper.BuildWarnings(
+                    Reminder.Channels,
+                    Reminder.HasActiveChannel);
+                return warnings.Count == 0 ? string.Empty : string.Join("\n", warnings);
+            }
+        }
+
+        public bool HasReminderChannelWarning =>
+            !string.IsNullOrWhiteSpace(ReminderChannelWarning);
     }
 
     public class Provider

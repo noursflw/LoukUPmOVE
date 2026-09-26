@@ -357,6 +357,9 @@
   <data name="PhoneNumber" xml:space="preserve">
     <value>رقم الهاتف</value>
   </data>
+  <data name="PhonePrefixRequired" xml:space="preserve">
+    <value>النداء +49 موجود مسبقاً في الحقل. يُرجى إكمال بقية رقم الهاتف فقط، على سبيل المثال:</value>
+  </data>
   <data name="pleaseselectoneservice" xml:space="preserve">
     <value>الرجاء اختيار خدمة واحدة على الأقل قبل المتابعة.</value>
   </data>
@@ -838,6 +841,18 @@
   <data name="Pleaseselectadate" xml:space="preserve">
     <value>يرجى اختيار تاريخ</value>
   </data>
+  <data name="ServicesMustShareDate" xml:space="preserve">
+    <value>يجب أن تكون جميع الخدمات في نفس التاريخ</value>
+  </data>
+  <data name="PleaseSelectProviderFirst" xml:space="preserve">
+    <value>يرجى اختيار مقدم الخدمة أولاً</value>
+  </data>
+  <data name="ErrorLoadingSlots" xml:space="preserve">
+    <value>تعذر تحميل الأوقات</value>
+  </data>
+  <data name="NoProviderAvailable" xml:space="preserve">
+    <value>لا يوجد مقدم خدمة متاح</value>
+  </data>
   <data name="Pleaseselectatime" xml:space="preserve">
     <value>يرجى اختيار وقت</value>
   </data>
@@ -1094,10 +1109,16 @@
     <value>استلام إشعارات العروض والمواعيد</value>
   </data>
   <data name="DesSms" xml:space="preserve">
-    <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
+    <value>استلام تذكير عبر الرسائل النصية قبل موعدك</value>
   </data>
   <data name="DesEmai" xml:space="preserve">
     <value>استلام تذكير عبر البريد الإلكتروني قبل موعدك</value>
+  </data>
+  <data name="PushNotifications" xml:space="preserve">
+    <value>تذكيرات المواعيد عبر الإشعارات</value>
+  </data>
+  <data name="DesPush" xml:space="preserve">
+    <value>استلام تذكير داخل التطبيق قبل موعدك</value>
   </data>
   <data name="ContactUsD" xml:space="preserve">
     <value>نحن هنا من أجلك</value>
@@ -1161,6 +1182,9 @@
   </data>
   <data name="SelectReminderTime" xml:space="preserve">
     <value>اختر وقت التذكير قبل الموعد</value>
+  </data>
+  <data name="SelectProvider" xml:space="preserve">
+    <value>اختر مقدم الخدمة</value>
   </data>
   <data name="EnableReminderTimer" xml:space="preserve">
     <value>تفعيل التذكير بالموعد</value>
@@ -1244,5 +1268,164 @@
   </data>
   <data name="yesw" xml:space="preserve">
     <value>حسناً</value>
+  </data>
+  <data name="serviceproviders" xml:space="preserve">
+    <value>الخدمات المختارة لموعدك</value>
+  </data>
+  <data name="serviceproviderdescription" xml:space="preserve">
+    <value>اختر مقدم الخدمة الذي يمكنه تقديم الخدمات المختارة</value>
+  </data>
+  <data name="selectedservices" xml:space="preserve">
+    <value>الخدمات المختارة لموعدك</value>
+  </data>
+  <data name="DayAbbrevSunday" xml:space="preserve">
+    <value>أحد</value>
+  </data>
+  <data name="DayAbbrevMonday" xml:space="preserve">
+    <value>اثن</value>
+  </data>
+  <data name="DayAbbrevTuesday" xml:space="preserve">
+    <value>ثلا</value>
+  </data>
+  <data name="DayAbbrevWednesday" xml:space="preserve">
+    <value>أرب</value>
+  </data>
+  <data name="DayAbbrevThursday" xml:space="preserve">
+    <value>خمي</value>
+  </data>
+  <data name="DayAbbrevFriday" xml:space="preserve">
+    <value>جمع</value>
+  </data>
+  <data name="DayAbbrevSaturday" xml:space="preserve">
+    <value>سبت</value>
+  </data>
+  <data name="NoAppointmentsAvailable" xml:space="preserve">
+    <value>لا توجد مواعيد متاحة</value>
+  </data>
+  <data name="NoAppointmentsAvailableForDay" xml:space="preserve">
+    <value>للأسف، لا توجد مواعيد شاغرة لهذا اليوم.</value>
+  </data>
+  <data name="OtpSigninTitle" xml:space="preserve">
+    <value>التحقق من الرمز</value>
+  </data>
+  <data name="OtpSigninVerifyAccount" xml:space="preserve">
+    <value>تحقق من حسابك</value>
+  </data>
+  <data name="OtpSigninEnterCode" xml:space="preserve">
+    <value>أدخل رمز التحقق المكوّن من 6 أرقام المرسل إلى:</value>
+  </data>
+  <data name="OtpSigninInvalidCode" xml:space="preserve">
+    <value>رمز التحقق غير صالح</value>
+  </data>
+  <data name="OtpSigninVerify" xml:space="preserve">
+    <value>تحقق</value>
+  </data>
+  <data name="OtpSigninDidntReceive" xml:space="preserve">
+    <value>لم يصلك الرمز؟</value>
+  </data>
+  <data name="OtpSigninResend" xml:space="preserve">
+    <value>إعادة إرسال الرمز</value>
+  </data>
+  <data name="OtpSigninBack" xml:space="preserve">
+    <value>رجوع</value>
+  </data>
+  <data name="OtpSigninNoContext" xml:space="preserve">
+    <value>لم يتم العثور على بيانات التحقق. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninYourContact" xml:space="preserve">
+    <value>بريدك الإلكتروني/هاتفك</value>
+  </data>
+  <data name="OtpSigninEnterValidCode" xml:space="preserve">
+    <value>يرجى إدخال رمز صالح مكوّن من 6 أرقام.</value>
+  </data>
+  <data name="OtpSigninDigitsOnly" xml:space="preserve">
+    <value>يجب أن يحتوي الرمز على أرقام فقط.</value>
+  </data>
+  <data name="OtpSigninContextMissing" xml:space="preserve">
+    <value>بيانات التحقق غير متوفرة. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninNoInternet" xml:space="preserve">
+    <value>لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.</value>
+  </data>
+  <data name="OtpSigninErrorTryAgain" xml:space="preserve">
+    <value>حدث خطأ. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninIncomplete" xml:space="preserve">
+    <value>التحقق غير مكتمل. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninInitFailed" xml:space="preserve">
+    <value>فشل تهيئة التطبيق. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninLoadUserFailed" xml:space="preserve">
+    <value>تعذر تحميل بيانات المستخدم. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninNavigationFailed" xml:space="preserve">
+    <value>فشلت عملية الانتقال. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninInvalidTryAgain" xml:space="preserve">
+    <value>رمز التحقق غير صالح. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninExpired" xml:space="preserve">
+    <value>الحساب غير موثّق أو انتهت صلاحية الرمز. يرجى طلب رمز جديد.</value>
+  </data>
+  <data name="OtpSigninTooManyAttempts" xml:space="preserve">
+    <value>محاولات كثيرة جداً. يرجى المحاولة لاحقاً.</value>
+  </data>
+  <data name="OtpSigninNetworkError" xml:space="preserve">
+    <value>خطأ في الشبكة. يرجى التحقق من الاتصال.</value>
+  </data>
+  <data name="OtpSigninVerificationFailed" xml:space="preserve">
+    <value>فشل التحقق. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninUnexpectedError" xml:space="preserve">
+    <value>حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninNewCodeEmail" xml:space="preserve">
+    <value>تم إرسال رمز جديد! تحقق من بريدك الإلكتروني.</value>
+  </data>
+  <data name="OtpSigninNewCodePhone" xml:space="preserve">
+    <value>تم إرسال رمز جديد! تحقق من هاتفك.</value>
+  </data>
+  <data name="OtpSigninTooManyResend" xml:space="preserve">
+    <value>محاولات إعادة إرسال كثيرة. يرجى الانتظار قبل المحاولة مرة أخرى.</value>
+  </data>
+  <data name="OtpSigninResendFailed" xml:space="preserve">
+    <value>تعذر إعادة إرسال الرمز. يرجى المحاولة لاحقاً.</value>
+  </data>
+  <data name="OtpSigninResendError" xml:space="preserve">
+    <value>حدث خطأ أثناء إعادة إرسال الرمز.</value>
+  </data>
+  <data name="OtpSigninSuccess" xml:space="preserve">
+    <value>تم بنجاح</value>
+  </data>
+  <data name="OtpSigninOk" xml:space="preserve">
+    <value>حسناً</value>
+  </data>
+  <data name="OtpSigninSeconds" xml:space="preserve">
+    <value>{0} ث</value>
+  </data>
+  <data name="EmailAlreadyRegisteredTitle" xml:space="preserve">
+    <value>البريد الإلكتروني مستخدم مسبقاً</value>
+  </data>
+  <data name="EmailAlreadyRegisteredMessage" xml:space="preserve">
+    <value>عنوان البريد الإلكتروني هذا مستخدم بالفعل لحساب آخر. يرجى استخدام عنوان بريد إلكتروني آخر أو تسجيل الدخول باستخدام هذا الحساب.</value>
+  </data>
+  <data name="EmailAlreadyRegisteredClose" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="EmailAlreadyRegisteredLogin" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="EmailNotVerifiedTitle" xml:space="preserve">
+    <value>لم يتم التحقق من البريد الإلكتروني</value>
+  </data>
+  <data name="EmailNotVerifiedMessage" xml:space="preserve">
+    <value>تم إنشاء حسابك بنجاح، لكن لم يتم التحقق من عنوان بريدك الإلكتروني بعد. يرجى التحقق من بريدك الإلكتروني وإدخال رمز التحقق لتفعيل حسابك.</value>
+  </data>
+  <data name="EmailNotVerifiedClose" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="EmailNotVerifiedVerify" xml:space="preserve">
+    <value>التحقق من البريد الإلكتروني</value>
   </data>
 </root>

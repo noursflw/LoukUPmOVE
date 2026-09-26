@@ -73,6 +73,27 @@ namespace loukupm.Model
             public string RegistrationMethod { get; set; }
         }
 
+        public class ChangePasswordRequest
+        {
+            [JsonPropertyName("current_password")]
+            public string CurrentPassword { get; set; }
+
+            [JsonPropertyName("password")]
+            public string Password { get; set; }
+
+            [JsonPropertyName("password_confirmation")]
+            public string PasswordConfirmation { get; set; }
+        }
+
+        public class DeleteProfileRequest
+        {
+            [JsonPropertyName("current_password")]
+            public string CurrentPassword { get; set; }
+
+            [JsonPropertyName("confirmation")]
+            public bool Confirmation { get; set; } = true;
+        }
+
 
         public class RegisterResponse
         {

@@ -674,6 +674,69 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fr.
+        /// </summary>
+        internal static string DayAbbrevFriday {
+            get {
+                return ResourceManager.GetString("DayAbbrevFriday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mo.
+        /// </summary>
+        internal static string DayAbbrevMonday {
+            get {
+                return ResourceManager.GetString("DayAbbrevMonday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sa.
+        /// </summary>
+        internal static string DayAbbrevSaturday {
+            get {
+                return ResourceManager.GetString("DayAbbrevSaturday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to So.
+        /// </summary>
+        internal static string DayAbbrevSunday {
+            get {
+                return ResourceManager.GetString("DayAbbrevSunday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do.
+        /// </summary>
+        internal static string DayAbbrevThursday {
+            get {
+                return ResourceManager.GetString("DayAbbrevThursday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Di.
+        /// </summary>
+        internal static string DayAbbrevTuesday {
+            get {
+                return ResourceManager.GetString("DayAbbrevTuesday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mi.
+        /// </summary>
+        internal static string DayAbbrevWednesday {
+            get {
+                return ResourceManager.GetString("DayAbbrevWednesday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Achtung.
         /// </summary>
         internal static string Denger {
@@ -724,6 +787,15 @@ namespace loukupm.Langue {
         internal static string desotppnone {
             get {
                 return ResourceManager.GetString("desotppnone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vor Ihrem Termin eine Erinnerung in der App erhalten.
+        /// </summary>
+        internal static string DesPush {
+            get {
+                return ResourceManager.GetString("DesPush", resourceCulture);
             }
         }
         
@@ -1286,6 +1358,24 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keine Termine verfügbar.
+        /// </summary>
+        internal static string NoAppointmentsAvailable {
+            get {
+                return ResourceManager.GetString("NoAppointmentsAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Für diesen Tag sind leider keine freien Termine verfügbar.
+        /// </summary>
+        internal static string NoAppointmentsAvailableForDay {
+            get {
+                return ResourceManager.GetString("NoAppointmentsAvailableForDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string Noavailabletimes {
@@ -1619,6 +1709,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bitte die Handynummer im richtigen Format eingeben, zum Beispiel:.
+        /// </summary>
+        internal static string PhonePrefixRequired {
+            get {
+                return ResourceManager.GetString("PhonePrefixRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bitte geben Sie das aktuelle Passwort ein.
         /// </summary>
         internal static string Pleaseenterthecurrentpassword {
@@ -1678,6 +1777,30 @@ namespace loukupm.Langue {
         internal static string Pleaseselectadate {
             get {
                 return ResourceManager.GetString("Pleaseselectadate", resourceCulture);
+            }
+        }
+
+        internal static string ServicesMustShareDate {
+            get {
+                return ResourceManager.GetString("ServicesMustShareDate", resourceCulture);
+            }
+        }
+
+        internal static string PleaseSelectProviderFirst {
+            get {
+                return ResourceManager.GetString("PleaseSelectProviderFirst", resourceCulture);
+            }
+        }
+
+        internal static string ErrorLoadingSlots {
+            get {
+                return ResourceManager.GetString("ErrorLoadingSlots", resourceCulture);
+            }
+        }
+
+        internal static string NoProviderAvailable {
+            get {
+                return ResourceManager.GetString("NoProviderAvailable", resourceCulture);
             }
         }
         
@@ -2523,6 +2646,15 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Termin-Erinnerungen per Push.
+        /// </summary>
+        internal static string PushNotifications {
+            get {
+                return ResourceManager.GetString("PushNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string Remindersentsuccessfully {
@@ -2613,11 +2745,26 @@ namespace loukupm.Langue {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ausgewählte Dienstleistungen für deinen Termin.
+        /// </summary>
+        internal static string selectedservices {
+            get {
+                return ResourceManager.GetString("selectedservices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select reminder time before appointment.
         /// </summary>
         internal static string SelectReminderTime {
             get {
                 return ResourceManager.GetString("SelectReminderTime", resourceCulture);
+            }
+        }
+
+        internal static string SelectProvider {
+            get {
+                return ResourceManager.GetString("SelectProvider", resourceCulture);
             }
         }
         
@@ -2627,6 +2774,24 @@ namespace loukupm.Langue {
         internal static string sendotp {
             get {
                 return ResourceManager.GetString("sendotp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wähle einen Dienstleister, der die ausgewählten Dienstleistungen anbietet.
+        /// </summary>
+        internal static string serviceproviderdescription {
+            get {
+                return ResourceManager.GetString("serviceproviderdescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ausgewählte Dienstleistungen für deinen Termin.
+        /// </summary>
+        internal static string serviceproviders {
+            get {
+                return ResourceManager.GetString("serviceproviders", resourceCulture);
             }
         }
         
@@ -3410,6 +3575,204 @@ namespace loukupm.Langue {
         internal static string YOUSHEDACIPTNUMBERPHONE2 {
             get {
                 return ResourceManager.GetString("YOUSHEDACIPTNUMBERPHONE2", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninTitle {
+            get {
+                return ResourceManager.GetString("OtpSigninTitle", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninVerifyAccount {
+            get {
+                return ResourceManager.GetString("OtpSigninVerifyAccount", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninEnterCode {
+            get {
+                return ResourceManager.GetString("OtpSigninEnterCode", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninInvalidCode {
+            get {
+                return ResourceManager.GetString("OtpSigninInvalidCode", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninVerify {
+            get {
+                return ResourceManager.GetString("OtpSigninVerify", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninDidntReceive {
+            get {
+                return ResourceManager.GetString("OtpSigninDidntReceive", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninResend {
+            get {
+                return ResourceManager.GetString("OtpSigninResend", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninBack {
+            get {
+                return ResourceManager.GetString("OtpSigninBack", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninNoContext {
+            get {
+                return ResourceManager.GetString("OtpSigninNoContext", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninYourContact {
+            get {
+                return ResourceManager.GetString("OtpSigninYourContact", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninEnterValidCode {
+            get {
+                return ResourceManager.GetString("OtpSigninEnterValidCode", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninDigitsOnly {
+            get {
+                return ResourceManager.GetString("OtpSigninDigitsOnly", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninContextMissing {
+            get {
+                return ResourceManager.GetString("OtpSigninContextMissing", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninNoInternet {
+            get {
+                return ResourceManager.GetString("OtpSigninNoInternet", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninErrorTryAgain {
+            get {
+                return ResourceManager.GetString("OtpSigninErrorTryAgain", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninIncomplete {
+            get {
+                return ResourceManager.GetString("OtpSigninIncomplete", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninInitFailed {
+            get {
+                return ResourceManager.GetString("OtpSigninInitFailed", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninLoadUserFailed {
+            get {
+                return ResourceManager.GetString("OtpSigninLoadUserFailed", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninNavigationFailed {
+            get {
+                return ResourceManager.GetString("OtpSigninNavigationFailed", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninInvalidTryAgain {
+            get {
+                return ResourceManager.GetString("OtpSigninInvalidTryAgain", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninExpired {
+            get {
+                return ResourceManager.GetString("OtpSigninExpired", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninTooManyAttempts {
+            get {
+                return ResourceManager.GetString("OtpSigninTooManyAttempts", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninNetworkError {
+            get {
+                return ResourceManager.GetString("OtpSigninNetworkError", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninVerificationFailed {
+            get {
+                return ResourceManager.GetString("OtpSigninVerificationFailed", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninUnexpectedError {
+            get {
+                return ResourceManager.GetString("OtpSigninUnexpectedError", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninNewCodeEmail {
+            get {
+                return ResourceManager.GetString("OtpSigninNewCodeEmail", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninNewCodePhone {
+            get {
+                return ResourceManager.GetString("OtpSigninNewCodePhone", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninTooManyResend {
+            get {
+                return ResourceManager.GetString("OtpSigninTooManyResend", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninResendFailed {
+            get {
+                return ResourceManager.GetString("OtpSigninResendFailed", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninResendError {
+            get {
+                return ResourceManager.GetString("OtpSigninResendError", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninSuccess {
+            get {
+                return ResourceManager.GetString("OtpSigninSuccess", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninOk {
+            get {
+                return ResourceManager.GetString("OtpSigninOk", resourceCulture);
+            }
+        }
+
+        internal static string OtpSigninSeconds {
+            get {
+                return ResourceManager.GetString("OtpSigninSeconds", resourceCulture);
             }
         }
     }

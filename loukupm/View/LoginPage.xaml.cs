@@ -49,14 +49,16 @@ public partial class LoginPage : ContentPage
             NavigationService.ROUTE_REST_PASSWORD);
     }
 
-    private async Task SafeShowPopupAsync(Popup popup)
+    private async Task<object?> SafeShowPopupAsync(Popup popup)
     {
-        await MainThread.InvokeOnMainThreadAsync(async () =>
+        return await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             if (this.Handler?.MauiContext != null)
             {
-                await this.ShowPopupAsync(popup);
+                return await this.ShowPopupAsync(popup);
             }
+
+            return null;
         });
     }
 
@@ -135,13 +137,11 @@ public partial class LoginPage : ContentPage
                 isNavigationSuccessful = true;
 
                 NavigationService.ResetLogoutFlag();
-
-                // CRITICAL: Set app context BEFORE navigating to home
-                // This allows NavigateToHomeAndClear() to proceed
                 NavigationService.SetAppContext();
 
+                CancelLoginButtonAnimations();
                 await ShellNavigationManager.NavigateToHomeAndClear();
-
+                QueueResetLoginStateAfterLeave();
                 return;
             }
 
@@ -149,6 +149,12 @@ public partial class LoginPage : ContentPage
             {
                 var popup = new NoEqaulData();
                 await SafeShowPopupAsync(popup);
+            }
+            else if (statusCode == 403)
+            {
+                var goToVerify = await SafeShowPopupAsync(new EmailNotVerified());
+                if (goToVerify is true)
+                    await OpenEmailVerificationAsync(email);
             }
             else if (statusCode == 0)
             {
@@ -204,6 +210,52 @@ public partial class LoginPage : ContentPage
                 RegisterButton.IsEnabled = true;
             }
         }
+    }
+
+    private async Task OpenEmailVerificationAsync(string email)
+    {
+        try
+        {
+            var api = new ApiServices();
+            await api.ResendOtpAsync(
+                email: email,
+                registrationMethod: "email");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ [LoginPage] Resend OTP before verification failed: {ex.Message}");
+        }
+
+        var otpContext = new Auth.OtpContext
+        {
+            RegistrationMethod = "email",
+            Email = email,
+            MaskedDestination = MaskEmail(email)
+        };
+
+        await NavigationService.NavigateToPage(
+            NavigationService.ROUTE_OTP,
+            otpContext);
+    }
+
+    private static string MaskEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return "your email";
+
+        int atIndex = email.IndexOf('@');
+        if (atIndex <= 0)
+            return email;
+
+        string username = email.Substring(0, atIndex);
+        string domain = email.Substring(atIndex);
+
+        if (username.Length <= 2)
+            return username[0] + "***" + domain;
+
+        return username.Substring(0, 2) +
+               new string('*', Math.Max(2, username.Length - 2)) +
+               domain;
     }
 
     private string GetArabicFieldName(string fieldName)
@@ -273,6 +325,12 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
 
+        if (IsLogged)
+            ResetLoginState();
+
+        IsLogged = false;
+        NavigationService.ResetLogoutFlag();
+
         isGoogleButtonAnimating = true;
         StartGoogleButtonAnimation();
     }
@@ -280,8 +338,139 @@ public partial class LoginPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-
         StopGoogleButtonAnimation();
+
+        // Successful login is cleared after the next page is shown,
+        // so the user never sees the empty form.
+        if (!IsLogged)
+            ResetLoginState();
+    }
+
+    private void QueueResetLoginStateAfterLeave()
+    {
+        var attempts = 0;
+
+        void TryReset()
+        {
+            try
+            {
+                attempts++;
+
+                if (IsStillShowingLoginPage() && attempts < 20)
+                {
+                    Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(50), TryReset);
+                    return;
+                }
+
+                ResetLoginState();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ Login reset after leave skipped: {ex.Message}");
+            }
+        }
+
+        try
+        {
+            Dispatcher.Dispatch(TryReset);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ Login reset dispatch skipped: {ex.Message}");
+        }
+    }
+
+    private bool IsStillShowingLoginPage()
+    {
+        var root = Application.Current?.Windows.FirstOrDefault()?.Page
+                   ?? Application.Current?.MainPage;
+
+        if (root == this)
+            return true;
+
+        if (root is NavigationPage navigationPage && navigationPage.CurrentPage == this)
+            return true;
+
+        if (Shell.Current?.CurrentPage == this)
+            return true;
+
+        return false;
+    }
+
+    private static bool HasNativeView(VisualElement? view)
+    {
+        return view?.Handler?.MauiContext != null;
+    }
+
+    private void CancelLoginButtonAnimations()
+    {
+        if (!HasNativeView(RegisterButton))
+            return;
+
+        RegisterButton.CancelAnimations();
+    }
+
+    private void ResetLoginState()
+    {
+        userCredential = null;
+        redirectUri = null;
+
+        // After a successful login the native Android views are already
+        // disconnected. Touching buttons then crashes in MapBackground.
+        if (Handler?.MauiContext == null)
+            return;
+
+        try
+        {
+            if (HasNativeView(EmailEntry))
+                EmailEntry.Text = string.Empty;
+            if (HasNativeView(PasswordEntry))
+                PasswordEntry.Text = string.Empty;
+
+            HideLiveError();
+            StopGoogleButtonAnimation();
+
+            if (HasNativeView(RegisterButton))
+            {
+                RegisterButton.CancelAnimations();
+                RegisterButton.Rotation = 0;
+                RegisterButton.Scale = 1;
+                RegisterButton.Opacity = 1;
+                RegisterButton.IsVisible = true;
+                RegisterButton.IsEnabled = true;
+            }
+
+            if (HasNativeView(LoadingIndicator))
+            {
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
+            }
+
+            if (HasNativeView(GoogleButton))
+                GoogleButton.IsVisible = true;
+
+            if (HasNativeView(GoogleLoadingIndicator))
+            {
+                GoogleLoadingIndicator.IsRunning = false;
+                GoogleLoadingIndicator.IsVisible = false;
+            }
+
+            if (HasNativeView(fglogin))
+                fglogin.IsVisible = true;
+
+            if (HasNativeView(fg))
+                fg.IsVisible = false;
+
+            if (HasNativeView(webView))
+            {
+                webView.IsVisible = false;
+                webView.Source = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ ResetLoginState skipped: {ex.Message}");
+        }
     }
 
     private async void GoogleButton_Clicked(
@@ -430,13 +619,11 @@ public partial class LoginPage : ContentPage
                 isGoogleNavSuccessful = true;
 
                 NavigationService.ResetLogoutFlag();
-
-                // CRITICAL: Set app context BEFORE navigating to home
-                // This allows NavigateToHomeAndClear() to proceed
                 NavigationService.SetAppContext();
 
+                CancelLoginButtonAnimations();
                 await ShellNavigationManager.NavigateToHomeAndClear();
-
+                QueueResetLoginStateAfterLeave();
                 return;
             }
         }
@@ -608,6 +795,9 @@ public partial class LoginPage : ContentPage
 
     private void HideLiveError()
     {
+        if (!HasNativeView(LiveErrorLabel))
+            return;
+
         LiveErrorLabel.IsVisible = false;
     }
 }

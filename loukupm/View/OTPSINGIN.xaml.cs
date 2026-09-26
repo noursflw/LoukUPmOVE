@@ -1,6 +1,9 @@
+using CommunityToolkit.Maui.Views;
+using loukupm.Langue;
 using loukupm.Model;
 using loukupm.services;
 using loukupm.Services;
+using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
 using System.Text.Json;
 
@@ -19,6 +22,7 @@ public partial class OTPSINGIN : ContentPage
 
     private bool _isInitialized;
     private bool _isVerifying;
+    private bool _isMessageVisible;
 
     /// <summary>
     /// Receives the serialized OtpContext from Shell navigation.
@@ -124,8 +128,7 @@ public partial class OTPSINGIN : ContentPage
                 Console.WriteLine(
                     "⚠️ [OTPSINGIN] No OTP context provided");
 
-                DisplayError(
-                    "No verification context found. Please try again.");
+                DisplayError(AppResource.OtpSigninNoContext);
 
                 return;
             }
@@ -157,10 +160,8 @@ public partial class OTPSINGIN : ContentPage
 
             MaskedDestinationLabel.Text =
                 string.IsNullOrWhiteSpace(_otpContext.MaskedDestination)
-                    ? "your email/phone"
+                    ? AppResource.OtpSigninYourContact
                     : _otpContext.MaskedDestination;
-
-            ErrorMessageLabel.IsVisible = false;
 
             OtpEntry.Text = string.Empty;
 
@@ -206,11 +207,6 @@ public partial class OTPSINGIN : ContentPage
                 isValidOtp &&
                 !_isVerifying;
 
-            // Clear error as soon as the user starts entering a new code.
-            if (!string.IsNullOrEmpty(otp))
-            {
-                ErrorMessageLabel.IsVisible = false;
-            }
         }
         catch (Exception ex)
         {
@@ -231,32 +227,28 @@ public partial class OTPSINGIN : ContentPage
             if (string.IsNullOrWhiteSpace(otp) ||
                 otp.Length != 6)
             {
-                DisplayError(
-                    "Please enter a valid 6-digit code.");
+                DisplayError(AppResource.OtpSigninEnterValidCode);
 
                 return;
             }
 
             if (!otp.All(char.IsDigit))
             {
-                DisplayError(
-                    "OTP must contain only digits.");
+                DisplayError(AppResource.OtpSigninDigitsOnly);
 
                 return;
             }
 
             if (_otpContext == null)
             {
-                DisplayError(
-                    "Verification context missing. Please try again.");
+                DisplayError(AppResource.OtpSigninContextMissing);
 
                 return;
             }
 
             if (Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                DisplayError(
-                    "No internet connection. Please check your network.");
+                DisplayError(AppResource.OtpSigninNoInternet);
 
                 return;
             }
@@ -270,8 +262,7 @@ public partial class OTPSINGIN : ContentPage
             Console.WriteLine(
                 $"❌ [OTPSINGIN] Verify clicked error: {ex}");
 
-            DisplayError(
-                "An error occurred. Please try again.");
+            DisplayError(AppResource.OtpSigninErrorTryAgain);
         }
         finally
         {
@@ -293,8 +284,7 @@ public partial class OTPSINGIN : ContentPage
                 Console.WriteLine(
                     "❌ [OTPSINGIN] OTP context is null");
 
-                DisplayError(
-                    "Verification context missing. Please try again.");
+                DisplayError(AppResource.OtpSigninContextMissing);
 
                 return;
             }
@@ -323,8 +313,7 @@ public partial class OTPSINGIN : ContentPage
                     Console.WriteLine(
                         "❌ [OTPSINGIN] Access token is null or empty");
 
-                    DisplayError(
-                        "Verification incomplete. Please try again.");
+                    DisplayError(AppResource.OtpSigninIncomplete);
 
                     return;
                 }
@@ -339,8 +328,7 @@ public partial class OTPSINGIN : ContentPage
                         Console.WriteLine(
                             "❌ [OTPSINGIN] AppViewModel.Instance is null");
 
-                        DisplayError(
-                            "Application initialization failed. Please try again.");
+                        DisplayError(AppResource.OtpSigninInitFailed);
 
                         return;
                     }
@@ -356,8 +344,7 @@ public partial class OTPSINGIN : ContentPage
                         $"❌ [OTPSINGIN] NullReferenceException " +
                         $"during LoadUserDataAsync: {nex}");
 
-                    DisplayError(
-                        "Failed to load user data. Please try again.");
+                    DisplayError(AppResource.OtpSigninLoadUserFailed);
 
                     return;
                 }
@@ -367,8 +354,7 @@ public partial class OTPSINGIN : ContentPage
                         $"❌ [OTPSINGIN] Exception during " +
                         $"LoadUserDataAsync: {ex}");
 
-                    DisplayError(
-                        "Failed to load user data. Please try again.");
+                    DisplayError(AppResource.OtpSigninLoadUserFailed);
 
                     return;
                 }
@@ -392,8 +378,7 @@ public partial class OTPSINGIN : ContentPage
                     Console.WriteLine(
                         $"❌ [OTPSINGIN] Navigation failed: {ex}");
 
-                    DisplayError(
-                        "Navigation failed. Please try again.");
+                    DisplayError(AppResource.OtpSigninNavigationFailed);
                 }
             }
             else
@@ -405,20 +390,20 @@ public partial class OTPSINGIN : ContentPage
                 string errorMsg = statusCode switch
                 {
                     422 =>
-                        "Invalid verification code. Please try again.",
+                        AppResource.OtpSigninInvalidTryAgain,
 
                     403 =>
-                        "Account not verified or OTP expired. Please request a new code.",
+                        AppResource.OtpSigninExpired,
 
                     429 =>
-                        "Too many attempts. Please try again later.",
+                        AppResource.OtpSigninTooManyAttempts,
 
                     0 =>
-                        "Network error. Please check your connection.",
+                        AppResource.OtpSigninNetworkError,
 
                     _ =>
                         string.IsNullOrWhiteSpace(errorMessage)
-                            ? "Verification failed. Please try again."
+                            ? AppResource.OtpSigninVerificationFailed
                             : errorMessage
                 };
 
@@ -430,8 +415,7 @@ public partial class OTPSINGIN : ContentPage
             Console.WriteLine(
                 $"❌ [OTPSINGIN] Exception during OTP verification: {ex}");
 
-            DisplayError(
-                "An unexpected error occurred. Please try again.");
+            DisplayError(AppResource.OtpSigninUnexpectedError);
         }
         finally
         {
@@ -445,8 +429,7 @@ public partial class OTPSINGIN : ContentPage
         {
             if (_otpContext == null)
             {
-                DisplayError(
-                    "Verification context missing. Please try again.");
+                DisplayError(AppResource.OtpSigninContextMissing);
 
                 return;
             }
@@ -458,8 +441,7 @@ public partial class OTPSINGIN : ContentPage
 
             if (Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                DisplayError(
-                    "No internet connection. Please check your network.");
+                DisplayError(AppResource.OtpSigninNoInternet);
 
                 ResendButton.IsEnabled = true;
 
@@ -484,14 +466,14 @@ public partial class OTPSINGIN : ContentPage
                 Console.WriteLine(
                     "✅ [OTPSINGIN] OTP resent successfully");
 
-                string destination =
+                bool sentToPhone =
                     _otpContext.RegistrationMethod?
-                        .Equals("phone", StringComparison.OrdinalIgnoreCase) == true
-                            ? "phone"
-                            : "email";
+                        .Equals("phone", StringComparison.OrdinalIgnoreCase) == true;
 
                 DisplayMessage(
-                    $"New code sent! Check your {destination}.");
+                    sentToPhone
+                        ? AppResource.OtpSigninNewCodePhone
+                        : AppResource.OtpSigninNewCodeEmail);
 
                 // If the API gives us a retry-after value,
                 int countdown =
@@ -510,11 +492,11 @@ public partial class OTPSINGIN : ContentPage
                 string errorMsg = statusCode switch
                 {
                     429 =>
-                        "Too many resend attempts. Please wait before trying again.",
+                        AppResource.OtpSigninTooManyResend,
 
                     _ =>
                         string.IsNullOrWhiteSpace(message)
-                            ? "Failed to resend code. Please try again later."
+                            ? AppResource.OtpSigninResendFailed
                             : message
                 };
 
@@ -528,8 +510,7 @@ public partial class OTPSINGIN : ContentPage
             Console.WriteLine(
                 $"❌ [OTPSINGIN] Exception during resend: {ex}");
 
-            DisplayError(
-                "An error occurred while resending the code.");
+            DisplayError(AppResource.OtpSigninResendError);
 
             ResendButton.IsEnabled = true;
         }
@@ -556,7 +537,7 @@ public partial class OTPSINGIN : ContentPage
 
             TimerLabel.IsVisible = true;
             TimerLabel.Text =
-                $"{_remainingSeconds}s";
+                string.Format(AppResource.OtpSigninSeconds, _remainingSeconds);
 
             while (_remainingSeconds > 0)
             {
@@ -570,7 +551,7 @@ public partial class OTPSINGIN : ContentPage
                 _remainingSeconds--;
 
                 TimerLabel.Text =
-                    $"{_remainingSeconds}s";
+                    string.Format(AppResource.OtpSigninSeconds, _remainingSeconds);
             }
 
             if (!token.IsCancellationRequested)
@@ -630,12 +611,14 @@ public partial class OTPSINGIN : ContentPage
 
     private void DisplayError(string message)
     {
-        MainThread.BeginInvokeOnMainThread(() =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
             try
             {
-                ErrorMessageLabel.Text = message;
-                ErrorMessageLabel.IsVisible = true;
+                await ShowDesignedMessageAsync(
+                    AppResource.EROR,
+                    message,
+                    isSuccess: false);
             }
             catch (Exception ex)
             {
@@ -651,10 +634,10 @@ public partial class OTPSINGIN : ContentPage
         {
             try
             {
-                await DisplayAlert(
-                    "Success",
+                await ShowDesignedMessageAsync(
+                    AppResource.Sacsess,
                     message,
-                    "OK");
+                    isSuccess: true);
             }
             catch (Exception ex)
             {
@@ -662,6 +645,24 @@ public partial class OTPSINGIN : ContentPage
                     $"⚠️ [OTPSINGIN] DisplayMessage failed: {ex.Message}");
             }
         });
+    }
+
+    private async Task ShowDesignedMessageAsync(string title, string message, bool isSuccess)
+    {
+        if (_isMessageVisible)
+            return;
+
+        _isMessageVisible = true;
+
+        try
+        {
+            await this.ShowPopupAsync(
+                new OtpMessagePopup(title, message, isSuccess));
+        }
+        finally
+        {
+            _isMessageVisible = false;
+        }
     }
 
     private void ShowLoading(bool show)

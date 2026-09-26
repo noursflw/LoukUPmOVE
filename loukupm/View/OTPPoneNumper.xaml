@@ -3,10 +3,16 @@
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
+             xmlns:converters="clr-namespace:loukupm.Converter"
              x:Class="loukupm.View.OTPPoneNumper"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              BackgroundColor="Black"
              Title="OTPPoneNumper">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ScrollView>
         <VerticalStackLayout>
             <Grid>
@@ -26,7 +32,8 @@
             </HorizontalStackLayout>
 
             <Button  
-              Command="{Binding VerifyOtpCommand}"
+              Clicked="OnVerifyClicked"
+              IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
               TextColor="#1F1B04" FontSize="22" FontFamily="georgia-bold"
               WidthRequest="300"
               BorderWidth="1" Text="{loc:Translate Name=standpay}" CornerRadius="16"

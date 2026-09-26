@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:Loc="clr-namespace:loukupm.Langue"
+               x:Class="loukupm.View.MassgingApp.EmailNotVerified"
+               Color="#B3000000"
+               CanBeDismissedByTappingOutsideOfPopup="True">
+    <Border x:Name="DialogRoot"
+            BackgroundColor="#111111"
+            Stroke="#EBD750"
+            StrokeThickness="1.5"
+            StrokeShape="RoundRectangle 18"
+            Padding="18,10,18,20"
+            Margin="22,0"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            WidthRequest="340"
+            MaximumWidthRequest="360">
+        <VerticalStackLayout Spacing="14">
+            <Label Text="✕"
+                   TextColor="White"
+                   FontSize="20"
+                   HorizontalOptions="End"
+                   Padding="8,4"
+                   VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CloseClicked"/>
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Image Source="email_registered.svg"
+                   HeightRequest="84"
+                   WidthRequest="84"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center"/>
+
+            <Label Text="{Loc:Translate Name=EmailNotVerifiedTitle}"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   FontSize="17"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="WordWrap"/>
+
+            <Label Text="{Loc:Translate Name=EmailNotVerifiedMessage}"
+                   TextColor="White"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="WordWrap"/>
+
+            <Grid x:Name="ButtonsRow"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="12"
+                  Margin="0,8,0,0"
+                  FlowDirection="LeftToRight">
+                <Button Grid.Column="0"
+                        Text="{Loc:Translate Name=EmailNotVerifiedClose}"
+                        Clicked="CloseClicked"
+                        BackgroundColor="Transparent"
+                        BorderColor="#EBD750"
+                        BorderWidth="1.5"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        CornerRadius="12"
+                        HeightRequest="48"
+                        Padding="8,0"
+                        Shadow="{x:Null}"/>
+                <Button Grid.Column="1"
+                        Text="{Loc:Translate Name=EmailNotVerifiedVerify}"
+                        Clicked="VerifyClicked"
+                        BackgroundColor="#EBD750"
+                        BorderColor="#EBD750"
+                        BorderWidth="1.5"
+                        TextColor="Black"
+                        FontAttributes="Bold"
+                        FontSize="13"
+                        LineBreakMode="WordWrap"
+                        CornerRadius="12"
+                        HeightRequest="48"
+                        Padding="6,0"
+                        Shadow="{x:Null}"/>
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

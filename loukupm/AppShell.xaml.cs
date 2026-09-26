@@ -14,6 +14,7 @@ namespace loukupm
         public AppShell()
         {
             InitializeComponent();
+            ShowHomeShell();
             RegisterAllRoutes();
             ValidateNavigation();
             SetupNotificationTapHandler();
@@ -116,7 +117,6 @@ namespace loukupm
                 {
 
                     (NavigationService.ROUTE_MAIN_PAGE, typeof(MainPage)),
-                    (NavigationService.ROUTE_LOGIN, typeof(LoginPage)),
                     (NavigationService.ROUTE_SIGNIN, typeof(SinginPage)),
                     (NavigationService.ROUTE_OTP, typeof(OTPSINGIN)),
                     (NavigationService.ROUTE_POLICY_PRIVACY_AUTH, typeof(PolicyandPrivacyPageatAthun)),
@@ -197,16 +197,96 @@ namespace loukupm
             Console.WriteLine("🔄 ResetAuthenticationCheck called (no-op in new flow)");
         }
 
+        public Task GoToLoginAsync()
+        {
+            ShowLoginShell();
+            return Task.CompletedTask;
+        }
+
+        public Task GoToHomeAsync()
+        {
+            ShowHomeShell();
+            return Task.CompletedTask;
+        }
+
+        public async Task ShowProfileAsync()
+        {
+            Console.WriteLine("[AppShell] ShowProfileAsync");
+
+            // Absolute navigation away from the current tab clears the pushed OTP page.
+            // Going straight to ProfilePage is ignored while that page is already the active tab.
+            await GoToAsync($"//{NavigationService.ROUTE_HOME}", animate: false);
+            await GoToAsync($"//{NavigationService.ROUTE_PROFILE}", animate: false);
+
+            FlyoutBehavior = FlyoutBehavior.Flyout;
+            FlyoutIsPresented = false;
+
+            if (MainTabBar == null)
+                return;
+
+            CurrentItem = MainTabBar;
+            var profile = MainTabBar.Items.FirstOrDefault(item =>
+                string.Equals(item.Route, NavigationService.ROUTE_PROFILE, StringComparison.OrdinalIgnoreCase));
+            if (profile != null)
+                MainTabBar.CurrentItem = profile;
+
+            Console.WriteLine($"[AppShell] Profile visible. Current page: {CurrentPage?.GetType().Name}");
+        }
+
+        private void ShowHomeShell()
+        {
+            try
+            {
+                FlyoutBehavior = FlyoutBehavior.Flyout;
+                FlyoutIsPresented = false;
+
+                if (MainTabBar != null)
+                {
+                    CurrentItem = MainTabBar;
+
+                    var home = MainTabBar.Items.FirstOrDefault(item =>
+                        string.Equals(item.Route, "HomePage", StringComparison.Ordinal));
+                    if (home != null)
+                        MainTabBar.CurrentItem = home;
+                }
+
+                if (LoginShellItem != null)
+                    LoginShellItem.IsVisible = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AppShell] ShowHomeShell failed: {ex.Message}");
+            }
+        }
+
+        private void ShowLoginShell()
+        {
+            try
+            {
+                FlyoutIsPresented = false;
+                FlyoutBehavior = FlyoutBehavior.Disabled;
+
+                if (LoginShellItem == null)
+                    return;
+
+                LoginShellItem.IsVisible = true;
+                CurrentItem = LoginShellItem;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AppShell] ShowLoginShell failed: {ex.Message}");
+            }
+        }
+
         private async void MenuItem_Clicked(object sender, EventArgs e)
         {
-            var popup = new MassegBoxLogout(); 
-            var result = await Shell.Current.ShowPopupAsync(popup);
-            if 
-                (result is bool confirmed && confirmed) 
-            { 
-                await 
-                   AppViewModel.Instance.LogoutCommand.ExecuteAsync(null);
-            }
+            var popup = new MassegBoxLogout();
+            var result = await this.ShowPopupAsync(popup);
+            if (result is not bool confirmed || !confirmed)
+                return;
+
+            FlyoutIsPresented = false;
+            await AppViewModel.Instance.LogoutCommand.ExecuteAsync(null);
         }
     }
 }

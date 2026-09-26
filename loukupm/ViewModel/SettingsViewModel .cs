@@ -4,7 +4,9 @@ using loukupm.Langue;
 using loukupm.Model;
 using loukupm.Services;
 using Microsoft.Maui.Storage;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,35 +30,21 @@ namespace loukupm.ViewModel
         // =========================
 
         [ObservableProperty]
-        private bool smsEnabled;
-
-        [ObservableProperty]
-        private bool emailEnabled;
-
-        [ObservableProperty]
         private bool isBusy;
 
+        /// <summary>
+        /// Toggles rendered from GET /api/settings. Keys are never hardcoded in the UI,
+        /// so settings added on the backend show up without an app release.
+        /// </summary>
+        public ObservableCollection<SettingToggleViewModel> Settings { get; } = new();
+
         private List<SettingItem> _settingsCache = new();
-        partial void OnSmsEnabledChanged(bool value)
-        {
-            Console.WriteLine($"📱 sms UI changed to: {value}");
-
-            _ = UpdateSetting("reminder_sms_enabled", value);
-        }
-
-        partial void OnEmailEnabledChanged(bool value)
-        {
-            Console.WriteLine($"📱 nEmai UI changed to: {value}");
-            _ = UpdateSetting("reminder_email_enabled", value);
-        }
 
         [RelayCommand]
         public async Task LoadDataAsync()
         {
-            // Prevent duplicate concurrent loads
             if (IsBusy) return;
 
-            // If we already loaded settings once, skip reloading to preserve UI state across page navigations.
             if (_settingsCache != null && _settingsCache.Count > 0)
             {
                 System.Diagnostics.Debug.WriteLine("[SettingsViewModel] LoadDataAsync skipped - already loaded");
@@ -69,49 +57,31 @@ namespace loukupm.ViewModel
 
                 _settingsCache = await _apiServices.GetSettingsAsync();
 
-                var sms = _settingsCache.FirstOrDefault(x => x.Key == "reminder_sms_enabled");
-                var email = _settingsCache.FirstOrDefault(x => x.Key == "reminder_email_enabled");
-
-                SmsEnabled = sms?.Value?.ToString()?.ToLower() == "true";
-                EmailEnabled = email?.Value?.ToString()?.ToLower() == "true";
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
-
-        [RelayCommand]
-        public async Task ToggleSmsAsync()
-        {
-            await UpdateSetting("reminder_sms_enabled", SmsEnabled);
-        }
-
-        [RelayCommand]
-        public async Task ToggleEmailAsync()
-        {
-            await UpdateSetting("reminder_email_enabled", EmailEnabled);
-        }
-
-        private async Task UpdateSetting(string key, bool value)
-        {
-            try
-            {
-                IsBusy = true;
-
-                var success = await _apiServices.UpdateSettingAsync(key, value);
-
-                if (!success)
+                Settings.Clear();
+                foreach (var item in _settingsCache)
                 {
-                    if (key == "reminder_sms_enabled")
-                        SmsEnabled = !value;
-                    else
-                        EmailEnabled = !value;
+                    if (!string.Equals(item.Type, "boolean", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    Settings.Add(new SettingToggleViewModel(item, UpdateSetting));
                 }
             }
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        private async Task<bool> UpdateSetting(string key, bool value)
+        {
+            try
+            {
+                return await _apiServices.UpdateSettingAsync(key, value);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SettingsViewModel] Failed to update {key}: {ex.Message}");
+                return false;
             }
         }
 
@@ -182,11 +152,40 @@ namespace loukupm.ViewModel
 
                 Console.WriteLine($"🌍 Language changed to {culture.DisplayName} (Code: {culture.TwoLetterISOLanguageName})");
                 Console.WriteLine($"↔️ Flow Direction: {LocalizationResourcesManager.Instanse.GetFlowDirection()}");
+
+                RefreshSettingTexts();
+
+                // Notification bodies are built from the stored profile locale, not from request headers.
+                _ = SyncLocaleWithBackendAsync(culture.TwoLetterISOLanguageName);
             }
             catch (System.Exception ex)
             {
                 Console.WriteLine($"❌ Error changing language: {ex.Message}");
             }
+        }
+
+        private async Task SyncLocaleWithBackendAsync(string languageCode)
+        {
+            try
+            {
+                await _apiServices.UpdateUserLocaleAsync(languageCode);
+
+                // Labels and reminder texts are localized server-side, so refetch both.
+                _settingsCache = new List<SettingItem>();
+                await LoadDataAsync();
+                await AppViewModel.Instance.RefreshReminderOptionsAsync();
+                RefreshSettingTexts();
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine($"❌ Error syncing locale: {ex.Message}");
+            }
+        }
+
+        private void RefreshSettingTexts()
+        {
+            foreach (var setting in Settings)
+                setting.RefreshLocalizedTexts();
         }
     }
 }

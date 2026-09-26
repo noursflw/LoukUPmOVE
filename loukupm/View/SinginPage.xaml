@@ -68,7 +68,40 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <material:TextField x:Name="RegisterPhoneEntry"  Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png"  Keyboard="Numeric" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
+                <material:TextField x:Name="RegisterPhoneEntry" Text="+49" TextChanged="RegisterPhoneEntry_TextChanged" Margin="25,0,25,0" InputBackgroundColor="Transparent" CornerRadius="16" Icon="email.png" Keyboard="Telephone" FlowDirection="LeftToRight" HeightRequest="50" Title="{loc:Translate Name=PhoneNumber}" />
+                <Border
+                  x:Name="PhonePrefixHintBorder"
+                  Margin="25,8,25,0"
+                  Padding="12,10"
+                  BackgroundColor="#1AFFFFFF"
+                  Stroke="#66EBD750"
+                  StrokeThickness="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                          x:Name="PhonePrefixHintLabel"
+                          FontSize="13"
+                          TextColor="White"
+                          LineBreakMode="WordWrap" />
+                        <Border
+                          Padding="10,4"
+                          BackgroundColor="#33EBD750"
+                          StrokeThickness="0"
+                          HorizontalOptions="Start">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Label
+                              Text="151 ****"
+                              TextColor="#EBD750"
+                              FontSize="13"
+                              FontAttributes="Bold"
+                              FlowDirection="LeftToRight" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
                 <Label FontSize="16" Margin="12,24,0,0" Padding="10">
                     <Label.FormattedText>
                         <FormattedString>

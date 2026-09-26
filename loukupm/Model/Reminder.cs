@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace loukupm.Model
@@ -35,6 +37,7 @@ namespace loukupm.Model
 
     /// <summary>
     /// Contains the reminder options and texts from the API.
+    /// Includes channel information and active channel status.
     /// </summary>
     public class ReminderOptionsData
     {
@@ -46,6 +49,85 @@ namespace loukupm.Model
 
         [JsonPropertyName("texts")]
         public ReminderTexts Texts { get; set; }
+
+        /// <summary>
+        /// Indicates if user has at least one active notification channel.
+        /// If false, reminder is saved but user won't receive notifications.
+        /// </summary>
+        [JsonPropertyName("has_active_channel")]
+        public bool HasActiveChannel { get; set; }
+
+        /// <summary>
+        /// Raw channels payload (API may return either an array of channel objects or an object with named keys).
+        /// Use GetChannels() to obtain a normalized list of ChannelInfo.
+        /// </summary>
+        [JsonPropertyName("channels")]
+        public JsonElement ChannelsRaw { get; set; }
+
+        /// <summary>
+        /// Normalize channels payload into a list of ChannelInfo regardless of original shape.
+        /// </summary>
+        public List<ChannelInfo> GetChannels()
+        {
+            var list = new List<ChannelInfo>();
+            try
+            {
+                if (ChannelsRaw.ValueKind == JsonValueKind.Array)
+                {
+                    list = JsonSerializer.Deserialize<List<ChannelInfo>>(ChannelsRaw.GetRawText());
+                }
+                else if (ChannelsRaw.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var prop in ChannelsRaw.EnumerateObject())
+                    {
+                        try
+                        {
+                            var c = prop.Value;
+                            var info = new ChannelInfo
+                            {
+                                Type = prop.Name,
+                                Enabled = c.TryGetProperty("enabled", out var en) && en.GetBoolean(),
+                                Deliverable = c.TryGetProperty("deliverable", out var dl) && dl.GetBoolean(),
+                                Effective = c.TryGetProperty("effective", out var ef) && ef.GetBoolean()
+                            };
+                            if (!info.Effective)
+                                info.Effective = info.Enabled && info.Deliverable;
+                            list.Add(info);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+
+            return list ?? new List<ChannelInfo>();
+        }
+
+        public bool ResolveHasActiveChannel()
+        {
+            var channels = GetChannels();
+            if (channels.Count > 0)
+                return channels.Any(c => c.Effective || (c.Enabled && c.Deliverable));
+            return HasActiveChannel;
+        }
+    }
+
+    /// <summary>
+    /// Information about a notification channel (push, SMS, email).
+    /// </summary>
+    public class ChannelInfo
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = string.Empty;
+
+        [JsonPropertyName("enabled")]
+        public bool Enabled { get; set; }
+
+        [JsonPropertyName("deliverable")]
+        public bool Deliverable { get; set; }
+
+        [JsonPropertyName("effective")]
+        public bool Effective { get; set; }
     }
 
     /// <summary>
@@ -93,7 +175,7 @@ namespace loukupm.Model
         public string CancelledAt { get; set; }
 
         [JsonPropertyName("delivered_channels")]
-        public List<string> DeliveredChannels { get; set; } = new();
+        public List<string> DeliveredChannels { get; set; }
 
         [JsonPropertyName("channels")]
         public ReminderChannels Channels { get; set; }
@@ -166,5 +248,156 @@ namespace loukupm.Model
 
         [JsonPropertyName("error_type")]
         public string ErrorType { get; set; }
+
+        [JsonPropertyName("channels")]
+        public ReminderChannels Channels { get; set; }
+
+        public string FirstErrorMessage()
+        {
+            if (Errors != null)
+            {
+                foreach (var pair in Errors)
+                {
+                    if (pair.Value != null && pair.Value.Count > 0 && !string.IsNullOrWhiteSpace(pair.Value[0]))
+                        return pair.Value[0];
+                }
+            }
+
+            return Message ?? string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// Holds the most recent options returned by GET /api/appointments/reminders/options
+    /// so screens can render server labels instead of hardcoded ones.
+    /// </summary>
+    public static class ReminderOptionsCache
+    {
+        private static List<ReminderOption> _options = new();
+
+        public static IReadOnlyList<ReminderOption> Options => _options;
+
+        public static void Set(IEnumerable<ReminderOption> options)
+        {
+            _options = options?.ToList() ?? new List<ReminderOption>();
+        }
+
+        public static string LabelFor(int offsetHours)
+        {
+            return _options.FirstOrDefault(o => o.OffsetHours == offsetHours)?.Label ?? string.Empty;
+        }
+    }
+
+    public static class ReminderChannelHelper
+    {
+        public static List<string> BuildWarnings(ReminderChannels channels, bool hasActiveChannel)
+        {
+            var warnings = new List<string>();
+            var lang = GetLanguageCode();
+
+            if (!hasActiveChannel)
+                warnings.Add(NoActiveChannelText(lang));
+
+            if (channels == null)
+                return warnings;
+
+            if (channels.Push != null && channels.Push.Enabled && !channels.Push.Deliverable)
+                warnings.Add(PushUndeliverableText(lang));
+            if (channels.Email != null && channels.Email.Enabled && !channels.Email.Deliverable)
+                warnings.Add(EmailUndeliverableText(lang));
+            if (channels.SMS != null && channels.SMS.Enabled && !channels.SMS.Deliverable)
+                warnings.Add(SmsUndeliverableText(lang));
+
+            return warnings;
+        }
+
+        public static List<string> BuildWarnings(IEnumerable<ChannelInfo> channels, bool hasActiveChannel)
+        {
+            var warnings = new List<string>();
+            var lang = GetLanguageCode();
+
+            if (!hasActiveChannel)
+                warnings.Add(NoActiveChannelText(lang));
+
+            if (channels == null)
+                return warnings;
+
+            foreach (var channel in channels)
+            {
+                if (channel == null || !channel.Enabled || channel.Deliverable)
+                    continue;
+
+                switch ((channel.Type ?? string.Empty).ToLowerInvariant())
+                {
+                    case "push":
+                        warnings.Add(PushUndeliverableText(lang));
+                        break;
+                    case "sms":
+                        warnings.Add(SmsUndeliverableText(lang));
+                        break;
+                    case "email":
+                        warnings.Add(EmailUndeliverableText(lang));
+                        break;
+                }
+            }
+
+            return warnings;
+        }
+
+        public static string GetLanguageCode()
+        {
+            try
+            {
+                var saved = Microsoft.Maui.Storage.Preferences.Get("AppLanguage", "en-US");
+                var code = (saved ?? "en").Split('-')[0].ToLowerInvariant();
+                return code is "ar" or "de" or "en" ? code : "en";
+            }
+            catch
+            {
+                return "en";
+            }
+        }
+
+        public static string TurnOffText() => GetLanguageCode() switch
+        {
+            "ar" => "إيقاف التذكير",
+            "de" => "Erinnerung ausschalten",
+            _ => "Turn reminder off"
+        };
+
+        public static string DismissText() => GetLanguageCode() switch
+        {
+            "ar" => "إلغاء",
+            "de" => "Abbrechen",
+            _ => "Cancel"
+        };
+
+        private static string NoActiveChannelText(string lang) => lang switch
+        {
+            "ar" => "تم حفظ التذكير، لكن لا توجد قنوات إشعار فعّالة. فعّل قناة من الإعدادات.",
+            "de" => "Erinnerung gespeichert, aber kein aktiver Benachrichtigungskanal. Aktiviere einen Kanal in den Einstellungen.",
+            _ => "Reminder saved, but no active notification channels are available. Enable a channel in Settings."
+        };
+
+        private static string PushUndeliverableText(string lang) => lang switch
+        {
+            "ar" => "تذكير الدفع مفعّل، لكن الجهاز غير مسجّل. فعّل الإشعارات في إعدادات النظام.",
+            "de" => "Push-Erinnerungen sind aktiv, aber kein Gerät registriert. Bitte Benachrichtigungen erlauben.",
+            _ => "Push reminders are enabled, but this device is not registered. Enable notifications and register the device."
+        };
+
+        private static string EmailUndeliverableText(string lang) => lang switch
+        {
+            "ar" => "تذكير البريد مفعّل، لكن الحساب بلا بريد إلكتروني.",
+            "de" => "E-Mail-Erinnerungen sind aktiv, aber dem Konto fehlt eine E-Mail-Adresse.",
+            _ => "Email reminders are enabled, but your account lacks an email address."
+        };
+
+        private static string SmsUndeliverableText(string lang) => lang switch
+        {
+            "ar" => "تذكير الرسائل مفعّل، لكن الحساب بلا رقم هاتف. أضف رقماً لاستلام الرسائل.",
+            "de" => "SMS-Erinnerungen sind aktiv, aber dem Konto fehlt eine Telefonnummer.",
+            _ => "SMS reminders are enabled, but your account lacks a phone number. Add a phone number to receive SMS reminders."
+        };
     }
 }

@@ -188,6 +188,50 @@
                             </Grid>
                         </Border>
 
+                        <!-- Reminder (hidden for cancelled / past appointments) -->
+                        <Border Margin="16,0,16,12"
+                                Padding="12,10"
+                                BackgroundColor="#141414"
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="#222222"
+                                IsVisible="{Binding CanManageReminder}">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                        <Label Text="{Loc:Translate Name=AppointmentReminder}"
+                                               TextColor="#CCCCCC"
+                                               FontFamily="Oswald"
+                                               FontSize="13" />
+                                        <Label Text="{Binding ReminderSummary}"
+                                               TextColor="#E8C966"
+                                               FontFamily="Oswald"
+                                               FontSize="12"
+                                               IsVisible="{Binding HasActiveReminder}" />
+                                    </VerticalStackLayout>
+
+                                    <Button Grid.Column="1"
+                                            Text="{Loc:Translate Name=Choose}"
+                                            FontFamily="Oswald"
+                                            FontSize="11"
+                                            Padding="14,0"
+                                            HeightRequest="34"
+                                            CornerRadius="10"
+                                            BackgroundColor="#1A1813"
+                                            BorderColor="#33E8C966"
+                                            BorderWidth="1"
+                                            TextColor="#E8C966"
+                                            Clicked="OnReminderOptionsClicked" />
+                                </Grid>
+
+                                <!--<Label Text="{Binding ReminderChannelWarning}"
+                                       TextColor="#F0C850"
+                                       FontFamily="Oswald"
+                                       FontSize="11"
+                                       LineBreakMode="WordWrap"
+                                       IsVisible="{Binding HasReminderChannelWarning}" />-->
+                            </VerticalStackLayout>
+                        </Border>
+
                         <!-- Cancel Button -->
                         <Button HorizontalOptions="Fill" 
                     FontFamily="OpenSansSemibold" 

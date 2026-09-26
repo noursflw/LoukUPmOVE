@@ -1,7 +1,9 @@
+using CommunityToolkit.Maui.Views;
 using loukupm.Model;
 using loukupm.Services;
 using loukupm.ViewModel;
 using Microsoft.Maui.Graphics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace loukupm.View;
@@ -23,7 +25,13 @@ public partial class BookingPage : ContentPage
 
 
 		var viewModel = BindingContext as AppViewModel;
-		if (viewModel?.LoadAppointmentsCommand.IsRunning == false)
+		if (viewModel == null)
+			return;
+
+		// Options feed the reminder labels shown on each appointment card.
+		await viewModel.RefreshReminderOptionsAsync();
+
+		if (viewModel.LoadAppointmentsCommand.IsRunning == false)
 		{
 			await viewModel.LoadAppointmentsCommand.ExecuteAsync(null);
 		}
@@ -32,6 +40,47 @@ public partial class BookingPage : ContentPage
 	private void Button_Clicked(object sender, EventArgs e)
 	{
 
+	}
+
+	/// <summary>
+	/// Lets the user pick a lead time or switch the reminder off.
+	/// Changing the lead time is a direct POST; DELETE runs only when the user turns it off.
+	/// </summary>
+	private async void OnReminderOptionsClicked(object sender, EventArgs e)
+	{
+		if (sender is not Button button || button.BindingContext is not Appointment appointment)
+			return;
+
+		if (BindingContext is not AppViewModel viewModel)
+			return;
+
+		if (viewModel.ReminderOptions.Count == 0)
+			await viewModel.RefreshReminderOptionsAsync();
+
+		if (viewModel.ReminderOptions.Count == 0)
+			return;
+
+		ReminderOption? current = null;
+		if (appointment.Reminder?.OffsetHours is int offset)
+			current = viewModel.ReminderOptions.FirstOrDefault(o => o.OffsetHours == offset);
+
+		var popup = new ReminderTimePopup(
+			viewModel.ReminderQuestion,
+			viewModel.ReminderOptions,
+			current,
+			includeTurnOff: appointment.HasActiveReminder);
+
+		if (await this.ShowPopupAsync(popup) is not ReminderTimePopupResult result)
+			return;
+
+		if (result.TurnOff && appointment.HasActiveReminder)
+		{
+			await viewModel.SetAppointmentReminderEnabledAsync(appointment, false);
+			return;
+		}
+
+		if (result.Option != null)
+			await viewModel.ChangeAppointmentReminderOffsetAsync(appointment, result.Option.OffsetHours);
 	}
 
 	private async void Button_Clicked_1(object sender, EventArgs e)

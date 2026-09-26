@@ -102,7 +102,7 @@
                     FontAttributes="Bold" />
 
                 <Label
-                    Text="Selected services for your appointment"
+                    Text="{Loc:Translate Name=selectedservices}"
                     FontSize="12"
                     FontFamily="Oswald"
                     TextColor="#999999"
@@ -306,14 +306,14 @@
                 Margin="20,20,20,10">
 
                 <Label
-                    Text="Service Provider"
+                    Text="{Loc:Translate Name=serviceproviders}"
                     FontSize="18"
                     FontFamily="Oswald"
                     TextColor="White"
                     FontAttributes="Bold" />
 
                 <Label
-                    Text="Choose provider(s) who can perform the selected services"
+                    Text="{Loc:Translate Name=serviceproviderdescription}"
                     FontSize="12"
                     FontFamily="Oswald"
                     TextColor="#999999"
@@ -342,88 +342,104 @@
             <!-- APPOINTMENT REMINDER -->
             <!-- ================================================= -->
 
-            <Frame
-                BorderColor="#444444"
-                BackgroundColor="#444444"
-                CornerRadius="16"
-                Margin="10,0,10,20"
-                Padding="16">
+            <Frame x:Name="ReminderContainerFrame"
+          HasShadow="False"
+          BackgroundColor="#222222"
+          BorderColor="#D4AF37"
+          CornerRadius="12"
+          Padding="15"
+          Margin="20,10"
+          IsVisible="{Binding IsReminderSectionVisible}">
+                <VerticalStackLayout BackgroundColor="#222222" Spacing="10">
 
-                <VerticalStackLayout
-                    Spacing="10">
+                    <Grid ColumnDefinitions="30, *, Auto" ColumnSpacing="12" VerticalOptions="Center">
+                        <Grid Grid.Column="0" 
+                     WidthRequest="30" 
+                     HeightRequest="30" 
+                     HorizontalOptions="Center" 
+                     VerticalOptions="Center">
+                            <Image Source="reminder.png"
+                          Aspect="AspectFit"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center" />
+                        </Grid>
 
+                        <Label Grid.Column="1"
+                      Text="{Binding ReminderTitle}"
+                      VerticalOptions="Center"
+                      VerticalTextAlignment="Center"
+                      FontFamily="Oswald"
+                      FontSize="16"
+                      TextColor="White" />
 
-                    <!-- REMINDER TITLE -->
+                        <Switch x:Name="ReminderSwitch"
+                       Grid.Column="2"
+                       IsToggled="{Binding IsReminderEnabled}"
+                       Toggled="OnReminderSwitchToggled"
+                       OnColor="White"
+                       ThumbColor="#D4AF37"
+                       VerticalOptions="Center" />
+                    </Grid>
 
-                    <Label
-                        Text="{Loc:Translate Name=AppointmentReminder}"
-                        FontSize="16"
-                        TextColor="White"
-                        FontFamily="Oswald"
-                        FontAttributes="Bold" />
+                    <Label Text="{Binding ReminderSubtitle}"
+                  FontFamily="Oswald"
+                  FontSize="12"
+                  TextColor="#999999"
+                  IsVisible="{Binding ReminderSubtitle, Converter={StaticResource StringNotEmptyConverter}}" />
 
+                    <!--<Border Stroke="Transparent"
+                   BackgroundColor="#332A1A"
+                   StrokeShape="RoundRectangle 8"
+                   Padding="10"
+                   IsVisible="{Binding ShowChannelWarning}">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding ChannelWarnings}" Spacing="4">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding .}"
+                                  FontFamily="Oswald"
+                                  FontSize="12"
+                                  TextColor="#FFD700"
+                                  LineBreakMode="WordWrap" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Border>-->
 
-                    <!-- REMINDER DESCRIPTION -->
+                    <VerticalStackLayout x:Name="ReminderDetailsLayout"
+                                IsVisible="False"
+                                Opacity="0"
+                                Spacing="10">
+                        <BoxView HeightRequest="1" Color="#444444" Margin="0,5"/>
 
-                    <Label
-                        Text="{Loc:Translate Name=SelectReminderTime}"
-                        FontSize="12"
-                        TextColor="#D3D3D3"
-                        FontFamily="Oswald" />
-
-
-                    <!-- REMINDER TOGGLE SWITCH -->
-
-                    <HorizontalStackLayout
-                        Spacing="12"
-                        Margin="0,8,0,0">
-
-                        <Switch
-                            IsToggled="{Binding IsReminderEnabled}"
-                                      OnColor="White"
-            
-                                   ThumbColor="#D4AF37"   
-                            BackgroundColor="Transparent"
-                            VerticalOptions="Center" />
-
-                        <Label
-                             Text="{Loc:Translate Name=AppointmentReminder}"
-                            TextColor="#D3D3D3"
-                            FontFamily="Oswald"
-                            FontSize="13"
-                            VerticalOptions="Center" />
-
-                    </HorizontalStackLayout>
-
-
-                    <!-- REMINDER OPTIONS PICKER (Enabled/Disabled by Switch) -->
-
-                    <Picker
-                        ItemsSource="{Binding ReminderOptions}"
-                        SelectedIndex="{Binding SelectedReminderOptionIndex}"
-                        IsEnabled="{Binding IsReminderEnabled}"
-                        TextColor="White"
-                        FontFamily="Oswald"
-                        FontSize="14"
-                        BackgroundColor="#555555"
-                        TitleColor="#D3D3D3"
-                        Margin="0,8,0,0" />
-
-
-                    <!-- ENABLE REMINDER -->
-
-                    <Button
-                        Text="{Loc:Translate Name=EnableReminderTimer}"
-                        TextColor="Black"
-                        BackgroundColor="#D4AF37"
-                        FontFamily="Oswald"
-                        FontSize="14"
-                        CornerRadius="8"
-                        Padding="10,8"
-                        Command="{Binding EnableReminderTimerCommand}" />
+                        <Label Text="{Binding ReminderQuestion}"
+                      FontSize="14"
+                      FontFamily="Oswald"
+                      TextColor="#CCCCCC"/>
+                        <Border BackgroundColor="#1A1813"
+                                Stroke="#D4AF37"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="12,10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnReminderTimeTapped" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label Text="{Binding SelectedReminderOption.Label}"
+                                       TextColor="#E8C966"
+                                       FontFamily="Oswald"
+                                       FontSize="14"
+                                       VerticalOptions="Center"
+                                       LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="1"
+                                       Text="▾"
+                                       TextColor="#D4AF37"
+                                       FontSize="16"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
 
                 </VerticalStackLayout>
-
             </Frame>
 
 

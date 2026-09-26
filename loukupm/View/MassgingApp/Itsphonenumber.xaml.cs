@@ -1,5 +1,4 @@
 using CommunityToolkit.Maui.Views;
-using loukupm.Services;
 using loukupm.ViewModel;
 namespace loukupm.View.MassgingApp;
 
@@ -12,14 +11,13 @@ public partial class Itsphonenumber : Popup
     }
 
    
-    private async void Button_Clicked_1(object sender, EventArgs e)
+    private void Button_Clicked_1(object sender, EventArgs e)
     {
-        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
-        this.Close();
+        Close("edit");
     }
 
     private void Button_Clicked(object sender, EventArgs e)
     {
-        this.Close();
+        Close(true);
     }
 }

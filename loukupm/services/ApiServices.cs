@@ -243,7 +243,7 @@ namespace loukupm.Services
         }
 
 
-       
+
 
 
 
@@ -257,7 +257,7 @@ namespace loukupm.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"❌ API error: {response.StatusCode}");
-                    return new List<WorkTeam>();
+                    return null;
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -279,7 +279,7 @@ namespace loukupm.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Exception while loading work teams: {ex.Message}");
-                return new List<WorkTeam>();
+                return null;
             }
         }
 
@@ -390,21 +390,29 @@ namespace loukupm.Services
         }
         public async Task<User?> GetUserAsync()
         {
-            await SetAuthorizationHeaderAsync();
-
-            var response = await _httpClient.GetAsync("https://lookupfriseur.com/api/profile");
-
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<UserResponse>(json, new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
-            });
+                await SetAuthorizationHeaderAsync();
 
-            return result?.Data;
+                var response = await _httpClient.GetAsync("https://lookupfriseur.com/api/profile");
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var result = JsonSerializer.Deserialize<UserResponse>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                return result?.Data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while loading user: {ex.Message}");
+                return null;
+            }
         }
 
 
@@ -428,7 +436,7 @@ namespace loukupm.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"❌ API error: {response.StatusCode}");
-                    return new List<Servies>();
+                    return null;
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -451,7 +459,7 @@ namespace loukupm.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Exception while loading services: {ex.Message}");
-                return new List<Servies>();
+                return null;
             }
         }
 
@@ -486,14 +494,14 @@ namespace loukupm.Services
                     Console.WriteLine($"⚠️ Provider services endpoint not available ({response.StatusCode})");
                     Console.WriteLine($"⚠️ Returning all services as fallback for provider {providerId}");
 
-                    return await GetServiesAsync();
+                    return await GetServiesAsync() ?? new List<Servies>();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Exception loading provider services: {ex.Message}");
                 // في حالة الخطأ: رجع جميع الخدمات كبديل
-                return await GetServiesAsync();
+                return await GetServiesAsync() ?? new List<Servies>();
             }
         }
 
@@ -765,7 +773,7 @@ namespace loukupm.Services
             }
         }
 
-       
+
         public async Task<List<string>> SearchServiessAsync(string searchTerm)
         {
             await SetAuthorizationHeaderAsync();
@@ -1037,7 +1045,7 @@ namespace loukupm.Services
         }
 
         /// <summary>
-        /// Internal helper method to send delete profile request without retry logic.
+        /// DELETE /api/profile with current_password and confirmation.
         /// </summary>
         private async Task<string?> SendDeleteProfileRequestAsync(string currentPassword)
         {
@@ -1055,26 +1063,28 @@ namespace loukupm.Services
                     return "NoToken";
                 }
 
-                var payload = new
+                var payload = new Auth.DeleteProfileRequest
                 {
-                    current_password = currentPassword
+                    CurrentPassword = currentPassword,
+                    Confirmation = true
                 };
 
                 var json = JsonSerializer.Serialize(payload);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                using var content = new StringContent(
-                    json,
-                    Encoding.UTF8,
-                    "application/json");
+                var url = $"{GetBaseUrl()}/api/profile";
+                using var request = new HttpRequestMessage(HttpMethod.Delete, url)
+                {
+                    Content = content
+                };
 
-                using var request = new HttpRequestMessage(
-                    HttpMethod.Delete,
-                    "https://lookupfriseur.com/api/profile");
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                request.Content = content;
+                Console.WriteLine($"🗑️ Delete profile DELETE {url}");
 
                 var httpResponse = await _httpClient.SendAsync(request);
-
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
                 Console.WriteLine($"📊 Delete profile response: {httpResponse.StatusCode}");
@@ -1082,7 +1092,7 @@ namespace loukupm.Services
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    return null; // نجاح
+                    return null;
                 }
 
                 if (httpResponse.StatusCode == HttpStatusCode.UnprocessableEntity)
@@ -1113,6 +1123,61 @@ namespace loukupm.Services
         }
 
         /// <summary>
+        /// Change the authenticated user's password via POST api/profile/change-password.
+        /// Body: current_password, password, password_confirmation.
+        /// </summary>
+        public async Task<(bool Success, int StatusCode, string ErrorMessage)> ChangePasswordAsync(
+            string currentPassword,
+            string password,
+            string passwordConfirmation)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                var request = new Auth.ChangePasswordRequest
+                {
+                    CurrentPassword = currentPassword,
+                    Password = password,
+                    PasswordConfirmation = passwordConfirmation
+                };
+
+                var json = JsonSerializer.Serialize(request);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var url = $"{GetBaseUrl()}/api/profile/change-password";
+                Console.WriteLine($"🔐 Change password POST {url}");
+
+                var response = await _httpClient.PostAsync(url, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"🔐 Change password response ({response.StatusCode}): {responseBody}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, (int)response.StatusCode, null);
+                }
+
+                return (false, (int)response.StatusCode, ParseErrorMessage(responseBody));
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"❌ Network error during change password: {ex.Message}");
+                return (false, 0, "Network connection error");
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"❌ Timeout during change password: {ex.Message}");
+                return (false, 0, "Request timeout");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Unexpected error during change password: {ex.Message}");
+                return (false, 0, ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Detect MIME type based on file extension
         /// </summary>
         private string GetMimeType(string filePath)
@@ -1129,26 +1194,50 @@ namespace loukupm.Services
             };
         }
 
+        /// <summary>
+        /// Fetch dynamic settings from the API.
+        /// CRITICAL: Do NOT hardcode settings toggles - always fetch from API.
+        /// Includes i18n support via Accept-Language header.
+        /// </summary>
         public async Task<List<SettingItem>> GetSettingsAsync()
         {
-            await SetAuthorizationHeaderAsync();
+            try
+            {
+                await SetAuthorizationHeaderAsync();
 
-            var response = await _httpClient.GetAsync(
-                "https://lookupfriseur.com/api/settings"
-            );
+                string languageCode = GetLanguageCode();
+                if (languageCode != "ar" && languageCode != "de" && languageCode != "en")
+                    languageCode = "de";
 
-            if (!response.IsSuccessStatusCode)
+                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
+                _httpClient.DefaultRequestHeaders.Add("Accept-Language", languageCode);
+
+                var url = $"{GetBaseUrl()}/api/settings?lang={Uri.EscapeDataString(languageCode)}";
+                Console.WriteLine($"📥 Fetching settings (language: {languageCode}) from {url}");
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Failed to get settings: {response.StatusCode}");
+                    return new List<SettingItem>();
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var result = JsonSerializer.Deserialize<SettingsResponse>(
+                    json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+
+                Console.WriteLine($"📌 Settings loaded: {result?.Data?.Count ?? 0} items");
+                return result?.Data ?? new List<SettingItem>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception while getting settings: {ex.Message}");
                 return new List<SettingItem>();
-
-            var json = await response.Content.ReadAsStringAsync();
-            
-
-            var result = JsonSerializer.Deserialize<SettingsResponse>(
-                json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-            );
-
-            return result?.Data ?? new List<SettingItem>();
+            }
         }
         public async Task<bool> UpdateSettingAsync(string key, bool value)
         {
@@ -1168,6 +1257,29 @@ namespace loukupm.Services
             );
 
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateUserLocaleAsync(string languageCode)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+
+                if (string.IsNullOrWhiteSpace(languageCode))
+                    return false;
+
+                using var form = new MultipartFormDataContent();
+                form.Add(new StringContent(languageCode), "locale");
+
+                var response = await _httpClient.PostAsync($"{GetBaseUrl()}/api/profile", form);
+                Console.WriteLine($"[UpdateUserLocaleAsync] {response.StatusCode}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UpdateUserLocaleAsync] {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>
@@ -1457,7 +1569,7 @@ namespace loukupm.Services
             }
         }
 
-       
+
         public async Task<(bool Success, int StatusCode, string ErrorMessage, int? RetryAfter)> SendPhoneOtpAsync(
             string phone)
         {
@@ -1552,7 +1664,7 @@ namespace loukupm.Services
         /// - retryAfter: Seconds to wait before retry (from header or response body)
         /// </summary>
         public async Task<(bool Success, int StatusCode, string ErrorMessage, int? RetryAfter)> VerifyPhoneOtpAsync(
-            string phone, 
+            string phone,
             string otp)
         {
             try
@@ -1765,25 +1877,31 @@ namespace loukupm.Services
         /// Get reminder configuration options for the current language.
         /// Sends Accept-Language header with current app language.
         /// </summary>
+        /// <summary>
+        /// Fetch reminder options and channel configuration from the API.
+        /// Includes has_active_channel status and available notification channels.
+        /// CRITICAL: Do NOT hardcode reminder options - always fetch from API.
+        /// </summary>
         public async Task<ReminderOptionsResponse> GetReminderOptionsAsync()
         {
             try
             {
                 await SetAuthorizationHeaderAsync();
 
-                // Get current language
+                // Get current language and ensure i18n compliance
                 string savedCulture = Preferences.Get("AppLanguage", "en-US");
                 string languageCode = savedCulture.Split('-')[0].ToLower();
 
-                // Ensure valid language code
+                // Ensure valid language code (ar, en, de)
                 if (languageCode != "ar" && languageCode != "de" && languageCode != "en")
                     languageCode = "en";
 
-                string url = $"{GetBaseUrl()}/api/appointments/reminders/options";
+                string url = $"{GetBaseUrl()}/api/appointments/reminders/options?lang={Uri.EscapeDataString(languageCode)}";
 
-                // Set Accept-Language header
                 _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
                 _httpClient.DefaultRequestHeaders.Add("Accept-Language", languageCode);
+
+                Console.WriteLine($"📥 Fetching reminder options (language: {languageCode}) from {url}");
 
                 var response = await _httpClient.GetAsync(url);
 
@@ -1793,8 +1911,24 @@ namespace loukupm.Services
                     return null;
                 }
 
-                var json = await response.Content.ReadAsAsync<string>();
+                var json = await response.Content.ReadAsStringAsync();
                 var result = JsonSerializer.Deserialize<ReminderOptionsResponse>(json);
+
+                // Log channel availability for debugging
+                if (result?.Data != null)
+                {
+                    Console.WriteLine($"📌 Reminder options loaded: {result.Data.Options.Count} options");
+                    Console.WriteLine($"📌 Has active channel: {result.Data.HasActiveChannel}");
+                    var channels = result.Data.GetChannels();
+                    if (channels != null && channels.Count > 0)
+                    {
+                        foreach (var ch in channels)
+                        {
+                            Console.WriteLine($"   - {ch.Type}: enabled={ch.Enabled}, deliverable={ch.Deliverable}");
+                        }
+                    }
+                }
+
                 return result;
             }
             catch (Exception ex)
@@ -1806,7 +1940,12 @@ namespace loukupm.Services
 
         /// <summary>
         /// Create or update a reminder for an appointment.
-        /// POST is an upsert operation - replaces existing reminder if present.
+        /// CRITICAL: POST is an idempotent upsert operation - replaces existing reminder if present.
+        /// 
+        /// ARCHITECTURAL RULES:
+        /// - Always send ONLY appointment_id and offset_hours (NEVER send absolute datetimes)
+        /// - Do NOT call DELETE before POST - use POST directly to replace
+        /// - Do NOT send timezone-aware datetimes to prevent server/client mismatch
         /// </summary>
         public async Task<(bool Success, int StatusCode, string Message, ReminderResponse ResponseData)> CreateReminderAsync(int appointmentId, int offsetHours)
         {
@@ -1825,7 +1964,7 @@ namespace loukupm.Services
                 var json = JsonSerializer.Serialize(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                Console.WriteLine($"📤 Creating reminder - URL: {url}");
+                Console.WriteLine($"📤 Creating/updating reminder - URL: {url}");
                 Console.WriteLine($"📤 Request payload: {json}");
 
                 var response = await _httpClient.PostAsync(url, content);
@@ -1843,7 +1982,11 @@ namespace loukupm.Services
                     catch { }
                 }
 
-                return (response.IsSuccessStatusCode, (int)response.StatusCode, response.IsSuccessStatusCode ? "Success" : "Failed", responseData);
+                var message = responseData?.FirstErrorMessage();
+                if (string.IsNullOrWhiteSpace(message))
+                    message = response.IsSuccessStatusCode ? "Success" : "Failed";
+
+                return (response.IsSuccessStatusCode, (int)response.StatusCode, message, responseData);
             }
             catch (Exception ex)
             {
@@ -1920,5 +2063,51 @@ namespace loukupm.Services
             }
         }
 
+        /// <summary>
+        /// Analyze reminder options and generate user warnings for unavailable channels.
+        /// 
+        /// CHANNEL WARNING LOGIC:
+        /// - If has_active_channel = false: Show banner "No active notification channel"
+        /// - If push: enabled && !deliverable: Prompt "Enable push notifications" / "Register device"
+        /// - If SMS: enabled && !deliverable: Warn "Phone number missing in profile"
+        /// - If Email: enabled && !deliverable: Warn "Email missing in profile"
+        /// </summary>
+        public ChannelWarnings GetChannelWarnings(ReminderOptionsResponse options)
+        {
+            var warnings = new ChannelWarnings();
+
+            if (options?.Data == null)
+            {
+                Console.WriteLine("⚠️  No reminder options data available");
+                return warnings;
             }
+
+            var channels = options.Data.GetChannels();
+            bool hasActive = options.Data.ResolveHasActiveChannel();
+            warnings.HasNoActiveChannel = !hasActive;
+            warnings.PushNotDeliverable = channels.Any(c => string.Equals(c.Type, "push", StringComparison.OrdinalIgnoreCase) && c.Enabled && !c.Deliverable);
+            warnings.SmsNotDeliverable = channels.Any(c => string.Equals(c.Type, "sms", StringComparison.OrdinalIgnoreCase) && c.Enabled && !c.Deliverable);
+            warnings.EmailNotDeliverable = channels.Any(c => string.Equals(c.Type, "email", StringComparison.OrdinalIgnoreCase) && c.Enabled && !c.Deliverable);
+
+            foreach (var warning in ReminderChannelHelper.BuildWarnings(channels, hasActive))
+                warnings.Warnings.Add(warning);
+
+            return warnings;
         }
+
+        /// <summary>
+        /// Represents warnings related to notification channel availability.
+        /// </summary>
+        public class ChannelWarnings
+        {
+            public bool HasNoActiveChannel { get; set; }
+            public bool PushNotDeliverable { get; set; }
+            public bool SmsNotDeliverable { get; set; }
+            public bool EmailNotDeliverable { get; set; }
+            public List<string> Warnings { get; set; } = new();
+
+            public bool HasAnyWarning => HasNoActiveChannel || PushNotDeliverable || SmsNotDeliverable || EmailNotDeliverable;
+        }
+
+    }
+}

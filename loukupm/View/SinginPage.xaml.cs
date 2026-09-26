@@ -46,6 +46,72 @@ public partial class SinginPage : ContentPage
             NavigationService.ROUTE_LOGIN);
     }
 
+    private int _loginNavigationStarted;
+    private bool _leavingForLogin;
+
+    private async Task GoToLoginFromRegisterAsync()
+    {
+        if (Interlocked.Exchange(ref _loginNavigationStarted, 1) == 1)
+            return;
+
+        _leavingForLogin = true;
+
+        try
+        {
+            // Let the Android release dialog finish closing before changing the stack.
+            await Task.Delay(250);
+
+            if (Navigation?.NavigationStack is { Count: > 1 })
+            {
+                await Navigation.PopToRootAsync(false);
+                return;
+            }
+
+            var root = Application.Current?.Windows.FirstOrDefault()?.Page
+                       ?? Application.Current?.MainPage;
+
+            if (root is NavigationPage navPage &&
+                navPage.Navigation.NavigationStack.Count > 1)
+            {
+                await navPage.PopToRootAsync(false);
+                return;
+            }
+
+            if (Shell.Current is loukupm.AppShell appShell)
+                await appShell.GoToLoginAsync();
+
+            if (Shell.Current != null)
+            {
+                await Shell.Current.GoToAsync(
+                    $"//{NavigationService.ROUTE_LOGIN}",
+                    animate: false);
+                return;
+            }
+
+            await NavigationService.NavigateToPage(
+                NavigationService.ROUTE_LOGIN);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"[SinginPage] GoToLogin failed: {ex.Message}");
+
+            Interlocked.Exchange(ref _loginNavigationStarted, 0);
+
+            try
+            {
+                await NavigationService.NavigateToPage(
+                    NavigationService.ROUTE_LOGIN);
+            }
+            catch (Exception fallbackEx)
+            {
+                _leavingForLogin = false;
+                Console.WriteLine(
+                    $"[SinginPage] Login fallback failed: {fallbackEx.Message}");
+            }
+        }
+    }
+
     private DateTime _lastBackPressed = DateTime.MinValue;
 
     private async void ShowToast(string message)
@@ -125,6 +191,16 @@ public partial class SinginPage : ContentPage
 
                 return;
             }
+
+            if (!PhoneNumberFormatter.TryNormalize(phone, out var normalizedPhone))
+            {
+                ShowPhonePrefixError();
+                return;
+            }
+
+            phone = normalizedPhone;
+            RegisterPhoneEntry.Text = normalizedPhone;
+            HidePhonePrefixError();
 
             if (!IsValidEmail(email))
             {
@@ -349,8 +425,11 @@ public partial class SinginPage : ContentPage
 
             if (statusCode == 409)
             {
-                await this.ShowPopupAsync(
-                    new EmaileUsed());
+                var popup = new EmaileUsed(GoToLoginFromRegisterAsync);
+                await this.ShowPopupAsync(popup);
+
+                if (popup.GoToLogin)
+                    await GoToLoginFromRegisterAsync();
 
                 return;
             }
@@ -364,6 +443,12 @@ public partial class SinginPage : ContentPage
                 Console.WriteLine(
                     $"❌ [SinginPage] Validation error: " +
                     $"{errorMessage}");
+
+                if (PhoneNumberFormatter.IsServerPrefixMessage(errorMessage))
+                {
+                    ShowPhonePrefixError();
+                    return;
+                }
 
                 await this.ShowPopupAsync(
                     new NoServerResponse());
@@ -406,27 +491,30 @@ public partial class SinginPage : ContentPage
         }
         finally
         {
-            LoadingIndicator.IsRunning = false;
-            LoadingIndicator.IsVisible = false;
+            if (!_leavingForLogin)
+            {
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
 
-            RegisterButton.Text =
-                AppResource.CreatAcount2;
+                RegisterButton.Text =
+                    AppResource.CreatAcount2;
 
-            RegisterButton.IsVisible = true;
+                RegisterButton.IsVisible = true;
 
-            RegisterButton.Scale = 0;
+                RegisterButton.Scale = 0;
 
-            await RegisterButton.RotateTo(0);
+                await RegisterButton.RotateTo(0);
 
-            await RegisterButton.ScaleTo(
-                1.1,
-                150,
-                Easing.CubicOut);
+                await RegisterButton.ScaleTo(
+                    1.1,
+                    150,
+                    Easing.CubicOut);
 
-            await RegisterButton.ScaleTo(
-                1.0,
-                100,
-                Easing.Linear);
+                await RegisterButton.ScaleTo(
+                    1.0,
+                    100,
+                    Easing.Linear);
+            }
         }
     }
 
@@ -544,6 +632,12 @@ public partial class SinginPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        PhonePrefixHintLabel.Text =
+            PhoneNumberFormatter.GetGuidanceMessage();
+
+        _phoneNational = PhoneNumberFormatter.ReadNational(RegisterPhoneEntry.Text);
+        RegisterPhoneEntry.Text = PhoneNumberFormatter.GermanyPrefix + _phoneNational;
 
         isGoogleButtonAnimating = true;
 
@@ -1016,6 +1110,90 @@ public partial class SinginPage : ContentPage
     // ============================================================
     // FIRST NAME
     // ============================================================
+
+    private bool _isUpdatingPhonePrefix;
+    private int _phoneCursorFix;
+    private int _phoneTextFix;
+    private string _phoneNational = string.Empty;
+
+    private void RegisterPhoneEntry_TextChanged(
+        object sender,
+        TextChangedEventArgs e)
+    {
+        if (_isUpdatingPhonePrefix)
+            return;
+
+        var edit = PhoneNumberFormatter.MergeFixedPrefix(_phoneNational, e.NewTextValue);
+        _phoneNational = edit.National;
+
+        ApplyCorrectedPhoneText(edit.Text);
+        PlacePhoneCursor(edit.Cursor);
+        HidePhonePrefixError();
+    }
+
+    private void ApplyCorrectedPhoneText(string corrected)
+    {
+        var fix = ++_phoneTextFix;
+
+        void Apply()
+        {
+            if (fix != _phoneTextFix)
+                return;
+
+            var entry = RegisterPhoneEntry?.EntryView;
+            if (string.Equals(RegisterPhoneEntry.Text, corrected, StringComparison.Ordinal)
+                && string.Equals(entry?.Text, corrected, StringComparison.Ordinal))
+                return;
+
+            _isUpdatingPhonePrefix = true;
+            RegisterPhoneEntry.Text = corrected;
+            if (entry != null)
+                entry.Text = corrected;
+            _isUpdatingPhonePrefix = false;
+        }
+
+        Apply();
+        Dispatcher.Dispatch(Apply);
+    }
+
+    private void PlacePhoneCursor(int position)
+    {
+        var fix = ++_phoneCursorFix;
+
+        void Apply()
+        {
+            if (fix != _phoneCursorFix)
+                return;
+
+            var entry = RegisterPhoneEntry?.EntryView;
+            if (entry == null)
+                return;
+
+            var length = entry.Text?.Length ?? 0;
+            var minimum = PhoneNumberFormatter.GermanyPrefix.Length;
+            var target = Math.Clamp(position, minimum, Math.Max(minimum, length));
+            entry.CursorPosition = target;
+            entry.SelectionLength = 0;
+        }
+
+        Apply();
+        Dispatcher.Dispatch(Apply);
+    }
+
+    private void ShowPhonePrefixError()
+    {
+        PhonePrefixHintLabel.Text =
+            PhoneNumberFormatter.GetGuidanceMessage();
+
+        PhonePrefixHintBorder.Stroke = Color.FromArgb("#E57373");
+        PhonePrefixHintBorder.BackgroundColor = Color.FromArgb("#33E57373");
+    }
+
+    private void HidePhonePrefixError()
+    {
+        PhonePrefixHintBorder.Stroke = Color.FromArgb("#66EBD750");
+        PhonePrefixHintBorder.BackgroundColor = Color.FromArgb("#1AFFFFFF");
+    }
 
     private void RegisterNameEntry_TextChanged(
         object sender,

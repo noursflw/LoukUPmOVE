@@ -62,6 +62,7 @@
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 		<None Remove="Resources\Splash\mmm.svg" />
+		<None Remove="Resources\Splash\mmm.png" />
 
 		<!-- Reference TrimmerRootDescriptor for IL trimming preservation -->
 		<TrimmerRootDescriptor Include="TrimmerRootDescriptor.xml" />
@@ -70,12 +71,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiIcon Include="Resources\AppIcon\appicon.png" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#000000" />
 	</ItemGroup>
 
 	<ItemGroup>
 	
-		<MauiSplashScreen Include="Resources\Splash\mmm.svg" Color="#000000" />
+		<MauiSplashScreen Include="Resources\Splash\splash_logo.png" Color="#000000" BaseSize="128,128" />
 	</ItemGroup>
 
 

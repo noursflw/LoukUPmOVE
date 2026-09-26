@@ -80,8 +80,7 @@ HorizontalTextAlignment="Center" />
         CornerRadius="10"
         HeightRequest="44"
         FontFamily="georgia"
-        Clicked="Button_Clicked"
-        Command="{Binding SendOtpCommand}" />
+        Clicked="Button_Clicked" />
 
             </VerticalStackLayout>
         </VerticalStackLayout>
