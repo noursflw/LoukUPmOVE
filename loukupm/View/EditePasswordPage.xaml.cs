@@ -9,7 +9,20 @@ public partial class EditePasswordPage : ContentPage
     public EditePasswordPage()
     {
         InitializeComponent();
-        BindingContext = new AppViewModel();
+        // Must use the singleton — a new VM does not share profile/session state
+        // and logout/re-auth after password change would not refresh the live UI.
+        BindingContext = AppViewModel.Instance;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is AppViewModel vm)
+        {
+            vm.CurrentPassword = string.Empty;
+            vm.Password = string.Empty;
+            vm.ConfirmPassword = string.Empty;
+        }
     }
 
     /// <summary>

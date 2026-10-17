@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <!-- Keypad / OTP card -->
+  <rect x="40" y="50" width="120" height="100" rx="16" stroke="#EBD750" stroke-width="6" fill="none"/>
+  <!-- OTP dots -->
+  <circle cx="70" cy="90" r="8" fill="#EBD750"/>
+  <circle cx="100" cy="90" r="8" fill="#EBD750"/>
+  <circle cx="130" cy="90" r="8" fill="#999999"/>
+  <!-- Underscores -->
+  <line x1="58" y1="120" x2="82" y2="120" stroke="#EBD750" stroke-width="4" stroke-linecap="round"/>
+  <line x1="88" y1="120" x2="112" y2="120" stroke="#EBD750" stroke-width="4" stroke-linecap="round"/>
+  <line x1="118" y1="120" x2="142" y2="120" stroke="#999999" stroke-width="4" stroke-linecap="round"/>
+  <!-- Error badge -->
+  <circle cx="150" cy="150" r="28" fill="#2A2A2A" stroke="#E57373" stroke-width="5"/>
+  <path d="M140 140 L160 160 M160 140 L140 160" stroke="#E57373" stroke-width="5" stroke-linecap="round"/>
+</svg>

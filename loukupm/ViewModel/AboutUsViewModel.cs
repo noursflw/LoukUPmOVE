@@ -46,6 +46,18 @@ namespace loukupm.ViewModel
             _apiServices = new ApiServices();
         }
 
+        public string LoadedLanguage { get; private set; } = string.Empty;
+
+        public bool NeedsLanguageReload
+        {
+            get
+            {
+                var saved = Preferences.Get("AppLanguage", "de-DE");
+                var languageCode = (saved ?? "de").Split('-')[0].ToLowerInvariant();
+                return !string.Equals(LoadedLanguage, languageCode, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         [RelayCommand]
         public async Task LoadAboutUsData()
         {
@@ -61,11 +73,15 @@ namespace loukupm.ViewModel
                 {
                     AboutUsData = response.Data;
 
-                    // Notify UI about the new localized text properties
+                    var saved = Preferences.Get("AppLanguage", "de-DE");
+                    LoadedLanguage = (saved ?? "de").Split('-')[0].ToLowerInvariant();
+                    CurrentLanguage = LoadedLanguage;
+
                     OnPropertyChanged(nameof(HeroSubtitle));
                     OnPropertyChanged(nameof(HeroDescription));
+                    RefreshCollectionsForLanguageChange();
 
-                    Console.WriteLine($"✅ AboutUs data loaded successfully");
+                    Console.WriteLine($"✅ AboutUs data loaded successfully ({LoadedLanguage})");
                 }
                 else
                 {

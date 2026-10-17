@@ -21,7 +21,22 @@ public partial class TermsAndConditionsAthun : ContentPage
         Console.WriteLine("4");
 
         BindingContext = _viewModel;
+        Langue.LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
+        Unloaded += (_, _) =>
+            Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
         Console.WriteLine("5");
+    }
+
+    private void OnLanguageChanged(CultureInfo culture)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            if (_viewModel == null)
+                return;
+
+            _viewModel.CmsData = null;
+            await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
+        });
     }
     protected override async void OnAppearing()
     {

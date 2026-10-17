@@ -43,6 +43,12 @@
          Clicked="Button_Clicked" />
                 </Grid>
 
+                <ActivityIndicator IsRunning="{Binding IsServicesLoad}"
+                                   IsVisible="{Binding IsServicesLoad}"
+                                   Color="#EBD750"
+                                   HeightRequest="40"
+                                   HorizontalOptions="Center"
+                                   Margin="0,12,0,0" />
 
                 <material:TextField  Margin="25,35,25,0" 
                                      InputBackgroundColor="#444444" 

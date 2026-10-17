@@ -539,13 +539,12 @@ namespace loukupm.Services
                         "Google token is required");
                 }
 
-                var payload = new
-                {
-                    Token = idToken,
-                    UserId = userId,
-                    Email = email,
-                    DisplayName = displayName
-                };
+                var payload = new Dictionary<string, string>();
+                AddGoogleField(payload, "token", "Token", idToken);
+                AddGoogleField(payload, "id_token", "IdToken", idToken);
+                AddGoogleField(payload, "user_id", "UserId", userId);
+                AddGoogleField(payload, "email", "Email", email);
+                AddGoogleField(payload, "display_name", "DisplayName", displayName);
 
                 using var response = await _httpClient
                     .PostAsync(
@@ -880,6 +879,19 @@ namespace loukupm.Services
         // =========================================================
         // JSON
         // =========================================================
+
+        private static void AddGoogleField(
+            Dictionary<string, string> payload,
+            string snakeName,
+            string pascalName,
+            string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+
+            payload[snakeName] = value;
+            payload[pascalName] = value;
+        }
 
         private static StringContent ToJson(object value)
         {

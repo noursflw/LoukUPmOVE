@@ -21,6 +21,21 @@ public partial class TermsAndConditions : ContentPage
         // Create and set the ViewModel
         _viewModel = new TermsAndConditionsViewModel();
         this.BindingContext = _viewModel;
+        Langue.LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
+        Unloaded += (_, _) =>
+            Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged(CultureInfo culture)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            if (_viewModel == null)
+                return;
+
+            _viewModel.CmsData = null;
+            await _viewModel.LoadTermsAndConditionsCommand.ExecuteAsync(null);
+        });
     }
 
     /// <summary>

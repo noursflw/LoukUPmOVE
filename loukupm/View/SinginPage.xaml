@@ -291,17 +291,7 @@
                        HorizontalOptions="Center"
                        Color="White"
                        Scale="1.0"/>
-       
-          
-            <Frame Margin="15" BackgroundColor="#252525" ZIndex="1" x:Name="fg"  IsVisible="False" >
-                <WebView x:Name="webView" 
-            BackgroundColor="#AA000000"
-            IsVisible="False"
-            HeightRequest="600"
-            WidthRequest="300"
-            VerticalOptions="Center"
-            HorizontalOptions="Center"/>
-            </Frame>
+
             <HorizontalStackLayout
     VerticalOptions="Center"
     HorizontalOptions="Center"

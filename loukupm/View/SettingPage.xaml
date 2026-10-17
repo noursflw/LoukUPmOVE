@@ -5,7 +5,6 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#0A0A0A"
               Shell.TabBarIsVisible="False"
-             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:Loc="clr-namespace:loukupm.Langue"
              Title="SettingPage">
     <VerticalStackLayout Spacing="30" Margin="0,0,0,0">
@@ -34,15 +33,35 @@
         </Grid>
 
         <Label Margin="30,0,0,0" TextColor="#999" Text="{Loc:Translate Name=SettingLang}"/>
-        <uranium:Dropdown 
-            CornerRadius="12"
-            HeightRequest="40"
-            BackgroundColor="#181c21"
-            TextColor="#D4AF37"
-            Placeholder="Choose Language"
-            ItemsSource="{Binding Languages}"
-            SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
-            Margin="24,0,24,0" />
+        <Border BackgroundColor="#181c21"
+                Stroke="#333333"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                HeightRequest="48"
+                Padding="14,0"
+                Margin="24,0,24,0">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnLanguageFieldTapped" />
+            </Border.GestureRecognizers>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                <Image Source="{Binding SelectedLanguage.Icon}"
+                       WidthRequest="28"
+                       HeightRequest="18"
+                       Aspect="AspectFill"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{Binding SelectedLanguage.Name}"
+                       TextColor="#D4AF37"
+                       FontFamily="Oswald"
+                       FontSize="15"
+                       VerticalOptions="Center" />
+                <Image Grid.Column="2"
+                       Source="chevron_gold"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
         <Label Margin="30,0,0,0" TextColor="#999" Text="{Loc:Translate Name=SettingNottivcation}"/>
 
         <Frame BorderColor="#181c21" BackgroundColor="#181c21" CornerRadius="12" Margin="24,0,24,0" Padding="16" HasShadow="False">

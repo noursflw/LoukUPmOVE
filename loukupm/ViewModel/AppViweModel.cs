@@ -237,6 +237,7 @@ namespace loukupm.ViewModel
 
             EnableReminderTimerCommand = new AsyncRelayCommand(EnableReminderTimerAsync);
             HomeSliderVM = new HomeSliderViewModel();
+            LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChangedReloadLocalizedContent;
             phoneOtpVM = new PhoneOtpViewModel(_apiServices);
 
             // ✅ Do NOT create new HttpClient here - use static instance
@@ -563,6 +564,24 @@ namespace loukupm.ViewModel
         public async Task RefreshReminderOptionsAsync()
         {
             await LoadReminderOptionsAsync();
+        }
+
+        private void OnLanguageChangedReloadLocalizedContent(CultureInfo culture)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    Console.WriteLine($"🌍 Reloading localized API data for {culture?.Name}");
+                    await LoadServicesAsync();
+                    if (HomeSliderVM != null)
+                        await HomeSliderVM.LoadSlidersAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Language reload failed: {ex.Message}");
+                }
+            });
         }
 
         /// <summary>
@@ -1660,6 +1679,10 @@ namespace loukupm.ViewModel
                         await Toast.Make(ChannelWarningMessage ?? "Reminder saved, but no active notification channels are available.", ToastDuration.Long).Show();
                     }
 
+                    // TerminbuchenPage is pushed on the Services tab. Leave it before
+                    // switching tabs, otherwise coming back opens provider selection.
+                    await NavigationService.CloseCompletedBookingFlowAsync();
+
                     var pouo = new SuccessfullyBookingNow();
                     await App.Current.MainPage.ShowPopupAsync(pouo);
 
@@ -1667,8 +1690,7 @@ namespace loukupm.ViewModel
                     try { SecureStorage.Remove("booking_draft"); } catch { }
                     ClearBookingData();
 
-                    // Navigate to bookings page to show new booking
-                    await NavigationService.NavigateToPage(nameof(BookingPage));
+                    await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
                     return;
                 }
 
@@ -1706,8 +1728,9 @@ namespace loukupm.ViewModel
                             catch { }
 
                             await Toast.Make(AppResource.Bookingsuccessful).Show();
+                            await NavigationService.CloseCompletedBookingFlowAsync();
                             ClearBookingData();
-                            await NavigationService.NavigateToPage(nameof(BookingPage));
+                            await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
                             return;
                         }
                         result = retry; // fallthrough to handle other statuses
@@ -1894,6 +1917,10 @@ namespace loukupm.ViewModel
 
         public void ClearBookingData()
         {
+            // Reset card UI flags first — clearing the list alone leaves IsSelected=true,
+            // so the next tap on ServicesPage re-adds instead of deselecting (needs 2 taps).
+            ResetServiceSelectionFlags();
+
             SelectedServices.Clear();
             EnsureCurrentBooking();
             CurrentBooking.SelectedServices.Clear();
@@ -1917,6 +1944,34 @@ namespace loukupm.ViewModel
             BookingErrorMessage = string.Empty;
 
             UpdateTotalPrice();
+        }
+
+        /// <summary>
+        /// Clears IsSelected on every service instance we may still be showing in lists.
+        /// </summary>
+        private void ResetServiceSelectionFlags()
+        {
+            try
+            {
+                foreach (var service in SelectedServices.ToList())
+                    service.IsSelected = false;
+
+                if (Services != null)
+                {
+                    foreach (var service in Services)
+                        service.IsSelected = false;
+                }
+
+                if (FilteredServices != null)
+                {
+                    foreach (var service in FilteredServices)
+                        service.IsSelected = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ClearBookingData] ResetServiceSelectionFlags: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -2120,6 +2175,7 @@ namespace loukupm.ViewModel
         [ObservableProperty] private string currentPassword = string.Empty;
         [ObservableProperty] private string? imageUser;
         [ObservableProperty] private string email;
+        [ObservableProperty] private string otpCode = string.Empty;
         [ObservableProperty] private string fullName;
         [ObservableProperty] private string phone;
         [ObservableProperty] private bool phoneVerified = false;
@@ -2290,6 +2346,9 @@ namespace loukupm.ViewModel
                 }
 
                 currentUser = user;
+                if (currentUser.Id > 0)
+                    OneSignalService.LinkUser(currentUser.Id.ToString());
+
                 UserName = currentUser.UserName;
                 UserFirstName = currentUser.UserName ?? string.Empty;
                 Email = currentUser.Email;
@@ -2331,6 +2390,9 @@ namespace loukupm.ViewModel
                 }
 
                 Console.WriteLine($"✅ [AppViewModel] User loaded: {currentUser.Email}");
+
+                if (currentUser.Id > 0)
+                    OneSignalService.LinkUser(currentUser.Id.ToString());
 
                 // Update properties with null checks
                 try
@@ -2712,7 +2774,7 @@ private async Task Logout()
 
                 ResetUser();
 
-                OneSignalService.Logout();
+                await OneSignalService.LogoutAsync();
 
                 try
                 {
@@ -2833,6 +2895,12 @@ private async Task Logout()
 
             try
             {
+                // Capture before clearing — backend typically invalidates tokens on password change
+                var emailForRelogin = !string.IsNullOrWhiteSpace(Email)
+                    ? Email.Trim()
+                    : (currentUser?.Email ?? Instance.Email ?? string.Empty).Trim();
+                var newPassword = Password;
+
                 var (success, statusCode, _) = await _apiServices.ChangePasswordAsync(
                     CurrentPassword,
                     Password,
@@ -2844,7 +2912,33 @@ private async Task Logout()
                     Password = string.Empty;
                     ConfirmPassword = string.Empty;
 
+                    var reauthed = await TryReauthenticateAfterPasswordChangeAsync(
+                        emailForRelogin,
+                        newPassword);
+
                     await Toast.Make(AppResource.PasswordUpdated, ToastDuration.Short).Show();
+
+                    if (!reauthed)
+                    {
+                        // Old session is unusable — same outcome as manual logout + login
+                        Console.WriteLine("[ChangePassword] Re-auth failed — forcing logout");
+                        await Logout();
+                        return;
+                    }
+
+                    try
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await NavigationService.HandleBackButton(
+                                NavigationService.ROUTE_EDIT_PASSWORD);
+                        });
+                    }
+                    catch (Exception navEx)
+                    {
+                        Console.WriteLine($"[ChangePassword] Navigate back: {navEx.Message}");
+                    }
+
                     return;
                 }
 
@@ -2868,6 +2962,54 @@ private async Task Logout()
             catch (Exception)
             {
                 await Toast.Make(AppResource.Connectionerror).Show();
+            }
+        }
+
+        /// <summary>
+        /// After profile/change-password the API often revokes existing tokens.
+        /// Re-login with the new password so GetUser/profile keep working without a manual logout.
+        /// </summary>
+        private async Task<bool> TryReauthenticateAfterPasswordChangeAsync(
+            string email,
+            string newPassword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(newPassword))
+                {
+                    Console.WriteLine("[ChangePassword] Missing email/password for re-auth");
+                    return false;
+                }
+
+                var authService = AppServices.Get<AuthenticationService>();
+                if (authService == null)
+                {
+                    Console.WriteLine("[ChangePassword] AuthenticationService unavailable");
+                    return false;
+                }
+
+                var tokenManager = AppServices.Get<TokenManager>();
+                if (tokenManager != null)
+                    await tokenManager.ClearTokensAsync();
+
+                var (loginOk, _, _, _, _, error) =
+                    await authService.LoginAsync(email, newPassword);
+
+                if (!loginOk)
+                {
+                    Console.WriteLine($"[ChangePassword] Login after change failed: {error}");
+                    return false;
+                }
+
+                LoginPage.IsLogged = true;
+                await Instance.LoadUserDataAsync();
+                Console.WriteLine("[ChangePassword] Re-auth + LoadUserData succeeded");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ChangePassword] Re-auth exception: {ex.Message}");
+                return false;
             }
         }
 
@@ -3431,11 +3573,11 @@ private async Task Logout()
         [RelayCommand]
         public void ClearSelectedServices()
         {
+            ResetServiceSelectionFlags();
             SelectedServices.Clear();
             CurrentBooking.SelectedServices.Clear();
             CurrentBooking.ClearServiceSelections();
             UpdateTotalPrice();
-
         }
 
         public int GetSelectedServicesCount() => SelectedServices.Count;

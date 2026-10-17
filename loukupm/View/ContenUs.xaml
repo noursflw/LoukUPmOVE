@@ -89,7 +89,13 @@
                 </Border>
 
             </VerticalStackLayout>
-            <VerticalStackLayout>
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#EBD750"
+                               HeightRequest="40"
+                               HorizontalOptions="Center"
+                               Margin="0,16,0,0" />
+            <VerticalStackLayout IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
                 <Border
 Margin="20,0,20,0"
 BackgroundColor="#0e1012"
@@ -136,7 +142,9 @@ StrokeShape="RoundRectangle 15">
 
 
                         <Image Source="phoney.png"
-               Aspect="AspectFill"
+               WidthRequest="24"
+               HeightRequest="24"
+               Aspect="AspectFit"
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
 

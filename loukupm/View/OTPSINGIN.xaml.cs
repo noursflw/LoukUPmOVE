@@ -308,6 +308,9 @@ public partial class OTPSINGIN : ContentPage
                     $"✅ [OTPSINGIN] OTP verified successfully for user: " +
                     $"{user?.Email ?? "unknown"}");
 
+                if (user != null && user.Id > 0)
+                    OneSignalService.LinkUser(user.Id.ToString());
+
                 if (string.IsNullOrWhiteSpace(accessToken))
                 {
                     Console.WriteLine(

@@ -1345,14 +1345,6 @@ public partial class TerminbuchenPage : ContentPage
                     // =================================================
 
                     _ = RefreshProviderSelectorsAsync();
-
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Toast.Make(
-                            $"Removed: {service.NameServies}",
-                            ToastDuration.Short)
-                            .Show();
-                    });
                 }
             }
         }

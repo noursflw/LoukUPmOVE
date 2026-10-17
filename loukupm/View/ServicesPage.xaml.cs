@@ -5,6 +5,7 @@ using loukupm.Langue;
 using loukupm.Model;
 using loukupm.Services;
 using loukupm.ViewModel;
+using System.ComponentModel;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,6 +38,7 @@ public partial class ServicesPage : ContentPage
         // ✅ اضبط BindingContext على الصفحة نفسها لاستخدام LocalFilteredServices
         // لكن احتفظ بـ reference إلى VM للبيانات الأخرى
         this.BindingContext = vm;
+        vm.PropertyChanged += OnViewModelPropertyChanged;
 
         // ✅ ربط البيانات الأخرى من ViewModel
         MainThread.BeginInvokeOnMainThread(() =>
@@ -54,25 +56,10 @@ public partial class ServicesPage : ContentPage
         // ✅ عند فتح الصفحة، أعد تعيين البيانات المحلية من الأصلية
         if (BindingContext is AppViewModel vm)
         {
-            _localFilteredServices.Clear();
-            foreach (var service in vm.Services)
-            {
-                _localFilteredServices.Add(service);
-            }
+            CopyServicesFromViewModel(vm);
             _localSearchServiceTerm = string.Empty;
-
-            // ⚠️ امسح الفلترة والبحث المشترك في ViewModel
             vm.SelectedCategory = null;
             vm.SearchServiceTerm = string.Empty;
-
-            // ⚠️ امسح FilteredServices المشترك أيضاً
-            vm.FilteredServices.Clear();
-            foreach (var service in vm.Services)
-            {
-                vm.FilteredServices.Add(service);
-            }
-
-            OnPropertyChanged(nameof(LocalFilteredServices));
 
             Console.WriteLine($"✅ [ServicesPage] OnAppearing - Reset to show all {_localFilteredServices.Count} services");
         }
@@ -93,6 +80,29 @@ public partial class ServicesPage : ContentPage
         }
 
         Console.WriteLine($"🚪 [ServicesPage] OnDisappearing - Cleared local filtered services");
+    }
+
+    private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(AppViewModel.IsServicesLoad)
+            && sender is AppViewModel vm
+            && !vm.IsServicesLoad)
+        {
+            MainThread.BeginInvokeOnMainThread(() => CopyServicesFromViewModel(vm));
+        }
+    }
+
+    private void CopyServicesFromViewModel(AppViewModel vm)
+    {
+        _localFilteredServices.Clear();
+        foreach (var service in vm.Services)
+            _localFilteredServices.Add(service);
+
+        vm.FilteredServices.Clear();
+        foreach (var service in vm.Services)
+            vm.FilteredServices.Add(service);
+
+        OnPropertyChanged(nameof(LocalFilteredServices));
     }
 
     private void Button_Clicked_1(object sender, EventArgs e)

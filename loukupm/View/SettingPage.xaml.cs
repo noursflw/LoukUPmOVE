@@ -1,5 +1,6 @@
 namespace loukupm.View;
 
+using CommunityToolkit.Maui.Views;
 using loukupm.Services;
 using loukupm.Langue;
 using System.Globalization;
@@ -11,6 +12,7 @@ using loukupm.ViewModel;
 public partial class SettingPage : ContentPage, INotifyPropertyChanged
 {
     private readonly SettingsViewModel _vm;
+    private bool _languagePopupOpen;
 
     public SettingPage()
     {
@@ -41,6 +43,29 @@ public partial class SettingPage : ContentPage, INotifyPropertyChanged
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         await NavigationService.HandleBackButton(NavigationService.ROUTE_SETTING);
+    }
+
+    private async void OnLanguageFieldTapped(object sender, TappedEventArgs e)
+    {
+        if (_languagePopupOpen)
+            return;
+
+        _languagePopupOpen = true;
+        try
+        {
+            var title = LocalizationResourcesManager.Instanse["SettingLang"]?.ToString() ?? "Language";
+            var popup = new LanguageSelectionPopup(title, _vm.Languages, _vm.SelectedLanguage);
+            if (await this.ShowPopupAsync(popup) is SettingsViewModel.LanguageOption chosen)
+                _vm.SelectedLanguage = chosen;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[SettingPage] Error opening language popup: {ex.Message}");
+        }
+        finally
+        {
+            _languagePopupOpen = false;
+        }
     }
 
     /// <summary>

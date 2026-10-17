@@ -38,6 +38,20 @@
               WidthRequest="300"
               BorderWidth="1" Text="{loc:Translate Name=standpay}" CornerRadius="16"
               HeightRequest="60" Margin="25,80,25,0" x:Name="VerifyButton" />
+
+            <Button
+              x:Name="ResendButton"
+              Command="{Binding ResendOtpCommand}"
+              IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+              Text="{loc:Translate Name=OtpSigninResend}"
+              BackgroundColor="Transparent"
+              TextColor="#D4AF37"
+              FontFamily="georgia-bold"
+              FontSize="16"
+              BorderWidth="0"
+              WidthRequest="300"
+              HeightRequest="48"
+              Margin="25,12,25,20" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

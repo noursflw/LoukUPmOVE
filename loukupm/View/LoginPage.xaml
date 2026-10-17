@@ -67,17 +67,6 @@
                                                Scale="1.0"/>
                         </Grid>
 
-                        <!-- WebView مخفي -->
-                        <Frame Margin="15" BackgroundColor="#252525" ZIndex="1" x:Name="fg" IsVisible="False" >
-                            <WebView x:Name="webView" 
-                                     BackgroundColor="#AA000000"
-                                     IsVisible="False"
-                                     HeightRequest="700"
-                                     WidthRequest="380"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center"/>
-                        </Frame>
-
                         <!-- خط الفصل (or) -->
                         <Image Margin="25,15,25,0" Source="or.svg" HeightRequest="24"/>
                     </StackLayout>

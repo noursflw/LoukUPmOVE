@@ -23,8 +23,7 @@ public partial class AboutUS : ContentPage
 	{
 		base.OnAppearing();
 
-		// Load AboutUs data when page appears
-		if (_viewModel.AboutUsData == null)
+		if (_viewModel.AboutUsData == null || _viewModel.NeedsLanguageReload)
 		{
 			await _viewModel.LoadAboutUsDataCommand.ExecuteAsync(null);
 		}
@@ -70,10 +69,11 @@ public partial class AboutUS : ContentPage
 	/// </summary>
 	private void OnLanguageChanged(System.Globalization.CultureInfo culture)
 	{
-		MainThread.BeginInvokeOnMainThread(() =>
+		MainThread.BeginInvokeOnMainThread(async () =>
 		{
 			Console.WriteLine($"🌍 AboutUS.OnLanguageChanged triggered for culture: {culture?.DisplayName}");
-			_viewModel?.RefreshCollectionsForLanguageChange();
+			if (_viewModel?.LoadAboutUsDataCommand.CanExecute(null) == true)
+				await _viewModel.LoadAboutUsDataCommand.ExecuteAsync(null);
 		});
 	}
 
@@ -129,15 +129,20 @@ public partial class AboutUS : ContentPage
 			{
 				await Task.Delay(2000, cancellationToken); // 2 seconds interval
 
-				if (heroCarousel?.ItemsSource is not null)
+				if (heroCarousel?.ItemsSource is System.Collections.ICollection items && items.Count > 1)
 				{
-					var itemCount = ((System.Collections.ICollection)heroCarousel.ItemsSource).Count;
-					if (itemCount > 0)
+					var nextPosition = (heroCarousel.Position + 1) % items.Count;
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
-						var currentPosition = heroCarousel.Position;
-						var nextPosition = (currentPosition + 1) % itemCount;
-						heroCarousel.ScrollTo(nextPosition, animate: true);
-					}
+						try
+						{
+							heroCarousel.ScrollTo(nextPosition, animate: true);
+						}
+						catch (Exception ex)
+						{
+							Console.WriteLine($"[AboutUS] Hero scroll skipped: {ex.Message}");
+						}
+					});
 				}
 			}
 		}
@@ -155,15 +160,20 @@ public partial class AboutUS : ContentPage
 			{
 				await Task.Delay(3000, cancellationToken); // 3 seconds interval for features
 
-				if (featuresCarousel?.ItemsSource is not null)
+				if (featuresCarousel?.ItemsSource is System.Collections.ICollection items && items.Count > 1)
 				{
-					var itemCount = ((System.Collections.ICollection)featuresCarousel.ItemsSource).Count;
-					if (itemCount > 0)
+					var nextPosition = (featuresCarousel.Position + 1) % items.Count;
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
-						var currentPosition = featuresCarousel.Position;
-						var nextPosition = (currentPosition + 1) % itemCount;
-						featuresCarousel.ScrollTo(nextPosition, animate: true);
-					}
+						try
+						{
+							featuresCarousel.ScrollTo(nextPosition, animate: true);
+						}
+						catch (Exception ex)
+						{
+							Console.WriteLine($"[AboutUS] Features scroll skipped: {ex.Message}");
+						}
+					});
 				}
 			}
 		}

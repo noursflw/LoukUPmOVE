@@ -553,6 +553,54 @@ public static class NavigationService
     }
 
     /// <summary>
+    /// Drops TerminbuchenPage after a booking succeeds.
+    /// That page is pushed on the Services tab, and switching tabs does not clear it,
+    /// so returning to Services would reopen provider selection.
+    /// </summary>
+    public static async Task CloseCompletedBookingFlowAsync()
+    {
+        async Task CloseAsync()
+        {
+            var shell = Shell.Current;
+            var navigation = shell?.Navigation;
+            if (navigation == null)
+                return;
+
+            var stack = navigation.NavigationStack;
+            if (stack == null || stack.Count == 0)
+                return;
+
+            if (shell.CurrentPage is TerminbuchenPage && stack.Count > 1)
+            {
+                Console.WriteLine("[Navigation] Booking finished - Services tab returns to ServicesPage");
+                await navigation.PopAsync(false);
+                return;
+            }
+
+            foreach (var page in stack.Where(page => page is TerminbuchenPage).ToList())
+            {
+                if (page == shell.CurrentPage)
+                    continue;
+
+                Console.WriteLine("[Navigation] Removing finished TerminbuchenPage from the stack");
+                navigation.RemovePage(page);
+            }
+        }
+
+        try
+        {
+            if (MainThread.IsMainThread)
+                await CloseAsync();
+            else
+                await MainThread.InvokeOnMainThreadAsync(CloseAsync);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Navigation] CloseCompletedBookingFlow failed: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Opens the phone OTP page on the shell stack.
     /// Falls back to a direct push when route navigation does not show the page.
     /// </summary>

@@ -1,7 +1,5 @@
 
 using CommunityToolkit.Maui.Views;
-using Firebase.Auth;
-using Firebase.Auth.Providers;
 using loukupm.Langue;
 using loukupm.Model;
 using loukupm.services;
@@ -21,20 +19,12 @@ public partial class LoginPage : ContentPage
 {
     public static bool IsLogged { get; set; } = false;
 
-    private UserCredential userCredential;
-    private string redirectUri;
+    private bool _googleInProgress;
 
     public LoginPage()
     {
         InitializeComponent();
         this.InitializeLanguageTracking();
-        webView.Navigated += WebView_Navigated;
-        webView.UserAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012)";
-    }
-
-    private void WebView_Navigated(object sender, WebNavigatedEventArgs e)
-    {
-        Console.WriteLine($"Navigated: {e.Url}");
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -125,13 +115,8 @@ public partial class LoginPage : ContentPage
 
                 await AppViewModel.Instance.LoadUserDataAsync();
 
-                if (user != null)
-                {
-                    var userId = user.Id.ToString();
-
-                    OneSignal.Login(userId);
-                    OneSignal.User.AddTag("user_no", userId);
-                }
+                if (user != null && user.Id > 0)
+                    OneSignalService.LinkUser(user.Id.ToString());
 
                 IsLogged = true;
                 isNavigationSuccessful = true;
@@ -325,6 +310,9 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
 
+        if (_googleInProgress)
+            return;
+
         if (IsLogged)
             ResetLoginState();
 
@@ -342,7 +330,7 @@ public partial class LoginPage : ContentPage
 
         // Successful login is cleared after the next page is shown,
         // so the user never sees the empty form.
-        if (!IsLogged)
+        if (!IsLogged && !_googleInProgress)
             ResetLoginState();
     }
 
@@ -412,9 +400,6 @@ public partial class LoginPage : ContentPage
 
     private void ResetLoginState()
     {
-        userCredential = null;
-        redirectUri = null;
-
         // After a successful login the native Android views are already
         // disconnected. Touching buttons then crashes in MapBackground.
         if (Handler?.MauiContext == null)
@@ -457,15 +442,6 @@ public partial class LoginPage : ContentPage
 
             if (HasNativeView(fglogin))
                 fglogin.IsVisible = true;
-
-            if (HasNativeView(fg))
-                fg.IsVisible = false;
-
-            if (HasNativeView(webView))
-            {
-                webView.IsVisible = false;
-                webView.Source = null;
-            }
         }
         catch (Exception ex)
         {
@@ -477,9 +453,13 @@ public partial class LoginPage : ContentPage
         object sender,
         EventArgs e)
     {
-        bool isGoogleNavSuccessful = false;
+        if (_googleInProgress)
+            return;
 
+        _googleInProgress = true;
         StopGoogleButtonAnimation();
+
+        var signedIn = false;
 
         try
         {
@@ -487,207 +467,79 @@ public partial class LoginPage : ContentPage
             GoogleLoadingIndicator.IsVisible = true;
             GoogleLoadingIndicator.IsRunning = true;
 
-            if (MauiProgram.firebaseconfig == null ||
-                MauiProgram.firebaseconfig.Providers == null ||
-                MauiProgram.firebaseconfig.Providers.Length == 0)
+            var result = await GoogleAuthSession.SignInAndConfirmAsync();
+
+            if (result.Cancelled)
+                return;
+
+            if (!result.Success)
             {
-                Console.WriteLine(
-                    "Firebase configuration or providers are missing.");
-
                 await DisplayAlert(
-                    "Configuration error",
-                    "Firebase providers not configured",
+                    "Sign-in failed",
+                    string.IsNullOrWhiteSpace(result.Error)
+                        ? "Google sign-in was not confirmed."
+                        : result.Error,
                     "OK");
-
                 return;
             }
 
-            var providerEntry =
-                MauiProgram.firebaseconfig.Providers[0];
-
-            if (providerEntry == null ||
-                providerEntry.ProviderType == null)
+            try
             {
-                Console.WriteLine(
-                    "Provider entry or ProviderType is null.");
-
-                await DisplayAlert(
-                    "Configuration error",
-                    "Firebase provider invalid",
-                    "OK");
-
-                return;
-            }
-
-            var provider = providerEntry.ProviderType;
-
-            var signInTask =
-                MauiProgram.firebaseclient.SignInWithRedirectAsync(
-                    provider,
-                    async uri =>
-                    {
-                        fglogin.IsVisible = false;
-
-                        webView.Source = uri;
-                        webView.IsVisible = true;
-
-                        fg.IsVisible = true;
-                        webView.Opacity = 1;
-
-                        try
-                        {
-                            string finalUrl =
-                                await WaitForNavigationToUrlAsync(
-                                    "https://test-23def.web.app/__/auth/handler",
-                                    TimeSpan.FromSeconds(80));
-
-                            return finalUrl;
-                        }
-                        finally
-                        {
-                            fg.IsVisible = false;
-                            webView.IsVisible = false;
-                            webView.Source = null;
-                            fglogin.IsVisible = true;
-                        }
-                    });
-
-            var completed = await Task.WhenAny(
-                signInTask,
-                Task.Delay(TimeSpan.FromSeconds(70)));
-
-            if (completed != signInTask)
-                throw new TimeoutException(
-                    "Firebase sign-in timed out.");
-
-            userCredential = await signInTask;
-
-            if (userCredential?.User != null)
-            {
-                var userId = userCredential.User.Uid;
-
-                var idToken =
-                    await userCredential.User.GetIdTokenAsync();
-
-                try
-                {
-                    var authService = AppServices.Get<AuthenticationService>();
-                    if (authService == null)
-                    {
-                        Console.WriteLine("AuthenticationService not available");
-                        throw new Exception("Backend authentication failed.");
-                    }
-
-                    var (googleSuccess, googleAccessToken, _, _, googleStatus, googleError) =
-                        await authService.LoginWithGoogleAsync(
-                            idToken,
-                            userId,
-                            userCredential.User.Info.Email,
-                            userCredential.User.Info.DisplayName);
-
-                    if (!googleSuccess || string.IsNullOrWhiteSpace(googleAccessToken))
-                    {
-                        throw new Exception(
-                            googleError ?? $"Backend authentication failed: {googleStatus}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(
-                        $"Error sending token to backend: {ex}");
-
-                    throw;
-                }
-
-                OneSignal.Login(userId);
-
-                OneSignal.User.AddTag(
-                    "email",
-                    userCredential.User.Info.Email);
-
-                OneSignal.User.AddTag(
-                    "login_type",
-                    "google");
-
-                OneSignal.User.AddTag(
-                    "display_name",
-                    userCredential.User.Info.DisplayName);
-
                 await AppViewModel.Instance.LoadUserDataAsync();
-
-                IsLogged = true;
-                isGoogleNavSuccessful = true;
-
-                NavigationService.ResetLogoutFlag();
-                NavigationService.SetAppContext();
-
-                CancelLoginButtonAnimations();
-                await ShellNavigationManager.NavigateToHomeAndClear();
-                QueueResetLoginStateAfterLeave();
-                return;
             }
-        }
-        catch (FirebaseAuthHttpException fae)
-        {
-            Console.WriteLine(
-                "FirebaseAuthHttpException: " + fae);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Profile load after Google login failed: {ex.Message}");
+            }
 
-            var msg = !string.IsNullOrEmpty(fae.Message)
-                ? fae.Message
-                : "Firebase HTTP error during authentication.";
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(result.Email))
+                    OneSignalService.AddTag("email", result.Email);
 
-            await DisplayAlert(
-                "Authentication error",
-                msg,
-                "OK");
-        }
-        catch (TimeoutException tex)
-        {
-            Console.WriteLine(
-                "Timeout: " + tex.Message);
+                OneSignalService.AddTag("login_type", "google");
 
-            await DisplayAlert(
-                "Timeout",
-                "Authentication request timed out. Please try again.",
-                "OK");
+                if (!string.IsNullOrWhiteSpace(result.DisplayName))
+                    OneSignalService.AddTag("display_name", result.DisplayName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"OneSignal Google login tag failed: {ex.Message}");
+            }
+
+            signedIn = true;
+            IsLogged = true;
+
+            NavigationService.ResetLogoutFlag();
+            NavigationService.SetAppContext();
+
+            CancelLoginButtonAnimations();
+            await ShellNavigationManager.NavigateToHomeAndClear();
+            QueueResetLoginStateAfterLeave();
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                "Exception during Google sign-in: " + ex);
-
-            var inner = ex.InnerException;
-
-            string detail = ex.Message;
-
-            if (inner != null)
-            {
-                detail +=
-                    "\nInner: " +
-                    inner.Message +
-                    " (" +
-                    inner.GetType().FullName +
-                    ")";
-            }
+            Console.WriteLine("Exception during Google sign-in: " + ex);
+            IsLogged = false;
+            signedIn = false;
 
             await DisplayAlert(
                 "Sign-in failed",
-                detail,
+                string.IsNullOrWhiteSpace(ex.Message)
+                    ? "Google sign-in failed."
+                    : ex.Message,
                 "OK");
         }
         finally
         {
-            if (!isGoogleNavSuccessful &&
-                this.Handler?.MauiContext != null)
+            _googleInProgress = false;
+
+            if (!signedIn && this.Handler?.MauiContext != null)
             {
                 GoogleLoadingIndicator.IsRunning = false;
                 GoogleLoadingIndicator.IsVisible = false;
-
                 GoogleButton.IsVisible = true;
-
                 fglogin.IsVisible = true;
-                fg.IsVisible = false;
-                webView.IsVisible = false;
 
                 isGoogleButtonAnimating = true;
                 StartGoogleButtonAnimation();
@@ -695,51 +547,6 @@ public partial class LoginPage : ContentPage
         }
     }
 
-    private async Task<string> WaitForNavigationToUrlAsync(
-        string targetUrl,
-        TimeSpan timeout)
-    {
-        var tcs =
-            new TaskCompletionSource<string>();
-
-        EventHandler<WebNavigatedEventArgs>? handler = null;
-
-        handler = (s, e) =>
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(e.Url) &&
-                    e.Url.StartsWith(
-                        targetUrl,
-                        StringComparison.OrdinalIgnoreCase))
-                {
-                    webView.Navigated -= handler;
-                    tcs.TrySetResult(e.Url);
-                }
-            }
-            catch (Exception ex)
-            {
-                webView.Navigated -= handler;
-                tcs.TrySetException(ex);
-            }
-        };
-
-        webView.Navigated += handler;
-
-        var delayTask = Task.Delay(timeout);
-
-        var completed = await Task.WhenAny(
-            tcs.Task,
-            delayTask);
-
-        if (completed == tcs.Task)
-            return await tcs.Task;
-
-        webView.Navigated -= handler;
-
-        throw new TimeoutException(
-            "Navigation to redirect URL timed out.");
-    }
 
     private async void TapGestureRecognizer_Tapped_2(
         object sender,

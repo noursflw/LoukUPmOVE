@@ -22,12 +22,13 @@ public partial class CanyouAcpetPhonenumber : Popup
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
+        // Clear selection UI + booking state before leaving so ServicesPage
+        // does not keep cards visually selected ("Not right now").
+        AppViewModel.Instance.ClearBookingData();
         await NavigationService.NavigateToTabBarPage(
             NavigationService.ROUTE_HOME
         );
-        AppViewModel.Instance.ClearBookingData();
         this.Close();
-
     }
 
 }

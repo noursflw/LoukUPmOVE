@@ -2,21 +2,22 @@ using CommunityToolkit.Maui.Views;
 using loukupm.View.MassgingApp;
 using loukupm.ViewModel;
 using loukupm.Services;
-using Microsoft.Maui.Controls;
-using System.Text;
-using System.Text.Json;
+using System.Linq;
 
 namespace loukupm.View
 {
+    /// <summary>
+    /// Optional OTP-only step (legacy). Main flow now goes RestPassword → EditPasswordVerification.
+    /// </summary>
     public partial class Verificationpage : ContentPage
     {
-        private bool _isVerifying = false;
+        private bool _isVerifying;
 
         public Verificationpage()
         {
             InitializeComponent();
             Shell.SetNavBarIsVisible(this, false);
-            this.BindingContext = AppViewModel.Instance;
+            BindingContext = AppViewModel.Instance;
         }
 
         protected override bool OnBackButtonPressed()
@@ -34,7 +35,15 @@ namespace loukupm.View
 
             try
             {
-                var code = OtpField.Text;
+                _isVerifying = true;
+                if (VerifyButton != null)
+                    VerifyButton.IsEnabled = false;
+
+                var code = OtpField?.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(code) && BindingContext is AppViewModel boundVm)
+                    code = boundVm.OtpCode?.Trim();
+
+                code = new string((code ?? string.Empty).Where(char.IsDigit).ToArray());
 
                 if (string.IsNullOrWhiteSpace(code))
                 {
@@ -42,87 +51,50 @@ namespace loukupm.View
                     return;
                 }
 
-                if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+                if (code.Length < 4)
                 {
-                    var popup = new NoEnternetConacted();
-                    await this.ShowPopupAsync(popup);
+                    await this.ShowPopupAsync(new CodeNotIncorrect());
                     return;
                 }
 
-                _isVerifying = true;
+                var viewModel = BindingContext as AppViewModel ?? AppViewModel.Instance;
+                var email = PasswordResetSession.HasEmail
+                    ? PasswordResetSession.Email
+                    : viewModel?.Email?.Trim();
 
-                bool isValid = await VerifyOtpAsync(code);
-
-                if (isValid)
+                if (string.IsNullOrWhiteSpace(email))
                 {
-                    var popup = new SuccessfullyVerified();
-                    await this.ShowPopupAsync(popup);
-                    await Navigation.PushAsync(new EditPasswordVerification());
+                    await this.ShowPopupAsync(new EmaileIsNotFound());
+                    return;
                 }
-                else
-                {
-                    var popup = new CodeNotIncorrect();
-                    await this.ShowPopupAsync(popup);
 
-                    // تفريغ الحقل الوحيد
-                    OtpField.Text = string.Empty;
+                PasswordResetSession.SetEmail(email);
+                PasswordResetSession.SetOtp(code);
+                if (viewModel != null)
+                {
+                    viewModel.Email = email;
+                    viewModel.OtpCode = code;
                 }
+
+                await Navigation.PushAsync(new EditPasswordVerification(email));
             }
-            catch
+            catch (Exception ex)
             {
-                await this.ShowPopupAsync(new NoServerResponse());
+                Console.WriteLine($"[Verificationpage] ConfirmCode error: {ex}");
+                try
+                {
+                    await Navigation.PushAsync(new EditPasswordVerification(PasswordResetSession.Email));
+                }
+                catch
+                {
+                    await this.ShowPopupAsync(new NoServerResponse());
+                }
             }
             finally
             {
                 _isVerifying = false;
-            }
-        }
-
-        private async Task<bool> VerifyOtpAsync(string code)
-        {
-            try
-            {
-                using var client = new HttpClient();
-
-                var viewModel = BindingContext as AppViewModel;
-
-                if (viewModel == null || string.IsNullOrWhiteSpace(viewModel.Email))
-                {
-                    await this.ShowPopupAsync(new EmaileIsNotFound());
-                    return false;
-                }
-
-                var payload = new
-                {
-                    email = viewModel.Email,
-                    code = code,
-                    type = 1
-                };
-
-                var json = JsonSerializer.Serialize(payload);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync(
-                    "https://lookupfriseur.com/api/auth/forgot-password",
-                    content
-                );
-
-                if (response.IsSuccessStatusCode)
-                    return true;
-
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                    await this.ShowPopupAsync(new CodeNotIncorrect());
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    await this.ShowPopupAsync(new EmaileIsNotFound());
-                else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                    await this.ShowPopupAsync(new WateResposeOTP());
-
-                return false;
-            }
-            catch
-            {
-                await this.ShowPopupAsync(new NoServerResponse());
-                return false;
+                if (VerifyButton != null)
+                    VerifyButton.IsEnabled = true;
             }
         }
     }

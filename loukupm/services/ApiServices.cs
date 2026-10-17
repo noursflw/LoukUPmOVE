@@ -415,6 +415,108 @@ namespace loukupm.Services
             }
         }
 
+        public Task<bool> RegisterDeviceAsync(string subscriptionId) =>
+            PostDeviceAsync("https://lookupfriseur.com/api/register-device", subscriptionId);
+
+        public Task<bool> DeregisterDeviceAsync(string subscriptionId) =>
+            PostDeviceAsync("https://lookupfriseur.com/api/deregister-device", subscriptionId);
+
+        private async Task<bool> PostDeviceAsync(string url, string subscriptionId)
+        {
+            if (string.IsNullOrWhiteSpace(subscriptionId))
+                return false;
+
+            var platform = DeviceInfo.Platform == DevicePlatform.iOS ? "ios" : "android";
+            var payload = new Dictionary<string, object>
+            {
+                ["player_id"] = subscriptionId,
+                ["device_type"] = platform
+            };
+
+            var (success, statusCode, body) = await SendDevicePayloadAsync(url, payload);
+            if (success)
+                return true;
+
+            if (statusCode == 422 &&
+                TryBuildDeviceRetryPayload(body, subscriptionId, platform, out var retryPayload))
+            {
+                foreach (var field in payload)
+                {
+                    if (!retryPayload.ContainsKey(field.Key))
+                        retryPayload[field.Key] = field.Value;
+                }
+
+                Console.WriteLine($"↻ Retrying {url} with server validation fields");
+                (success, _, body) = await SendDevicePayloadAsync(url, retryPayload);
+                if (success)
+                    return true;
+            }
+
+            Console.WriteLine($"❌ Device request failed ({statusCode}) {url}: {body}");
+            return false;
+        }
+
+        private async Task<(bool Success, int StatusCode, string Body)> SendDevicePayloadAsync(
+            string url,
+            Dictionary<string, object> payload)
+        {
+            await SetAuthorizationHeaderAsync();
+
+            var json = JsonSerializer.Serialize(payload);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var response = await _httpClient.PostAsync(url, content);
+            var body = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"📱 Device API {(int)response.StatusCode} {url}: {body}");
+            return (response.IsSuccessStatusCode, (int)response.StatusCode, body);
+        }
+
+        private static bool TryBuildDeviceRetryPayload(
+            string responseBody,
+            string subscriptionId,
+            string platform,
+            out Dictionary<string, object> payload)
+        {
+            payload = new Dictionary<string, object>();
+
+            try
+            {
+                using var doc = JsonDocument.Parse(responseBody);
+                if (!doc.RootElement.TryGetProperty("errors", out var errors) ||
+                    errors.ValueKind != JsonValueKind.Object)
+                {
+                    return false;
+                }
+
+                foreach (var property in errors.EnumerateObject())
+                {
+                    var message = property.Value.ToString().ToLowerInvariant();
+                    var key = property.Name;
+                    var isPlatformField =
+                        key.Contains("type", StringComparison.OrdinalIgnoreCase) ||
+                        key.Contains("platform", StringComparison.OrdinalIgnoreCase);
+
+                    if (!isPlatformField)
+                    {
+                        payload[key] = subscriptionId;
+                        continue;
+                    }
+
+                    if (message.Contains("integer") || message.Contains("numeric"))
+                        payload[key] = platform == "ios" ? 0 : 1;
+                    else
+                        payload[key] = platform;
+                }
+
+                return payload.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ Could not read device validation errors: {ex.Message}");
+                return false;
+            }
+        }
+
 
 
 
@@ -1324,7 +1426,11 @@ namespace loukupm.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://lookupfriseur.com/api/about-us");
+                string languageCode = GetLanguageCode();
+                string apiUrl = $"https://lookupfriseur.com/api/about-us?locale={Uri.EscapeDataString(languageCode)}";
+                Console.WriteLine($"📍 [AboutUs] Final request URL: '{apiUrl}'");
+
+                var response = await _httpClient.GetAsync(apiUrl);
 
                 if (!response.IsSuccessStatusCode)
                 {

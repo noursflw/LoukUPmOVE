@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.GoogleAuthPage"
+             BackgroundColor="#111111"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0"
+              Padding="8,10"
+              BackgroundColor="#111111">
+            <Button x:Name="CloseButton"
+                    Text="✕"
+                    FontSize="22"
+                    TextColor="#A8883C"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    WidthRequest="52"
+                    HeightRequest="44"
+                    Clicked="OnCloseClicked" />
+            <Label Text="Google"
+                   TextColor="White"
+                   FontSize="18"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </Grid>
+
+        <WebView x:Name="AuthWebView"
+                 Grid.Row="1"
+                 BackgroundColor="White" />
+
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           Grid.Row="1"
+                           IsRunning="True"
+                           IsVisible="True"
+                           Color="#A8883C"
+                           WidthRequest="48"
+                           HeightRequest="48"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

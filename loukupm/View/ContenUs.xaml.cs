@@ -18,20 +18,26 @@ public partial class ContenUs : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        // Load AboutUs data when page appears
-        if (_viewModel.AboutUsData == null)
-        {
+        LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
+        LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
+
+        if (_viewModel.AboutUsData == null || _viewModel.NeedsLanguageReload)
             await _viewModel.LoadAboutUsDataCommand.ExecuteAsync(null);
-            LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
-            CollectionRefreshService.Instance.CollectionsNeedRefresh += OnCollectionsNeedRefresh;
-        }
     }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
+    }
+
     private void OnLanguageChanged(System.Globalization.CultureInfo culture)
     {
-        MainThread.BeginInvokeOnMainThread(() =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            Console.WriteLine($"🌍 AboutUS.OnLanguageChanged triggered for culture: {culture?.DisplayName}");
-            _viewModel?.RefreshCollectionsForLanguageChange();
+            Console.WriteLine($"🌍 ContenUs.OnLanguageChanged triggered for culture: {culture?.DisplayName}");
+            if (_viewModel?.LoadAboutUsDataCommand.CanExecute(null) == true)
+                await _viewModel.LoadAboutUsDataCommand.ExecuteAsync(null);
         });
     }
     private void OnCollectionsNeedRefresh()

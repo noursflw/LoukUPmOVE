@@ -62,9 +62,7 @@ public partial class PolicyandPrivacyPageatAthun : ContentPage
         {
             Console.WriteLine($"🔄 Language changed to {culture.DisplayName}, reloading Privacy Policy");
             if (_viewModel != null)
-            {
-                await _viewModel.LoadPrivacyPolicyCommand.ExecuteAsync(null);
-            }
+                await _viewModel.RetryLoadPrivacyPolicyCommand.ExecuteAsync(null);
         });
     }
 

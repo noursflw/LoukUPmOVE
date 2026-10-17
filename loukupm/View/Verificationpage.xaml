@@ -7,6 +7,7 @@
              Shell.NavBarIsVisible="False"
              xmlns:loc="clr-namespace:loukupm.Langue"
              Shell.TabBarIsVisible="False"
+             
              BackgroundImageSource="baackgroundpage.png"
              Title="Verificationpage">
     <ScrollView>
@@ -18,13 +19,12 @@
             <Label Text="{loc:Translate Name=desRestPass}" FontFamily="georgia-bold" Margin="20,10,0,0" FontSize="16" TextColor="#999999" />
             <HorizontalStackLayout Margin="0,50,0,0" x:Name="PinLayout" Spacing="20" HorizontalOptions="Center">
                 <material:TextField
-    x:Name="OtpField"
-    Keyboard="Numeric"
-    
-    Text="{Binding OtpCode, Mode=TwoWay}"
-    Margin="0,50,0,0"
-    HorizontalOptions="Center"
-    WidthRequest="200"/>
+                    x:Name="OtpField"
+                    Keyboard="Numeric"
+                    Text="{Binding OtpCode, Mode=TwoWay}"
+                    Margin="0,50,0,0"
+                    HorizontalOptions="Center"
+                    WidthRequest="200"/>
             </HorizontalStackLayout>
            
             <Button  

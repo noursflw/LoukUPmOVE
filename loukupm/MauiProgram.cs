@@ -165,15 +165,14 @@ if (notificationService != null && notificationState != null)
     private static string GetConfigurationFilePath()
     {
 #if __ANDROID__
+        // Always refresh from the packaged asset so AuthDomain / branding
+        // updates in appsettings.json are not stuck behind a stale AppData copy.
         var documentsPath = FileSystem.AppDataDirectory;
         var configPath = Path.Combine(documentsPath, "appsettings.json");
 
-        if (!File.Exists(configPath))
-        {
-            using var stream = FileSystem.OpenAppPackageFileAsync("appsettings.json").Result;
-            using var fileStream = File.Create(configPath);
-            stream.CopyTo(fileStream);
-        }
+        using var stream = FileSystem.OpenAppPackageFileAsync("appsettings.json").Result;
+        using var fileStream = File.Create(configPath);
+        stream.CopyTo(fileStream);
 
         return configPath;
 #else

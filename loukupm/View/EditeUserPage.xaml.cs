@@ -155,7 +155,7 @@ public partial class EditeUserPage : ContentPage
         var popup = new RemoveUserPopup();
 
         // Trigger OneSignal logout in background to avoid blocking the UI thread.
-        _ = OneSignalService.LogoutAsync();
+        _ = OneSignalService.LogoutAsync(deregisterOnServer: false);
         App.ResetAuthenticationCheck();
 
         await this.ShowPopupAsync(popup);

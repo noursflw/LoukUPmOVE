@@ -59,6 +59,12 @@
 	<ItemGroup>
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<MauiImage Update="Resources\Images\flag_de.svg" Resize="True" BaseSize="60,40" />
+		<MauiImage Update="Resources\Images\flag_ar.svg" Resize="True" BaseSize="60,40" />
+		<MauiImage Update="Resources\Images\chevron_gold.svg" Resize="True" BaseSize="24,24" />
+		<MauiImage Update="Resources\Images\password_reset_success.svg" Resize="True" BaseSize="200,200" />
+		<MauiImage Update="Resources\Images\password_reset_failed.svg" Resize="True" BaseSize="200,200" />
+		<MauiImage Update="Resources\Images\otp_incorrect.svg" Resize="True" BaseSize="200,200" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 		<None Remove="Resources\Splash\mmm.svg" />
@@ -143,6 +149,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\MassgingApp\PleaseEnterCurrentPasswordPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\MassgingApp\PasswordResetSuccessPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\MassgingApp\PasswordResetFailedPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\MassgingApp\SuccessfullyBookingNow.xaml">

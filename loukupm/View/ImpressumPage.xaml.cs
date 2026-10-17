@@ -1,3 +1,4 @@
+using System.Globalization;
 using loukupm.Services;
 using loukupm.ViewModel;
 
@@ -14,6 +15,18 @@ public partial class ImpressumPage : ContentPage
         // Initialize ViewModel
         _viewModel = new ImpressumViewModel();
         BindingContext = _viewModel;
+        Langue.LocalizationResourcesManager.Instanse.LanguageChanged += OnLanguageChanged;
+        Unloaded += (_, _) =>
+            Langue.LocalizationResourcesManager.Instanse.LanguageChanged -= OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged(CultureInfo culture)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            if (_viewModel?.LoadImpressumCommand.CanExecute(null) == true)
+                await _viewModel.LoadImpressumCommand.ExecuteAsync(null);
+        });
     }
 
     protected override async void OnAppearing()

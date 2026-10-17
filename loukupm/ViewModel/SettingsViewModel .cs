@@ -93,6 +93,7 @@ namespace loukupm.ViewModel
         {
             public string Name { get; set; }
             public string CultureName { get; set; }
+            public string Icon { get; set; }
 
             public override string ToString() => Name;
         }
@@ -117,8 +118,8 @@ namespace loukupm.ViewModel
         {
             Languages = new List<LanguageOption>
             {
-                new LanguageOption { Name = "Deutsch", CultureName = "de-DE" },
-                new LanguageOption { Name = "العربية", CultureName = "ar" }
+                new LanguageOption { Name = "Deutsch", CultureName = "de-DE", Icon = "flag_de" },
+                new LanguageOption { Name = "العربية", CultureName = "ar", Icon = "flag_ar" }
             };
         }
 
