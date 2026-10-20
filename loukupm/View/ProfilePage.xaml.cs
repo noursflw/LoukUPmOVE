@@ -28,8 +28,12 @@ public partial class ProfilePage : ContentPage
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
+<<<<<<< HEAD
         if (Shell.Current is loukupm.AppShell shell)
             await shell.GoToHomeAsync();
+=======
+        NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)

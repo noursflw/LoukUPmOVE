@@ -5,7 +5,10 @@ using FFImageLoading.Maui;
 using loukupm.Model;
 using loukupm.services;
 using loukupm.Services;
+<<<<<<< HEAD
 using loukupm.Langue;
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 using loukupm.ViewModel;
 using Microsoft.Maui.Controls;
 using System.Globalization;
@@ -19,6 +22,7 @@ public partial class HomePage : ContentPage
 	{
 		InitializeComponent();
 		this.InitializeLanguageTracking();
+<<<<<<< HEAD
 		LocalizationResourcesManager.Instanse.LanguageChanged += OnHomeLanguageChanged;
 		Unloaded += (_, _) => LocalizationResourcesManager.Instanse.LanguageChanged -= OnHomeLanguageChanged;
 		ApplySliderDirection();
@@ -45,6 +49,8 @@ public partial class HomePage : ContentPage
 
 		HomeSlider.ItemsSource = null;
 		HomeSlider.ItemsSource = source;
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 	}
 
 	protected override async void OnAppearing()
@@ -169,6 +175,7 @@ public partial class HomePage : ContentPage
     {
 
     }
+<<<<<<< HEAD
 
     private void OnTeamListScrolled(object sender, ItemsViewScrolledEventArgs e)
     {
@@ -196,4 +203,6 @@ public partial class HomePage : ContentPage
 
         vm.TeamPagerIndex = Math.Clamp(index, 0, dots - 1);
     }
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 }

@@ -29,7 +29,10 @@ namespace loukupm.Services
 
             var inner = new HttpClientHandler
             {
+<<<<<<< HEAD
                 AllowAutoRedirect = false,
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
@@ -46,9 +49,12 @@ namespace loukupm.Services
 
             if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "LoukUPmOVE-MAUI/1.0");
+<<<<<<< HEAD
 
             if (!_httpClient.DefaultRequestHeaders.Accept.Any())
                 _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         }
 
         private async Task SetAuthorizationHeaderAsync()

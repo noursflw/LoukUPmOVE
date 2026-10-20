@@ -1226,7 +1226,11 @@
     <value>تحذير!</value>
   </data>
   <data name="SubDenger" xml:space="preserve">
+<<<<<<< HEAD
     <value>عند التأكيد، يُحذف حسابك من منصة Look Up بالكامل، من التطبيق ومن الخادم، مع بياناتك الشخصية ورقم هاتفك وصورتك ومواعيدك. لا يمكن التراجع عن هذا الإجراء.</value>
+=======
+    <value>عند حذف حسابك، سيتم حذف جميع بياناتك نهائيا. لا يمكن التراجع عن هذا الإجراء.</value>
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
   </data>
   <data name="EnterPasswordCeren" xml:space="preserve">
     <value>أدخل كلمة المرور</value>

@@ -59,8 +59,11 @@ namespace loukupm.ViewModel
 
         [ObservableProperty] private ObservableCollection<WorkTeam> filteredWorkTeams = new();
         [ObservableProperty] private ObservableCollection<WorkTeam> workTeams = new();
+<<<<<<< HEAD
         [ObservableProperty] private ObservableCollection<TeamPagerDot> teamPagerDots = new();
         [ObservableProperty] private int teamPagerIndex;
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         [ObservableProperty] private ObservableCollection<Notification> notifications = new();
         [ObservableProperty]
         private int unreadNotificationCount = 0;
@@ -204,6 +207,7 @@ namespace loukupm.ViewModel
         public ICommand SelectServiceButtonCommand { get; }
 
         // ✅ STATIC HttpClient - shared across all requests (proper pattern)
+<<<<<<< HEAD
         private static readonly HttpClient _httpClient = CreateJsonClient();
 
         private static HttpClient CreateJsonClient()
@@ -215,6 +219,12 @@ namespace loukupm.ViewModel
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return client;
         }
+=======
+        private static readonly HttpClient _httpClient = new HttpClient()
+        {
+            Timeout = TimeSpan.FromSeconds(30)
+        };
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 
         public IAsyncRelayCommand EnableReminderTimerCommand { get; private set; }
         public IAsyncRelayCommand<int> CancelBookingCommand { get; private set; }
@@ -1066,7 +1076,10 @@ namespace loukupm.ViewModel
                 {
                     WorkTeams.Clear();
                     FilteredWorkTeams.Clear();
+<<<<<<< HEAD
                     SyncTeamPagerDots();
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                     return;
                 }
 
@@ -1083,8 +1096,11 @@ namespace loukupm.ViewModel
                 foreach (var team in WorkTeams)
                     FilteredWorkTeams.Add(team);
 
+<<<<<<< HEAD
                 SyncTeamPagerDots();
 
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             }
             catch (Exception ex)
             {
@@ -1096,6 +1112,7 @@ namespace loukupm.ViewModel
             }
         }
 
+<<<<<<< HEAD
         partial void OnTeamPagerIndexChanged(int value) => ApplyTeamPagerIndex(value);
 
         public void SyncTeamPagerDots()
@@ -1128,6 +1145,8 @@ namespace loukupm.ViewModel
                 TeamPagerDots[i].IsActive = i == index;
         }
 
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         [ObservableProperty]
         private WorkTeam selectedWorkTeam;
 
@@ -2886,7 +2905,10 @@ private async Task Logout()
             CanceledAppointments?.Clear();
             WorkTeams?.Clear();
             FilteredWorkTeams?.Clear();
+<<<<<<< HEAD
             SyncTeamPagerDots();
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             Notifications?.Clear();
             SelectedServices?.Clear();
 
@@ -3149,7 +3171,10 @@ private async Task Logout()
                 CurrentBooking?.SelectedServices?.Clear();
                 WorkTeams?.Clear();
                 FilteredWorkTeams?.Clear();
+<<<<<<< HEAD
                 SyncTeamPagerDots();
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                 Notifications?.Clear();
                 ProviderDays?.Clear();
                 AvailableSlots?.Clear();

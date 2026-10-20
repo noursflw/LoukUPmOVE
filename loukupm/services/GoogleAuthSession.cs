@@ -1,7 +1,11 @@
 using System.Reflection;
 using Firebase.Auth;
+<<<<<<< HEAD
 using Firebase.Auth.Providers;
 using Microsoft.Maui.Authentication;
+=======
+using loukupm.View;
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 
 namespace loukupm.Services;
 
@@ -53,19 +57,30 @@ public static class GoogleAuthSession
             string? redirectResult = null;
             try
             {
+<<<<<<< HEAD
 #if ANDROID
                 credential = await SignInWithAndroidGoogleAsync(client).ConfigureAwait(false);
 #else
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                 credential = await client.SignInWithRedirectAsync(
                     FirebaseProviderType.Google,
                     async uri =>
                     {
+<<<<<<< HEAD
                         redirectResult = await CaptureSystemBrowserRedirectAsync(uri, config.RedirectUri)
                             .ConfigureAwait(false);
                         return redirectResult;
                     })
                     .ConfigureAwait(false);
 #endif
+=======
+                        redirectResult = await GoogleAuthPage.CaptureAsync(uri, config.RedirectUri)
+                            .ConfigureAwait(false);
+                        return redirectResult ?? string.Empty;
+                    })
+                    .ConfigureAwait(false);
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             }
             catch (OperationCanceledException)
             {
@@ -145,6 +160,7 @@ public static class GoogleAuthSession
         }
     }
 
+<<<<<<< HEAD
 #if ANDROID
     private static async Task<UserCredential> SignInWithAndroidGoogleAsync(FirebaseAuthClient client)
     {
@@ -187,6 +203,8 @@ public static class GoogleAuthSession
         return callback;
     }
 
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     private static string? FirstNonEmpty(params string?[] values)
     {
         foreach (var value in values)

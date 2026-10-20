@@ -105,12 +105,15 @@ namespace loukupm.Model
         public string ImageUrl { get; set; }
     }
 
+<<<<<<< HEAD
     public partial class TeamPagerDot : ObservableObject
     {
         [ObservableProperty]
         private bool isActive;
     }
 
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     // كلاس الغلاف (الـ wrapper)
     public class WorkTeamWrapper
     {

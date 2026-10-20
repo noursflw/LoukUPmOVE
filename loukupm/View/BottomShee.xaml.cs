@@ -56,8 +56,12 @@ public partial class BottomShee : BottomSheet
         {
             booking.PaymentMethod = "Card";
 
+<<<<<<< HEAD
             NavigationService.ResetLogoutFlag();
             await ShellNavigationManager.NavigateToHomeAndClear();
+=======
+            await NavigationService.NavigateToPage(NavigationService.ROUTE_PAYMENT);
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             await this.DismissAsync();
         }
         else

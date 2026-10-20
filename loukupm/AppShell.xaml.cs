@@ -9,6 +9,11 @@ namespace loukupm
     public partial class AppShell : Shell
     {
         
+<<<<<<< HEAD
+=======
+        private bool _isNavigating = false;
+
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         public AppShell()
         {
             InitializeComponent();
@@ -44,14 +49,72 @@ namespace loukupm
             {
                 var currentPage = NavigationService.GetCurrentPageName();
                 Console.WriteLine($"[AppShell] OnBackButtonPressed triggered from page: {currentPage}");
+<<<<<<< HEAD
                 _ = NavigationService.HandleBackButton(currentPage);
                 return true;
+=======
+
+
+                if (_isNavigating)
+                {
+                    Console.WriteLine($"[AppShell] Navigation already in progress, ignoring back button");
+                    return true;
+                }
+
+                _isNavigating = true;
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        // Check if this is a terminal page for user feedback
+                        bool isTerminalPage = currentPage == NavigationService.ROUTE_LOGIN || 
+                                            currentPage == NavigationService.ROUTE_SPLASH;
+
+                        bool handled = await NavigationService.HandleBackButton(currentPage);
+                        Console.WriteLine($"[AppShell] Back button handling result: {handled}");
+
+                        // Show feedback to user if on terminal page and back press was handled
+                        if (isTerminalPage && handled)
+                        {
+                            await MainThread.InvokeOnMainThreadAsync(async () =>
+                            {
+                                var page = Application.Current?.MainPage;
+                                if (page != null)
+                                {
+                                    await page.DisplayAlert(
+                                        "Exit Application",
+                                        "Press back again to exit the application",
+                                        "OK"
+                                    );
+                                }
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[AppShell] ERROR in HandleBackButton: {ex.Message}");
+                        Console.WriteLine($"[AppShell] Exception: {ex.GetType().Name}");
+                        Console.WriteLine($"[AppShell] Stack trace: {ex.StackTrace}");
+                    }
+                    finally
+                    {
+                        _isNavigating = false;
+                    }
+                });
+
+                return true; 
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[AppShell] CRITICAL ERROR in OnBackButtonPressed: {ex.Message}");
                 Console.WriteLine($"[AppShell] Stack trace: {ex.StackTrace}");
+<<<<<<< HEAD
                 return true;
+=======
+                return true; 
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             }
         }
 
@@ -71,6 +134,10 @@ namespace loukupm
                     (NavigationService.ROUTE_POLICY_PRIVACY_AUTH, typeof(PolicyandPrivacyPageatAthun)),
                     (NavigationService.ROUTE_TermsAndConditions_Athun, typeof(TermsAndConditionsAthun)),
                     (NavigationService.ROUTE_TERM_BOOKING, typeof(TerminbuchenPage)),
+<<<<<<< HEAD
+=======
+                    (NavigationService.ROUTE_PAYMENT, typeof(Paymentgetway)),
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                     (NavigationService.Route_ContactUs, typeof(ContenUs)),
                     (NavigationService.ROUTE_Delet_Acount, typeof(Areyousuredeletyouraccountpage)),
 
@@ -151,6 +218,7 @@ namespace loukupm
             return Task.CompletedTask;
         }
 
+<<<<<<< HEAD
         public async Task GoToHomeAsync()
         {
             ShowHomeShell();
@@ -168,6 +236,12 @@ namespace loukupm
             }
 
             ShowHomeShell();
+=======
+        public Task GoToHomeAsync()
+        {
+            ShowHomeShell();
+            return Task.CompletedTask;
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         }
 
         public async Task ShowProfileAsync()
@@ -205,6 +279,7 @@ namespace loukupm
                 {
                     CurrentItem = MainTabBar;
 
+<<<<<<< HEAD
                     var home = MainTabBar.Items.FirstOrDefault(IsHomeSection)
                         ?? MainTabBar.Items.FirstOrDefault();
 
@@ -214,6 +289,12 @@ namespace loukupm
                         if (home.Items.Count > 0)
                             home.CurrentItem = home.Items[0];
                     }
+=======
+                    var home = MainTabBar.Items.FirstOrDefault(item =>
+                        string.Equals(item.Route, "HomePage", StringComparison.Ordinal));
+                    if (home != null)
+                        MainTabBar.CurrentItem = home;
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                 }
 
                 if (LoginShellItem != null)
@@ -225,6 +306,7 @@ namespace loukupm
             }
         }
 
+<<<<<<< HEAD
         private static bool IsHomeSection(ShellSection section)
         {
             if (section == null)
@@ -237,6 +319,8 @@ namespace loukupm
                 string.Equals(content.Route, NavigationService.ROUTE_HOME, StringComparison.OrdinalIgnoreCase));
         }
 
+=======
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         private void ShowLoginShell()
         {
             try

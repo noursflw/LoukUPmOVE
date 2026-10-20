@@ -63,6 +63,7 @@ namespace loukupm
             {
                 var currentPage = NavigationService.GetCurrentPageName();
 
+<<<<<<< HEAD
                 if (currentPage == NavigationService.ROUTE_HOME)
                 {
                     _activity.MoveTaskToBack(true);
@@ -73,6 +74,30 @@ namespace loukupm
                     _ = NavigationService.HandleBackButton(currentPage);
                 else
                     MainThread.BeginInvokeOnMainThread(() => _ = NavigationService.HandleBackButton(currentPage));
+=======
+                if (NavigationService.IsTabBarPage(currentPage))
+                {
+                    if (currentPage == NavigationService.ROUTE_HOME)
+                    {
+                        // Standard Android behaviour: send the app to background
+                        _activity.MoveTaskToBack(true);
+                        return;
+                    }
+
+                    // Any other tab → go to Home
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_HOME);
+                    });
+                    return;
+                }
+
+                // Subpage → pop one level off the Shell stack
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await NavigationService.HandleBackButton(currentPage);
+                });
+>>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             }
         }
     }
