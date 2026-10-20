@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="loukupm.View.ReminderTimePopup"
+               Color="Transparent"
+               CanBeDismissedByTappingOutsideOfPopup="True">
+
+    <Border BackgroundColor="#000000"
+            Stroke="#F3D97A"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 20"
+            WidthRequest="320"
+            Padding="18"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+
+        <VerticalStackLayout Spacing="14">
+
+            <Label x:Name="TitleLabel"
+                   TextColor="White"
+                   FontFamily="Oswald"
+                   FontSize="16"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="WordWrap" />
+
+            <BoxView HeightRequest="1"
+                     Color="#333333"
+                     BackgroundColor="#333333"
+                     HorizontalOptions="Fill" />
+
+            <ScrollView MaximumHeightRequest="280">
+                <VerticalStackLayout x:Name="OptionsLayout"
+                                     Spacing="8" />
+            </ScrollView>
+
+            <Button x:Name="CancelButton"
+                    BackgroundColor="#000000"
+                    TextColor="White"
+                    BorderColor="#D3D3D3"
+                    BorderWidth="1"
+                    CornerRadius="10"
+                    HeightRequest="44"
+                    FontFamily="Oswald"
+                    FontSize="14"
+                    Clicked="OnCancelClicked">
+                <Button.Shadow>
+                    <Shadow Brush="Transparent" Opacity="0" Radius="0" />
+                </Button.Shadow>
+            </Button>
+
+        </VerticalStackLayout>
+    </Border>
+
+</toolkit:Popup>

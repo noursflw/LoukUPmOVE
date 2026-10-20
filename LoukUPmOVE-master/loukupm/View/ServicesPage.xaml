@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.ServicesPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#0A0A0A"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:converters="clr-namespace:loukupm.Converter"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             xmlns:vm="clr-namespace:loukupm.ViewModel"
+             xmlns:ff="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
+             Title="ServicesPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:ServiceSelectionBorderColorConverter x:Key="ServiceSelectionBorderColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <ScrollView   Margin="0,0,0,10" >
+            <VerticalStackLayout>
+                <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A">
+                 
+                    <Label Text="{Loc:Translate Name=AllServies}"
+                                      TextColor="White"
+                                      Margin="24,0,0,0"
+                                      FontSize="24"
+                                      FontFamily="georgia-bold"
+                                      VerticalOptions="Center" />
+
+                    <Button Grid.Column="1"
+         WidthRequest="40"
+         HeightRequest="40"
+         CornerRadius="12"
+         ImageSource="backbuttonpmg.png"
+         BackgroundColor="#0A0A0A"
+         BorderColor="#999999"
+         Margin="0,0,10,0"            
+         BorderWidth="1"
+         HorizontalOptions="End"
+         VerticalOptions="Center"
+         Clicked="Button_Clicked" />
+                </Grid>
+
+
+                <material:TextField  Margin="25,35,25,0" 
+                                     InputBackgroundColor="#444444" 
+                                     CornerRadius="16"  
+                                     Icon="search.svg" 
+                                     Title="search"    
+                                     HeightRequest="56"
+                                     TextChanged="OnSearchTextChanged" />
+
+                <ScrollView Orientation="Horizontal" >
+                    <HorizontalStackLayout Spacing="10"  >
+                        <Button Text="{Loc:Translate Name=all}"
+                                CornerRadius="15"
+                           Clicked="Button_Clicked_3"
+                           HeightRequest="50"
+                           WidthRequest="50"
+                           Margin="10,0,0,0"
+                     Command="{Binding RefreshServicesCommand}" />
+                        <CollectionView x:Name="CategoriesCollectionView"
+ItemsSource="{Binding Categories}" 
+Margin="0,10,10,10">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentView x:Name="FrameContainer" HeightRequest="65"  Padding="0">
+                                        <Frame x:Name="CategoryFrame"
+       CornerRadius="16"
+       HeightRequest="60"
+       
+       BackgroundColor="#444444"
+       Margin="0,0,0,0"
+       BorderColor="#444444"
+       HasShadow="False"
+       IsClippedToBounds="True">
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnCategoryTapped" />
+                                            </Frame.GestureRecognizers>
+
+                                            <Label Text="{Binding Name}"
+           FontFamily="Oswald"
+           Margin="0,-8,0,0"
+           TextColor="#999999" />
+                                        </Frame>
+                                    </ContentView>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </HorizontalStackLayout>
+                </ScrollView>
+             
+
+
+                <HorizontalStackLayout Margin="0,10,10,10">
+                    <Frame  IsVisible="{Binding IsServicesLoad}" HeightRequest="55" BorderColor="#444444" WidthRequest="120" Margin="30,0,0,0" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsCatogory}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"  />
+                    <Frame  IsVisible="{Binding IsServicesLoad}" HeightRequest="55" BorderColor="#444444" WidthRequest="120" Margin="17,0,0,0" CornerRadius="16" BackgroundColor="#444444" sk:Skeleton.IsBusy="{Binding IsCatogory}"  sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"  />
+                </HorizontalStackLayout>
+                <VerticalStackLayout HeightRequest="800">
+                    <ScrollView>
+                        <VerticalStackLayout >
+                            <Frame HeightRequest="122" Margin="20,10,20,0"
+                                   WidthRequest="350"
+                                   CornerRadius="16" 
+                                   BackgroundColor="#444444"
+                                   IsVisible="{Binding IsServicesLoad}"
+                                   sk:Skeleton.IsBusy="{Binding IsServicesLoad}" 
+                                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}" 
+                                   BorderColor="#444444" />
+                            <CollectionView ItemsSource="{Binding Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}, Path=LocalFilteredServices}" IsVisible="{Binding IsServicesLoad, Converter={StaticResource InverseBoolConverter}}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VerticalStackLayout Margin="20,0,20,15" Spacing="0">
+                                            <Border Margin="0" 
+                                                    Stroke="{Binding IsSelected, Converter={StaticResource ServiceSelectionBorderColorConverter}}" 
+                                                    StrokeThickness="2" 
+                                                    BackgroundColor="#2A2A2A" 
+                                                    StrokeShape="RoundRectangle 16" 
+                                                    HeightRequest="110" 
+                                                    Padding="0">
+                                                <Grid ColumnDefinitions="Auto,*,Auto" 
+      RowDefinitions="*" 
+      Padding="0" 
+      ColumnSpacing="10">
+
+                                                    <!-- Service Image -->
+                                                    <Frame Grid.Column="0" 
+           Padding="0" 
+           Margin="10,10,0,10"
+           CornerRadius="12" 
+           BackgroundColor="#444444"
+           BorderColor="#444444"
+           HasShadow="False"
+           WidthRequest="{OnIdiom Phone=75, Tablet=90}"
+           HeightRequest="{OnIdiom Phone=75, Tablet=80}">
+
+                                                        <ff:CachedImage 
+            Source="{Binding ImageSafe}"
+            Aspect="AspectFill"
+            LoadingPlaceholder="imagesafe.png"
+            ErrorPlaceholder="imagesafe.png" />
+
+                                                    </Frame>
+
+
+                                                    <!-- Service Details -->
+                                                    <VerticalStackLayout Grid.Column="1" 
+                         Spacing="5" 
+                         Padding="8,10,0,10" 
+                         VerticalOptions="Center">
+
+                                                        <Label 
+            Text="{Binding NameServies}" 
+            FontFamily="Oswald" 
+            TextColor="White" 
+            FontSize="{OnIdiom Phone=14, Tablet=16}"
+            FontAttributes="Bold"
+            LineBreakMode="TailTruncation" />
+
+
+                                                        <Label 
+            Text="{Binding Category.Name}" 
+            FontFamily="Oswald" 
+            TextColor="#999999" 
+            FontSize="12"
+            LineBreakMode="TailTruncation" />
+
+
+                                                        <HorizontalStackLayout Spacing="{OnIdiom Phone=8, Tablet=15}" 
+                               Margin="5,3">
+
+                                                            <HorizontalStackLayout Spacing="3">
+
+                                                                <Label  
+                    Text="⏱" 
+                    FontSize="12" 
+                    TextColor="#D4AF37"
+                    VerticalOptions="Center" />
+
+                                                                <Label  
+                    Text="{Binding TimeServies}" 
+                    FontFamily="Oswald" 
+                    TextColor="#D3D3D3" 
+                    FontSize="12" 
+                    VerticalOptions="Center" />
+
+                                                                <Label 
+                    Text="Min." 
+                    FontSize="12"
+                    TextColor="#D3D3D3"
+                    VerticalOptions="Center" />
+
+                                                            </HorizontalStackLayout>
+
+
+                                                            <HorizontalStackLayout Spacing="3">
+
+                                                                <Label  
+                    Text="💰" 
+                    FontSize="12"
+                    TextColor="#D4AF37" 
+                    VerticalOptions="Center" />
+
+                                                                <Label  
+                    Text="{Binding PriceServies}" 
+                    FontFamily="Oswald" 
+                    TextColor="#D3D3D3" 
+                    FontSize="12" 
+                    VerticalOptions="Center" />
+
+                                                                <Label 
+                    Text="€" 
+                    FontSize="12"
+                    TextColor="#D3D3D3"
+                    VerticalOptions="Center" />
+
+                                                            </HorizontalStackLayout>
+
+                                                        </HorizontalStackLayout>
+
+                                                    </VerticalStackLayout>
+
+
+
+                                                   
+                                                    <VerticalStackLayout Grid.Column="2" 
+                         Padding="0,10,10,10"
+                         VerticalOptions="Center"
+                         HorizontalOptions="Center">
+
+
+                                                    
+                                                        <Button 
+            Text="{Loc:Translate Name=Choose}"
+            TextColor="White"
+            BackgroundColor="Transparent"
+            BorderColor="#808080"
+            BorderWidth="1"
+            WidthRequest="{OnIdiom Phone=75, Tablet=85}"
+            HeightRequest="{OnIdiom Phone=38, Tablet=40}"
+            FontFamily="Oswald"
+            FontSize="{OnIdiom Phone=12, Tablet=14}"
+            CornerRadius="6"
+            Padding="0"
+            Margin="0"
+            IsVisible="{Binding IsSelected, Converter={StaticResource InverseBoolConverter}}"
+            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
+            CommandParameter="{Binding .}" />
+
+
+
+                                                     
+                                                        <Button 
+            ImageSource="chekeseves.svg"
+            TextColor="White"
+            BackgroundColor="Transparent"
+            BorderColor="#D4AF37"
+            BorderWidth="1"
+            WidthRequest="{OnIdiom Phone=40, Tablet=45}"
+            HeightRequest="{OnIdiom Phone=40, Tablet=45}"
+            FontFamily="Oswald"
+            FontSize="11"
+            CornerRadius="8"
+            Padding="0"
+            IsVisible="{Binding IsSelected}"
+            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AppViewModel}}, Path=SelectServiceButtonCommand}"
+            CommandParameter="{Binding .}" />
+
+                                                    </VerticalStackLayout>
+
+                                                </Grid>
+                                            </Border>
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </VerticalStackLayout>
+                <BoxView HeightRequest="150" Opacity="0"/>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button  VerticalOptions="End" 
+                 HorizontalOptions="Fill" Text="{Loc:Translate Name=add}" CornerRadius="16" FontSize="16" Clicked="Button_Clicked_2" FontFamily="georgia-bold" TextColor="Black"  Margin="35" />
+        <Border Margin="0,30,0,-10"
+             BackgroundColor="#151821"
+             HeightRequest="20"
+             VerticalOptions="End" 
+             HorizontalOptions="Fill" 
+             Stroke="Transparent" 
+             StrokeShape="RoundRectangle 10,10,0,0" />
+    </Grid>
+
+</ContentPage>

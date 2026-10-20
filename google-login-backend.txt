@@ -1,0 +1,27 @@
+المشكلة
+التطبيق يسجّل الدخول عبر Google بنجاح، ثم يرسل التوكن إلى:
+POST /api/auth/google
+
+شكل الطلب:
+{
+  "token": "GOOGLE_ID_TOKEN"
+}
+
+السيرفر يرد: Invalid Google token
+
+السبب
+التوكن صادر من مشروع Firebase:
+LOOKUP
+Project ID: app-test-2c25c
+
+التحقق في السيرفر يجب أن يستخدم Client ID هذا المشروع:
+710582652316-jka04ehvmrm0ecmcje436fvs7f2a3klh.apps.googleusercontent.com
+
+الـ Client ID الذي يبدأ بـ 120153122367 تابع لمشروع Google آخر، لذلك يرفض السيرفر التوكن.
+
+الحل
+عدّل التحقق في الباك إند ليقبل توكن Google الصادر من:
+710582652316-jka04ehvmrm0ecmcje436fvs7f2a3klh.apps.googleusercontent.com
+
+الحقل المطلوب يبقى:
+token

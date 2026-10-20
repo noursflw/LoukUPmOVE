@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="loukupm.View.SettingPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#0A0A0A"
+              Shell.TabBarIsVisible="False"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             Title="SettingPage">
+    <VerticalStackLayout Spacing="30" Margin="0,0,0,0">
+        <Grid ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A">
+            <!-- العنوان على اليسار -->
+            <Label Text="{Loc:Translate Name=setting}"
+    TextColor="White"
+    Margin="24,0,0,0"
+      FontSize="24"
+      FontFamily="georgia-bold"
+      VerticalOptions="Center" />
+
+            <!-- الزر على اليمين -->
+            <Button Grid.Column="1"
+       WidthRequest="40"
+       HeightRequest="40"
+       CornerRadius="12"
+       ImageSource="backbuttonpmg.png"
+       BackgroundColor="#0A0A0A"
+       BorderColor="#0A0A0A"
+       Margin="0,0,10,0"            
+       BorderWidth="1"
+      HorizontalOptions="End"
+      VerticalOptions="Center"
+      Clicked="Button_Clicked_1" />
+        </Grid>
+
+        <Label Margin="30,0,0,0" TextColor="#999" Text="{Loc:Translate Name=SettingLang}"/>
+        <Border BackgroundColor="#181c21"
+                Stroke="#333333"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                HeightRequest="48"
+                Padding="14,0"
+                Margin="24,0,24,0">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnLanguageFieldTapped" />
+            </Border.GestureRecognizers>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                <Image Source="{Binding SelectedLanguage.Icon}"
+                       WidthRequest="28"
+                       HeightRequest="18"
+                       Aspect="AspectFill"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{Binding SelectedLanguage.Name}"
+                       TextColor="#D4AF37"
+                       FontFamily="Oswald"
+                       FontSize="15"
+                       VerticalOptions="Center" />
+                <Image Grid.Column="2"
+                       Source="chevron_gold"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+        <Label Margin="30,0,0,0" TextColor="#999" Text="{Loc:Translate Name=SettingNottivcation}"/>
+
+        <Frame BorderColor="#181c21" BackgroundColor="#181c21" CornerRadius="12" Margin="24,0,24,0" Padding="16" HasShadow="False">
+            <VerticalStackLayout>
+
+                <!-- Notifications Main -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label 
+                Text="{Loc:Translate Name=Benachrichtigungen}"
+                TextColor="White"
+                FontSize="16"
+                FontAttributes="Bold"
+                FontFamily="georgia"/>
+
+                        <Label 
+                Text="{Loc:Translate Name=DesNotfction}"
+                TextColor="#999"
+                FontSize="13"/>
+                    </VerticalStackLayout>
+
+                    <Switch 
+            Grid.Column="1"
+           OnColor="White"
+             
+ ThumbColor="#D4AF37"   
+            x:Name="NotificationsSwitch"
+            Toggled="OnNotificationsSwitchToggled"/>
+                </Grid>
+
+                <!-- Backend-driven toggles: keys/values from /api/settings, labels in Arabic/German from AppResource -->
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Settings}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <BoxView HeightRequest="1"
+                                         Color="#999"
+                                         Opacity="0.2"
+                                         Margin="0,12"/>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Label}"
+                                               TextColor="White"
+                                               FontSize="16"
+                                               VerticalOptions="Center"/>
+                                        <Label Text="{Binding Description}"
+                                               TextColor="#999"
+                                               FontSize="13"
+                                               IsVisible="{Binding HasDescription}"/>
+                                    </VerticalStackLayout>
+
+                                    <Switch Grid.Column="1"
+                                            OnColor="White"
+                                            ThumbColor="#D4AF37"
+                                            IsToggled="{Binding IsOn, Mode=TwoWay}"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </Frame>
+    </VerticalStackLayout>
+</ContentPage>

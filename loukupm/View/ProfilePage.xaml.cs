@@ -1,0 +1,144 @@
+using CommunityToolkit.Maui.Views;         // PopupOptions, ShowPopupAsync
+using loukupm.Services;
+using loukupm.View.MassgingApp;
+using loukupm.ViewModel;
+using Microsoft.Maui.Controls.Shapes;     // RoundRectangle
+using Microsoft.Maui.Graphics;
+
+using System.Threading.Tasks;
+
+namespace loukupm.View;
+
+public partial class ProfilePage : ContentPage
+{
+    public ProfilePage()
+    {
+        InitializeComponent();
+        this.InitializeLanguageTracking();
+        this.BindingContext = AppViewModel.Instance;
+        Shell.SetNavBarIsVisible(this, false);
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is AppViewModel viewModel)
+            viewModel.NotifyPhoneVerificationStatus();
+    }
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        if (Shell.Current is loukupm.AppShell shell)
+            await shell.GoToHomeAsync();
+    }
+
+    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
+    }
+
+    private async void Button_Clicked_1(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
+    }
+
+    private async void Button_Clicked_2(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
+    }
+
+    private async void TapGestureRecognizer_Tapped_1(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_PASSWORD);
+    }
+
+    private async void Button_Clicked_3(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
+    }
+
+    private async void TapGestureRecognizer_Tapped_2(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToTabBarPage(NavigationService.ROUTE_BOOKING);
+    }
+
+    private async void Button_Clicked_4(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
+    }
+
+    private async void TapGestureRecognizer_Tapped_3(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_NOTIFICATION);
+    }
+
+    private async void Button_Clicked_5(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);
+    }
+
+    private async void TapGestureRecognizer_Tapped_4(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_SETTING);
+    }
+
+    private async void Button_Clicked_6(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
+    }
+
+    private async void TapGestureRecognizer_Tapped_5(object sender, TappedEventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_ABOUT_US);
+    }
+
+    private async void Button_Clicked_7(object sender, EventArgs e)
+    {
+        await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
+    }
+    protected override bool OnBackButtonPressed()
+    {
+        // TabBar page: Delegate to centralized back button logic
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await NavigationService.HandleBackButton(NavigationService.ROUTE_PROFILE);
+        });
+        return true;
+    }
+
+    private async void Button_Clicked_8(object sender, EventArgs e)
+    {
+        var popup = new MassegBoxLogout();
+        await this.ShowPopupAsync(popup);
+
+    }
+
+    private async void Button_Clicked_9(object sender, EventArgs e)
+    {
+        try
+        {
+            var popup = new Itsphonenumber();
+            var result = await this.ShowPopupAsync(popup);
+
+            // Shell navigation while the popup is still dismissing crashes the app.
+            await Task.Delay(300);
+
+            if (result is string action && action == "edit")
+            {
+                await NavigationService.NavigateToPage(NavigationService.ROUTE_EDIT_USER);
+                return;
+            }
+
+            if (result is bool confirmed && confirmed)
+            {
+                var sent = await AppViewModel.Instance.RequestPhoneOtpAsync();
+                if (sent)
+                    await NavigationService.OpenPhoneOtpPageAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ProfilePage] Phone confirmation failed: {ex}");
+        }
+    }
+}

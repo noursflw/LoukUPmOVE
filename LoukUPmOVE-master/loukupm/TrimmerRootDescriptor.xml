@@ -1,0 +1,27 @@
+<linker>
+  <!-- Preserve NavigationService.HandleBackButton and related route constants -->
+  <assembly fullname="loukupm">
+	<type fullname="loukupm.Services.NavigationService" preserve="all" />
+
+	<!-- Preserve Shell routing infrastructure -->
+	<type fullname="loukupm.AppShell" preserve="all" />
+
+	<!-- Preserve all View pages that are used in routing -->
+	<type fullname="loukupm.View.SinginPage" preserve="all" />
+	<type fullname="loukupm.View.OTPSINGIN" preserve="all" />
+	<type fullname="loukupm.View.TermsAndConditionsAthun" preserve="all" />
+	<type fullname="loukupm.View.PolicyandPrivacyPageatAthun" preserve="all" />
+	<type fullname="loukupm.View.RestPassword" preserve="all" />
+	<type fullname="loukupm.View.LoginPage" preserve="all" />
+	<type fullname="loukupm.View.HomePage" preserve="all" />
+	<type fullname="loukupm.View.ServicesPage" preserve="all" />
+	<type fullname="loukupm.View.BookingPage" preserve="all" />
+	<type fullname="loukupm.View.ProfilePage" preserve="all" />
+  </assembly>
+
+  <!-- Preserve MAUI Shell and routing -->
+  <assembly fullname="Microsoft.Maui.Controls" preserve="all" />
+
+  <!-- Preserve Community Toolkit MAUI -->
+  <assembly fullname="CommunityToolkit.Maui" preserve="all" />
+</linker>

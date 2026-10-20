@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="NotificationsPage"
+             x:Class="loukupm.View.NotifictionPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             xmlns:Loc="clr-namespace:loukupm.Langue"
+             xmlns:converters="clr-namespace:loukupm.Converter"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Sharpnado.HorusSkeleton.Maui"
+             BackgroundColor="#0A0A0A"
+             Title="NotifictionPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="60,*" BackgroundColor="#0A0A0A">
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" HeightRequest="60" BackgroundColor="#0A0A0A" Padding="0">
+            <Label Text="{Loc:Translate Name=Benachrichtigungen}"
+                  TextColor="White"
+                  Margin="24,0,0,0"
+                  FontSize="22"
+                  FontAttributes="Bold"
+                  VerticalOptions="Center" />
+
+            <Button Grid.Column="1"
+                 WidthRequest="40"
+                 HeightRequest="40"
+                 CornerRadius="12"
+                 ImageSource="backbuttonpmg.png"
+                 BackgroundColor="#0A0A0A"
+                 BorderColor="Transparent"
+                 Margin="0,0,10,0"
+                 HorizontalOptions="End"
+                 VerticalOptions="Center"
+                 Clicked="Button_Clicked" />
+        </Grid>
+
+        <!-- Refresh View with optimized content -->
+        <RefreshView Grid.Row="1"
+                     Command="{Binding RefreshNotificationsCommand}"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     RefreshColor="#4CAF50"
+                     BackgroundColor="#0A0A0A">
+
+            <Grid Padding="0" BackgroundColor="#0A0A0A">
+                <!-- Skeleton Loader while loading -->
+                <VerticalStackLayout IsVisible="{Binding IsLoading}" Margin="12,10,12,0" Spacing="6" Padding="0">
+                    <Frame HeightRequest="80" CornerRadius="8" BackgroundColor="#1F1F1F"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                           BorderColor="Transparent" Margin="0,2,0,2" Padding="0" />
+
+                    <Frame HeightRequest="80" CornerRadius="8" BackgroundColor="#1F1F1F"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                           BorderColor="Transparent" Margin="0,2,0,2" Padding="0" />
+
+                    <Frame HeightRequest="80" CornerRadius="8" BackgroundColor="#1F1F1F"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                           BorderColor="Transparent" Margin="0,2,0,2" Padding="0" />
+
+                    <Frame HeightRequest="80" CornerRadius="8" BackgroundColor="#1F1F1F"
+                           sk:Skeleton.IsBusy="{Binding IsLoading}"
+                           sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                           BorderColor="Transparent" Margin="0,2,0,2" Padding="0" />
+                </VerticalStackLayout>
+
+                <!-- Notification List -->
+                <CollectionView ItemsSource="{Binding Notifications}"
+                                SelectionMode="None"
+                                BackgroundColor="#0A0A0A"
+                                IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                                RemainingItemsThreshold="5">
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Margin="20" Padding="20">
+                            <Label Text="No Notifications"
+                                   TextColor="#999999" FontSize="16" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Pull down to refresh"
+                                   TextColor="#666666" FontSize="12" HorizontalTextAlignment="Center" Margin="0,10,0,0"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView BackgroundColor="#0A0A0A" Threshold="50">
+
+                                <SwipeView.LeftItems>
+                                    <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
+                                        <SwipeItem BackgroundColor="#4CAF50" 
+                                                  Text="Mark Read"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MarkAsReadAndDeleteCommand}"
+                                                  CommandParameter="{Binding .}">
+                                        </SwipeItem>
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <SwipeView.RightItems>
+                                    <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
+                                        <SwipeItem BackgroundColor="#FF5252" 
+                                                  Text="Delete"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MarkAsReadAndDeleteCommand}"
+                                                  CommandParameter="{Binding .}">
+                                        </SwipeItem>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+
+                                <!-- Simplified Notification Item -->
+                                <Frame BackgroundColor="#242424" 
+                                       BorderColor="Transparent"
+                                       HasShadow="False" 
+                                       CornerRadius="8" 
+                                       Margin="12,6" 
+                                       Padding="0">
+
+                                    <VerticalStackLayout Spacing="3" Padding="12">
+                                        <!-- Header: Unread Indicator + Title + Time -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" RowSpacing="0">
+                                            <!-- Unread Dot -->
+                                            <BoxView Grid.Column="0" 
+                                                    WidthRequest="6" 
+                                                    HeightRequest="6" 
+                                                    CornerRadius="3"
+                                                    Color="#FF5252"
+                                                    IsVisible="{Binding IsRead, Converter={StaticResource InverseBoolConverter}}"
+                                                    VerticalOptions="Center" />
+
+                                            <!-- Title -->
+                                            <Label Grid.Column="1" 
+                                                   Text="{Binding Title}"
+                                                   TextColor="#FFFFFF" 
+                                                   FontSize="13" 
+                                                   FontAttributes="Bold"
+                                                   LineBreakMode="TailTruncation" 
+                                                   MaxLines="1"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Time -->
+                                            <Label Grid.Column="2" 
+                                                   Text="{Binding FormattedTime}"
+                                                   TextColor="#999999" 
+                                                   FontSize="10"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+
+                                        <!-- Message -->
+                                        <Label Text="{Binding Message}"
+                                               TextColor="#D0D0D0" 
+                                               FontSize="11" 
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2"
+                                               Margin="0,1,0,0" />
+
+                                        <!-- Date -->
+                                        <Label Text="{Binding FormattedDate}"
+                                               TextColor="#888888" 
+                                               FontSize="9" 
+                                               Margin="0,2,0,0" />
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </RefreshView>
+    </Grid>
+</ContentPage>
+
