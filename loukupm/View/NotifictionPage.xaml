@@ -140,12 +140,7 @@
                                                    MaxLines="1"
                                                    VerticalOptions="Center" />
 
-                                            <!-- Time -->
-                                            <Label Grid.Column="2" 
-                                                   Text="{Binding FormattedTime}"
-                                                   TextColor="#999999" 
-                                                   FontSize="10"
-                                                   VerticalOptions="Center" />
+                                         
                                         </Grid>
 
                                         <!-- Message -->
@@ -156,11 +151,7 @@
                                                MaxLines="2"
                                                Margin="0,1,0,0" />
 
-                                        <!-- Date -->
-                                        <Label Text="{Binding FormattedDate}"
-                                               TextColor="#888888" 
-                                               FontSize="9" 
-                                               Margin="0,2,0,0" />
+                                       
                                     </VerticalStackLayout>
                                 </Frame>
                             </SwipeView>

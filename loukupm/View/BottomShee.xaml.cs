@@ -18,22 +18,22 @@ public partial class BottomShee : BottomSheet
     }
     private void CashRadio_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (e.Value) // ÅÐÇ Êã ÇáÇÎÊíÇÑ
+        if (e.Value) // ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             CashFrame.BorderColor = Color.FromArgb("#EBD750");
         }
-        else // ÅÐÇ Êã ÅáÛÇÁ ÇáÇÎÊíÇÑ
+        else // ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             CashFrame.BorderColor = Colors.Transparent;
         }
     }
     private void CardRadio_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (e.Value) // ÅÐÇ Êã ÇáÇÎÊíÇÑ
+        if (e.Value) // ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             CardFrame.BorderColor = Color.FromArgb("#EBD750");
         }
-        else // ÅÐÇ Êã ÅáÛÇÁ ÇáÇÎÊíÇÑ
+        else // ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             CardFrame.BorderColor = Colors.Transparent;
         }
@@ -56,12 +56,8 @@ public partial class BottomShee : BottomSheet
         {
             booking.PaymentMethod = "Card";
 
-<<<<<<< HEAD
             NavigationService.ResetLogoutFlag();
             await ShellNavigationManager.NavigateToHomeAndClear();
-=======
-            await NavigationService.NavigateToPage(NavigationService.ROUTE_PAYMENT);
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             await this.DismissAsync();
         }
         else

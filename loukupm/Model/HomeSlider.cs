@@ -63,4 +63,10 @@ namespace loukupm.Model
         [JsonPropertyName("is_permanent")]
         public bool IsPermanent { get; set; }
     }
+
+    public partial class SliderDot : ObservableObject
+    {
+        [ObservableProperty]
+        private bool isActive;
+    }
 }

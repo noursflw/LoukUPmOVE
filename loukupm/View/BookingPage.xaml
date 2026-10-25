@@ -116,13 +116,7 @@
                                                 <!-- Duration & Provider Tag -->
                                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                                                     <!-- Duration -->
-                                                    <Label Grid.Column="0" 
-           Text="{Binding FormattedDuration, StringFormat='⏱ {0}'}" 
-           TextColor="#888888" 
-           FontFamily="Oswald"
-           FontSize="11"
-           VerticalOptions="Center" />
-
+                                                   
                                                     <!-- Provider info -->
                                                     <HorizontalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="End" VerticalOptions="Center">
                                                         <Border Stroke="#333333" 

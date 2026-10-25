@@ -97,6 +97,7 @@ public static class NavigationService
     public const string ROUTE_EDIT_PASSWORD = "EditePasswordPage";
     public const string ROUTE_EDIT_PASSWORD_VERIFICATION = "EditPasswordVerification";
     public const string ROUTE_CHACKOUT = "ChackoutPage";
+    public const string ROUTE_PAYMENT = "Paymentgetway";
     public const string ROUTE_ABOUT_US = "AboutUS";
     public const string ROUTE_NOTIFICATION = "NotifictionPage";
     public const string ROUTE_SETTING = "SettingPage";
@@ -201,7 +202,7 @@ public static class NavigationService
     {
         ROUTE_MAIN_PAGE, ROUTE_LOGIN, ROUTE_SIGNIN, ROUTE_OTP,
         ROUTE_HOME, ROUTE_SERVICES, ROUTE_BOOKING, ROUTE_PROFILE,
-        ROUTE_TERM_BOOKING,
+        ROUTE_TERM_BOOKING, ROUTE_PAYMENT,
         ROUTE_POLICY_PRIVACY, ROUTE_REST_PASSWORD, ROUTE_TERMS_CONDITIONS,
         ROUTE_EDIT_USER, ROUTE_EDIT_PASSWORD, ROUTE_EDIT_PASSWORD_VERIFICATION, ROUTE_CHACKOUT,
         ROUTE_ABOUT_US, ROUTE_NOTIFICATION, ROUTE_IMPRESSUM, ROUTE_POLICY_PRIVACY_AUTH,
@@ -983,6 +984,7 @@ public static class NavigationService
             ROUTE_EDIT_PASSWORD_VERIFICATION => new EditPasswordVerification(),
             ROUTE_TERM_BOOKING => new TerminbuchenPage(),
             ROUTE_CHACKOUT => new ChackoutPage(),
+            ROUTE_PAYMENT => new Paymentgetway(),
             ROUTE_ABOUT_US => new AboutUS(),
             ROUTE_NOTIFICATION => new NotifictionPage(),
             ROUTE_IMPRESSUM => new ImpressumPage(),

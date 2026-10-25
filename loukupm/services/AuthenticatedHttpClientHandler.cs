@@ -1,9 +1,6 @@
 using System.Net;
 using System.Net.Http;
-<<<<<<< HEAD
 using System.Net.Http.Headers;
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 
 namespace loukupm.Services
 {
@@ -22,11 +19,8 @@ namespace loukupm.Services
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-<<<<<<< HEAD
             EnsureJsonAccept(request);
 
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             if (IsPublicEndpoint(request.RequestUri))
                 return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -37,11 +31,7 @@ namespace loukupm.Services
 
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-<<<<<<< HEAD
             if (!IsAuthenticationFailure(response))
-=======
-            if (response.StatusCode != HttpStatusCode.Unauthorized)
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                 return response;
 
             var refreshed = await _authService.RefreshTokenAsync().ConfigureAwait(false);
@@ -51,15 +41,11 @@ namespace loukupm.Services
             response.Dispose();
 
             var retry = CloneRequest(request, bufferedContent);
-<<<<<<< HEAD
             EnsureJsonAccept(retry);
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             await SetAuthorizationHeaderAsync(retry).ConfigureAwait(false);
             return await base.SendAsync(retry, cancellationToken).ConfigureAwait(false);
         }
 
-<<<<<<< HEAD
         private static void EnsureJsonAccept(HttpRequestMessage request)
         {
             request.Headers.Accept.Clear();
@@ -83,8 +69,6 @@ namespace loukupm.Services
             return location.Contains("login", StringComparison.OrdinalIgnoreCase);
         }
 
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         private async Task ProactiveTokenRefreshAsync()
         {
             try

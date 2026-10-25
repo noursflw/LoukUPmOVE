@@ -1,4 +1,4 @@
-﻿
+
 
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
@@ -53,10 +53,6 @@ public partial class EditeUserPage : ContentPage
     {
         try
         {
-<<<<<<< HEAD
-=======
-         
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             bool hasPermission = await RequestPhotoPermissionAsync();
 
             if (!hasPermission)
@@ -65,10 +61,6 @@ public partial class EditeUserPage : ContentPage
                 return;
             }
 
-<<<<<<< HEAD
-=======
-           
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             await PickAndSetPhotoAsync();
         }
         catch (Exception ex)
@@ -76,19 +68,12 @@ public partial class EditeUserPage : ContentPage
             await Toast.Make(AppResource.image_upload_failed, ToastDuration.Short).Show();
         }
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     private async Task<bool> RequestPhotoPermissionAsync()
     {
         PermissionStatus status = PermissionStatus.Unknown;
 
 #if ANDROID
-<<<<<<< HEAD
-=======
-        // Android 13 وما فوق
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         if (DeviceInfo.Version.Major >= 13)
         {
             status = await Permissions.CheckStatusAsync<Permissions.Media>();
@@ -97,10 +82,6 @@ public partial class EditeUserPage : ContentPage
         }
         else
         {
-<<<<<<< HEAD
-=======
-            // Android 12 وأقل
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
             status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
             if (status != PermissionStatus.Granted)
                 status = await Permissions.RequestAsync<Permissions.StorageRead>();
@@ -150,10 +131,6 @@ public partial class EditeUserPage : ContentPage
         }
     }
 
-<<<<<<< HEAD
-=======
-    
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     private async Task ShowPermissionDeniedAlert()
     {
         bool result = await DisplayAlert(

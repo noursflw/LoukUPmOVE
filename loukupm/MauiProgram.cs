@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 ﻿using System.Net.Http.Headers;
 using CommunityToolkit.Maui;
-=======
-﻿using CommunityToolkit.Maui;
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 using FFImageLoading.Maui;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
@@ -24,10 +20,7 @@ public static class MauiProgram
 {
     public static FirebaseAuthClient firebaseclient;
     public static FirebaseAuthConfig firebaseconfig;
-<<<<<<< HEAD
     public static string? GoogleWebClientId { get; private set; }
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     public static IServiceProvider Services { get; private set; }
 
     public static MauiApp CreateMauiApp()
@@ -98,10 +91,7 @@ public static class MauiProgram
             }
         };
 
-<<<<<<< HEAD
         GoogleWebClientId = firebaseSettings["WebClientId"];
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         firebaseclient = new FirebaseAuthClient(firebaseconfig);
 
         builder.Services.AddSingleton<loukupm.Services.TokenManager>();
@@ -111,13 +101,10 @@ public static class MauiProgram
             client.BaseAddress = new Uri("https://lookupfriseur.com/");
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LoukUPmOVE-MAUI/1.0");
-<<<<<<< HEAD
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
             AllowAutoRedirect = false
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         });
 
         builder.Services.AddSingleton(sp =>
@@ -135,13 +122,10 @@ public static class MauiProgram
             client.BaseAddress = new Uri("https://lookupfriseur.com/");
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "LoukUPmOVE-MAUI/1.0");
-<<<<<<< HEAD
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
             AllowAutoRedirect = false
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         }).AddHttpMessageHandler<loukupm.Services.AuthenticatedHttpClientHandler>();
 
         // Register services and viewmodels (no singleton AppViewModel)

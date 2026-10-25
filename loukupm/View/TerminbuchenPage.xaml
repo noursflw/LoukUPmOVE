@@ -210,30 +210,7 @@
 
                                             <!-- TIME -->
 
-                                            <HorizontalStackLayout
-                                                Spacing="3">
-
-                                                <Label
-                                                    Text="⏱"
-                                                    FontSize="12"
-                                                    TextColor="#D4AF37"
-                                                    VerticalOptions="Center" />
-
-                                                <Label
-                                                    Text="{Binding TimeServies}"
-                                                    FontFamily="Oswald"
-                                                    TextColor="#D3D3D3"
-                                                    FontSize="12"
-                                                    VerticalOptions="Center" />
-
-                                                <Label
-                                                    Text="Min."
-                                                    FontSize="12"
-                                                    TextColor="#D3D3D3"
-                                                    VerticalOptions="Center" />
-
-                                            </HorizontalStackLayout>
-
+                                            
 
                                             <!-- PRICE -->
 

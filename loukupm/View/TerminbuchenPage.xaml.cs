@@ -9,6 +9,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Layouts;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 
 namespace loukupm.View;
@@ -183,11 +184,70 @@ public partial class TerminbuchenPage : ContentPage
         // DAYS CONTAINER
         // ========================================================
 
-        var daysContainer = new HorizontalStackLayout
+        var monthTitle = new Label
         {
-            Spacing = 8,
-            Margin = new Thickness(0, 8, 0, 0)
+            FontFamily = "Oswald",
+            FontSize = 16,
+            TextColor = Colors.White,
+            HorizontalTextAlignment = TextAlignment.Center,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Center
         };
+
+        var previousMonthButton = new Label
+        {
+            Text = "‹",
+            FontSize = 28,
+            TextColor = Color.FromArgb("#D4AF37"),
+            HorizontalOptions = LayoutOptions.Start,
+            VerticalOptions = LayoutOptions.Center,
+            Padding = new Thickness(8, 0)
+        };
+
+        var nextMonthButton = new Label
+        {
+            Text = "›",
+            FontSize = 28,
+            TextColor = Color.FromArgb("#D4AF37"),
+            HorizontalOptions = LayoutOptions.End,
+            VerticalOptions = LayoutOptions.Center,
+            Padding = new Thickness(8, 0)
+        };
+
+        var monthHeader = new Grid
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = GridLength.Star },
+                new ColumnDefinition { Width = GridLength.Auto }
+            },
+            Margin = new Thickness(0, 8, 0, 4)
+        };
+        Grid.SetColumn(previousMonthButton, 0);
+        Grid.SetColumn(monthTitle, 1);
+        Grid.SetColumn(nextMonthButton, 2);
+        monthHeader.Children.Add(previousMonthButton);
+        monthHeader.Children.Add(monthTitle);
+        monthHeader.Children.Add(nextMonthButton);
+
+        var daysGrid = new Grid
+        {
+            ColumnSpacing = 4,
+            RowSpacing = 6,
+            Margin = new Thickness(0, 4, 0, 0)
+        };
+
+        var daysSection = new VerticalStackLayout
+        {
+            Spacing = 0,
+            Children = { monthHeader, daysGrid }
+        };
+
+        var visibleMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+        string previousMonthToken = null;
+        string nextMonthToken = null;
+        var monthRequest = 0;
 
         // ========================================================
         // SLOTS CONTAINER
@@ -295,13 +355,14 @@ public partial class TerminbuchenPage : ContentPage
             }
         }
 
-        Border CreateDayCell(DateTime date, bool selected)
+        Border CreateDayCell(DateTime date, bool selected, bool available)
         {
             var dayLabel = new Label
             {
                 Text = GetDayAbbreviation(date.DayOfWeek),
                 FontFamily = "Oswald",
                 FontSize = 11,
+                TextColor = Color.FromArgb("#999999"),
                 FontAttributes = FontAttributes.Bold,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
@@ -312,15 +373,16 @@ public partial class TerminbuchenPage : ContentPage
 
             var dateLabel = new Label
             {
-                Text = date.ToString("dd.MM"),
+                Text = date.Day.ToString(),
                 FontFamily = "Oswald",
                 FontSize = 13,
+                TextColor = Colors.White,
                 FontAttributes = FontAttributes.Bold,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
                 LineBreakMode = LineBreakMode.NoWrap,
                 MaxLines = 1,
-                HeightRequest = 24
+                HeightRequest = 22
             };
 
             Grid.SetRow(dayLabel, 0);
@@ -346,90 +408,210 @@ public partial class TerminbuchenPage : ContentPage
                 {
                     CornerRadius = new CornerRadius(10)
                 },
-                Padding = new Thickness(4, 6),
-                WidthRequest = 58,
-                HeightRequest = 72,
+                Padding = new Thickness(2, 4),
+                HeightRequest = 52,
+                HorizontalOptions = LayoutOptions.Fill,
                 Content = content
             };
+
+            if (!available)
+            {
+                cell.Opacity = 0.35;
+                cell.BackgroundColor = Color.FromArgb("#2A2A2A");
+                cell.Stroke = Color.FromArgb("#333333");
+                return cell;
+            }
 
             ApplyDayCellStyle(cell, selected);
             return cell;
         }
 
-        void BuildDayButtons()
+        void SetMonthButtonEnabled(Label button, bool enabled)
         {
-            daysContainer.Children.Clear();
+            button.Opacity = enabled ? 1 : 0.3;
+            button.InputTransparent = !enabled;
+        }
 
-            var today = DateTime.Today;
-            DateTime? highlightedDate = null;
+        async Task ShowMonthAsync(DateTime month)
+        {
+            var request = ++monthRequest;
+            var firstDay = new DateTime(month.Year, month.Month, 1);
+            AvailabilityMonthData monthData = null;
 
-            if (viewModel?.CurrentBooking != null &&
-                viewModel.CurrentBooking.ServiceDateMap.TryGetValue(
-                    service.Id,
-                    out var mappedDate))
+            if (selectedProvider != null)
             {
-                highlightedDate = mappedDate.Date;
+                var api = new ApiServices();
+                monthData = await api.GetAvailabilityMonthAsync(service.Id, selectedProvider.Id, firstDay);
             }
 
-            for (int i = 0; i < 7; i++)
+            if (request != monthRequest)
+                return;
+
+            if (monthData != null)
             {
-                var date = today.AddDays(i);
-                var isSelected =
-                    highlightedDate.HasValue &&
-                    Booking.ToCalendarDate(highlightedDate.Value) == Booking.ToCalendarDate(date);
+                previousMonthToken = monthData.PreviousMonth;
+                nextMonthToken = monthData.NextMonth;
+            }
+            else
+            {
+                var minimum = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                var maximum = minimum.AddMonths(2);
+                previousMonthToken = firstDay > minimum
+                    ? firstDay.AddMonths(-1).ToString("yyyy-MM")
+                    : null;
+                nextMonthToken = firstDay < maximum
+                    ? firstDay.AddMonths(1).ToString("yyyy-MM")
+                    : null;
+            }
 
-                var cell = CreateDayCell(date, isSelected);
+            if (!string.IsNullOrWhiteSpace(previousMonthToken) &&
+                DateTime.TryParseExact(
+                    previousMonthToken + "-01",
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var previousStart) &&
+                previousStart.AddMonths(1).AddDays(-1).Date < DateTime.Today)
+            {
+                previousMonthToken = null;
+            }
 
-                var tap = new TapGestureRecognizer();
-                tap.Tapped += async (s, e) =>
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                if (request != monthRequest)
+                    return;
+
+                visibleMonth = firstDay;
+                var culture = LocalizationResourcesManager.Instanse.CurrentCulture ?? CultureInfo.CurrentCulture;
+                monthTitle.Text = firstDay.ToString("MMMM yyyy", culture);
+                SetMonthButtonEnabled(previousMonthButton, !string.IsNullOrWhiteSpace(previousMonthToken));
+                SetMonthButtonEnabled(nextMonthButton, !string.IsNullOrWhiteSpace(nextMonthToken));
+
+                daysGrid.Children.Clear();
+                daysGrid.RowDefinitions.Clear();
+                daysGrid.ColumnDefinitions.Clear();
+
+                for (var column = 0; column < 7; column++)
+                    daysGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+
+                var daysInMonth = DateTime.DaysInMonth(firstDay.Year, firstDay.Month);
+                var firstVisible = firstDay.Date < DateTime.Today ? DateTime.Today : firstDay;
+                var showDays = firstVisible.Year == firstDay.Year && firstVisible.Month == firstDay.Month;
+                var leading = showDays ? (int)firstVisible.DayOfWeek : 0;
+                var visibleCount = showDays ? daysInMonth - firstVisible.Day + 1 : 0;
+                var rowCount = showDays
+                    ? 1 + (int)Math.Ceiling((leading + visibleCount) / 7d)
+                    : 1;
+                for (var row = 0; row < rowCount; row++)
+                    daysGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+                for (var column = 0; column < 7; column++)
                 {
-                    foreach (var c in daysContainer.Children.OfType<Border>())
-                        ApplyDayCellStyle(c, selected: false);
-
-                    ApplyDayCellStyle(cell, selected: true);
-
-                    Console.WriteLine(
-                        $"[TerminbuchenPage] Date selected for service " +
-                        $"{service.Id}: {date:yyyy-MM-dd}");
-
-                    var dateChanged = RememberServiceDate(service, date);
-
-                    if (selectedProvider != null)
+                    var weekday = new Label
                     {
-                        await LoadSlotsAsync(
-                            service,
-                            selectedProvider,
-                            date,
-                            slotsContainer);
+                        Text = GetDayAbbreviation((DayOfWeek)column),
+                        FontFamily = "Oswald",
+                        FontSize = 10,
+                        TextColor = Color.FromArgb("#999999"),
+                        HorizontalTextAlignment = TextAlignment.Center
+                    };
+                    Grid.SetRow(weekday, 0);
+                    Grid.SetColumn(weekday, column);
+                    daysGrid.Children.Add(weekday);
+                }
 
-                        if (dateChanged)
-                            await RefreshFollowingServiceSlotsAsync(service.Id);
-                    }
-                    else if (dateChanged)
+                DateTime? highlightedDate = null;
+                if (viewModel?.CurrentBooking != null &&
+                    viewModel.CurrentBooking.ServiceDateMap.TryGetValue(service.Id, out var mappedDate))
+                {
+                    highlightedDate = mappedDate.Date;
+                }
+
+                var availability = monthData?.Days?
+                    .Where(day => !string.IsNullOrWhiteSpace(day.Date))
+                    .ToDictionary(day => day.Date, day => day.IsAvailable);
+
+                for (var dayNumber = 1; dayNumber <= daysInMonth; dayNumber++)
+                {
+                    var date = new DateTime(firstDay.Year, firstDay.Month, dayNumber);
+                    if (date.Date < DateTime.Today)
+                        continue;
+
+                    var key = date.ToString("yyyy-MM-dd");
+                    var available = availability != null
+                        ? availability.TryGetValue(key, out var isAvailable) && isAvailable
+                        : date.Date >= DateTime.Today;
+                    var isSelected = available &&
+                        highlightedDate.HasValue &&
+                        Booking.ToCalendarDate(highlightedDate.Value) == Booking.ToCalendarDate(date);
+
+                    var cell = CreateDayCell(date, isSelected, available);
+                    var index = leading + (date.Day - firstVisible.Day);
+                    Grid.SetRow(cell, 1 + (index / 7));
+                    Grid.SetColumn(cell, index % 7);
+                    daysGrid.Children.Add(cell);
+
+                    if (!available)
+                        continue;
+
+                    var tap = new TapGestureRecognizer();
+                    tap.Tapped += async (s, e) =>
                     {
-                        await RefreshFollowingServiceSlotsAsync(service.Id);
-                    }
+                        foreach (var existing in daysGrid.Children.OfType<Border>())
+                            ApplyDayCellStyle(existing, selected: false);
 
-                    if (selectedProvider == null)
-                    {
-                        slotsContainer.Children.Clear();
+                        ApplyDayCellStyle(cell, selected: true);
 
-                        slotsContainer.Children.Add(
-                            new Label
+                        var dateChanged = RememberServiceDate(service, date);
+
+                        if (selectedProvider != null)
+                        {
+                            await LoadSlotsAsync(service, selectedProvider, date, slotsContainer);
+
+                            if (dateChanged)
+                                await RefreshFollowingServiceSlotsAsync(service.Id);
+                        }
+                        else
+                        {
+                            if (dateChanged)
+                                await RefreshFollowingServiceSlotsAsync(service.Id);
+
+                            slotsContainer.Children.Clear();
+                            slotsContainer.Children.Add(new Label
                             {
                                 Text = AppResource.PleaseSelectProviderFirst,
-                                TextColor =
-                                    Color.FromArgb("#FF6666"),
+                                TextColor = Color.FromArgb("#FF6666"),
                                 FontFamily = "Oswald",
                                 FontSize = 12
                             });
-                    }
-                };
-
-                cell.GestureRecognizers.Add(tap);
-                daysContainer.Children.Add(cell);
-            }
+                        }
+                    };
+                    cell.GestureRecognizers.Add(tap);
+                }
+            });
         }
+
+        var previousMonthTap = new TapGestureRecognizer();
+        previousMonthTap.Tapped += async (s, e) =>
+        {
+            if (string.IsNullOrWhiteSpace(previousMonthToken))
+                return;
+
+            if (DateTime.TryParseExact(previousMonthToken + "-01", "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var target))
+                await ShowMonthAsync(target);
+        };
+        previousMonthButton.GestureRecognizers.Add(previousMonthTap);
+
+        var nextMonthTap = new TapGestureRecognizer();
+        nextMonthTap.Tapped += async (s, e) =>
+        {
+            if (string.IsNullOrWhiteSpace(nextMonthToken))
+                return;
+
+            if (DateTime.TryParseExact(nextMonthToken + "-01", "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var target))
+                await ShowMonthAsync(target);
+        };
+        nextMonthButton.GestureRecognizers.Add(nextMonthTap);
 
         // ========================================================
         // PROVIDER SELECTION
@@ -454,7 +636,12 @@ public partial class TerminbuchenPage : ContentPage
                 nameLabel.TextColor = Color.FromArgb("#E8C966");
 
                 var providerChanged = OnServiceProviderSelected(service, chosen);
-                BuildDayButtons();
+                var monthToShow = visibleMonth;
+                if (viewModel?.CurrentBooking != null &&
+                    viewModel.CurrentBooking.ServiceDateMap.TryGetValue(service.Id, out var savedMonthDate))
+                    monthToShow = savedMonthDate;
+
+                await ShowMonthAsync(monthToShow);
                 slotsContainer.Children.Clear();
 
                 Console.WriteLine(
@@ -487,29 +674,21 @@ public partial class TerminbuchenPage : ContentPage
             verticalStackLayout.Children.Add(selector);
         }
 
-        var daysScrollView = new ScrollView
-        {
-            Orientation = ScrollOrientation.Horizontal,
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-            Content = daysContainer,
-            Margin = new Thickness(0, 8, 0, 8)
-        };
-
-        verticalStackLayout.Children.Add(
-            daysScrollView);
+        verticalStackLayout.Children.Add(daysSection);
 
         verticalStackLayout.Children.Add(
             slotsContainer);
 
-        if (selectedProvider != null)
+        if (selectedProvider != null &&
+            viewModel?.CurrentBooking != null &&
+            viewModel.CurrentBooking.ServiceDateMap.TryGetValue(service.Id, out var savedDate))
         {
-            BuildDayButtons();
-
-            if (viewModel?.CurrentBooking != null &&
-                viewModel.CurrentBooking.ServiceDateMap.TryGetValue(service.Id, out var savedDate))
-            {
-                _ = LoadSlotsAsync(service, selectedProvider, savedDate, slotsContainer);
-            }
+            _ = ShowMonthAsync(savedDate);
+            _ = LoadSlotsAsync(service, selectedProvider, savedDate, slotsContainer);
+        }
+        else
+        {
+            _ = ShowMonthAsync(DateTime.Today);
         }
 
         return container;

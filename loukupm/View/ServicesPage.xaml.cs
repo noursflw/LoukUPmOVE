@@ -251,12 +251,8 @@ public partial class ServicesPage : ContentPage
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-<<<<<<< HEAD
         if (Shell.Current is loukupm.AppShell shell)
             await shell.GoToHomeAsync();
-=======
-        await Navigation.PopAsync();
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     }
 
 

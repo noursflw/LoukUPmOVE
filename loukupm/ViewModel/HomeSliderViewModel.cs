@@ -29,6 +29,12 @@ namespace loukupm.ViewModel
         [ObservableProperty]
         private string currentLanguage = "en";
 
+        [ObservableProperty]
+        private int currentIndex;
+
+        [ObservableProperty]
+        private ObservableCollection<SliderDot> dots = new();
+
         public HomeSliderViewModel()
         {
             _apiServices = new ApiServices();
@@ -42,7 +48,7 @@ namespace loukupm.ViewModel
         {
             try
             {
-                IsLoading = true;
+                await MainThread.InvokeOnMainThreadAsync(() => IsLoading = true);
                 HasError = false;
                 ErrorMessage = string.Empty;
 
@@ -50,21 +56,14 @@ namespace loukupm.ViewModel
 
                 if (response?.Success == true && response.Data?.Items != null)
                 {
-                    // Update collections on main thread
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    var sortedSliders = response.Data.Items
+                        .OrderBy(s => s.SortOrder)
+                        .ToList();
+                    var fresh = new ObservableCollection<HomeSliderItem>(sortedSliders);
+
+                    await MainThread.InvokeOnMainThreadAsync(() =>
                     {
-                        Items.Clear();
-
-                        // Sort by sort_order
-                        var sortedSliders = response.Data.Items
-                            .OrderBy(s => s.SortOrder)
-                            .ToList();
-
-                        foreach (var slider in sortedSliders)
-                        {
-                            Items.Add(slider);
-                        }
-
+                        Items = fresh;
                         Console.WriteLine($"✅ Home Sliders loaded successfully: {Items.Count} items");
                     });
                 }
@@ -83,12 +82,42 @@ namespace loukupm.ViewModel
             }
             finally
             {
-                // Ensure IsLoading is set on main thread
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    IsLoading = false;
-                });
+                await MainThread.InvokeOnMainThreadAsync(() => IsLoading = false);
             }
+        }
+
+        partial void OnItemsChanged(ObservableCollection<HomeSliderItem> value)
+        {
+            CurrentIndex = 0;
+            SyncDots();
+        }
+
+        public void SetCurrentIndex(int index)
+        {
+            var count = Items?.Count ?? 0;
+            if (count == 0)
+            {
+                CurrentIndex = 0;
+                SyncDots();
+                return;
+            }
+
+            CurrentIndex = Math.Clamp(index, 0, count - 1);
+            SyncDots();
+        }
+
+        void SyncDots()
+        {
+            var count = Items?.Count ?? 0;
+
+            while (Dots.Count > count)
+                Dots.RemoveAt(Dots.Count - 1);
+
+            while (Dots.Count < count)
+                Dots.Add(new SliderDot());
+
+            for (var i = 0; i < Dots.Count; i++)
+                Dots[i].IsActive = i == CurrentIndex;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -105,15 +105,12 @@ namespace loukupm.Model
         public string ImageUrl { get; set; }
     }
 
-<<<<<<< HEAD
     public partial class TeamPagerDot : ObservableObject
     {
         [ObservableProperty]
         private bool isActive;
     }
 
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
     // كلاس الغلاف (الـ wrapper)
     public class WorkTeamWrapper
     {

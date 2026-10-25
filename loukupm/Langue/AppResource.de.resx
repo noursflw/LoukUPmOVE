@@ -1222,11 +1222,7 @@ Diese Aktion kann nicht rückgängig gemacht werden.</value>
     <value>Achtung</value>
   </data>
   <data name="SubDenger" xml:space="preserve">
-<<<<<<< HEAD
     <value>Wenn du dein Konto löschst, wird es auf der gesamten Look-Up-Plattform gelöscht, in der App und auf dem Server, einschließlich deiner persönlichen Daten, Telefonnummer, Profilbild und Termine. Das kann nicht rückgängig gemacht werden.</value>
-=======
-    <value>Wenn du dein Konto löschst, werden alle deine Daten dauerhaft entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.</value>
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
   </data>
   <data name="EnterPasswordCeren" xml:space="preserve">
     <value>Geben Sie Ihr Passwort ein</value>

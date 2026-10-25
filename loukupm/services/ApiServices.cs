@@ -29,10 +29,7 @@ namespace loukupm.Services
 
             var inner = new HttpClientHandler
             {
-<<<<<<< HEAD
                 AllowAutoRedirect = false,
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
@@ -49,12 +46,9 @@ namespace loukupm.Services
 
             if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "LoukUPmOVE-MAUI/1.0");
-<<<<<<< HEAD
 
             if (!_httpClient.DefaultRequestHeaders.Accept.Any())
                 _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
         }
 
         private async Task SetAuthorizationHeaderAsync()
@@ -881,6 +875,35 @@ namespace loukupm.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[GetProviderAvailabilityAsync] Error: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<AvailabilityMonthData> GetAvailabilityMonthAsync(int serviceId, int providerId, DateTime month)
+        {
+            try
+            {
+                await SetAuthorizationHeaderAsync();
+                var monthStr = month.ToString("yyyy-MM");
+                var url = $"{GetBaseUrl()}/api/availability/days?service_id={serviceId}&provider_id={providerId}&month={monthStr}";
+
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
+                _httpClient.DefaultRequestHeaders.Add("Accept-Language", GetLanguageCode());
+
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var json = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var result = JsonSerializer.Deserialize<AvailabilityMonthResponse>(json, options);
+                return result?.Success == true ? result.Data : null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetAvailabilityMonthAsync] Error: {ex.Message}");
                 return null;
             }
         }

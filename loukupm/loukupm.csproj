@@ -18,11 +18,7 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">16.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
-<<<<<<< HEAD
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
-=======
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 
@@ -112,7 +108,6 @@
 		<PackageReference Include="UraniumUI.Validations.DataAnnotations" Version="3.0.0" />
 	</ItemGroup>
 
-<<<<<<< HEAD
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.Credentials" Version="1.6.0.1" />
 		<PackageReference Include="Xamarin.AndroidX.Credentials.PlayServicesAuth" Version="1.6.0.2" />
@@ -121,8 +116,6 @@
 		<PackageReference Include="Xamarin.GoogleAndroid.Libraries.Identity.GoogleId" Version="1.1.0.13" />
 	</ItemGroup>
 
-=======
->>>>>>> dabe2bf5d4b48b99ca5d457647b100383d8c8797
 	<ItemGroup>
 		<Compile Update="Langue\AppResource.Designer.cs">
 			<DesignTime>True</DesignTime>
@@ -187,7 +180,7 @@
 	  <MauiXaml Update="View\PolicyandPrivacyPageatAthun.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View\PolicyandPrivacyFlyoutPage.xaml">
+	  <MauiXaml Update="Visual\PolicyandPrivacyFlyoutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\TerminbuchenPage.xaml">
